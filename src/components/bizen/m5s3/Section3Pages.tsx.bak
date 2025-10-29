@@ -1,0 +1,1413 @@
+/* eslint-disable @next/next/no-img-element */
+"use client"
+
+import * as React from "react"
+import { useMemo, useState } from "react"
+import { motion, Variants } from "framer-motion"
+
+type LayoutOption = "A" | "B"
+
+const MAX_WIDTH = 1200
+
+const containerVar: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { staggerChildren: 0.06, ease: "easeOut" } },
+}
+
+const itemVar: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { ease: "easeOut" } },
+}
+
+function Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+  padding = 22,
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+  padding?: number
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+/* ───────────────────────── Page 1 ───────────────────────── */
+
+type Page1Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  introText?: string
+  bullets?: string[]
+  keyIdea?: string
+  awarenessItems?: string[]
+  considerationItems?: string[]
+  conversionItems?: string[]
+  commonFormats?: string[]
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+}
+
+function Page1({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 3 — Mensajes, seguimiento y reputación",
+  topicTitle = "Lectura base (ampliada)",
+  introText = `En networking, el primer mensaje abre la puerta y el seguimiento construye confianza. Tres principios:
+1) Claridad y relevancia: indica por qué escribes y qué propones en 2–3 líneas. Personaliza con una referencia real (proyecto, post, charla).
+2) Solicitud concreta y fácil: una sola acción (leer un adjunto breve, dar una fecha, responder “sí/no”). Reduce fricción.
+3) Seguimiento con valor: si no responden, vuelve con algo útil (resumen, recurso, invitación específica), no solo “¿viste mi correo?”.`,
+  bullets = [
+    "Empieza claro y pertinente en 2–3 líneas con referencia real.",
+    "Pide una sola acción, específica y de baja fricción.",
+    "Haz seguimiento aportando valor nuevo, no presión vacía.",
+  ],
+  keyIdea = "El mensaje inicia la relación; el seguimiento consistente y útil construye reputación.",
+  awarenessItems = [
+    "Explica por qué escribes en 2–3 líneas",
+    "Personaliza con proyecto/post/charla",
+    "Muestra relevancia para la persona",
+  ],
+  considerationItems = [
+    "Propón una sola acción",
+    "Baja fricción: sí/no, fecha, adjunto breve",
+    "Indica el beneficio de realizarla",
+  ],
+  conversionItems = [
+    "Evita “¿viste mi correo?”",
+    "Aporta un recurso o resumen útil",
+    "Invitación específica con valor claro",
+  ],
+  commonFormats = [
+    "Consistencia y respeto de tiempos",
+    "Cierres y agradecimientos explícitos",
+    "Registro de interacciones para dar buen seguimiento",
+  ],
+  heroImage = "",
+  layoutOption = "A",
+  baseFontSize = 18,
+}: Page1Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      maxWidth: isA ? "none" : MAX_WIDTH,
+      padding: 20,
+      boxSizing: "border-box" as const,
+    }),
+    [isA]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 8 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.9,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+
+            <div style={{ flex: 1, height: 8, background: "rgba(0,0,0,0.08)", borderRadius: 999, overflow: "hidden" }}>
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 12 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.2, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "6px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div
+                  variants={itemVar}
+                  style={{
+                    borderRadius: 16,
+                    overflow: "hidden" as const,
+                    boxShadow: "0 18px 60px rgba(0,0,0,0.12)",
+                    marginTop: 14,
+                    marginBottom: 16,
+                  }}
+                >
+                  <img src={heroImage} alt="Sección 3" style={{ width: "100%", height: "auto", display: "block" }} />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor} padding={20}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.355 }}>Lectura base (ampliada)</h3>
+                  <p style={{ margin: 0, opacity: 0.95, fontSize: fs, whiteSpace: "pre-wrap" }}>{introText}</p>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor} padding={20}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.355 }}>Tres principios</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.95, fontSize: fs }}>
+                    {bullets.map((b, i) => (
+                      <li key={i} style={{ marginBottom: 6 }}>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <div
+                  style={{
+                    border: `1px solid ${primaryColor}44`,
+                    background: `${primaryColor}0F`,
+                    color: "#111",
+                    borderRadius: 16,
+                    padding: 16,
+                  }}
+                >
+                  <strong style={{ color: primaryColor, display: "block" as const, marginBottom: 6, fontSize: fs }}>
+                    Idea clave
+                  </strong>
+                  <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{keyIdea}</p>
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor} padding={20}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Principios prácticos</h3>
+                  <div style={{ display: "grid" as const, gridTemplateColumns: "1fr", gap: 12 }}>
+                    <div>
+                      <h4 style={{ margin: "0 0 6px 0", color: primaryColor, fontSize: fs * 1.1 }}>
+                        Mensaje inicial: claridad y relevancia
+                      </h4>
+                      <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{awarenessItems.join(", ")}.</p>
+                    </div>
+                    <div>
+                      <h4 style={{ margin: "0 0 6px 0", color: primaryColor, fontSize: fs * 1.1 }}>
+                        Solicitud concreta y fácil
+                      </h4>
+                      <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{considerationItems.join(", ")}.</p>
+                    </div>
+                    <div>
+                      <h4 style={{ margin: "0 0 6px 0", color: primaryColor, fontSize: fs * 1.1 }}>
+                        Seguimiento con valor
+                      </h4>
+                      <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{conversionItems.join(", ")}.</p>
+                    </div>
+                    <div>
+                      <h4 style={{ margin: "0 0 6px 0", color: primaryColor, fontSize: fs * 1.1 }}>
+                        Reputación: señales y buenas prácticas
+                      </h4>
+                      <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{commonFormats.join(", ")}.</p>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+/* ───────────────────────── Page 2 ───────────────────────── */
+
+type Page2Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  awarenessImage?: string
+  considerationImage?: string
+  conversionImage?: string
+  postImage?: string
+}
+
+type Page3Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  timeline?: { label: string; focus: string }[]
+  pipeline?: { title: string; bullets: string[] }[]
+  reminders?: string[]
+}
+
+type Page4Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  templates?: { label: string; lines: string[] }[]
+  objectionHandles?: { title: string; responses: string[] }[]
+  closingTips?: string[]
+}
+
+type Page5Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  rituals?: string[]
+  dashboardMetrics?: string[]
+  documentationTips?: string[]
+  commitments?: string[]
+}
+
+const PAGE2_KEYWORDS = [
+  "mensaje inicial",
+  "personalización",
+  "propuesta clara",
+  "solicitud concreta",
+  "siguiente paso",
+  "seguimiento con valor",
+  "cadencia",
+  "cortesía",
+  "cumplimiento",
+  "reputación",
+  "consistencia",
+  "confianza",
+]
+
+function MetricRow({
+  title,
+  items,
+  imageSrc,
+  primaryColor,
+  fs,
+  reverse = false,
+}: {
+  title: string
+  items: string[]
+  imageSrc?: string
+  primaryColor: string
+  fs: number
+  reverse?: boolean
+}) {
+  const hasImage = !!imageSrc
+  return (
+    <div
+      style={{
+        display: "flex" as const,
+        flexDirection: reverse ? "row-reverse" : "row",
+        gap: 16,
+        alignItems: "stretch" as const,
+        marginBottom: 16,
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          border: `1px solid ${primaryColor}33`,
+          borderRadius: 14,
+          padding: 16,
+          background: "#fff",
+        }}
+      >
+        <h4 style={{ margin: "0 0 10px 0", color: primaryColor, fontSize: fs * 1.1 }}>{title}</h4>
+        <ul style={{ margin: 0, paddingLeft: 22, fontSize: fs, lineHeight: 1.55 }}>
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      {hasImage ? (
+        <div
+          style={{
+            flex: 1,
+            border: `1px solid ${primaryColor}33`,
+            borderRadius: 14,
+            overflow: "hidden" as const,
+            background: "#fff",
+            display: "flex" as const,
+            alignItems: "center" as const,
+            justifyContent: "center" as const,
+            padding: 8,
+          }}
+        >
+          <img
+            src={imageSrc}
+            alt={title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: 10,
+              aspectRatio: "16 / 9",
+              display: "block" as const,
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function Keyword({
+  text,
+  primaryColor,
+  fs,
+}: {
+  text: string
+  primaryColor: string
+  fs: number
+}) {
+  return (
+    <span
+      style={{
+        display: "inline-flex" as const,
+        alignItems: "center" as const,
+        padding: "6px 10px",
+        borderRadius: 999,
+        border: `1px solid ${primaryColor}33`,
+        background: "#fff",
+        marginRight: 8,
+        marginBottom: 8,
+        fontSize: fs * 0.95,
+        fontWeight: 600,
+      }}
+    >
+      {text}
+    </span>
+  )
+}
+
+function Page2({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 1",
+  topicTitle = "Mensajes, cadencia y reputación",
+  heroImage = "",
+  layoutOption = "B",
+  baseFontSize = 18,
+  awarenessImage = "",
+  considerationImage = "",
+  conversionImage = "",
+  postImage = "",
+}: Page2Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={`${brandName} logo`}
+                style={{ height: 84, width: "auto", display: "block" }}
+              />
+            ) : (
+              <div
+                aria-hidden
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: primaryColor,
+                }}
+              />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div
+            style={{
+              display: "flex" as const,
+              alignItems: "center" as const,
+              gap: 12,
+              marginBottom: 14,
+            }}
+          >
+            <motion.span
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{
+                duration: 2.0,
+                repeat: Infinity,
+                repeatType: "mirror",
+                ease: "easeInOut",
+              }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.06, 1] }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ ...container, flex: 1 }}>
+          <motion.div variants={containerVar} initial="hidden" animate="show">
+            <motion.div variants={itemVar}>
+              <h1 style={{ margin: 0, fontSize: fs * 2.2, lineHeight: 1.15 }}>{title}</h1>
+              <p style={{ margin: "8px 0 20px", opacity: 0.9, fontSize: fs * 1.1 }}>
+                <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+              </p>
+            </motion.div>
+
+            <motion.div variants={itemVar}>
+              <Card glow={primaryColor}>
+                <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Checklist operativo del mensaje</h3>
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.6 }}>
+                  <li style={{ marginBottom: 6 }}>Saludo personalizado con referencia concreta (post, evento o proyecto).</li>
+                  <li style={{ marginBottom: 6 }}>Propuesta de valor resumida en máximo dos líneas y orientada al beneficio.</li>
+                  <li style={{ marginBottom: 6 }}>Solicitud única y sencilla (agenda, respuesta sí/no, feedback rápido).</li>
+                  <li style={{ marginBottom: 6 }}>Anticipa la siguiente interacción: “si no respondes, te escribo en X días con Y recurso”.</li>
+                  <li style={{ marginBottom: 6 }}>Cierra con agradecimiento y firma consistente (nombre, rol, enlaces relevantes).</li>
+                </ul>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page3({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 50,
+  title = "Sección 3",
+  topicTitle = "Seguimiento multicanal y pipeline vivo",
+  layoutOption = "B",
+  baseFontSize = 18,
+  timeline = [
+    { label: "Día 0 · Mensaje inicial", focus: "Personaliza apertura, referencia concreta y CTA único." },
+    { label: "Día 3 · Seguimiento con valor", focus: "Comparte recurso corto (resumen, demo, nota de voz)." },
+    { label: "Día 7 · Segundo canal", focus: "Reaparece en formato distinto (audio, video corto o email)." },
+    { label: "Día 14 · Cierre amable", focus: "Agradece, deja puerta abierta y pide feedback si no avanzan." },
+  ],
+  pipeline = [
+    {
+      title: "Nuevo contacto",
+      bullets: [
+        "Registrar fuente, contexto y objetivo en tu CRM o documento.",
+        "Asignar dueño responsable y definir próximo paso con fecha.",
+      ],
+    },
+    {
+      title: "Conversación activa",
+      bullets: [
+        "Resumir cada interacción (2 líneas) y actualizar nivel de interés.",
+        "Adjuntar materiales enviados y preguntas pendientes.",
+      ],
+    },
+    {
+      title: "Propuesta/colaboración",
+      bullets: [
+        "Documentar entregables, inversión, tiempos y responsable interno.",
+        "Programar seguimiento 48h después con nuevo valor o aclaración.",
+      ],
+    },
+    {
+      title: "Ganado / Perdido",
+      bullets: [
+        "Solicitar feedback y referidos cuando cierres positivo.",
+        "Registrar motivo de pérdida para ajustar mensajes o proceso.",
+      ],
+    },
+  ],
+  reminders = [
+    "Trabaja con etiquetas simples (caliente, tibio, frío) y revísalas cada semana.",
+    "Mantén tablero compartido para que el equipo vea dueños y próximos pasos.",
+    "Bloquea 2 franjas a la semana solo para seguimientos y limpieza de pipeline.",
+  ],
+}: Page3Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 12 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 16 }}>
+            <motion.span
+              animate={{ scale: [1, 1.07, 1] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ flex: 1 }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.2, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.1 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Cadencia sugerida (14 días)</h3>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {timeline.map((step, index) => (
+                      <div
+                        key={`timeline-${index}`}
+                        style={{
+                          border: `1px solid ${primaryColor}22`,
+                          borderRadius: 12,
+                          padding: 14,
+                          background: "#fff",
+                          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        <strong style={{ display: "block" as const, marginBottom: 6, color: primaryColor }}>{step.label}</strong>
+                        <p style={{ margin: 0, lineHeight: 1.5, opacity: 0.9 }}>{step.focus}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Pipeline vivo</h3>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {pipeline.map((stage, index) => (
+                      <div
+                        key={`pipeline-${index}`}
+                        style={{
+                          border: `1px solid ${primaryColor}22`,
+                          borderRadius: 12,
+                          padding: 14,
+                          background: "#fff",
+                          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        <strong style={{ display: "block" as const, marginBottom: 8, color: primaryColor }}>{stage.title}</strong>
+                        <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                          {stage.bullets.map((item, itemIndex) => (
+                            <li key={`pipeline-${index}-${itemIndex}`} style={{ marginBottom: 6 }}>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.35 }}>Recordatorios clave</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                    {reminders.map((item, index) => (
+                      <li key={`reminder-${index}`} style={{ marginBottom: 8 }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page4({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 70,
+  title = "Sección 3",
+  topicTitle = "Biblioteca de mensajes y objeciones",
+  layoutOption = "B",
+  baseFontSize = 18,
+  templates = [
+    {
+      label: "DM inicial (creador o aliado)",
+      lines: [
+        "Hola [nombre], sigo tu trabajo en [referencia real].",
+        "Trabajo con [tu propuesta] y ayudamos a [resultado concreto].",
+        "¿Te interesa explorar una colaboración exprés en una llamada de 15 min?",
+      ],
+    },
+    {
+      label: "Seguimiento con valor",
+      lines: [
+        "Hola [nombre], te comparto [recurso] que resume el beneficio en 2 min.",
+        "Incluye métricas y casos similares a [contexto de la persona].",
+        "Si hace sentido, dime qué día te acomoda para revisar dudas.",
+      ],
+    },
+    {
+      label: "Cierre amable",
+      lines: [
+        "Gracias por el tiempo y la apertura, [nombre].",
+        "Quedo disponible cuando este reto vuelva a estar en agenda.",
+        "¿Te sirve si te escribo en [mes estimado]? Mientras tanto te dejo [recurso breve].",
+      ],
+    },
+  ],
+  objectionHandles = [
+    {
+      title: "No tenemos presupuesto",
+      responses: [
+        "Propón versión piloto con entregable acotado y métrica clara.",
+        "Comparte caso de ahorro/eficiencia para mostrar retorno.",
+      ],
+    },
+    {
+      title: "No es prioridad ahora",
+      responses: [
+        "Pregunta qué sí es prioridad y vincula tu propuesta a ese objetivo.",
+        "Agenda recordatorio en 45 días con insight nuevo o dato fresco.",
+      ],
+    },
+    {
+      title: "Mándame información",
+      responses: [
+        "Envía resumen de 3 bloques: promesa, prueba, siguiente paso.",
+        "Incluye calendario o formulario para que la persona elija cuándo avanzar.",
+      ],
+    },
+  ],
+  closingTips = [
+    "Confirma por escrito el siguiente paso, nombre del responsable y fecha.",
+    "Resume entregables, métricas y enlaces compartidos después de cada llamada.",
+    "Envía agradecimiento + recordatorio 24 horas antes de cada reunión agendada.",
+  ],
+}: Page4Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 12 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 16 }}>
+            <motion.span
+              animate={{ scale: [1, 1.07, 1] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ flex: 1 }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.2, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.1 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Mensajes listos para usar</h3>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {templates.map((template, index) => (
+                      <div
+                        key={`template-${index}`}
+                        style={{
+                          border: `1px solid ${primaryColor}22`,
+                          borderRadius: 12,
+                          padding: 16,
+                          background: "#fff",
+                          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        <strong style={{ display: "block" as const, marginBottom: 10, color: primaryColor }}>
+                          {template.label}
+                        </strong>
+                        <div
+                          style={{
+                            borderRadius: 12,
+                            border: `1px solid ${primaryColor}22`,
+                            background: "#f8fafc",
+                            padding: 14,
+                            fontFamily:
+                              "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+                            whiteSpace: "pre-line",
+                            fontSize: fs * 0.95,
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {template.lines.join("\n")}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Responder objeciones frecuentes</h3>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {objectionHandles.map((block, index) => (
+                      <div
+                        key={`objection-${index}`}
+                        style={{
+                          border: `1px solid ${primaryColor}22`,
+                          borderRadius: 12,
+                          padding: 16,
+                          background: "#fff",
+                          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        <strong style={{ display: "block" as const, marginBottom: 8, color: primaryColor }}>
+                          {block.title}
+                        </strong>
+                        <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                          {block.responses.map((response, responseIndex) => (
+                            <li key={`response-${index}-${responseIndex}`} style={{ marginBottom: 6 }}>
+                              {response}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.35 }}>Buenas prácticas para cerrar</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                    {closingTips.map((tip, index) => (
+                      <li key={`closing-${index}`} style={{ marginBottom: 8 }}>
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page5({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 90,
+  title = "Sección 3",
+  topicTitle = "Rituales, métricas y reputación en acción",
+  layoutOption = "B",
+  baseFontSize = 18,
+  rituals = [
+    "Lunes 09:00 — Revisar pipeline, actualizar estado y confirmar próximos pasos.",
+    "Miércoles 16:00 — Bloque de seguimiento (DM, email, llamadas) de 60 minutos.",
+    "Viernes 11:30 — Retro semanal: aprendizajes, casos ganados y pendientes críticos.",
+    "Fin de mes — Limpieza de contactos, agradecimientos y solicitud de testimonios.",
+  ],
+  dashboardMetrics = [
+    "Mensajes enviados vs. respondidos en la semana.",
+    "Tiempo promedio de respuesta en cada canal.",
+    "Tasa de invitaciones aceptadas / reuniones agendadas.",
+    "Referidos o recomendaciones generadas por mes.",
+    "Repetición de colaboración (clientes que vuelven a contratar).",
+  ],
+  documentationTips = [
+    "Centraliza plantillas y casos en un documento vivo con control de versiones.",
+    "Registra decisiones clave post-reunión (qué, quién, cuándo) en máximo 3 bullets.",
+    "Comparte aprendizajes destacados en un canal del equipo para reforzar consistencia.",
+  ],
+  commitments = [
+    "Define un experimento mensual para mejorar tasa de respuesta o retención.",
+    "Celebra públicamente cada colaboración cerrada y agradece a la contraparte.",
+    "Agenda una autoevaluación trimestral de reputación con feedback de clientes.",
+  ],
+}: Page5Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 12 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 16 }}>
+            <motion.span
+              animate={{ scale: [1, 1.07, 1] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ flex: 1 }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.2, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.1 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Rituales semanales</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                    {rituals.map((ritual, index) => (
+                      <li key={`ritual-${index}`} style={{ marginBottom: 8 }}>
+                        {ritual}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Panel de métricas recomendadas</h3>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {dashboardMetrics.map((metric, index) => (
+                      <div
+                        key={`metric-${index}`}
+                        style={{
+                          border: `1px solid ${primaryColor}22`,
+                          borderRadius: 12,
+                          padding: 16,
+                          background: "#fff",
+                          boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        <span style={{ fontWeight: 700, color: primaryColor, display: "block" as const, marginBottom: 8 }}>
+                          Indicador {index + 1}
+                        </span>
+                        <p style={{ margin: 0, lineHeight: 1.5, opacity: 0.9 }}>{metric}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Documentación y compromisos</h3>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        border: `1px solid ${primaryColor}22`,
+                        borderRadius: 12,
+                        padding: 16,
+                        background: "#fff",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                      }}
+                    >
+                      <strong style={{ display: "block" as const, marginBottom: 8, color: primaryColor }}>
+                        Documenta así
+                      </strong>
+                      <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                        {documentationTips.map((tip, index) => (
+                          <li key={`doc-${index}`} style={{ marginBottom: 6 }}>
+                            {tip}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div
+                      style={{
+                        border: `1px solid ${primaryColor}22`,
+                        borderRadius: 12,
+                        padding: 16,
+                        background: "#fff",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
+                      }}
+                    >
+                      <strong style={{ display: "block" as const, marginBottom: 8, color: primaryColor }}>
+                        Compromisos para sostener reputación
+                      </strong>
+                      <ul style={{ margin: 0, paddingLeft: 18, fontSize: fs, lineHeight: 1.5 }}>
+                        {commitments.map((commitment, index) => (
+                          <li key={`commit-${index}`} style={{ marginBottom: 6 }}>
+                            {commitment}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+const M5S3_CONTENT: Record<number, React.ReactNode> = {
+  1: <Page1 />,
+  2: <Page2 />,
+  3: <Page3 />,
+  4: <Page4 />,
+  5: <Page5 />,
+}
+
+export default M5S3_CONTENT

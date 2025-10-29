@@ -1,0 +1,1971 @@
+/* eslint-disable @next/next/no-img-element */
+"use client"
+
+import * as React from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { motion, Variants } from "framer-motion"
+
+type LayoutOption = "A" | "B"
+
+
+
+type Page1Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  syllabus?: string[]
+  summaryPoints?: string[]
+  caseText?: string
+  whyItMatters?: string
+  glossaryItems?: string[]
+  structurePills?: string[]
+  enableExercise?: boolean
+}
+
+type Page2Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  awarenessImage?: string
+  considerationImage?: string
+  conversionImage?: string
+  postImage?: string
+}
+
+const COMM_VF_QUESTIONS: { text: string; answer: boolean }[] = [
+  { text: "La función de mirar a cámara es simular contacto visual para conectar con la audiencia.", answer: true },
+  { text: "Una postura neutra y abierta comunica seguridad y accesibilidad.", answer: true },
+  { text: "Las pausas breves ayudan a enfatizar ideas y a que el público procese el mensaje.", answer: true },
+  { text: "Los gestos a la altura del pecho acompañan y clarifican el discurso dentro del encuadre.", answer: true },
+  { text: "Una leve sonrisa inicial predispone positivamente y reduce fricción.", answer: true },
+  { text: "Modular el ritmo de voz (acelerar, frenar y pausar) guía la atención y evita la monotonía.", answer: true },
+  { text: "Balancearse de forma constante frente a cámara transmite estabilidad y control.", answer: false },
+  { text: "La congruencia entre palabras, tono y gestos incrementa la credibilidad del mensaje.", answer: true },
+  { text: "Puedes mirar tus notas y volver al lente siempre que retomes el contacto en ideas clave.", answer: true },
+  { text: "Cruzar los brazos por tiempo prolongado suele comunicar apertura y escucha.", answer: false },
+  { text: "Una respiración baja (diafragmática) favorece una voz más estable y presencia.", answer: true },
+  { text: "El contacto visual efectivo consiste en mirar al lente en los puntos centrales.", answer: true },
+  { text: "Las pausas sirven para enfatizar conceptos y ordenar el discurso.", answer: true },
+  { text: "Los gestos deben ocurrir dentro del encuadre y a la altura del pecho para ser visibles.", answer: true },
+  { text: "El ritmo ideal es variable: se ajusta al contenido y se apoya en pausas en lo clave.", answer: true },
+]
+
+type Page3Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  imageSrc?: string
+  imageAlt?: string
+}
+
+type Page4Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  autoAdvanceDelayMs?: number
+}
+
+type Page5Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  instructions?: string[]
+  gridColumns?: number
+  gridGap?: number
+}
+
+const MAX_WIDTH = 1200
+
+const containerVar: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { staggerChildren: 0.06, ease: "easeOut" },
+  },
+}
+const itemVar: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { ease: "easeOut" } },
+}
+
+function Card({ children, glow, borderColor = "rgba(0,0,0,0.08)" }: { children: React.ReactNode; glow?: string; borderColor?: string }) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 22,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function Pill({ text, primaryColor, fs }: { text: string; primaryColor: string; fs: number }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex" as const,
+        alignItems: "center" as const,
+        padding: "8px 12px",
+        borderRadius: 999,
+        border: `1px solid ${primaryColor}33`,
+        background: "#fff",
+        marginRight: 8,
+        marginBottom: 8,
+        fontSize: fs * 0.95,
+        fontWeight: 600,
+      }}
+    >
+      {text}
+    </span>
+  )
+}
+
+function FlashCard({ title, body, primaryColor, fs }: { title?: string; body: string; primaryColor: string; fs: number }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.9 }}
+      style={{
+        borderRadius: 14,
+        border: `1px solid ${primaryColor}22`,
+        background: "#fff",
+        padding: 16,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+        cursor: "pointer",
+      }}
+    >
+      {title ? (
+        <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginBottom: 8 }}>
+          <div aria-hidden style={{ width: 14, height: 14, borderRadius: 4, background: primaryColor }} />
+          <strong style={{ fontSize: fs * 1.05 }}>{title}</strong>
+        </div>
+      ) : null}
+      <p style={{ margin: 0, fontSize: fs * 0.98, lineHeight: 1.45, opacity: 0.95 }}>{body}</p>
+    </motion.div>
+  )
+}
+
+function GridFlashcards({ children, gap = 16, columns = 1 }: { children: React.ReactNode; gap?: number; columns?: number }) {
+  return (
+    <div
+      style={{
+        display: "grid" as const,
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        gap,
+        alignItems: "stretch" as const,
+        width: "100%",
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Flashcard({
+  front,
+  back,
+  primaryColor,
+  fontSize,
+}: {
+  front: string
+  back: string
+  primaryColor: string
+  fontSize: number
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <motion.div
+      role="button"
+      onClick={() => setOpen((value) => !value)}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 280, damping: 20 }}
+      style={{
+        userSelect: "none",
+        cursor: "pointer",
+        borderRadius: 16,
+        border: `1px solid ${primaryColor}33`,
+        background: open ? `${primaryColor}0F` : "#fff",
+        padding: 18,
+        minHeight: 200,
+        boxShadow: "0 10px 28px rgba(0,0,0,0.06)",
+        display: "flex" as const,
+        flexDirection: "column" as const,
+        gap: 12,
+        transformOrigin: "center",
+        willChange: "transform",
+      }}
+    >
+      <strong
+        style={{
+          color: primaryColor,
+          display: "block" as const,
+          fontSize: fontSize * 1.1,
+          lineHeight: 1.2,
+        }}
+      >
+        {front}
+      </strong>
+
+      <p
+        style={{
+          margin: 0,
+          opacity: 0.95,
+          fontSize,
+          lineHeight: 1.55,
+          flex: 1,
+        }}
+      >
+        {open ? back : "Toca para ver"}
+      </p>
+    </motion.div>
+  )
+}
+
+function DraggableRow({ children, gap = 16 }: { children: React.ReactNode; gap?: number }) {
+  const viewportRef = useRef<HTMLDivElement | null>(null)
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    const measure = () => {
+      if (!viewportRef.current || !trackRef.current) return
+      const viewWidth = viewportRef.current.offsetWidth
+      const scrollWidth = trackRef.current.scrollWidth
+      setWidth(Math.max(0, scrollWidth - viewWidth))
+    }
+    measure()
+    window.addEventListener("resize", measure)
+    return () => window.removeEventListener("resize", measure)
+  }, [])
+
+  return (
+    <div ref={viewportRef} style={{ overflow: "hidden" as const, width: "100%" }}>
+      <motion.div
+        ref={trackRef}
+        drag="x"
+        dragConstraints={{ left: -width, right: 0 }}
+        whileTap={{ cursor: width > 0 ? "grabbing" : "default" }}
+        style={{
+          display: "flex" as const,
+          gap,
+          paddingBottom: 6,
+          cursor: width > 0 ? "grab" : "default",
+        }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  )
+}
+
+function MetricRow({
+  title,
+  items,
+  imageSrc,
+  primaryColor,
+  fs,
+  reverse = false,
+}: {
+  title: string
+  items: string[]
+  imageSrc?: string
+  primaryColor: string
+  fs: number
+  reverse?: boolean
+}) {
+  return (
+    <div
+      style={{
+        display: "flex" as const,
+        flexDirection: reverse ? "row-reverse" : "row",
+        gap: 16,
+        alignItems: "stretch" as const,
+        marginBottom: 16,
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          border: `1px solid ${primaryColor}33`,
+          borderRadius: 14,
+          padding: 16,
+          background: "#fff",
+        }}
+      >
+        <h4
+          style={{
+            margin: "0 0 10px 0",
+            color: primaryColor,
+            fontSize: fs * 1.1,
+          }}
+        >
+          {title}
+        </h4>
+        <ul
+          style={{
+            margin: 0,
+            paddingLeft: 22,
+            fontSize: fs,
+            lineHeight: 1.55,
+          }}
+        >
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      {imageSrc ? (
+        <div
+          style={{
+            flex: 1,
+            border: `1px solid ${primaryColor}33`,
+            borderRadius: 14,
+            overflow: "hidden" as const,
+            background: "#fff",
+            display: "flex" as const,
+            alignItems: "center" as const,
+            justifyContent: "center" as const,
+            padding: 8,
+          }}
+        >
+          <img
+            src={imageSrc}
+            alt={title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: 10,
+              aspectRatio: "16 / 9",
+              display: "block" as const,
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function QAItem({
+  question,
+  answer,
+  primaryColor,
+  fs,
+}: {
+  question: string
+  answer: string
+  primaryColor: string
+  fs: number
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <motion.button
+      type="button"
+      onClick={() => setOpen((value) => !value)}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+      style={{
+        textAlign: "left",
+        borderRadius: 14,
+        border: `1px solid ${primaryColor}33`,
+        background: open ? `${primaryColor}0F` : "#fff",
+        padding: 14,
+        cursor: "pointer",
+        display: "flex" as const,
+        flexDirection: "column" as const,
+        gap: 8,
+      }}
+    >
+      <strong style={{ color: primaryColor, fontSize: fs * 1.05 }}>{question}</strong>
+      <span style={{ opacity: 0.95, fontSize: fs }}>{open ? answer : "Toca para ver la respuesta"}</span>
+    </motion.button>
+  )
+}
+
+const DEFAULT_WHY =
+  "La forma de decir las cosas también enseña: una pausa a tiempo y mirar al lente hacen que el mensaje aterrice."
+const DEFAULT_CASE =
+  "Di tu frase clave mirando al lente, haz una pausa breve y luego muestra un ejemplo. La gente lo recordará mejor."
+const DEFAULT_GLOSSARY = [
+  "Mirada al lente: simula contacto visual en puntos clave.",
+  "Pausa: silencio corto para subrayar ideas.",
+  "Gestos visibles: manos dentro del encuadre para acompañar.",
+  "Respiración baja: estabiliza la voz y los nervios. Hábito: antes de grabar, dos respiraciones profundas y di tu primera frase.",
+]
+const DEFAULT_STRUCTURE_PILLS = ["Mirada", "Pausa", "Gestos", "Respiración"]
+const DEFAULT_SYLLABUS = [
+  "Por qué importa la comunicación no verbal.",
+  "Ejemplo práctico aplicable.",
+  "Hábitos clave: mirada, pausa, gestos, respiración.",
+  "Cómo integrarlos en tu guion.",
+]
+const DEFAULT_POINTS = [
+  "Mira al lente en la frase clave para simular contacto visual.",
+  "Usa pausas breves para subrayar ideas y dar aire.",
+  "Mantén las manos dentro del encuadre para acompañar el mensaje.",
+  "Respiración baja para voz estable y menos nervios.",
+  "Practica: dos respiraciones profundas antes de grabar y di tu primera frase.",
+]
+
+const DEFAULT_INSTRUCTIONS = [
+  "POSTURA: Describe tu postura ideal (erguida, hombros relajados, pies firmes, sin balanceos).",
+  "MANOS: Cómo las usarás (gestos a la altura del pecho para 3 ideas, sin tapar el rostro).",
+  "RITMO DE VOZ: Frases cortas, énfasis en palabras clave y variaciones de entonación.",
+  "PAUSAS: Pausas de 1–2 s tras cada idea clave; respira y evita muletillas.",
+  "MIRADA: Mira al lente para cerrar cada bloque; solo hojea notas brevemente.",
+  "PÁRRAFO FINAL: Redacta 4–6 líneas integrando postura, manos, ritmo, pausas y mirada.",
+  "PRIMER HÁBITO: Escribe qué practicarás primero (p. ej., “mirar al lente al final de cada frase”).",
+]
+
+function Page1({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 20,
+  title = "Sección 2",
+  topicTitle = "Comunicación no verbal frente a cámara",
+  heroImage = "",
+  layoutOption = "B",
+  baseFontSize = 18,
+  syllabus = DEFAULT_SYLLABUS,
+  summaryPoints = DEFAULT_POINTS,
+  caseText = DEFAULT_CASE,
+  whyItMatters = DEFAULT_WHY,
+  glossaryItems = DEFAULT_GLOSSARY,
+  structurePills = DEFAULT_STRUCTURE_PILLS,
+  enableExercise = false,
+}: Page1Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isLeft = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isLeft ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isLeft, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      maxWidth: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: 0,
+    }),
+    []
+  )
+
+  const [ctx, setCtx] = useState("")
+  const [act, setAct] = useState("")
+  const [res, setRes] = useState("")
+  const [, setApr] = useState("")
+  const [feedback, setFeedback] = useState<{ ok: boolean; msg: string } | null>(null)
+
+  const breatheAnim = { scale: [1, 1.1, 1] }
+  const breatheTransition = { duration: 1.4, ease: "easeInOut" as const, repeat: Infinity, repeatType: "mirror" as const }
+
+  const validateExercise = () => {
+    const checks = [
+      { value: ctx.trim(), label: "Frase clave" },
+      { value: act.trim(), label: "Pausa" },
+      { value: res.trim(), label: "Ejemplo" },
+    ]
+
+    for (const c of checks) {
+      if (!c.value) {
+        setFeedback({ ok: false, msg: `Falta "${c.label}".` })
+        return
+      }
+      if (c.value.length > 220) {
+        setFeedback({ ok: false, msg: `"${c.label}" es muy largo. Usa una frase (≤ 220 caracteres).` })
+        return
+      }
+    }
+
+    setFeedback({ ok: true, msg: "¡Excelente! Estructura lista para practicar." })
+  }
+
+  const resetExercise = () => {
+    setCtx("")
+    setAct("")
+    setRes("")
+    setApr("")
+    setFeedback(null)
+  }
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              animate={breatheAnim}
+              transition={breatheTransition}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 14 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div variants={itemVar} style={{ borderRadius: 16, overflow: "hidden" as const, margin: "10px 0 18px" }}>
+                  <img src={heroImage} alt="Sección 2" style={{ width: "100%", height: "auto", display: "block" }} />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginBottom: 10 }}>
+                    <div aria-hidden style={{ width: 18, height: 18, borderRadius: 6, background: primaryColor }} />
+                    <h3 style={{ margin: 0, fontSize: fs * 1.35 }}>¿Por qué importa?</h3>
+                  </div>
+                  <p style={{ margin: 0, opacity: 0.95 }}>{whyItMatters}</p>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.35 }}>Ejemplo práctico</h3>
+                  <blockquote
+                    style={{
+                      margin: 0,
+                      paddingLeft: 12,
+                      borderLeft: `4px solid ${primaryColor}`,
+                      opacity: 0.95,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {caseText}
+                  </blockquote>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.35 }}>Glosario y hábitos</h3>
+
+                  <div style={{ marginBottom: 12 }}>
+                    {structurePills.map((pill, index) => (
+                      <Pill key={index} text={pill} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {glossaryItems.map((item, index) => (
+                      <FlashCard key={index} body={item} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginBottom: 12 }}>
+                    <div aria-hidden style={{ width: 18, height: 18, borderRadius: 6, background: primaryColor }} />
+                    <h3 style={{ margin: 0, fontSize: fs * 1.35 }}>Temario de la sección</h3>
+                  </div>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {syllabus.map((item, index) => (
+                      <FlashCard key={index} title={`Tema ${index + 1}`} body={item} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.35 }}>Resumen rápido</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.95 }}>
+                    {summaryPoints.map((point, index) => (
+                      <li key={index} style={{ marginBottom: 6 }}>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+
+              {enableExercise ? (
+                <motion.div variants={itemVar}>
+                  <Card glow={primaryColor}>
+                    <h3 style={{ margin: "0 0 8px", fontSize: fs * 1.35 }}>Mini-ejercicio: guion de 3 líneas</h3>
+                    <p style={{ margin: "0 0 12px", opacity: 0.9 }}>
+                      Escribe 3 frases: <strong>frase clave mirando al lente</strong> → <strong>pausa breve</strong> → <strong>ejemplo visible</strong>.
+                    </p>
+
+                    <div
+                      style={{
+                        display: "grid" as const,
+                        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                        gap: 12,
+                      }}
+                    >
+                      <div>
+                        <label style={{ fontSize: fs * 0.9, opacity: 0.8 }}>Frase clave (mirada al lente)</label>
+                        <textarea
+                          value={ctx}
+                          onChange={(e) => setCtx(e.target.value)}
+                          placeholder="Ej.: Si miras al lente en tus puntos clave, la gente conecta contigo."
+                          rows={3}
+                          style={taStyle(primaryColor, fs)}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: fs * 0.9, opacity: 0.8 }}>Pausa (describe el silencio)</label>
+                        <textarea
+                          value={act}
+                          onChange={(e) => setAct(e.target.value)}
+                          placeholder="Ej.: (pausa de 1 segundo)"
+                          rows={3}
+                          style={taStyle(primaryColor, fs)}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: fs * 0.9, opacity: 0.8 }}>Ejemplo visible</label>
+                        <textarea
+                          value={res}
+                          onChange={(e) => setRes(e.target.value)}
+                          placeholder="Ej.: Muestra el objeto, dilo mirando al lente, pausa, refuerza."
+                          rows={3}
+                          style={taStyle(primaryColor, fs)}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex" as const, gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+                      <motion.button
+                        whileHover={{ scale: 0.9 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={validateExercise}
+                        style={btnStyle(primaryColor, fs)}
+                      >
+                        Validar estructura
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 0.9 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={resetExercise}
+                        style={outlineBtnStyle(primaryColor, fs)}
+                      >
+                        Limpiar
+                      </motion.button>
+                    </div>
+
+                    {feedback ? (
+                      <div
+                        style={{
+                          marginTop: 10,
+                          padding: "10px 12px",
+                          borderRadius: 10,
+                          background: feedback.ok ? "#e7f7ee" : "#fff3f0",
+                          border: `1px solid ${feedback.ok ? "#20b26b55" : "#ff724755"}`,
+                          color: feedback.ok ? "#10643a" : "#7a2e22",
+                          fontSize: fs * 0.95,
+                        }}
+                      >
+                        {feedback.msg}
+                      </div>
+                    ) : null}
+                  </Card>
+                </motion.div>
+              ) : null}
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page2({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 1",
+  topicTitle = "Pasos aplicables hoy + Checklist express + Q&A",
+  heroImage = "",
+  layoutOption = "B",
+  baseFontSize = 18,
+  awarenessImage = "",
+  considerationImage = "",
+  conversionImage = "",
+  postImage = "",
+}: Page2Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent)))
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div
+            style={{
+              display: "flex" as const,
+              alignItems: "center" as const,
+              gap: 12,
+            }}
+          >
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={`${brandName} logo`}
+                style={{
+                  height: 62,
+                  width: "auto",
+                  display: "block" as const,
+                }}
+              />
+            ) : (
+              <div
+                aria-hidden
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: primaryColor,
+                }}
+              />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div
+            style={{
+              display: "flex" as const,
+              alignItems: "center" as const,
+              gap: 12,
+              marginBottom: 14,
+            }}
+          >
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ flex: 1, display: "block" }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1
+                  style={{
+                    margin: 0,
+                    fontSize: fs * 2.3,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  {title}
+                </h1>
+                <p
+                  style={{
+                    margin: "8px 0 0",
+                    opacity: 0.9,
+                    fontSize: fs * 1.15,
+                  }}
+                >
+                  <span
+                    style={{
+                      color: primaryColor,
+                      fontWeight: 700,
+                    }}
+                  >
+                    ▌
+                  </span>{" "}
+                  {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div
+                  variants={itemVar}
+                  style={{
+                    borderRadius: 16,
+                    overflow: "hidden" as const,
+                    boxShadow: "0 18px 60px rgba(0,0,0,0.12)",
+                    marginTop: 16,
+                    marginBottom: 18,
+                  }}
+                >
+                  <img
+                    src={heroImage}
+                    alt="Sección 1"
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      display: "block" as const,
+                    }}
+                  />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 12 }}>
+                <Card glow={primaryColor}>
+                  <h3
+                    style={{
+                      margin: "0 0 16px 0",
+                      fontSize: fs * 1.3,
+                    }}
+                  >
+                    3) Pasos aplicables hoy & Checklist express
+                  </h3>
+
+                  <MetricRow
+                    title="Pasos aplicables hoy"
+                    items={[
+                      "Practica tu primera frase en voz alta.",
+                      "Sonríe levemente al inicio.",
+                      "Pausa después de cada idea clave.",
+                      "Evita balanceos; apoya ambos pies.",
+                      "Mira al lente para cerrar cada bloque.",
+                    ]}
+                    imageSrc={awarenessImage}
+                    primaryColor={primaryColor}
+                    fs={fs}
+                    reverse={false}
+                  />
+
+                  <MetricRow
+                    title="Checklist express"
+                    items={[
+                      "¿Se entiende mi primera frase?",
+                      "¿Sonreí al inicio?",
+                      "¿Hice pausas tras ideas clave?",
+                      "¿Me mantuve firme sin balanceos?",
+                      "¿Miré al lente al cerrar?",
+                    ]}
+                    imageSrc={considerationImage}
+                    primaryColor={primaryColor}
+                    fs={fs}
+                    reverse={true}
+                  />
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 20 }}>
+                <Card glow={primaryColor}>
+                  <h3
+                    style={{
+                      margin: "0 0 14px 0",
+                      fontSize: fs * 1.3,
+                    }}
+                  >
+                    4) Q&amp;A rápido
+                  </h3>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    <QAItem
+                      question="¿Qué hago con las manos?"
+                      answer="Úsalas para señalar 3 ideas, a la altura del pecho."
+                      primaryColor={primaryColor}
+                      fs={fs}
+                    />
+                    <QAItem
+                      question="¿Y si me trabo?"
+                      answer="Pausa, respira, mira al lente y retoma con tu frase clave."
+                      primaryColor={primaryColor}
+                      fs={fs}
+                    />
+                  </div>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page4({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 2 · Comunicación no verbal frente a la cámara",
+  topicTitle = "Mirada, postura, pausas, gestos y voz – Verdadero o Falso (15)",
+  layoutOption = "B",
+  baseFontSize = 18,
+  autoAdvanceDelayMs = 650,
+}: Page4Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const total = COMM_VF_QUESTIONS.length
+  const [idx, setIdx] = useState(0)
+  const [selection, setSelection] = useState<(boolean | null)[]>(() => Array(total).fill(null))
+  const [checked, setChecked] = useState<boolean[]>(() => Array(total).fill(false))
+  const [correct, setCorrect] = useState<boolean[]>(() => Array(total).fill(false))
+
+  const q = COMM_VF_QUESTIONS[idx]
+  const answeredCount = checked.filter(Boolean).length
+  const finished = answeredCount === total
+  const quizProgressPct = Math.round(((idx + 1) / total) * 100)
+
+  const selectAndAdvance = (value: boolean) => {
+    if (checked[idx]) return
+
+    setSelection((prev) => {
+      const next = [...prev]
+      next[idx] = value
+      return next
+    })
+
+    const isCorrect = value === q.answer
+    setChecked((prev) => {
+      const next = [...prev]
+      next[idx] = true
+      return next
+    })
+    setCorrect((prev) => {
+      const next = [...prev]
+      next[idx] = isCorrect
+      return next
+    })
+
+    setTimeout(() => {
+      setIdx((current) => Math.min(total - 1, current + 1))
+    }, autoAdvanceDelayMs)
+  }
+
+  const goPrev = () => setIdx((i) => Math.max(0, i - 1))
+  const goNext = () => setIdx((i) => Math.min(total - 1, i + 1))
+
+  const optStyle = (active: boolean, disabled: boolean): React.CSSProperties => ({
+    padding: "14px 16px",
+    borderRadius: 12,
+    border: `2px solid ${active ? primaryColor : "rgba(0,0,0,0.12)"}`,
+    background: active ? `${primaryColor}10` : "#fff",
+    fontWeight: 700,
+    fontSize: fs * 1.0,
+    letterSpacing: 0.2,
+    cursor: "pointer",
+    userSelect: "none",
+    textAlign: "left",
+    boxShadow: active ? "0 8px 24px rgba(0,0,0,0.06)" : "none",
+    willChange: "transform",
+    transformOrigin: "center",
+  })
+
+  const feedback =
+    checked[idx] && correct[idx]
+      ? "✅ ¡Correcto!"
+      : checked[idx] && !correct[idx]
+      ? `❌ Incorrecto. ${q.answer ? "Era VERDADERO." : "Era FALSO."}`
+      : null
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" }}>
+        <div
+          style={{
+            position: "sticky" as const,
+            top: 0,
+            zIndex: 50,
+            backdropFilter: "saturate(140%) blur(6px)",
+            background: "rgba(255,255,255,0.78)",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          <div style={{ ...container, paddingTop: 10, paddingBottom: 10 }}>
+            <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, flexWrap: "wrap" }}>
+              {logoSrc ? (
+                <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 32, width: "auto", display: "block" }} />
+              ) : (
+                <div aria-hidden style={{ width: 24, height: 24, borderRadius: 8, background: primaryColor }} />
+              )}
+              <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.08, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <header style={{ ...container, paddingTop: 16, paddingBottom: 8 }}>
+          <motion.div variants={containerVar} initial="hidden" animate="show">
+            <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+              <h1 style={{ margin: 0, fontSize: fs * 2.1, lineHeight: 1.15 }}>{title}</h1>
+              <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.1, whiteSpace: "pre-wrap" }}>
+                <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+              </p>
+            </motion.div>
+          </motion.div>
+        </header>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      justifyContent: "space-between" as const,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <strong style={{ fontSize: fs * 1.05 }}>
+                      Pregunta {Math.min(idx + 1, total)} / {total}
+                    </strong>
+                    <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10 }}>
+                      <div
+                        style={{
+                          width: 240,
+                          height: 12,
+                          background: "rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          overflow: "hidden" as const,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${quizProgressPct}%`,
+                            height: "100%",
+                            background: primaryColor,
+                            borderRadius: 999,
+                            transition: "width 220ms ease",
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: fs * 0.95, opacity: 0.75 }}>{quizProgressPct}%</span>
+                    </div>
+                  </div>
+
+                  <p
+                    style={{
+                      margin: "10px 0 16px",
+                      lineHeight: 1.55,
+                      fontSize: fs * 1.1,
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {q?.text ?? "—"}
+                  </p>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 12,
+                      marginBottom: 14,
+                    }}
+                  >
+                    {["VERDADERO", "FALSO"].map((option, index) => {
+                      const isSelected = selection[idx] === (index === 0)
+                      const isDisabled = !!checked[idx]
+                      return (
+                        <motion.div
+                          key={index}
+                          role="button"
+                          onClick={() => selectAndAdvance(index === 0 ? true : false)}
+                          style={optStyle(isSelected, isDisabled)}
+                          whileHover={isDisabled ? undefined : { scale: 0.98 }}
+                          whileTap={isDisabled ? undefined : { scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                        >
+                          {option}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  <div style={{ minHeight: 32, marginBottom: 14 }}>{feedback}</div>
+
+                  {finished ? (
+                    <div
+                      style={{
+                        marginTop: 18,
+                        padding: 16,
+                        border: `1px solid ${primaryColor}33`,
+                        borderRadius: 12,
+                        background: "#fff",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "space-between" as const,
+                      }}
+                    >
+                      <strong>Resultado:</strong>
+                      <span style={{ fontWeight: 800, color: primaryColor }}>
+                        {correct.filter(Boolean).length} / {total}
+                      </span>
+                    </div>
+                  ) : null}
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page3({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 2 · Comunicación no verbal frente a la cámara",
+  topicTitle = "Mirada, postura, pausas, gestos y voz – Verdadero o Falso (15)",
+  layoutOption = "B",
+  baseFontSize = 18,
+  imageSrc = "",
+  imageAlt = "Imagen de la sección",
+}: Page3Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+  const total = COMM_VF_QUESTIONS.length
+  const [idx, setIdx] = useState(0)
+  const [selection, setSelection] = useState<(boolean | null)[]>(() => Array(total).fill(null))
+  const [checked, setChecked] = useState<boolean[]>(() => Array(total).fill(false))
+  const [correct, setCorrect] = useState<boolean[]>(() => Array(total).fill(false))
+
+  const q = COMM_VF_QUESTIONS[idx]
+  const answeredCount = checked.filter(Boolean).length
+  const finished = answeredCount === total
+  const quizProgressPct = Math.round(((idx + 1) / total) * 100)
+
+  const selectAndAdvance = (value: boolean) => {
+    if (checked[idx]) return
+
+    setSelection((prev) => {
+      const next = [...prev]
+      next[idx] = value
+      return next
+    })
+
+    const isCorrect = value === q.answer
+    setChecked((prev) => {
+      const next = [...prev]
+      next[idx] = true
+      return next
+    })
+    setCorrect((prev) => {
+      const next = [...prev]
+      next[idx] = isCorrect
+      return next
+    })
+
+    setTimeout(() => {
+      setIdx((current) => Math.min(total - 1, current + 1))
+    }, 200)
+  }
+
+  const goPrev = () => setIdx((i) => Math.max(0, i - 1))
+  const goNext = () => setIdx((i) => Math.min(total - 1, i + 1))
+
+  const optStyle = (active: boolean, disabled: boolean): React.CSSProperties => ({
+    padding: "18px 22px",
+    borderRadius: 14,
+    border: `2px solid ${active ? primaryColor : "rgba(0,0,0,0.12)"}`,
+    background: active ? `${primaryColor}14` : "#fff",
+    fontWeight: 800,
+    fontSize: fs * 1.15,
+    letterSpacing: 0.2,
+    cursor: "pointer",
+    userSelect: "none",
+    textAlign: "center",
+    boxShadow: active ? "0 8px 24px rgba(0,0,0,0.06)" : "none",
+    willChange: "transform",
+    transformOrigin: "center",
+  })
+
+  const feedback =
+    checked[idx] && correct[idx]
+      ? "✅ ¡Correcto!"
+      : checked[idx] && !correct[idx]
+      ? `❌ Incorrecto. ${q.answer ? "Era VERDADERO." : "Era FALSO."}`
+      : null
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" }}>
+        <div
+          style={{
+            position: "sticky" as const,
+            top: 0,
+            zIndex: 50,
+            backdropFilter: "saturate(140%) blur(6px)",
+            background: "rgba(255,255,255,0.78)",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          <div style={{ ...container, paddingTop: 10, paddingBottom: 10 }}>
+            <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, flexWrap: "wrap" }}>
+              {logoSrc ? (
+                <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 32, width: "auto", display: "block" }} />
+              ) : (
+                <div aria-hidden style={{ width: 24, height: 24, borderRadius: 8, background: primaryColor }} />
+              )}
+              <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div style={{ flex: 1, height: 10, background: "rgba(0,0,0,0.08)", borderRadius: 999, overflow: "hidden" }}>
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.06, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <header style={{ ...container, paddingTop: 16, paddingBottom: 8 }}>
+          <motion.div variants={containerVar} initial="hidden" animate="show">
+            <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+              <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+              <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+              </p>
+            </motion.div>
+          </motion.div>
+        </header>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 24 }}>
+                <Card glow={primaryColor}>
+                  {imageSrc ? (
+                    <img
+                      src={imageSrc}
+                      alt={imageAlt || "Imagen de la sección"}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        display: "block" as const,
+                        borderRadius: 12,
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "center" as const,
+                        borderRadius: 12,
+                        border: "2px dashed rgba(0,0,0,0.12)",
+                        background: "#fff",
+                        padding: 16,
+                        textAlign: "center",
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 800, marginBottom: 6, color: primaryColor, fontSize: fs * 1.05 }}>
+                          Espacio para tu imagen
+                        </div>
+                        <div style={{ opacity: 0.7 }}>Sube una imagen desde tu UI.</div>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      justifyContent: "space-between" as const,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <strong style={{ fontSize: fs * 1.1 }}>
+                      Pregunta {idx + 1} / {total}
+                    </strong>
+                    <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10 }}>
+                      <div
+                        style={{
+                          width: 220,
+                          height: 12,
+                          background: "rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          overflow: "hidden" as const,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${quizProgressPct}%`,
+                            height: "100%",
+                            background: primaryColor,
+                            borderRadius: 999,
+                            transition: "width 220ms ease",
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: fs * 0.95, opacity: 0.75 }}>{quizProgressPct}%</span>
+                    </div>
+                  </div>
+
+                  <p style={{ margin: "10px 0 18px", lineHeight: 1.55, fontSize: fs * 1.15 }}>{q.text}</p>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 16,
+                      marginBottom: 16,
+                    }}
+                  >
+                    <motion.div
+                      role="button"
+                      onClick={() => selectAndAdvance(true)}
+                      style={optStyle(selection[idx] === true, !!checked[idx])}
+                      whileHover={{ scale: 0.9 }}
+                      whileTap={{ scale: 0.9 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                    >
+                      VERDADERO
+                    </motion.div>
+                    <motion.div
+                      role="button"
+                      onClick={() => selectAndAdvance(false)}
+                      style={optStyle(selection[idx] === false, !!checked[idx])}
+                      whileHover={{ scale: 0.9 }}
+                      whileTap={{ scale: 0.9 }}
+                      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                    >
+                      FALSO
+                    </motion.div>
+                  </div>
+
+                  <div style={{ marginBottom: 14 }}>{feedback}</div>
+
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      justifyContent: "space-between" as const,
+                      gap: 12,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div style={{ display: "flex" as const, gap: 12 }}>
+                      <motion.button
+                        type="button"
+                        onClick={goPrev}
+                        disabled={idx === 0}
+                        whileHover={idx === 0 ? {} : { y: -1 }}
+                        whileTap={idx === 0 ? {} : { scale: 0.95 }}
+                        style={{
+                          padding: "12px 16px",
+                          borderRadius: 12,
+                          background: "#fff",
+                          color: "#111",
+                          border: "1px solid rgba(0,0,0,0.12)",
+                          fontWeight: 800,
+                          cursor: idx === 0 ? "not-allowed" : "pointer",
+                          opacity: idx === 0 ? 0.6 : 1,
+                        }}
+                      >
+                        ← Anterior
+                      </motion.button>
+                      <motion.button
+                        type="button"
+                        onClick={goNext}
+                        disabled={idx === total - 1}
+                        whileHover={idx === total - 1 ? {} : { y: -1 }}
+                        whileTap={idx === total - 1 ? {} : { scale: 0.95 }}
+                        style={{
+                          padding: "12px 16px",
+                          borderRadius: 12,
+                          background: "#fff",
+                          color: "#111",
+                          border: "1px solid rgba(0,0,0,0.12)",
+                          fontWeight: 800,
+                          cursor: idx === total - 1 ? "not-allowed" : "pointer",
+                          opacity: idx === total - 1 ? 0.6 : 1,
+                        }}
+                      >
+                        Siguiente →
+                      </motion.button>
+                    </div>
+
+                    <span style={{ opacity: 0.8, fontSize: fs * 0.95 }}>{checked.filter(Boolean).length}/{total} respondidas</span>
+                  </div>
+
+                  {finished ? (
+                    <div
+                      style={{
+                        marginTop: 18,
+                        padding: 16,
+                        border: `1px solid ${primaryColor}33`,
+                        borderRadius: 12,
+                        background: "#fff",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "space-between" as const,
+                      }}
+                    >
+                      <strong>Resultado:</strong>
+                      <span style={{ fontWeight: 800, color: primaryColor }}>
+                        {correct.filter(Boolean).length} / {total}
+                      </span>
+                    </div>
+                  ) : null}
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page5({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 85,
+  title = "Sección 2",
+  topicTitle = "Mi lenguaje corporal frente a cámara",
+  layoutOption = "B",
+  baseFontSize = 18,
+  instructions = DEFAULT_INSTRUCTIONS,
+  gridColumns = 1,
+  gridGap = 16,
+}: Page5Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isLeft = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const list = (instructions?.length ? instructions : DEFAULT_INSTRUCTIONS).map((text, index) => ({
+    front: `Paso ${index + 1}`,
+    back: text,
+  }))
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isLeft ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isLeft, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isLeft ? "0" : "0 auto",
+    }),
+    [isLeft]
+  )
+
+  const breatheAnim = { scale: [1, 1.12, 1] }
+  const breatheTransition = { duration: 1.4, repeat: Infinity, ease: "easeInOut" } as const
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={breatheAnim}
+              transition={breatheTransition}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+                whiteSpace: "nowrap",
+              }}
+              aria-label="porcentaje de avance"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 14 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      gap: 10,
+                      fontWeight: 800,
+                      color: primaryColor,
+                      fontSize: fs * 1.05,
+                    }}
+                  >
+                    🎥 Escribe un párrafo sobre cómo te gustaría verte al explicar un tema (postura, manos, ritmo, pausas
+                    y mirada) y añade una frase sobre lo que practicarás primero.
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.3 }}>
+                    Actividad práctica: Mi lenguaje corporal frente a cámara
+                  </h3>
+                  <p style={{ margin: "0 0 16px 0", opacity: 0.8 }}>
+                    Toca cada tarjeta para ver la instrucción y redacta tu párrafo final.
+                  </p>
+
+                  <GridFlashcards gap={gridGap} columns={gridColumns}>
+                    {list.map((card, index) => (
+                      <Flashcard
+                        key={index}
+                        front={card.front}
+                        back={card.back}
+                        primaryColor={primaryColor}
+                        fontSize={fs}
+                      />
+                    ))}
+                  </GridFlashcards>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function taStyle(primaryColor: string, fs: number): React.CSSProperties {
+  return {
+    width: "100%",
+    borderRadius: 10,
+    border: `1px solid ${primaryColor}33`,
+    padding: 10,
+    fontSize: fs * 0.95,
+    lineHeight: 1.4,
+    boxSizing: "border-box" as const,
+    outline: "none",
+    background: "#fff",
+  }
+}
+
+function btnStyle(primaryColor: string, fs: number): React.CSSProperties {
+  return {
+    borderRadius: 999,
+    border: "none",
+    padding: "10px 16px",
+    fontWeight: 700,
+    fontSize: fs * 0.95,
+    background: primaryColor,
+    color: "#fff",
+    cursor: "pointer",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+  }
+}
+
+function outlineBtnStyle(primaryColor: string, fs: number): React.CSSProperties {
+  return {
+    borderRadius: 999,
+    border: `1px solid ${primaryColor}55`,
+    padding: "10px 16px",
+    fontWeight: 700,
+    fontSize: fs * 0.95,
+    background: "#fff",
+    color: primaryColor,
+    cursor: "pointer",
+  }
+}
+
+const M3S2_CONTENT: Record<number, React.ReactNode> = {
+  1: <Page1 />,
+  2: <Page2 />,
+  3: <Page3 />,
+  4: <Page4 />,
+  5: <Page5 />,
+}
+
+export default M3S2_CONTENT

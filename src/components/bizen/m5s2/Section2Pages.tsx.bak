@@ -1,0 +1,1862 @@
+/* eslint-disable @next/next/no-img-element */
+"use client"
+
+import * as React from "react"
+import { useMemo, useState } from "react"
+import { motion, Variants } from "framer-motion"
+
+type LayoutOption = "A" | "B"
+
+const MAX_WIDTH = 1200
+
+const containerVar: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { staggerChildren: 0.06, ease: "easeOut" } },
+}
+
+const itemVar: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { ease: "easeOut" } },
+}
+
+/* ───────────────────────── Page 1 ───────────────────────── */
+
+type Page1Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  introText?: string
+  bullets?: string[]
+  keyIdea?: string
+  awarenessItems?: string[]
+  considerationItems?: string[]
+  conversionItems?: string[]
+  commonFormats?: string[]
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+}
+
+function Page1Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 20,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function AccordionItemPage1({
+  title,
+  children,
+  primaryColor,
+  defaultOpen = false,
+  fontSize,
+}: {
+  title: string
+  children: React.ReactNode
+  primaryColor: string
+  defaultOpen?: boolean
+  fontSize: number
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  const [hover, setHover] = useState(false)
+
+  const bgHover = `${primaryColor}0D`
+  const brHover = `${primaryColor}44`
+
+  return (
+    <div
+      style={{
+        border: `1px solid ${hover ? brHover : "rgba(0,0,0,0.08)"}`,
+        borderRadius: 12,
+        overflow: "hidden" as const,
+        background: "#fff",
+        transition: "border-color .2s ease, box-shadow .2s ease",
+        boxShadow: hover ? "0 8px 24px rgba(0,0,0,0.08)" : "none",
+      }}
+    >
+      <motion.button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        onHoverStart={() => setHover(true)}
+        onHoverEnd={() => setHover(false)}
+        whileHover={{ scale: 0.9 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        style={{
+          width: "100%",
+          textAlign: "left",
+          padding: "14px 16px",
+          background: hover ? bgHover : "transparent",
+          border: 0,
+          display: "flex" as const,
+          alignItems: "center" as const,
+          justifyContent: "space-between" as const,
+          cursor: "pointer",
+          fontWeight: 700,
+          fontSize: fontSize * 1.05,
+          transition: "background-color .18s ease",
+        }}
+        aria-expanded={open}
+      >
+        <span style={{ textDecoration: hover ? "underline" : "none", textUnderlineOffset: 3 }}>{title}</span>
+
+        <motion.span
+          style={{ color: primaryColor, fontWeight: 900, display: "inline-block" as const, lineHeight: 1 }}
+          animate={{ rotate: open ? 90 : 0, scale: hover ? 1.05 : 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          {open ? "–" : "+"}
+        </motion.span>
+      </motion.button>
+
+      <div
+        style={{
+          maxHeight: open ? 600 : 0,
+          opacity: open ? 1 : 0,
+          transition:
+            "max-height .25s ease, opacity .25s ease, padding .25s ease, background-color .18s ease",
+          padding: open ? "0 16px 14px" : "0 16px 0",
+          fontSize,
+          background: open ? `${primaryColor}07` : "transparent",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function Page1({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 2",
+  topicTitle = "Mapa de relaciones y circuitos de valor",
+  introText = "El networking estratégico se planea. Un mapa de relaciones te ayuda a priorizar a quién acercarte y qué valor intercambiar. Piensa en tres capas: Pares, Puentes y Mentores.",
+  bullets = [
+    "Mapa por capas: Pares (recursos/feedback/oportunidades), Puentes (reclutadores, líderes, profes), Mentores (trayectoria y orientación).",
+    "Circuitos de valor: comparte recursos, oportunidades, feedback y conexiones; pide y ofrece con claridad y buen timing.",
+    "Prioriza por afinidad e impacto; relación sostenida > cantidad de contactos.",
+  ],
+  keyIdea = "Tu red no es cuántos contactos tienes, sino la calidad de los intercambios sostenidos en el tiempo.",
+  awarenessItems = [
+    "Pares: tu nivel/área; comparten recursos y feedback",
+    "Puentes: reclutadores, líderes de comunidades, profes",
+    "Mentores: profesionales con trayectoria que orientan",
+  ],
+  considerationItems = [
+    "Recursos útiles (docs, plantillas, referencias)",
+    "Feedback accionable y honesto",
+    "Oportunidades (vacantes, proyectos, eventos)",
+    "Conexiones (presentaciones cálidas y contextuales)",
+    "Aprendizajes sintetizados (resúmenes/casos)",
+  ],
+  conversionItems = [
+    "Lista 15–20 contactos divididos por capa",
+    "Prioriza 5 por afinidad/impacto",
+    "Define la próxima micro-acción por persona",
+    "Registra fecha, canal y objetivo de contacto",
+    "Programa seguimiento (1–4 semanas según caso)",
+  ],
+  commonFormats = [
+    "Reciprocidad y especificidad en las solicitudes",
+    "Evitar mensajes genéricos/masivos",
+    "Cuidar el timing y el contexto",
+    "Agradecer y cerrar cada intercambio con claridad",
+  ],
+  heroImage = "",
+  layoutOption = "A",
+  baseFontSize = 18,
+}: Page1Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      maxWidth: isA ? "none" : MAX_WIDTH,
+      padding: "20px",
+      boxSizing: "border-box" as const,
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 8 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.9,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+
+            <div style={{ flex: 1, height: 8, background: "rgba(0,0,0,0.08)", borderRadius: 999, overflow: "hidden" }}>
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 12 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.2, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "6px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div
+                  variants={itemVar}
+                  style={{
+                    borderRadius: 16,
+                    overflow: "hidden" as const,
+                    boxShadow: "0 18px 60px rgba(0,0,0,0.12)",
+                    marginTop: 14,
+                    marginBottom: 16,
+                  }}
+                >
+                  <img src={heroImage} alt="Sección 2" style={{ width: "100%", height: "auto", display: "block" }} />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Page1Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.355 }}>¿Por qué importa?</h3>
+                  <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{introText}</p>
+                </Page1Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Page1Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.355 }}>Piezas clave</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.95, fontSize: fs }}>
+                    {bullets.map((b, i) => (
+                      <li key={i} style={{ marginBottom: 6 }}>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </Page1Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <div
+                  style={{
+                    border: `1px solid ${primaryColor}44`,
+                    background: `${primaryColor}0F`,
+                    color: "#111",
+                    borderRadius: 16,
+                    padding: 16,
+                  }}
+                >
+                  <strong style={{ color: primaryColor, display: "block" as const, marginBottom: 6, fontSize: fs }}>
+                    Idea clave
+                  </strong>
+                  <p style={{ margin: 0, opacity: 0.95, fontSize: fs }}>{keyIdea}</p>
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Page1Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.355 }}>Glosario y reglas simples</h3>
+                  <div style={{ display: "grid" as const, gridTemplateColumns: "1fr", gap: 12 }}>
+                    <AccordionItemPage1
+                      title="Capas del mapa"
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                      defaultOpen
+                    >
+                      <p style={{ margin: 0, opacity: 0.95 }}>{awarenessItems.join(", ")}.</p>
+                    </AccordionItemPage1>
+
+                    <AccordionItemPage1
+                      title="Qué intercambiar (valor)"
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    >
+                      <p style={{ margin: 0, opacity: 0.95 }}>{considerationItems.join(", ")}.</p>
+                    </AccordionItemPage1>
+
+                    <AccordionItemPage1
+                      title="Acciones para construir el mapa"
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    >
+                      <p style={{ margin: 0, opacity: 0.95 }}>{conversionItems.join(", ")}.</p>
+                    </AccordionItemPage1>
+
+                    <AccordionItemPage1
+                      title="Principios para relaciones sanas"
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    >
+                      <p style={{ margin: 0, opacity: 0.95 }}>{commonFormats.join(", ")}.</p>
+                    </AccordionItemPage1>
+                  </div>
+                </Page1Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+/* ───────────────────────── Page 2 ───────────────────────── */
+
+type Page2Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+}
+
+function Page2Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 22,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function Page2Flashcard({
+  front,
+  back,
+  primaryColor,
+  fontSize,
+}: {
+  front: string
+  back: string
+  primaryColor: string
+  fontSize: number
+}) {
+  const [flipped, setFlipped] = useState(false)
+  return (
+    <motion.div
+      role="button"
+      onClick={() => setFlipped((v) => !v)}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      style={{
+        userSelect: "none",
+        cursor: "pointer",
+        borderRadius: 16,
+        border: `1px solid ${primaryColor}33`,
+        background: flipped ? `${primaryColor}0F` : "#fff",
+        padding: 18,
+        minWidth: 260,
+        minHeight: 190,
+        boxShadow: "0 10px 28px rgba(0,0,0,0.06)",
+        display: "flex" as const,
+        flexDirection: "column" as const,
+        gap: 12,
+        willChange: "transform",
+      }}
+    >
+      <strong
+        style={{
+          color: primaryColor,
+          display: "block" as const,
+          fontSize: fontSize * 1.1,
+          lineHeight: 1.2,
+        }}
+      >
+        {front}
+      </strong>
+
+      <p style={{ margin: 0, opacity: 0.95, fontSize, lineHeight: 1.5, flex: 1 }}>
+        {flipped ? back : "Toca para ver"}
+      </p>
+    </motion.div>
+  )
+}
+
+function Page2({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Sección 2",
+  topicTitle = "Mapa de relaciones y circuitos de valor",
+  heroImage = "",
+  layoutOption = "B",
+  baseFontSize = 18,
+}: Page2Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={`${brandName} logo`}
+                style={{ height: 62, width: "auto", display: "block" }}
+              />
+            ) : (
+              <div
+                aria-hidden
+                style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }}
+              />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+            >
+              {pct}%
+            </motion.span>
+
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ flex: 1, display: "block" }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div
+                  variants={itemVar}
+                  style={{
+                    borderRadius: 16,
+                    overflow: "hidden" as const,
+                    boxShadow: "0 18px 60px rgba(0,0,0,0.12)",
+                    marginTop: 16,
+                    marginBottom: 18,
+                  }}
+                >
+                  <img src={heroImage} alt="Sección 2" style={{ width: "100%", height: "auto" }} />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Page2Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.3 }}>Plan de acción por contacto</h3>
+
+                  <ol style={{ margin: 0, paddingLeft: 22, lineHeight: 1.55, fontSize: fs }}>
+                    <li>
+                      <strong>Objetivo:</strong> ¿para qué conectas?
+                    </li>
+                    <li>
+                      <strong>Valor que ofreces:</strong> recursos, síntesis, voluntariado o mini-solución.
+                    </li>
+                    <li>
+                      <strong>Siguiente paso:</strong> mensaje, reunión o envío.
+                    </li>
+                  </ol>
+
+                  <h4 style={{ margin: "12px 0 6px", color: primaryColor, fontSize: fs * 1.1 }}>Regla 3:1</h4>
+                  <p style={{ margin: 0, lineHeight: 1.55, fontSize: fs }}>
+                    Por cada solicitud, ofrece <strong>tres aportes</strong> a tu red (compartir oportunidades,
+                    sintetizar aprendizajes, conectar personas). Quien aporta de forma consistente se vuelve
+                    <em> referenciable</em>.
+                  </p>
+
+                  <h4 style={{ margin: "12px 0 6px", color: primaryColor, fontSize: fs * 1.1 }}>
+                    Frecuencia y cadencia
+                  </h4>
+                  <ul style={{ margin: 0, paddingLeft: 22, lineHeight: 1.55, fontSize: fs }}>
+                    <li>
+                      <strong>Inicio:</strong> 5–10 nuevos contactos/mes.
+                    </li>
+                    <li>
+                      <strong>Mantenimiento:</strong> 1–2 aportes/semana.
+                    </li>
+                    <li>
+                      <strong>Seguimiento:</strong> registra a quién escribiste y cuándo (fecha, canal, objetivo).
+                    </li>
+                  </ul>
+
+                  <h4 style={{ margin: "12px 0 6px", color: primaryColor, fontSize: fs * 1.1 }}>Cómo priorizar</h4>
+                  <ul style={{ margin: 0, paddingLeft: 22, lineHeight: 1.55, fontSize: fs }}>
+                    <li>
+                      <strong>Cercanía con tus metas:</strong> aborda primero tu <em>top 10</em>.
+                    </li>
+                    <li>
+                      <strong>Aprendizaje/colaboración:</strong> potencial real de crecer o crear juntos.
+                    </li>
+                    <li>
+                      <strong>Probabilidad de respuesta:</strong> comunidades activas y contactos con señales públicas
+                      de interacción.
+                    </li>
+                  </ul>
+                </Page2Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 20 }}>
+                <Page2Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 14px 0", fontSize: fs * 1.3 }}>Resumen táctil (toca para ver)</h3>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 16,
+                    }}
+                  >
+                    <Page2Flashcard
+                      front="Regla 3:1"
+                      back="Por cada solicitud, entrega 3 aportes: oportunidades, síntesis de aprendizajes o conectar personas."
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    />
+                    <Page2Flashcard
+                      front="Frecuencia y cadencia"
+                      back="Inicio: 5–10 nuevos/mes. Mantenimiento: 1–2 aportes/semana. Seguimiento: registra a quién escribiste y cuándo."
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    />
+                    <Page2Flashcard
+                      front="Cómo priorizar"
+                      back="Top 10 alineado a tus metas; luego alto potencial de colaboración y probabilidad de respuesta."
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    />
+                    <Page2Flashcard
+                      front="Siguiente paso claro"
+                      back="Mensaje breve con objetivo, reunión de 15–20 min o envío de recurso/mini-solución."
+                      primaryColor={primaryColor}
+                      fontSize={fs}
+                    />
+                  </div>
+                </Page2Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+/* ───────────────────────── Page 3 ───────────────────────── */
+
+type TFQuestion = { text: string; answer: boolean }
+
+const TF_QUESTIONS: TFQuestion[] = [
+  { text: "Un mapa de relaciones ayuda a priorizar a quién acercarte y con qué objetivo.", answer: true },
+  { text: "En networking, “pares” se refiere a jefes.", answer: false },
+  { text: "Los “puentes” suelen ser perfiles que conectan con muchas personas, como reclutadores o líderes.", answer: true },
+  { text: "Un mentor aporta orientación y validación basada en su experiencia.", answer: true },
+  { text: "En cada contacto conviene definir objetivo, valor que ofreces y siguiente paso.", answer: true },
+  { text: "La regla 3:1 significa pedir tres veces por cada vez que aportas.", answer: false },
+  { text: "Un circuito de valor es un intercambio donde ambas partes ganan y repiten.", answer: true },
+  { text: "La mejor forma de priorizar contactos es al azar o por número de seguidores.", answer: false },
+  { text: "Una buena cadencia de mantenimiento es 1–2 aportes por semana, breves y útiles.", answer: true },
+  { text: "Que te pidan consejos o te agradezcan recursos es señal de que aportas valor.", answer: true },
+  { text: "Registrar interacciones sirve para no duplicar mensajes y dar seguimiento a tiempo.", answer: true },
+  { text: "Un siguiente paso claro puede ser proponer una llamada breve con agenda.", answer: true },
+  { text: "Para empezar el mes, 5–10 contactos relevantes es una meta razonable.", answer: true },
+  { text: "“Referenciable” significa que otros te recomiendan por el valor que aportas.", answer: true },
+  { text: "La calidad de tu red se mide mejor por el número de seguidores que por la continuidad de los intercambios.", answer: false },
+]
+
+type Page3Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  imageSrc?: string
+  imageAlt?: string
+}
+
+function Page3Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 22,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function Page3({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Mapa de relaciones y networking — Quiz (15)",
+  topicTitle = "Priorizar contactos • Pares • Puentes • Mentoría • Cadencia • Circuito de valor",
+  layoutOption = "B",
+  baseFontSize = 18,
+  imageSrc = "",
+  imageAlt = "Imagen de la sección",
+}: Page3Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const total = TF_QUESTIONS.length
+  const [idx, setIdx] = useState(0)
+  const [selection, setSelection] = useState<(boolean | null)[]>(Array(total).fill(null))
+  const [checked, setChecked] = useState<boolean[]>(Array(total).fill(false))
+  const [correct, setCorrect] = useState<boolean[]>(Array(total).fill(false))
+  const [score, setScore] = useState(0)
+
+  const q = TF_QUESTIONS[idx]
+  const quizProgressPct = Math.round(((idx + 1) / total) * 100)
+  const answeredCount = checked.filter(Boolean).length
+  const finished = answeredCount === total
+
+  const optStyle = (active: boolean): React.CSSProperties => ({
+    padding: "18px 22px",
+    borderRadius: 14,
+    border: `2px solid ${active ? primaryColor : "rgba(0,0,0,0.12)"}`,
+    background: active ? `${primaryColor}14` : "#fff",
+    fontWeight: 800,
+    fontSize: fs * 1.05,
+    letterSpacing: 0.2,
+    cursor: "pointer",
+    userSelect: "none",
+    textAlign: "left",
+    boxShadow: active ? "0 8px 24px rgba(0,0,0,0.06)" : "none",
+    transformOrigin: "center",
+  })
+
+  const handleSelectTF = (value: boolean) => {
+    if (checked[idx]) return
+
+    const isCorrect = value === q.answer
+
+    setSelection((prev) => {
+      const next = [...prev]
+      next[idx] = value
+      return next
+    })
+    setChecked((prev) => {
+      const next = [...prev]
+      next[idx] = true
+      return next
+    })
+    setCorrect((prev) => {
+      const next = [...prev]
+      next[idx] = isCorrect
+      return next
+    })
+    if (isCorrect) setScore((s) => s + 1)
+
+    if (idx < total - 1) {
+      setTimeout(() => setIdx((i) => i + 1), 250)
+    }
+  }
+
+  const feedback =
+    checked[idx] && correct[idx] ? (
+      <div style={{ color: "#0a7f35", fontWeight: 700 }}>✅ ¡Correcto!</div>
+    ) : checked[idx] && !correct[idx] ? (
+      <div style={{ color: "#b00020", fontWeight: 700 }}>
+        ❌ Incorrecto. Era <strong>{q.answer ? "Verdadero" : "Falso"}</strong>
+      </div>
+    ) : null
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        {/* Header */}
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img
+                src={logoSrc}
+                alt={`${brandName} logo`}
+                style={{ height: 84, width: "auto", display: "block" }}
+              />
+            ) : (
+              <div
+                aria-hidden
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: primaryColor,
+                }}
+              />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        {/* Progreso */}
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div
+            style={{
+              display: "flex" as const,
+              alignItems: "center" as const,
+              gap: 12,
+              marginBottom: 14,
+            }}
+          >
+            <motion.span
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{
+                duration: 2.0,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                  initial={{ scaleY: 1 }}
+                  animate={{ scaleY: [1, 1.06, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                  style={{
+                    width: `${pct}%`,
+                    height: "100%",
+                    background: primaryColor,
+                    borderRadius: 999,
+                    transformOrigin: "center",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+        <section style={{ flex: 1, display: "block" }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              {/* Título + Tema */}
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+              <motion.div variants={itemVar} style={{ marginBottom: 24 }}>
+                <Page3Card glow={primaryColor}>
+                  {imageSrc ? (
+                    <img
+                      src={imageSrc}
+                      alt={imageAlt}
+                      style={{ width: "100%", height: "auto", display: "block" as const, borderRadius: 12, objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "center" as const,
+                        borderRadius: 12,
+                        border: "2px dashed rgba(0,0,0,0.12)",
+                        background: "#fff",
+                        padding: 16,
+                        textAlign: "center",
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 800, marginBottom: 6, color: primaryColor, fontSize: fs * 1.05 }}>
+                          Espacio para tu imagen
+                        </div>
+                        <div style={{ opacity: 0.7 }}>Pasa una URL en la prop <b>imageSrc</b>.</div>
+                      </div>
+                    </div>
+                  )}
+                </Page3Card>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Page3Card glow={primaryColor}>
+                  <div style={{ display: "flex" as const, alignItems: "center" as const, justifyContent: "space-between" as const, marginBottom: 14 }}>
+                    <strong style={{ fontSize: fs * 1.1 }}>
+                      Pregunta {idx + 1} / {total}
+                    </strong>
+                    <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10 }}>
+                      <div style={{ width: 220, height: 12, background: "rgba(0,0,0,0.08)", borderRadius: 999, overflow: "hidden" }}>
+                        <div
+                          style={{
+                            width: `${quizProgressPct}%`,
+                            height: "100%",
+                            background: primaryColor,
+                            borderRadius: 999,
+                            transition: "width 220ms ease",
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: fs * 0.95, opacity: 0.75 }}>{quizProgressPct}%</span>
+                    </div>
+                  </div>
+
+                  <p style={{ margin: "10px 0 18px", lineHeight: 1.55, fontSize: fs * 1.15 }}>{q.text}</p>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {[
+                      { label: "Verdadero", value: true },
+                      { label: "Falso", value: false },
+                    ].map((opt) => {
+                      const active = selection[idx] === opt.value
+                      return (
+                        <motion.div
+                          key={String(opt.value)}
+                          role="button"
+                          tabIndex={0}
+                          whileHover={{ scale: 0.9 }}
+                          whileTap={{ scale: 0.9 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                          onClick={() => handleSelectTF(opt.value)}
+                          style={optStyle(active)}
+                        >
+                          <div style={{ fontWeight: 900, marginBottom: 6 }}>{opt.label}</div>
+                          <div style={{ opacity: 0.85 }}>Selecciona esta opción</div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  <div style={{ minHeight: 28, display: "flex" as const, alignItems: "center" }}>{feedback}</div>
+
+                  {finished ? (
+                    <div
+                      style={{
+                        marginTop: 18,
+                        padding: 16,
+                        border: `1px solid ${primaryColor}33`,
+                        borderRadius: 12,
+                        background: "#fff",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "space-between" as const,
+                      }}
+                    >
+                      <strong>Resultado:</strong>
+                      <span style={{ fontWeight: 800, color: primaryColor }}>
+                        {score} / {total}
+                      </span>
+                    </div>
+                  ) : null}
+                </Page3Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+/* ───────────────────────── Page 4 ───────────────────────── */
+
+type MCQuestion = { text: string; options: string[]; correctIndex: number }
+
+const MC_QUESTIONS: MCQuestion[] = [
+  {
+    text: "Un mapa de relaciones sirve para...",
+    options: [
+      "Tener más seguidores",
+      "Priorizar a quién acercarte y con qué objetivo",
+      "Automatizar mensajes",
+      "Evitar hablar con gente",
+    ],
+    correctIndex: 1,
+  },
+  {
+    text: "“Pares” se refiere a...",
+    options: ["Jefes", "Personas de tu nivel/área que comparten recursos", "Clientes", "Familia"],
+    correctIndex: 1,
+  },
+  {
+    text: "Los “puentes” son...",
+    options: [
+      "Competidores",
+      "Perfiles que conectan con más personas (reclutadores, líderes)",
+      "Contactos pasivos",
+      "Bots",
+    ],
+    correctIndex: 1,
+  },
+  {
+    text: "Un mentor aporta...",
+    options: ["Likes", "Orientación y validación desde la experiencia", "Descuentos", "Publicidad"],
+    correctIndex: 1,
+  },
+  {
+    text: "En cada contacto conviene definir...",
+    options: ["Un regalo", "Objetivo, valor que ofreces y siguiente paso", "Un meme", "Un eslogan"],
+    correctIndex: 1,
+  },
+  {
+    text: "La regla 3:1 implica...",
+    options: [
+      "Pedir tres veces más de lo que das",
+      "Aportar tres veces por cada solicitud",
+      "Solo dar sin pedir",
+      "Enviar tres correos seguidos",
+    ],
+    correctIndex: 1,
+  },
+  {
+    text: "Un circuito de valor es...",
+    options: ["Un grupo de WhatsApp", "Intercambio donde ambas partes ganan y repiten", "Un CRM", "Un currículum"],
+    correctIndex: 1,
+  },
+  {
+    text: "La mejor forma de priorizar contactos es...",
+    options: [
+      "Al azar",
+      "Según metas, aprendizaje y probabilidad de respuesta",
+      "Por número de seguidores",
+      "Por cercanía física",
+    ],
+    correctIndex: 1,
+  },
+  {
+    text: "Cadencia recomendada de mantenimiento...",
+    options: ["Una vez al año", "1–2 aportes por semana (breves y útiles)", "Cada hora", "Solo cuando necesitas algo"],
+    correctIndex: 1,
+  },
+  {
+    text: "Una señal de que aportas valor es...",
+    options: ["Te dejan en visto", "Te piden consejos/referencias o te agradecen recursos", "Te bloquean", "No responden"],
+    correctIndex: 1,
+  },
+  {
+    text: "Registrar interacciones sirve para...",
+    options: ["Vender cursos", "No duplicar mensajes y dar seguimiento a tiempo", "Ganar likes", "Enviar spam"],
+    correctIndex: 1,
+  },
+  {
+    text: "Un ejemplo de “siguiente paso” es...",
+    options: ["Decir “saludos”", "Proponer una llamada breve con agenda", "Pedir dinero", "Enviar memes"],
+    correctIndex: 1,
+  },
+  {
+    text: "Para empezar el mes, una meta razonable es...",
+    options: ["100 contactos nuevos", "5–10 contactos relevantes", "0 contactos", "50 bots"],
+    correctIndex: 1,
+  },
+  {
+    text: "“Referenciable” significa...",
+    options: ["Viral", "Que otros te recomiendan por el valor que aportas", "Famoso", "Caro"],
+    correctIndex: 1,
+  },
+  {
+    text: "La calidad de tu red se mide mejor por...",
+    options: ["Cantidad de seguidores", "Calidad y continuidad de los intercambios", "Número de likes", "Cantidad de grupos"],
+    correctIndex: 1,
+  },
+]
+
+type Page4Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  autoAdvanceDelayMs?: number
+}
+
+function Page4Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 22,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function Page4({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 10,
+  title = "Quiz: Mapa de relaciones y networking",
+  topicTitle = "Mapa de relaciones • Pares • Puentes • Mentores • Circuito de valor",
+  layoutOption = "B",
+  baseFontSize = 18,
+  autoAdvanceDelayMs = 650,
+}: Page4Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      flexDirection: "column" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      minHeight: "100vh",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const total = MC_QUESTIONS.length
+  const [idx, setIdx] = useState(0)
+  const [selection, setSelection] = useState<(number | null)[]>(Array(total).fill(null))
+  const [checked, setChecked] = useState<boolean[]>(Array(total).fill(false))
+  const [correct, setCorrect] = useState<boolean[]>(Array(total).fill(false))
+  const [score, setScore] = useState(0)
+
+  const q = MC_QUESTIONS[idx]
+  const quizProgressPct = Math.round(((idx + 1) / total) * 100)
+  const answeredCount = checked.filter(Boolean).length
+  const finished = answeredCount === total
+
+  const optStyle = (active: boolean): React.CSSProperties => ({
+    padding: "14px 16px",
+    borderRadius: 12,
+    border: `2px solid ${active ? primaryColor : "rgba(0,0,0,0.12)"}`,
+    background: active ? `${primaryColor}10` : "#fff",
+    fontWeight: 700,
+    fontSize: fs * 1.0,
+    letterSpacing: 0.2,
+    cursor: "pointer",
+    userSelect: "none",
+    textAlign: "left",
+    boxShadow: active ? "0 8px 24px rgba(0,0,0,0.06)" : "none",
+    transformOrigin: "center",
+  })
+
+  const handleSelect = (optionIndex: number) => {
+    if (checked[idx]) return
+
+    setSelection((prev) => {
+      const next = [...prev]
+      next[idx] = optionIndex
+      return next
+    })
+
+    const isCorrect = optionIndex === q.correctIndex
+    setChecked((prev) => {
+      const next = [...prev]
+      next[idx] = true
+      return next
+    })
+    setCorrect((prev) => {
+      const next = [...prev]
+      next[idx] = isCorrect
+      return next
+    })
+    if (isCorrect) setScore((s) => s + 1)
+
+    if (idx < total - 1) {
+      setTimeout(() => setIdx((i) => (i < total - 1 ? i + 1 : i)), autoAdvanceDelayMs)
+    }
+  }
+
+  const feedback =
+    checked[idx] && correct[idx] ? (
+      <div style={{ color: "#0a7f35", fontWeight: 700 }}>✅ ¡Correcto!</div>
+    ) : checked[idx] && !correct[idx] ? (
+      <div style={{ color: "#b00020", fontWeight: 700 }}>
+        ❌ Incorrecto. Respuesta: <strong>{q.options[q.correctIndex]}</strong>
+      </div>
+    ) : null
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" as const, flex: 1 }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div style={{ flex: 1, height: 10, background: "rgba(0,0,0,0.08)", borderRadius: 999, overflow: "hidden" }}>
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.08, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.1, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.1, whiteSpace: "pre-wrap" }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Page4Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      justifyContent: "space-between" as const,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <strong style={{ fontSize: fs * 1.05 }}>
+                      Pregunta {Math.min(idx + 1, total)} / {total}
+                    </strong>
+                    <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10 }}>
+                      <div
+                        style={{
+                          width: 240,
+                          height: 12,
+                          background: "rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          overflow: "hidden" as const,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${quizProgressPct}%`,
+                            height: "100%",
+                            background: primaryColor,
+                            borderRadius: 999,
+                            transition: "width 220ms ease",
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: fs * 0.95, opacity: 0.75 }}>{quizProgressPct}%</span>
+                    </div>
+                  </div>
+
+                  <p style={{ margin: "10px 0 16px", lineHeight: 1.55, fontSize: fs * 1.1 }}>{q.text}</p>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 12,
+                      marginBottom: 14,
+                    }}
+                  >
+                    {q.options.map((opt, i) => {
+                      const active = selection[idx] === i
+                      const disabled = !!checked[idx]
+                      return (
+                        <motion.div
+                          key={opt}
+                          role="button"
+                          onClick={() => handleSelect(i)}
+                          style={optStyle(active)}
+                          aria-pressed={active}
+                          whileHover={disabled ? undefined : { scale: 0.98 }}
+                          whileTap={disabled ? undefined : { scale: 0.9 }}
+                          transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                        >
+                          {opt}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  <div style={{ minHeight: 28, marginBottom: 6 }}>{feedback}</div>
+
+                  {finished ? (
+                    <div
+                      style={{
+                        marginTop: 12,
+                        padding: 16,
+                        border: `1px solid ${primaryColor}33`,
+                        borderRadius: 12,
+                        background: "#fff",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "space-between" as const,
+                      }}
+                    >
+                      <strong>Resultado:</strong>
+                      <span style={{ fontWeight: 800, color: primaryColor }}>
+                        {score} / {total}
+                      </span>
+                    </div>
+                  ) : null}
+                </Page4Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+/* ───────────────────────── Page 5 ───────────────────────── */
+
+const DEFAULT_PAGE5_INSTRUCTIONS = [
+  "Lista 10 contactos o perfiles tipo distribuidos en 3 capas: Pares (recursos y feedback), Puentes (reclutadores, líderes, profes) y Mentores.",
+  "Anota 3 comunidades activas donde podrías participar (grupos, foros, capítulos locales).",
+  "Elige 1 posible mentor y escribe 1–2 razones por las que te gustaría aprender de esa persona.",
+  "Para cada uno de los 10 contactos, escribe por qué conectas y el siguiente paso (mensaje, reunión o envío).",
+  "Plantilla sugerida: “Nombre/Perfil — Conecto para [motivo]. Siguiente paso: [acción] (fecha).”.",
+]
+
+type Page5Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  instructions?: string[]
+  gridColumns?: number
+  gridGap?: number
+}
+
+function Page5Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 22,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function Page5GridFlashcards({
+  children,
+  gap = 16,
+  columns = 1,
+}: {
+  children: React.ReactNode
+  gap?: number
+  columns?: number
+}) {
+  return (
+    <div
+      style={{
+        display: "grid" as const,
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        gap,
+        alignItems: "stretch" as const,
+        width: "100%",
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Page5Flashcard({
+  front,
+  back,
+  primaryColor,
+  fontSize,
+}: {
+  front: string
+  back: string
+  primaryColor: string
+  fontSize: number
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <motion.div
+      role="button"
+      onClick={() => setOpen((v) => !v)}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 280, damping: 20 }}
+      style={{
+        userSelect: "none",
+        cursor: "pointer",
+        borderRadius: 16,
+        border: `1px solid ${primaryColor}33`,
+        background: open ? `${primaryColor}0F` : "#fff",
+        padding: 18,
+        minHeight: 200,
+        boxShadow: "0 10px 28px rgba(0,0,0,0.06)",
+        display: "flex" as const,
+        flexDirection: "column" as const,
+        gap: 12,
+        transformOrigin: "center",
+        willChange: "transform",
+      }}
+    >
+      <strong
+        style={{
+          color: primaryColor,
+          display: "block" as const,
+          fontSize: fontSize * 1.1,
+          lineHeight: 1.2,
+        }}
+      >
+        {front}
+      </strong>
+
+      <p
+        style={{
+          margin: 0,
+          opacity: 0.95,
+          fontSize: fontSize,
+          lineHeight: 1.55,
+          flex: 1,
+        }}
+      >
+        {open ? back : "Toca para ver"}
+      </p>
+    </motion.div>
+  )
+}
+
+function Page5({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 90,
+  title = "Sección 2",
+  topicTitle = "Actividad — Mapa 10–3–1",
+  layoutOption = "B",
+  baseFontSize = 18,
+  instructions = DEFAULT_PAGE5_INSTRUCTIONS,
+  gridColumns = 1,
+  gridGap = 16,
+}: Page5Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isLeft = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const list = (instructions.length ? instructions : DEFAULT_PAGE5_INSTRUCTIONS).map((t, i) => ({
+    front: `Paso ${i + 1}`,
+    back: t,
+  }))
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isLeft ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isLeft, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isLeft ? "0" : "0 auto",
+    }),
+    [isLeft]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.06, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 14 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Page5Card glow={primaryColor}>
+                  <p style={{ margin: 0, fontWeight: 800, color: primaryColor, fontSize: fs * 1.05 }}>
+                    Construye tu Mapa 10–3–1: pares, puentes y mentores. Para cada contacto, anota el porqué y el
+                    siguiente paso.
+                  </p>
+                </Page5Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Page5Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.3 }}>Mapa 10–3–1 (para libreta)</h3>
+                  <p style={{ margin: "0 0 16px 0", opacity: 0.8 }}>
+                    Toca cada tarjeta para ver la instrucción y completa tu mapa en la libreta.
+                  </p>
+
+                  <Page5GridFlashcards gap={gridGap} columns={gridColumns}>
+                    {list.map((c, i) => (
+                      <Page5Flashcard key={i} front={c.front} back={c.back} primaryColor={primaryColor} fontSize={fs} />
+                    ))}
+                  </Page5GridFlashcards>
+                </Page5Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+/* ───────────────────────── Export ───────────────────────── */
+
+const M5S2_CONTENT: Record<number, React.ReactNode> = {
+  1: <Page1 />,
+  2: <Page2 />,
+  3: <Page3 />,
+  4: <Page4 />,
+  5: <Page5 />,
+}
+
+export default M5S2_CONTENT

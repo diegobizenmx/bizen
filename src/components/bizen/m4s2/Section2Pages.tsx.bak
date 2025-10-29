@@ -1,0 +1,1741 @@
+/* eslint-disable @next/next/no-img-element */
+"use client"
+
+import * as React from "react"
+import { useMemo, useState } from "react"
+import { motion, Variants } from "framer-motion"
+
+type LayoutOption = "A" | "B"
+
+type Page1Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  syllabus?: string[]
+  summaryPoints?: string[]
+  caseText?: string
+  whyItMatters?: string
+  glossaryItems?: string[]
+  structurePills?: string[]
+  enableExercise?: boolean
+}
+
+type Page2Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  heroImage?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  awarenessImage?: string
+  considerationImage?: string
+  conversionImage?: string
+  postImage?: string
+}
+
+type Page3Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  imageSrc?: string
+  imageAlt?: string
+}
+
+type Page4Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  autoAdvanceDelayMs?: number
+}
+
+type Page5Props = {
+  brandName?: string
+  logoSrc?: string
+  primaryColor?: string
+  background?: string
+  progressPercent?: number
+  title?: string
+  topicTitle?: string
+  layoutOption?: LayoutOption
+  baseFontSize?: number
+  instructions?: string[]
+  gridColumns?: number
+  gridGap?: number
+}
+
+const DEFAULT_MC_QUESTIONS: { text: string; options: string[]; correctIndex: number }[] = [
+  { text: "Un buen ritmo logra...", options: ["Durar más", "Mantener la atención", "Ser confuso", "Tener muchos efectos"], correctIndex: 1 },
+  { text: "Partes largas y aburridas producen...", options: ["Más vistas", "Pérdida de atención", "Profesionalismo", "Mejor ritmo"], correctIndex: 1 },
+  { text: "Los subtítulos ayudan a...", options: ["Decorar", "Accesibilidad y retención", "Alargar", "Evitar compartir"], correctIndex: 1 },
+  { text: "Muchas personas ven sin sonido porque...", options: ["Están en lugares públicos", "El sonido no importa", "No saben activarlo", "Prefieren leer"], correctIndex: 0 },
+  { text: "Con los efectos, lo mejor es...", options: ["Usar muchos", "Usar pocos y con propósito", "No usar nunca", "Solo filtros"], correctIndex: 1 },
+  { text: "Lo que más conecta es...", options: ["Transiciones rápidas", "Historia clara y cercana", "Subtítulos automáticos", "Fondos coloridos"], correctIndex: 1 },
+  { text: "Un video saturado de efectos se percibe...", options: ["Profesional", "Desordenado y confuso", "Emocionante", "Clarísimo"], correctIndex: 1 },
+  { text: "La música sirve para...", options: ["Decorar", "Crear emoción y reforzar mensaje", "Reemplazar voz", "Alargar"], correctIndex: 1 },
+  { text: "Si el ritmo es muy lento...", options: ["Genera expectativa", "La audiencia pierde interés", "Aclara el mensaje", "Facilita compartir"], correctIndex: 1 },
+  { text: "Una edición limpia representa...", options: ["Transiciones exageradas", "Orden y claridad", "Filtros constantes", "Música ruidosa"], correctIndex: 1 },
+  { text: "Los subtítulos son clave para...", options: ["Añadir efectos", "Llegar a más personas", "Evitar edición", "Grabar más"], correctIndex: 1 },
+  { text: "Al final de un buen video debería...", options: ["Haber confusión", "Quedar incompleto", "Transmitir una emoción clara", "Durar indefinido"], correctIndex: 2 },
+  { text: "No conviene abusar de efectos porque...", options: ["Son caros", "Distraen del mensaje", "Son difíciles", "Alargan edición"], correctIndex: 1 },
+  { text: "Genera más impacto...", options: ["Duración larga", "Mensaje claro y directo", "Filtros constantes", "Música alta"], correctIndex: 1 },
+  { text: "El ritmo correcto mantiene...", options: ["Número de efectos", "Interés y atención", "Duración", "Confusión"], correctIndex: 1 },
+]
+
+const containerVar: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { staggerChildren: 0.06, ease: "easeOut" } },
+}
+
+const itemVar: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { ease: "easeOut" } },
+}
+
+function Card({
+  children,
+  glow,
+  borderColor = "rgba(0,0,0,0.08)",
+}: {
+  children: React.ReactNode
+  glow?: string
+  borderColor?: string
+}) {
+  return (
+    <div
+      style={{
+        position: "relative" as const,
+        borderRadius: 16,
+        padding: 22,
+        border: `1px solid ${borderColor}`,
+        background: "linear-gradient(180deg, #fff, #ffffffcc)",
+        backdropFilter: "blur(6px)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+        overflow: "hidden" as const,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute" as const,
+            inset: -120,
+            pointerEvents: "none",
+            background: `radial-gradient(600px 300px at 20% 0%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function Pill({ text, primaryColor, fs }: { text: string; primaryColor: string; fs: number }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex" as const,
+        alignItems: "center" as const,
+        padding: "8px 12px",
+        borderRadius: 999,
+        border: `1px solid ${primaryColor}33`,
+        background: "#fff",
+        marginRight: 8,
+        marginBottom: 8,
+        fontSize: fs * 0.95,
+        fontWeight: 600,
+      }}
+    >
+      {text}
+    </span>
+  )
+}
+
+function FlashCard({
+  title,
+  body,
+  primaryColor,
+  fs,
+}: {
+  title?: string
+  body: string
+  primaryColor: string
+  fs: number
+}) {
+  return (
+    <motion.div
+      whileHover={{ scale: 0.98 }}
+      whileTap={{ scale: 0.9 }}
+      style={{
+        borderRadius: 14,
+        border: `1px solid ${primaryColor}22`,
+        background: "#fff",
+        padding: 16,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+        cursor: "pointer",
+      }}
+    >
+      {title ? (
+        <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginBottom: 8 }}>
+          <div aria-hidden style={{ width: 14, height: 14, borderRadius: 4, background: primaryColor }} />
+          <strong style={{ fontSize: fs * 1.05 }}>{title}</strong>
+        </div>
+      ) : null}
+      <p style={{ margin: 0, fontSize: fs * 0.98, lineHeight: 1.45, opacity: 0.95 }}>{body}</p>
+    </motion.div>
+  )
+}
+
+function taStyle(primaryColor: string, fs: number): React.CSSProperties {
+  return {
+    width: "100%",
+    borderRadius: 10,
+    border: `1px solid ${primaryColor}33`,
+    padding: 10,
+    fontSize: fs * 0.95,
+    lineHeight: 1.4,
+    boxSizing: "border-box" as const,
+    outline: "none",
+    background: "#fff",
+  }
+}
+
+function MetricRow({
+  title,
+  items,
+  imageSrc,
+  primaryColor,
+  fs,
+  reverse = false,
+}: {
+  title: string
+  items: string[]
+  imageSrc?: string
+  primaryColor: string
+  fs: number
+  reverse?: boolean
+}) {
+  const hasImage = !!imageSrc
+  return (
+    <div
+      style={{
+        display: "flex" as const,
+        flexDirection: reverse ? "row-reverse" : "row",
+        gap: 16,
+        alignItems: "stretch" as const,
+        marginBottom: 16,
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          border: `1px solid ${primaryColor}33`,
+          borderRadius: 14,
+          padding: 16,
+          background: "#fff",
+        }}
+      >
+        <h4
+          style={{
+            margin: "0 0 10px 0",
+            color: primaryColor,
+            fontSize: fs * 1.1,
+          }}
+        >
+          {title}
+        </h4>
+        <ul
+          style={{
+            margin: 0,
+            paddingLeft: 22,
+            fontSize: fs,
+            lineHeight: 1.55,
+          }}
+        >
+          {items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      {hasImage ? (
+        <div
+          style={{
+            flex: 1,
+            border: `1px solid ${primaryColor}33`,
+            borderRadius: 14,
+            overflow: "hidden" as const,
+            background: "#fff",
+            display: "flex" as const,
+            alignItems: "center" as const,
+            justifyContent: "center" as const,
+            padding: 8,
+          }}
+        >
+          <img
+            src={imageSrc}
+            alt={title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: 10,
+              aspectRatio: "16 / 9",
+              display: "block" as const,
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function Keyword({ text, primaryColor, fs }: { text: string; primaryColor: string; fs: number }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex" as const,
+        alignItems: "center" as const,
+        padding: "6px 10px",
+        borderRadius: 999,
+        border: `1px solid ${primaryColor}33`,
+        background: "#fff",
+        marginRight: 8,
+        marginBottom: 8,
+        fontSize: fs * 0.95,
+        fontWeight: 600,
+      }}
+    >
+      {text}
+    </span>
+  )
+}
+
+function GridFlashcards({
+  children,
+  gap = 16,
+  columns = 1,
+}: {
+  children: React.ReactNode
+  gap?: number
+  columns?: number
+}) {
+  return (
+    <div
+      style={{
+        display: "grid" as const,
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        gap,
+        alignItems: "stretch" as const,
+        width: "100%",
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function InteractiveFlashcard({
+  front,
+  back,
+  primaryColor,
+  fontSize,
+}: {
+  front: string
+  back: string
+  primaryColor: string
+  fontSize: number
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <motion.div
+      role="button"
+      onClick={() => setOpen((value) => !value)}
+      whileHover={{ scale: 0.9 }}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 280, damping: 20 }}
+      style={{
+        userSelect: "none",
+        cursor: "pointer",
+        borderRadius: 16,
+        border: `1px solid ${primaryColor}33`,
+        background: open ? `${primaryColor}0F` : "#fff",
+        padding: 18,
+        minHeight: 200,
+        boxShadow: "0 10px 28px rgba(0,0,0,0.06)",
+        display: "flex" as const,
+        flexDirection: "column" as const,
+        gap: 12,
+        transformOrigin: "center",
+        willChange: "transform",
+      }}
+    >
+      <strong
+        style={{
+          color: primaryColor,
+          display: "block" as const,
+          fontSize: fontSize * 1.1,
+          lineHeight: 1.2,
+        }}
+      >
+        {front}
+      </strong>
+
+      <p
+        style={{
+          margin: 0,
+          opacity: 0.95,
+          fontSize,
+          lineHeight: 1.55,
+          flex: 1,
+        }}
+      >
+        {open ? back : "Toca para ver"}
+      </p>
+    </motion.div>
+  )
+}
+
+const KEYWORDS = [
+  "ritmo",
+  "gancho",
+  "estructura",
+  "subtítulos",
+  "accesibilidad",
+  "música",
+  "efectos con propósito",
+  "edición limpia",
+  "claridad",
+  "CTA",
+  "revisión final",
+]
+
+const VF_QUESTIONS: { text: string; answer: boolean }[] = [
+  { text: "La función de mirar a cámara es simular contacto visual para conectar con la audiencia.", answer: true },
+  { text: "Una postura neutra y abierta comunica seguridad y accesibilidad.", answer: true },
+  { text: "Las pausas breves ayudan a enfatizar ideas y a que el público procese el mensaje.", answer: true },
+  { text: "Los gestos a la altura del pecho acompañan y clarifican el discurso dentro del encuadre.", answer: true },
+  { text: "Una leve sonrisa inicial predispone positivamente y reduce fricción.", answer: true },
+  { text: "Modular el ritmo de voz (acelerar, frenar y pausar) guía la atención y evita la monotonía.", answer: true },
+  { text: "Balancearse de forma constante frente a cámara transmite estabilidad y control.", answer: false },
+  { text: "La congruencia entre palabras, tono y gestos incrementa la credibilidad del mensaje.", answer: true },
+  { text: "Puedes mirar tus notas y volver al lente siempre que retomes el contacto en ideas clave.", answer: true },
+  { text: "Cruzar los brazos por tiempo prolongado suele comunicar apertura y escucha.", answer: false },
+  { text: "Una respiración baja (diafragmática) favorece una voz más estable y presencia.", answer: true },
+  { text: "El contacto visual efectivo consiste en mirar al lente en los puntos centrales.", answer: true },
+  { text: "Las pausas sirven para enfatizar conceptos y ordenar el discurso.", answer: true },
+  { text: "Los gestos deben ocurrir dentro del encuadre y a la altura del pecho para ser visibles.", answer: true },
+  { text: "El ritmo ideal es variable: se ajusta al contenido y se apoya en pausas en lo clave.", answer: true },
+]
+
+const DEFAULT_ACTIVITY_INSTRUCTIONS = [
+  "Elige tres canciones y escribe qué tipo de video combinaría con cada una (tema, emoción y ritmo).",
+  "Toma una frase inspiradora y escribe cómo la pondrías como subtítulo para que destaque (tipografía, contraste, duración en pantalla).",
+  "Dibuja tres cuadros: inicio, desarrollo y final de una historia corta. Describe debajo qué sucede en cada uno.",
+]
+
+const DEFAULT_ACTIVITY_TITLES = ["4) Ritmo narrativo", "5) Subtítulos creativos", "6) Mini storyboard"]
+
+function Page1({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 20,
+  title = "Sección 2",
+  topicTitle = "Edición orientada a engagement — ritmo, subtítulos, historia",
+  heroImage = "",
+  layoutOption = "B",
+  baseFontSize = 18,
+  syllabus = [
+    "Ritmo que sostiene atención.",
+    "Estructura simple: gancho → desarrollo → CTA.",
+    "Subtítulos y rótulos estratégicos.",
+  ],
+  summaryPoints = [
+    "Corta silencios largos y repeticiones; alterna apoyos para dinamismo.",
+    "Sigue la secuencia: Gancho (promesa) → Desarrollo breve → CTA específico.",
+    "Añade subtítulos y rótulos para accesibilidad y énfasis, no para saturar.",
+  ],
+  caseText = "Abre con promesa clara, corta silencios y repeticiones, alterna apoyos (texto breve, b-roll, imágenes) y cierra con un CTA específico.",
+  whyItMatters = "Editar con intención sostiene atención y comprensión: si el ritmo cae, la audiencia abandona. Subtítulos y rótulos mejoran accesibilidad y refuerzan ideas.",
+  glossaryItems = [
+    "1) Ritmo que sostiene atención. Corta silencios largos, repeticiones y divagaciones. Alterna apoyos (texto breve, b-roll, imágenes) para mantener dinamismo. Si el ritmo cae, la audiencia abandona.",
+    "2) Estructura simple y clara. Gancho (promesa de valor), desarrollo (ejemplo o demostración breve) y cierre con CTA (qué acción específica quieres: comentar, guardar, probar).",
+    "3) Subtítulos y rótulos estratégicos. Muchas personas ven sin sonido; los subtítulos mejoran accesibilidad y retención. Usa rótulos para resaltar ideas clave, no para llenar la pantalla.",
+  ],
+  structurePills = ["Ritmo", "Estructura", "Subtítulos", "Rótulos"],
+  enableExercise = false,
+}: Page1Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isLeft = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isLeft ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isLeft, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isLeft ? "0" : "0 auto",
+    }),
+    [isLeft]
+  )
+
+  const [ctx, setCtx] = useState("")
+  const [act, setAct] = useState("")
+  const [res, setRes] = useState("")
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.08, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 14 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div variants={itemVar} style={{ borderRadius: 16, overflow: "hidden" as const, margin: "10px 0 18px" }}>
+                  <img src={heroImage} alt="Sección 2" style={{ width: "100%", height: "auto", display: "block" }} />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginBottom: 10 }}>
+                    <div aria-hidden style={{ width: 18, height: 18, borderRadius: 6, background: primaryColor }} />
+                    <h3 style={{ margin: 0, fontSize: fs * 1.35 }}>¿Por qué importa?</h3>
+                  </div>
+                  <p style={{ margin: 0, opacity: 0.95 }}>{whyItMatters}</p>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.35 }}>Lectura base (extendida)</h3>
+
+                  <div style={{ marginBottom: 12 }}>
+                    {structurePills.map((t, i) => (
+                      <Pill key={i} text={t} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {glossaryItems.map((s, i) => (
+                      <FlashCard key={i} body={s} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginBottom: 12 }}>
+                    <div aria-hidden style={{ width: 18, height: 18, borderRadius: 6, background: primaryColor }} />
+                    <h3 style={{ margin: 0, fontSize: fs * 1.35 }}>Temario de la sección</h3>
+                  </div>
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                    }}
+                  >
+                    {syllabus.map((s, i) => (
+                      <FlashCard key={i} title={`Tema ${i + 1}`} body={s} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.35 }}>Resumen rápido</h3>
+                  <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.95 }}>
+                    {summaryPoints.map((s, i) => (
+                      <li key={i} style={{ marginBottom: 6 }}>
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 10px 0", fontSize: fs * 1.35 }}>Caso en 3 líneas</h3>
+                  <p style={{ margin: 0, opacity: 0.95 }}>{caseText}</p>
+                </Card>
+              </motion.div>
+
+              {enableExercise ? (
+                <motion.div variants={itemVar}>
+                  <Card glow={primaryColor}>
+                    <h3 style={{ margin: "0 0 8px", fontSize: fs * 1.35 }}>Mini-ejercicio: guion de 3 líneas</h3>
+                    <p style={{ marginTop: 0, opacity: 0.9 }}>
+                      Escribe 3 frases que apliquen la lectura: <strong>gancho claro</strong> → <strong>desarrollo breve con apoyos</strong> → <strong>CTA específico</strong>.
+                    </p>
+
+                    <div
+                      style={{
+                        display: "grid" as const,
+                        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                        gap: 12,
+                        marginTop: 8,
+                      }}
+                    >
+                      <div>
+                        <label style={{ fontSize: fs * 0.9, opacity: 0.8 }}>Gancho (promesa de valor)</label>
+                        <textarea
+                          value={ctx}
+                          onChange={(e) => setCtx(e.target.value)}
+                          placeholder="Ej.: En 60s te muestro cómo cortar silencios y subir retención."
+                          rows={3}
+                          style={taStyle(primaryColor, fs)}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: fs * 0.9, opacity: 0.8 }}>Desarrollo (demo breve + apoyos)</label>
+                        <textarea
+                          value={act}
+                          onChange={(e) => setAct(e.target.value)}
+                          placeholder="Ej.: Corto repeticiones y alterno b-roll/rotulitos para mantener dinamismo."
+                          rows={3}
+                          style={taStyle(primaryColor, fs)}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: fs * 0.9, opacity: 0.8 }}>CTA (acción específica)</label>
+                        <textarea
+                          value={res}
+                          onChange={(e) => setRes(e.target.value)}
+                          placeholder="Ej.: Guarda este post y prueba a cortar 10 segundos de silencios hoy."
+                          rows={3}
+                          style={taStyle(primaryColor, fs)}
+                        />
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ) : null}
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page2({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 40,
+  title = "Sección 1",
+  topicTitle = "Música, efectos y edición final",
+  heroImage = "",
+  layoutOption = "B",
+  baseFontSize = 18,
+  awarenessImage = "",
+  considerationImage = "",
+  conversionImage = "",
+  postImage = "",
+}: Page2Props) {
+  void conversionImage
+  void postImage
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        'Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji',
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main
+        style={{
+          width: "100%",
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          flex: 1,
+          minHeight: "100vh",
+        }}
+      >
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.06, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section style={{ flex: 1, display: "block" }}>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1
+                  style={{
+                    margin: 0,
+                    fontSize: fs * 2.3,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  {title}
+                </h1>
+                <p
+                  style={{
+                    margin: "8px 0 0",
+                    opacity: 0.9,
+                    fontSize: fs * 1.15,
+                  }}
+                >
+                  <span
+                    style={{
+                      color: primaryColor,
+                      fontWeight: 700,
+                    }}
+                  >
+                    ▌
+                  </span>{" "}
+                  {topicTitle}
+                </p>
+              </motion.div>
+
+              {heroImage ? (
+                <motion.div
+                  variants={itemVar}
+                  style={{
+                    borderRadius: 16,
+                    overflow: "hidden" as const,
+                    boxShadow: "0 18px 60px rgba(0,0,0,0.12)",
+                    marginTop: 16,
+                    marginBottom: 18,
+                  }}
+                >
+                  <img
+                    src={heroImage}
+                    alt="Sección 1"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                  />
+                </motion.div>
+              ) : null}
+
+              <motion.div variants={itemVar} style={{ marginBottom: 12 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 16px 0", fontSize: fs * 1.3 }}>4) Música y efectos con propósito</h3>
+
+                  <MetricRow
+                    title="Cómo usar música y efectos"
+                    items={[
+                      "Elige música que cree emoción y refuerce el mensaje.",
+                      "Ajusta niveles para que la música no tape la voz.",
+                      "Usa efectos solo si apoyan la comprensión (señalar, transicionar, enfatizar).",
+                      "Evita el exceso: demasiado efecto = video desordenado y confuso.",
+                    ]}
+                    imageSrc={awarenessImage}
+                    primaryColor={primaryColor}
+                    fs={fs}
+                  />
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 12 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 16px 0", fontSize: fs * 1.3 }}>5) Edición limpia y revisión final</h3>
+
+                  <MetricRow
+                    title="Criterios de edición y control de calidad"
+                    items={[
+                      "Prioriza orden y claridad visual antes que adornos.",
+                      "Pregúntate: ¿se entiende la idea principal?",
+                      "Recorta lo que sobra: elimina repeticiones y ruido visual.",
+                      "Verifica qué emoción y qué acción (CTA) deja el video.",
+                    ]}
+                    imageSrc={considerationImage}
+                    primaryColor={primaryColor}
+                    fs={fs}
+                    reverse
+                  />
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 20 }}>
+                <Card glow={primaryColor}>
+                  <h4
+                    style={{
+                      margin: "0 0 10px 0",
+                      color: primaryColor,
+                      fontSize: fs * 1.05,
+                    }}
+                  >
+                    Keywords (referencia rápida)
+                  </h4>
+                  <div style={{ display: "flex" as const, flexWrap: "wrap" }}>
+                    {KEYWORDS.map((keyword, index) => (
+                      <Keyword key={index} text={keyword} primaryColor={primaryColor} fs={fs} />
+                    ))}
+                  </div>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page3({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 60,
+  title = "Sección 2 · Comunicación no verbal frente a la cámara",
+  topicTitle = "Mirada, postura, pausas, gestos y voz – Verdadero o Falso (15)",
+  layoutOption = "B",
+  baseFontSize = 18,
+  imageSrc = "",
+  imageAlt = "Imagen de la sección",
+}: Page3Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isA = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isA ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isA, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isA ? "0" : "0 auto",
+    }),
+    [isA]
+  )
+
+  const total = VF_QUESTIONS.length
+  const [idx, setIdx] = useState(0)
+  const [selection, setSelection] = useState<(boolean | null)[]>(() => Array(total).fill(null))
+  const [checked, setChecked] = useState<boolean[]>(() => Array(total).fill(false))
+  const [correct, setCorrect] = useState<boolean[]>(() => Array(total).fill(false))
+  const [score, setScore] = useState(0)
+
+  const q = VF_QUESTIONS[idx]
+  const quizProgressPct = Math.round(((idx + 1) / total) * 100)
+  const answeredCount = checked.filter(Boolean).length
+  const finished = answeredCount === total
+
+  const selectAndAdvance = (value: boolean) => {
+    if (checked[idx]) return
+    const isCorrect = value === q.answer
+
+    setSelection((prev) => {
+      const next = [...prev]
+      next[idx] = value
+      return next
+    })
+    setChecked((prev) => {
+      const next = [...prev]
+      next[idx] = true
+      return next
+    })
+    setCorrect((prev) => {
+      const next = [...prev]
+      next[idx] = isCorrect
+      return next
+    })
+    if (isCorrect) setScore((value) => value + 1)
+
+    setTimeout(() => setIdx((value) => Math.min(total - 1, value + 1)), 220)
+  }
+
+  const optStyle = (active: boolean): React.CSSProperties => ({
+    padding: "18px 22px",
+    borderRadius: 14,
+    border: `2px solid ${active ? primaryColor : "rgba(0,0,0,0.12)"}`,
+    background: active ? `${primaryColor}14` : "#fff",
+    fontWeight: 800,
+    fontSize: fs * 1.15,
+    letterSpacing: 0.2,
+    cursor: "pointer",
+    userSelect: "none",
+    textAlign: "center",
+    boxShadow: active ? "0 8px 24px rgba(0,0,0,0.06)" : "none",
+    transformOrigin: "center",
+  })
+
+  const feedback =
+    checked[idx] && correct[idx]
+      ? "✅ ¡Correcto!"
+      : checked[idx] && !correct[idx]
+      ? `❌ Incorrecto. ${q.answer ? "Era VERDADERO." : "Era FALSO."}`
+      : null
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" }}>
+        <div
+          style={{
+            position: "sticky" as const,
+            top: 0,
+            zIndex: 50,
+            backdropFilter: "saturate(140%) blur(6px)",
+            background: "rgba(255,255,255,0.78)",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          <div style={{ ...container, paddingTop: 10, paddingBottom: 10 }}>
+            <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+              {logoSrc ? (
+                <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 32, width: "auto", display: "block" }} />
+              ) : (
+                <div aria-hidden style={{ width: 24, height: 24, borderRadius: 8, background: primaryColor }} />
+              )}
+              <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+            </div>
+
+            <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, marginTop: 10 }}>
+              <motion.span
+                initial={{ scale: 1 }}
+                animate={{ scale: [1, 1.12, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  display: "inline-flex" as const,
+                  alignItems: "center" as const,
+                  gap: 8,
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  background: `${primaryColor}14`,
+                  color: primaryColor,
+                  fontWeight: 800,
+                  whiteSpace: "nowrap",
+                }}
+                aria-label="porcentaje de avance"
+              >
+                {pct}%
+              </motion.span>
+
+              <div
+                aria-hidden
+                style={{
+                  flex: 1,
+                  height: 10,
+                  background: "rgba(0,0,0,0.08)",
+                  borderRadius: 999,
+                  overflow: "hidden" as const,
+                }}
+              >
+                <div
+                  style={{
+                    width: `${pct}%`,
+                    height: "100%",
+                    background: primaryColor,
+                    borderRadius: 999,
+                    transition: "width 220ms ease",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <header style={{ ...container, paddingTop: 16, paddingBottom: 8 }}>
+          <motion.div variants={containerVar} initial="hidden" animate="show">
+            <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+              <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+              <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+              </p>
+            </motion.div>
+          </motion.div>
+        </header>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 24 }}>
+                <Card glow={primaryColor}>
+                  {imageSrc ? (
+                    <img
+                      src={imageSrc}
+                      alt={imageAlt || "Imagen de la sección"}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        display: "block" as const,
+                        borderRadius: 12,
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "center" as const,
+                        borderRadius: 12,
+                        border: "2px dashed rgba(0,0,0,0.12)",
+                        background: "#fff",
+                        padding: 16,
+                        textAlign: "center",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontWeight: 800,
+                            marginBottom: 6,
+                            color: primaryColor,
+                            fontSize: fs * 1.05,
+                          }}
+                        >
+                          Espacio para tu imagen
+                        </div>
+                        <div style={{ opacity: 0.7 }}>Sube una imagen desde tu UI.</div>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      justifyContent: "space-between" as const,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <strong style={{ fontSize: fs * 1.1 }}>
+                      Pregunta {idx + 1} / {total}
+                    </strong>
+                    <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10 }}>
+                      <div
+                        style={{
+                          width: 220,
+                          height: 12,
+                          background: "rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          overflow: "hidden" as const,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${quizProgressPct}%`,
+                            height: "100%",
+                            background: primaryColor,
+                            borderRadius: 999,
+                            transition: "width 220ms ease",
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: fs * 0.95, opacity: 0.75 }}>{quizProgressPct}%</span>
+                    </div>
+                  </div>
+
+                  <p style={{ margin: "10px 0 18px", lineHeight: 1.55, fontSize: fs * 1.15 }}>{q.text}</p>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                      gap: 12,
+                      marginBottom: 16,
+                    }}
+                  >
+                    {[{ label: "VERDADERO", value: true }, { label: "FALSO", value: false }].map((opt) => {
+                      const active = selection[idx] === opt.value
+                      const disabled = !!checked[idx]
+                      return (
+                        <motion.div
+                          key={String(opt.value)}
+                          role="button"
+                          onClick={() => (!disabled ? selectAndAdvance(opt.value) : undefined)}
+                          style={optStyle(active)}
+                          whileHover={disabled ? undefined : { scale: 0.9 }}
+                          whileTap={disabled ? undefined : { scale: 0.9 }}
+                          transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                        >
+                          {opt.label}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  <div style={{ marginBottom: 14, minHeight: 24 }}>{feedback}</div>
+
+                  {finished ? (
+                    <div
+                      style={{
+                        marginTop: 18,
+                        padding: 16,
+                        border: `1px solid ${primaryColor}33`,
+                        borderRadius: 12,
+                        background: "#fff",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "space-between" as const,
+                      }}
+                    >
+                      <strong>Resultado:</strong>
+                      <span style={{ fontWeight: 800, color: primaryColor }}>
+                        {score} / {total}
+                      </span>
+                    </div>
+                  ) : null}
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page4({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 80,
+  title = "Sección 2",
+  topicTitle = "Edición orientada a engagement — ritmo, subtítulos, historia (15 preguntas)",
+  layoutOption = "B",
+  baseFontSize = 18,
+  autoAdvanceDelayMs = 650,
+}: Page4Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isLeft = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const wrapper: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      minHeight: "100vh",
+      display: "flex" as const,
+      flexDirection: "column" as const,
+      justifyContent: isLeft ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isLeft, fs]
+  )
+
+  const container: React.CSSProperties = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isLeft ? "0" : "0 auto",
+    }),
+    [isLeft]
+  )
+
+  const total = DEFAULT_MC_QUESTIONS.length
+  const [idx, setIdx] = useState(0)
+  const [selection, setSelection] = useState<(number | null)[]>(() => Array(total).fill(null))
+  const [checked, setChecked] = useState<boolean[]>(() => Array(total).fill(false))
+  const [correct, setCorrect] = useState<boolean[]>(() => Array(total).fill(false))
+  const [score, setScore] = useState(0)
+
+  const q = DEFAULT_MC_QUESTIONS[idx] ?? null
+  const quizProgressPct = Math.round(((idx + 1) / total) * 100)
+  const answeredCount = checked.filter(Boolean).length
+  const finished = answeredCount === total
+
+  const optStyle = (active: boolean): React.CSSProperties => ({
+    padding: "14px 16px",
+    borderRadius: 12,
+    border: `2px solid ${active ? primaryColor : "rgba(0,0,0,0.12)"}`,
+    background: active ? `${primaryColor}10` : "#fff",
+    fontWeight: 700,
+    fontSize: fs * 1.0,
+    letterSpacing: 0.2,
+    cursor: "pointer",
+    userSelect: "none",
+    textAlign: "left",
+    boxShadow: active ? "0 8px 24px rgba(0,0,0,0.06)" : "none",
+    transformOrigin: "center",
+  })
+
+  const handleSelect = (optionIndex: number) => {
+    if (!q || checked[idx]) return
+
+    setSelection((prev) => {
+      const next = [...prev]
+      next[idx] = optionIndex
+      return next
+    })
+
+    const isCorrect = optionIndex === q.correctIndex
+    setChecked((prev) => {
+      const next = [...prev]
+      next[idx] = true
+      return next
+    })
+    setCorrect((prev) => {
+      const next = [...prev]
+      next[idx] = isCorrect
+      return next
+    })
+    if (isCorrect) setScore((value) => value + 1)
+
+    setTimeout(() => {
+      setIdx((value) => (value < total - 1 ? value + 1 : value))
+    }, autoAdvanceDelayMs)
+  }
+
+  const feedback =
+    q && checked[idx] && correct[idx]
+      ? "✅ ¡Correcto!"
+      : q && checked[idx] && !correct[idx]
+      ? `❌ Incorrecto. Respuesta: ${q.options[q.correctIndex]}`
+      : null
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" as const, flex: 1 }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                gap: 8,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 700,
+                fontSize: fs * 0.95,
+              }}
+              aria-label="porcentaje de avance del curso"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <motion.div
+                initial={{ scaleY: 1 }}
+                animate={{ scaleY: [1, 1.08, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transformOrigin: "center",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.1, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.1, whiteSpace: "pre-wrap" }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar}>
+                <Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      justifyContent: "space-between" as const,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <strong style={{ fontSize: fs * 1.05 }}>
+                      Pregunta {Math.min(idx + 1, total)} / {total}
+                    </strong>
+                    <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 10 }}>
+                      <div
+                        style={{
+                          width: 240,
+                          height: 12,
+                          background: "rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          overflow: "hidden" as const,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${quizProgressPct}%`,
+                            height: "100%",
+                            background: primaryColor,
+                            borderRadius: 999,
+                            transition: "width 220ms ease",
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: fs * 0.95, opacity: 0.75 }}>{quizProgressPct}%</span>
+                    </div>
+                  </div>
+
+                  <p
+                    style={{
+                      margin: "10px 0 16px",
+                      lineHeight: 1.55,
+                      fontSize: fs * 1.1,
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {q ? q.text : "—"}
+                  </p>
+
+                  <div
+                    style={{
+                      display: "grid" as const,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 12,
+                      marginBottom: 14,
+                    }}
+                  >
+                    {(q?.options ?? []).map((option, index) => {
+                      const isSelected = selection[idx] === index
+                      const disabled = !!checked[idx]
+                      return (
+                        <motion.div
+                          key={index}
+                          role="button"
+                          onClick={() => handleSelect(index)}
+                          style={optStyle(isSelected)}
+                          whileHover={disabled ? undefined : { scale: 0.98 }}
+                          whileTap={disabled ? undefined : { scale: 0.9 }}
+                          transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                        >
+                          {option}
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+
+                  <div style={{ minHeight: 28, marginBottom: 10 }}>{feedback}</div>
+
+                  {finished ? (
+                    <div
+                      style={{
+                        marginTop: 12,
+                        padding: 16,
+                        border: `1px solid ${primaryColor}33`,
+                        borderRadius: 12,
+                        background: "#fff",
+                        display: "flex" as const,
+                        alignItems: "center" as const,
+                        justifyContent: "space-between" as const,
+                      }}
+                    >
+                      <strong>Resultado:</strong>
+                      <span style={{ fontWeight: 800, color: primaryColor }}>
+                        {score} / {total}
+                      </span>
+                    </div>
+                  ) : null}
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Page5({
+  brandName = "BIZEN",
+  logoSrc = "/bizen-mondragonlogo.png",
+  primaryColor = "#0F62FE",
+  background = "linear-gradient(180deg, #FFFFFF, #F8FAFF)",
+  progressPercent = 100,
+  title = "Sección 2",
+  topicTitle = "Actividades (para libreta): ritmo, subtítulos y storyboard",
+  layoutOption = "B",
+  baseFontSize = 18,
+  instructions = DEFAULT_ACTIVITY_INSTRUCTIONS,
+  gridColumns = 1,
+  gridGap = 16,
+}: Page5Props) {
+  const fs = Math.max(12, baseFontSize || 18)
+  const isLeft = layoutOption === "A"
+  const pct = Math.max(0, Math.min(100, Math.round(progressPercent || 0)))
+
+  const baseList = (instructions?.length ? instructions : DEFAULT_ACTIVITY_INSTRUCTIONS).map((text, index) => ({
+    front: DEFAULT_ACTIVITY_TITLES[index] ?? `Actividad ${index + 1}`,
+    back: text,
+  }))
+
+  const wrapper = useMemo(
+    () => ({
+      width: "100%",
+      display: "flex" as const,
+      justifyContent: isLeft ? "flex-start" : "center",
+      background,
+      color: "#111",
+      fontFamily:
+        "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji",
+      fontSize: fs,
+    }),
+    [background, isLeft, fs]
+  )
+
+  const container = useMemo(
+    () => ({
+      width: "100%",
+      padding: "clamp(16px, 3vw, 32px)",
+      boxSizing: "border-box" as const,
+      margin: isLeft ? "0" : "0 auto",
+    }),
+    [isLeft]
+  )
+
+  return (
+    <div style={wrapper}>
+      <main style={{ width: "100%", display: "block" }}>
+        <header style={{ ...container, paddingTop: 12, paddingBottom: 8 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12 }}>
+            {logoSrc ? (
+              <img src={logoSrc} alt={`${brandName} logo`} style={{ height: 62, width: "auto", display: "block" }} />
+            ) : (
+              <div aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: primaryColor }} />
+            )}
+            <strong style={{ letterSpacing: 0.2, fontWeight: 800, color: primaryColor, fontSize: fs * 1.35 }}>{brandName}</strong>
+          </div>
+        </header>
+
+        <div style={{ ...container, paddingTop: 0 }}>
+          <div style={{ display: "flex" as const, alignItems: "center" as const, gap: 12, marginBottom: 14 }}>
+            <motion.span
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.12, 1] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                display: "inline-flex" as const,
+                alignItems: "center" as const,
+                padding: "8px 12px",
+                borderRadius: 999,
+                background: `${primaryColor}14`,
+                color: primaryColor,
+                fontWeight: 800,
+                fontSize: fs * 0.95,
+                whiteSpace: "nowrap",
+              }}
+              aria-label="porcentaje de avance"
+            >
+              {pct}%
+            </motion.span>
+            <div
+              style={{
+                flex: 1,
+                height: 10,
+                background: "rgba(0,0,0,0.08)",
+                borderRadius: 999,
+                overflow: "hidden" as const,
+              }}
+            >
+              <div
+                style={{
+                  width: `${pct}%`,
+                  height: "100%",
+                  background: primaryColor,
+                  borderRadius: 999,
+                  transition: "width 220ms ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <div style={{ ...container }}>
+            <motion.div variants={containerVar} initial="hidden" animate="show">
+              <motion.div variants={itemVar} style={{ marginBottom: 14 }}>
+                <h1 style={{ margin: 0, fontSize: fs * 2.3, lineHeight: 1.15 }}>{title}</h1>
+                <p style={{ margin: "8px 0 0", opacity: 0.9, fontSize: fs * 1.15 }}>
+                  <span style={{ color: primaryColor, fontWeight: 700 }}>▌</span> {topicTitle}
+                </p>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 18 }}>
+                <Card glow={primaryColor}>
+                  <div
+                    style={{
+                      display: "flex" as const,
+                      alignItems: "center" as const,
+                      gap: 10,
+                      fontWeight: 800,
+                      color: primaryColor,
+                      fontSize: fs * 1.05,
+                    }}
+                  >
+                    ✍️ Completa estas actividades en tu libreta y mantén las respuestas simples y accionables.
+                  </div>
+                </Card>
+              </motion.div>
+
+              <motion.div variants={itemVar} style={{ marginBottom: 16 }}>
+                <Card glow={primaryColor}>
+                  <h3 style={{ margin: "0 0 12px 0", fontSize: fs * 1.3 }}>Actividades (para libreta)</h3>
+                  <p style={{ margin: "0 0 16px 0", opacity: 0.8 }}>
+                    Toca cada tarjeta para ver la instrucción y completa la actividad.
+                  </p>
+
+                  <GridFlashcards gap={gridGap} columns={gridColumns}>
+                    {baseList.map((item, index) => (
+                      <InteractiveFlashcard
+                        key={index}
+                        front={item.front}
+                        back={item.back}
+                        primaryColor={primaryColor}
+                        fontSize={fs}
+                      />
+                    ))}
+                  </GridFlashcards>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
+function Placeholder({ label }: { label: string }) {
+  return (
+    <div style={{ padding: 40, textAlign: "center" }}>
+      <h2 style={{ margin: 0 }}>{label}</h2>
+      <p style={{ marginTop: 8, color: "#64748b" }}>Contenido en construcción.</p>
+    </div>
+  )
+}
+
+const M4S2_CONTENT: Record<number, React.ReactNode> = {
+  1: <Page1 />,
+  2: <Page2 />,
+  3: <Page3 />,
+  4: <Page4 />,
+  5: <Page5 />,
+}
+
+export default M4S2_CONTENT
