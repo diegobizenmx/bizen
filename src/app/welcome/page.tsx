@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
-import { supabase } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import BillyWelcomeScreen from "@/components/BillyWelcomeScreen"
 
 export default function WelcomePage() {
@@ -36,6 +36,7 @@ export default function WelcomePage() {
       
       // Wait a bit for session to be available
       const checkSession = async () => {
+        const supabase = createClient()
         console.log('[WELCOME] 🔍 Checking session...')
         const { data: { session } } = await supabase.auth.getSession()
         console.log('[WELCOME] Session exists:', !!session)
