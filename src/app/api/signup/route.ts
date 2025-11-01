@@ -59,18 +59,20 @@ export async function POST(request: NextRequest) {
 
 
     // BIZEN-only project - use standard Supabase env vars
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL_BIZEN || process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY_BIZEN || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     
     // Validate environment variables exist
     if (!supabaseUrl || !supabaseKey) {
       console.error('❌ Missing Supabase environment variables:', {
-        hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        hasUrlGeneric: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasKeyGeneric: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        hasUrlBizen: !!process.env.NEXT_PUBLIC_SUPABASE_URL_BIZEN,
+        hasKeyBizen: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY_BIZEN
       })
       return NextResponse.json({
         success: false,
-        message: 'Error de configuración: faltan las claves de Supabase. Verifica NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en .env.local',
+        message: 'Error de configuración: faltan las claves de Supabase. Verifica NEXT_PUBLIC_SUPABASE_URL(_BIZEN) y NEXT_PUBLIC_SUPABASE_ANON_KEY(_BIZEN) en las variables de entorno.',
         errors: {}
       }, { status: 500 })
     }
