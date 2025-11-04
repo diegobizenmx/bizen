@@ -55,7 +55,7 @@ export default function WelcomePage() {
           gap: "10px",
           textDecoration: "none",
         }}>
-          <Image src="/bsmx-logo.png" alt="BIZEN logo" width={40} height={40} priority />
+          <Image src="/bizen-logo.png" alt="BIZEN logo" width={40} height={40} priority />
           <strong style={{ fontSize: "20px", color: "#0B71FE", fontFamily: 'Montserrat, sans-serif' }}>BIZEN</strong>
         </Link>
 

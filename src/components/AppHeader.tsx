@@ -33,16 +33,16 @@ export default function AppHeader() {
           }}
           onClick={() => router.push("/courses")}
         >
-          <Image 
-            src="/bsmx-logo.png" 
-            alt="BIZEN Logo" 
-            width={40} 
-            height={40}
-            priority
-            style={{
-              objectFit: "contain"
-            }}
-          />
+        <Image 
+          src="/bizen-logo.png" 
+          alt="BIZEN Logo" 
+          width={40} 
+          height={40}
+          priority
+          style={{
+            objectFit: "contain"
+          }}
+        />
           <span style={{
             fontSize: "clamp(20px, 4vw, 24px)",
             fontWeight: 800,

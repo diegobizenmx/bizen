@@ -16,7 +16,7 @@ declare global {
 }
 
 const brandName = "BIZEN"
-const logoSrc = "/bsmx-logo.png"
+const logoSrc = "/bizen-logo.png"
 const bgColor = "#FFFFFF"
 const linkColor = "#0E4A7A"
 

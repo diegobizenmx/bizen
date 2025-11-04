@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 
 const brandName = "BIZEN"
-const logoSrc = "/bsmx-logo.png"
+const logoSrc = "/bizen-logo.png"
 const bgColor = "#FFFFFF"
 const linkColor = "#0E4A7A"
 const supportEmail = "soporte@bizen.mx"
