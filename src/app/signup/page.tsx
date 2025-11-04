@@ -4,7 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { createClientMicrocred } from "@/lib/supabase/client-microcred"
 
 declare global {
   interface Window {
@@ -111,7 +111,7 @@ export default function BIZENSignupPage() {
   const [showPass, setShowPass] = React.useState(false)
   const [recaptchaLoaded, setRecaptchaLoaded] = React.useState(false)
   const router = useRouter()
-  const supabase = createClient()
+  const supabase = createClientMicrocred()
 
   React.useEffect(() => {
     const script = document.createElement('script')

@@ -5,7 +5,7 @@ import { Suspense } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { createClientMicrocred } from "@/lib/supabase/client-microcred"
 
 const brandName = "BIZEN"
 const logoSrc = "/bizen-logo.png"
@@ -100,7 +100,7 @@ function Divider({ label = "o" }: { label?: string }) {
 
 function BIZENLoginContent() {
   const router = useRouter()
-  const supabase = createClient()
+  const supabase = createClientMicrocred()
   const [loading, setLoading] = React.useState(false)
   const [message, setMessage] = React.useState<string | null>(null)
   const [email, setEmail] = React.useState("")
