@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server-microcred'
+import { createSupabaseServerMicrocred } from '@/lib/supabase/server-microcred'
 import { cookies } from 'next/headers'
 
 // GET /api/assignments - Get assignments (for students: their assignments; for teachers: all)

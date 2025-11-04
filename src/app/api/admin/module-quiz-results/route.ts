@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
 import { createSupabaseAdmin } from "@/lib/supabase/admin"
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 
 // List of admin emails - only these users can access the dashboard
 const ADMIN_EMAILS = [

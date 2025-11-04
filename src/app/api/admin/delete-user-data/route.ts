@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 
 // List of admin emails
 const ADMIN_EMAILS = [

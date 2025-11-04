@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server-microcred'
+import { createSupabaseServerMicrocred } from '@/lib/supabase/server-microcred'
 import { cookies } from 'next/headers'
 
 // GET /api/enrollments - Get user's enrollments
