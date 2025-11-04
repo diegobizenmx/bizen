@@ -54,9 +54,9 @@ export async function GET(request: Request) {
       // Password reset flow
       return NextResponse.redirect(`${origin}/reset-password?verified=true`);
     } else {
-      // Email verification successful - redirect to welcome page
+      // Email verification successful - redirect to dashboard
       // Add cache-busting parameter to force client-side refresh
-      return NextResponse.redirect(`${origin}/welcome?verified=true&t=${Date.now()}`);
+      return NextResponse.redirect(`${origin}/dashboard?verified=true&t=${Date.now()}`);
     }
   } catch (error) {
     console.error('Unexpected error in auth callback:', error);

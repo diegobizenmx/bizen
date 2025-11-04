@@ -10,192 +10,283 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User section completion tracking
-model UserSectionCompletion {
-  userId      String   @map("user_id")
-  moduleId    Int      @map("module_id")
-  sectionNumber Int    @map("section_number")
-  createdAt   DateTime? @map("created_at") @default(now())
-  
-  @@id([userId, moduleId, sectionNumber])
-  @@map("user_section_completion")
+// ========================================
+// SCHOOLS & LICENSING
+// ========================================
+
+model School {
+  id           String   @id @default(cuid())
+  name         String
+  region       String?
+  contactEmail String   @map("contact_email")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  licenses      License[]
+  profiles      Profile[]
+  schoolCourses SchoolCourse[]
+
+  @@map("schools")
 }
 
-// User module progress tracking
-model UserModuleProgress {
-  userId         String   @map("user_id")
-  moduleId       Int      @map("module_id")
-  unlockedSection Int     @map("unlocked_section") @default(1)
-  completed      Boolean  @default(false)
-  updatedAt      DateTime @map("updated_at") @default(now()) @updatedAt
-  
-  @@id([userId, moduleId])
-  @@map("user_module_progress")
+model License {
+  id        String   @id @default(cuid())
+  schoolId  String   @map("school_id")
+  plan      String // "monthly" | "annual"
+  seats     Int
+  status    String // "active" | "expired" | "paused"
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@map("licenses")
 }
 
-// Progress tracking (referenced in dashboard)
-model Progress {
-  userId      String   @map("user_id")
-  sectionId   String   @map("section_id")
-  status      String
-  percent     Int
-  completedAt DateTime? @map("completed_at")
-  
-  @@id([userId, sectionId], name: "userId_sectionId")
-  @@map("progress")
+// ========================================
+// USERS & PROFILES
+// ========================================
+
+// Profile extends Supabase auth.users
+model Profile {
+  userId    String   @id @map("user_id") // FK to auth.users.id
+  fullName  String   @map("full_name")
+  role      String // "student" | "teacher" | "school_admin"
+  schoolId  String?  @map("school_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  school       School?       @relation(fields: [schoolId], references: [id])
+  enrollments  Enrollment[]
+  progress     Progress[]
+  attempts     Attempt[]
+  submissions  Submission[]
+  certificates Certificate[]
+
+  @@map("profiles")
 }
 
-// File uploads for Module 6
-model FileUpload {
-  id          String   @id @default(cuid())
-  userId      String   @map("user_id")
-  userName    String?  @map("user_name")
-  userEmail   String?  @map("user_email")
-  originalName String  @map("original_name")
-  filename    String
-  title       String?
-  notes       String?
-  size        Int
-  type        String
-  path        String
-  uploadedAt  DateTime @map("uploaded_at") @default(now())
-  
-  @@map("file_uploads")
-}
+// ========================================
+// COURSES & CURRICULUM
+// ========================================
 
-// Course information
 model Course {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(cuid())
   title       String
   description String?
-  level       String
-  duration    String
-  image       String?
-  url         String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  modules     Module[]
-  
+  level       String // "Beginner" | "Intermediate" | "Advanced"
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  units         Unit[]
+  enrollments   Enrollment[]
+  certificates  Certificate[]
+  schoolCourses SchoolCourse[]
+
   @@map("courses")
 }
 
-// Module information
-model Module {
-  id          Int      @id @default(autoincrement())
-  courseId    Int      @map("course_id")
-  title       String
-  description String?
-  gradeLevel  Int      @map("grade_level")
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  sections    Section[]
-  
-  @@map("modules")
+model SchoolCourse {
+  schoolId  String  @map("school_id")
+  courseId  String  @map("course_id")
+  isEnabled Boolean @default(true) @map("is_enabled")
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([schoolId, courseId])
+  @@map("school_courses")
 }
 
-// Section information
-model Section {
-  id          Int      @id @default(autoincrement())
-  moduleId    Int      @map("module_id")
-  title       String
-  description String?
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  
-  @@map("sections")
+model Unit {
+  id        String   @id @default(cuid())
+  courseId  String   @map("course_id")
+  title     String
+  order     Int
+  isLocked  Boolean  @default(false) @map("is_locked")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons       Lesson[]
+  assignments   Assignment[]
+  prerequisites Prerequisite[] @relation("RequiresUnit")
+  unlocks       Prerequisite[] @relation("UnlocksUnit")
+
+  @@map("units")
 }
 
-// Page visit tracking - tracks every page a user views
-model PageVisit {
-  id          Int      @id @default(autoincrement())
+model Lesson {
+  id          String   @id @default(cuid())
+  unitId      String   @map("unit_id")
+  title       String
+  contentType String   @map("content_type") // "video" | "reading" | "exercise"
+  order       Int
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  unit             Unit              @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  quizzes          Quiz[]
+  progress         Progress[]
+  lessonObjectives LessonObjective[]
+
+  @@map("lessons")
+}
+
+model Quiz {
+  id          String   @id @default(cuid())
+  lessonId    String   @map("lesson_id")
+  title       String
+  passScore   Int      @map("pass_score")
+  totalPoints Int      @map("total_points")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  lesson    Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions Question[]
+  attempts  Attempt[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id     String @id @default(cuid())
+  quizId String @map("quiz_id")
+  type   String // "mcq" | "truefalse" | "short"
+  prompt String
+  order  Int
+
+  quiz    Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  options Option[]
+
+  @@map("questions")
+}
+
+model Option {
+  id         String  @id @default(cuid())
+  questionId String  @map("question_id")
+  text       String
+  isCorrect  Boolean @map("is_correct")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("options")
+}
+
+model Objective {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  level       String // "unit" | "lesson"
+
+  lessonObjectives LessonObjective[]
+
+  @@map("objectives")
+}
+
+model LessonObjective {
+  lessonId    String @map("lesson_id")
+  objectiveId String @map("objective_id")
+
+  lesson    Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  objective Objective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+
+  @@id([lessonId, objectiveId])
+  @@map("lesson_objectives")
+}
+
+model Prerequisite {
+  id             String @id @default(cuid())
+  unitId         String @map("unit_id") // unit to unlock
+  requiresUnitId String @map("requires_unit_id") // prerequisite unit
+  minScore       Int    @map("min_score") // e.g., 70
+
+  unit         Unit @relation("UnlocksUnit", fields: [unitId], references: [id], onDelete: Cascade)
+  requiresUnit Unit @relation("RequiresUnit", fields: [requiresUnitId], references: [id], onDelete: Cascade)
+
+  @@map("prerequisites")
+}
+
+model Assignment {
+  id        String    @id @default(cuid())
+  unitId    String    @map("unit_id")
+  title     String
+  type      String // "file" | "link" | "text"
+  dueAt     DateTime? @map("due_at")
+  points    Int
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  unit        Unit         @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+
+  @@map("assignments")
+}
+
+model Submission {
+  id           String   @id @default(cuid())
+  assignmentId String   @map("assignment_id")
+  userId       String   @map("user_id")
+  url          String? // or text content
+  status       String // "submitted" | "graded"
+  score        Int?
+  submittedAt  DateTime @default(now()) @map("submitted_at")
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user       Profile    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("submissions")
+}
+
+// ========================================
+// STUDENT PROGRESS
+// ========================================
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  courseId   String   @map("course_id")
+  enrolledAt DateTime @default(now()) @map("enrolled_at")
+
+  user   Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Progress {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  lessonId    String    @map("lesson_id")
+  percent     Int       @default(0)
+  completedAt DateTime? @map("completed_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  user   Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  lesson Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("progress")
+}
+
+model Attempt {
+  id          String   @id @default(cuid())
   userId      String   @map("user_id")
-  moduleId    Int      @map("module_id")
-  sectionId   Int      @map("section_id")
-  pageNumber  Int      @map("page_number")
-  visitedAt   DateTime @default(now()) @map("visited_at")
-  
-  @@index([userId, moduleId, sectionId])
-  @@map("page_visits")
+  quizId      String   @map("quiz_id")
+  score       Int
+  completedAt DateTime @default(now()) @map("completed_at")
+
+  user Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  quiz Quiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@map("attempts")
 }
 
-// Quiz attempt tracking - stores every quiz attempt (no retakes allowed)
-model QuizAttempt {
-  id            Int      @id @default(autoincrement())
-  userId        String   @map("user_id")
-  moduleId      Int      @map("module_id")
-  sectionId     Int      @map("section_id")
-  pageNumber    Int      @map("page_number")
-  quizType      String   @map("quiz_type") // 'true_false', 'multiple_choice'
-  score         Int      // number of correct answers
-  totalQuestions Int     @map("total_questions")
-  completedAt   DateTime @default(now()) @map("completed_at")
-  
-  // Relations
-  answers       QuizAnswer[]
-  
-  @@unique([userId, moduleId, sectionId, pageNumber])
-  @@index([userId])
-  @@map("quiz_attempts")
-}
+model Certificate {
+  id       String   @id @default(cuid())
+  userId   String   @map("user_id")
+  courseId String   @map("course_id")
+  url      String?
+  issuedAt DateTime @default(now()) @map("issued_at")
 
-// Individual quiz answers - stores each answer
-model QuizAnswer {
-  id              Int      @id @default(autoincrement())
-  quizAttemptId   Int      @map("quiz_attempt_id")
-  questionIndex   Int      @map("question_index") // 0-based index
-  questionText    String   @map("question_text")
-  userAnswer      String   @map("user_answer") // JSON string of answer
-  correctAnswer   String   @map("correct_answer") // JSON string of correct answer
-  isCorrect       Boolean  @map("is_correct")
-  answeredAt      DateTime @default(now()) @map("answered_at")
-  
-  // Relations
-  quizAttempt     QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
-  
-  @@index([quizAttemptId])
-  @@map("quiz_answers")
-}
+  user   Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-// Section completion - tracks when all pages and quizzes in a section are done
-model SectionCompletion {
-  userId        String   @map("user_id")
-  moduleId      Int      @map("module_id")
-  sectionId     Int      @map("section_id")
-  totalPages    Int      @map("total_pages")
-  pagesVisited  Int      @map("pages_visited")
-  quizzesTotal  Int      @map("quizzes_total")
-  quizzesCompleted Int   @map("quizzes_completed")
-  isComplete    Boolean  @default(false) @map("is_complete")
-  completedAt   DateTime? @map("completed_at")
-  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
-  
-  @@id([userId, moduleId, sectionId])
-  @@index([userId])
-  @@map("section_completions")
-}
-
-// Diagnostic quiz - one-time assessment before accessing modules
-model DiagnosticQuiz {
-  id              Int      @id @default(autoincrement())
-  userId          String   @unique @map("user_id")
-  score           Int      // number of correct answers
-  totalQuestions  Int      @map("total_questions")
-  scorePct        Int      @map("score_pct") // percentage score
-  studentName     String?  @map("student_name")
-  evaluatorNotes  String?  @map("evaluator_notes")
-  answersData     String   @map("answers_data") // JSON string of all answers
-  completedAt     DateTime @default(now()) @map("completed_at")
-  
-  @@index([userId])
-  @@map("diagnostic_quiz")
+  @@unique([userId, courseId])
+  @@map("certificates")
 }

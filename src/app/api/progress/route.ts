@@ -1,92 +1,162 @@
-// src/app/api/progress/route.ts
-import { NextResponse, type NextRequest } from "next/server"
-import { createSupabaseServer } from "@/lib/supabase/server"
-import prisma from "@/lib/prisma"
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { createClient } from '@/lib/supabase/server-microcred'
+import { cookies } from 'next/headers'
 
+// GET /api/progress - Get user's progress (optionally by lessonId or courseId)
 export async function GET(request: NextRequest) {
   try {
-    console.log("📊 GET /api/progress called");
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
     
-    const { searchParams } = new URL(request.url)
-    const moduleId = Number(searchParams.get("moduleId"))
-
-    console.log("  moduleId:", moduleId);
-
-    if (!Number.isFinite(moduleId)) {
-      return NextResponse.json({ error: "bad_request" }, { status: 400 })
-    }
-
-    console.log("  Getting user...");
+    const { data: { user }, error } = await supabase.auth.getUser()
     
-    const supabase = await createSupabaseServer()
-    const { data: { user }, error: userErr } = await supabase.auth.getUser()
-    
-    if (userErr || !user) {
-      console.error("  ❌ Auth error or no user");
+    if (error || !user) {
       return NextResponse.json(
-        { error: "not_authenticated" },
+        { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    console.log("  ✅ User:", user.id);
-    console.log("  Fetching section completions...");
+    const { searchParams } = new URL(request.url)
+    const lessonId = searchParams.get('lessonId')
+    const courseId = searchParams.get('courseId')
 
-    // Get all section completions for this module from Prisma
-    const sectionCompletions = await prisma.sectionCompletion.findMany({
-      where: {
-        userId: user.id,
-        moduleId: moduleId,
-      },
-      orderBy: {
-        sectionId: 'asc',
-      },
-    });
+    let progressData
 
-    console.log("  Section completions:", sectionCompletions);
-
-    // Calculate which sections are completed
-    const completedSections = sectionCompletions
-      .filter(sc => sc.isComplete)
-      .map(sc => sc.sectionId);
-
-    // Calculate max unlocked section
-    // Section 1 is always unlocked
-    // Section N+1 is unlocked if Section N is complete
-    let sectionMax = 1;
-    
-    // Check each section in order
-    for (let i = 1; i <= 3; i++) {
-      const completion = sectionCompletions.find(sc => sc.sectionId === i);
-      if (completion?.isComplete) {
-        // This section is complete, so next section is unlocked
-        sectionMax = Math.max(sectionMax, i + 1);
-      }
+    if (lessonId) {
+      // Get specific lesson progress
+      progressData = await prisma.progress.findUnique({
+        where: {
+          userId_lessonId: {
+            userId: user.id,
+            lessonId
+          }
+        },
+        include: {
+          lesson: {
+            include: {
+              unit: {
+                include: {
+                  course: true
+                }
+              }
+            }
+          }
+        }
+      })
+    } else if (courseId) {
+      // Get all progress for a course
+      progressData = await prisma.progress.findMany({
+        where: {
+          userId: user.id,
+          lesson: {
+            unit: {
+              courseId
+            }
+          }
+        },
+        include: {
+          lesson: {
+            include: {
+              unit: true
+            }
+          }
+        }
+      })
+    } else {
+      // Get all progress for user
+      progressData = await prisma.progress.findMany({
+        where: {
+          userId: user.id
+        },
+        include: {
+          lesson: {
+            include: {
+              unit: {
+                include: {
+                  course: true
+                }
+              }
+            }
+          }
+        },
+        orderBy: {
+          updatedAt: 'desc'
+        }
+      })
     }
 
-    // Cap at 3 sections max
-    sectionMax = Math.min(sectionMax, 3);
-
-    console.log("  📤 Returning: sectionMax=", sectionMax, "completedSections=", completedSections);
-
-    return NextResponse.json({ 
-      moduleId, 
-      sectionMax, 
-      completedSections 
-    });
+    return NextResponse.json(progressData)
   } catch (error) {
-    console.error("❌ /api/progress error:", error);
-    console.error("Error details:", {
-      name: error instanceof Error ? error.name : 'Unknown',
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : 'No stack',
-    });
-    
+    console.error('Error fetching progress:', error)
     return NextResponse.json(
-      { 
-        error: "internal_error", 
-        message: error instanceof Error ? error.message : String(error) 
+      { error: 'Failed to fetch progress' },
+      { status: 500 }
+    )
+  }
+}
+
+// POST /api/progress - Upsert lesson progress
+export async function POST(request: NextRequest) {
+  try {
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+    
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json()
+    const { lessonId, percent, completedAt } = body
+
+    if (!lessonId || percent === undefined) {
+      return NextResponse.json(
+        { error: 'lessonId and percent are required' },
+        { status: 400 }
+      )
+    }
+
+    const progress = await prisma.progress.upsert({
+      where: {
+        userId_lessonId: {
+          userId: user.id,
+          lessonId
+        }
       },
+      update: {
+        percent,
+        ...(completedAt && { completedAt: new Date(completedAt) })
+      },
+      create: {
+        userId: user.id,
+        lessonId,
+        percent,
+        ...(completedAt && { completedAt: new Date(completedAt) })
+      },
+      include: {
+        lesson: {
+          include: {
+            unit: {
+              include: {
+                course: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return NextResponse.json(progress)
+  } catch (error) {
+    console.error('Error upserting progress:', error)
+    return NextResponse.json(
+      { error: 'Failed to update progress' },
       { status: 500 }
     )
   }

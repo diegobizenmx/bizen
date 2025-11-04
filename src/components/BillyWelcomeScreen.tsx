@@ -10,6 +10,8 @@ interface BillyWelcomeScreenProps {
   isReturningUser?: boolean
   redirectTo?: string
   autoCloseAfter?: number // milliseconds
+  titleMessage?: string
+  description?: string
 }
 
 /**
@@ -22,6 +24,8 @@ export default function BillyWelcomeScreen({
   isReturningUser = false,
   redirectTo,
   autoCloseAfter = 5000,
+  titleMessage,
+  description,
 }: BillyWelcomeScreenProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
@@ -29,9 +33,10 @@ export default function BillyWelcomeScreen({
   const [isRedirecting, setIsRedirecting] = useState(false)
   const router = useRouter()
 
-  const message = isReturningUser
-    ? `¡Bienvenido de nuevo, ${userName}! 🎉`
-    : `¡Bienvenido, ${userName}! 🚀`
+  const message = titleMessage 
+    || (isReturningUser
+      ? `¡Bienvenido de nuevo, ${userName}! 🎉`
+      : `¡Bienvenido, ${userName}! 🚀`)
 
   // Generate stable random values for particles
   const particleData = useState(() =>
@@ -271,57 +276,30 @@ export default function BillyWelcomeScreen({
             >
               {message}
             </motion.p>
-            {isReturningUser ? (
-              <motion.p
-                animate={{
-                  y: [0, -3, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5
-                }}
-                style={{
-                  fontSize: "clamp(22px, 5vw, 28px)",
-                  fontWeight: 600,
-                  margin: "8px 0 0 0",
-                  lineHeight: 1.3,
-                  background: "linear-gradient(45deg, #0F62FE, #10B981)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  fontFamily: 'Montserrat, sans-serif',
-                }}
-              >
-                ¡Continuemos tu aprendizaje! 📚
-              </motion.p>
-            ) : (
-              <motion.p
-                animate={{
-                  y: [0, -3, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5
-                }}
-                style={{
-                  fontSize: "clamp(22px, 5vw, 28px)",
-                  fontWeight: 600,
-                  margin: "8px 0 0 0",
-                  lineHeight: 1.3,
-                  background: "linear-gradient(45deg, #0F62FE, #10B981)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  fontFamily: 'Montserrat, sans-serif',
-                }}
-              >
-                ¡Empecemos esta aventura juntos! 🌟
-              </motion.p>
-            )}
+            <motion.p
+              animate={{
+                y: [0, -3, 0],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5
+              }}
+              style={{
+                fontSize: "clamp(22px, 5vw, 28px)",
+                fontWeight: 600,
+                margin: "8px 0 0 0",
+                lineHeight: 1.3,
+                background: "linear-gradient(45deg, #0F62FE, #10B981)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontFamily: 'Montserrat, sans-serif',
+              }}
+            >
+              {description || (isReturningUser ? '¡Continuemos tu aprendizaje! 📚' : '¡Empecemos esta aventura juntos! 🌟')}
+            </motion.p>
             
             {/* Speech bubble tail */}
             <div

@@ -186,7 +186,7 @@ export default function WelcomePage() {
               marginTop: "20px",
             }}>
               <Link
-                href="/bizen/login"
+                href="/dashboard"
                 style={{
                   padding: "20px 48px",
                   fontSize: "18px",
@@ -248,7 +248,7 @@ export default function WelcomePage() {
                   e.currentTarget.style.boxShadow = "0 4px 16px rgba(15, 98, 254, 0.1)"
                 }}
               >
-                Microcredenciales
+                Ya tengo una cuenta
               </Link>
             </div>
           </div>

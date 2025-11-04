@@ -1,345 +1,349 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import { useProgress } from "@/hooks/useProgress";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/AuthContext"
+import Card from "@/components/ui/Card"
+import Button from "@/components/ui/Button"
 
-const PRIMARY_COLOR = "#0F62FE";
-
-// Course structure: 6 modules, 3 sections each
-const COURSE_STRUCTURE = [
-  { moduleId: 1, moduleName: "Marketing de Influencia", sections: 3 },
-  { moduleId: 2, moduleName: "Identidad Digital", sections: 3 },
-  { moduleId: 3, moduleName: "Creación de Contenido", sections: 3 },
-  { moduleId: 4, moduleName: "Plataformas", sections: 3 },
-  { moduleId: 5, moduleName: "Estrategia", sections: 3 },
-  { moduleId: 6, moduleName: "Monetización", sections: 3 },
-];
-
-export default function ProgressPage() {
-  const { progress, loading, fetchProgress, checkAccess } = useProgress();
-  const router = useRouter();
-
-  useEffect(() => {
-    fetchProgress();
-  }, [fetchProgress]);
-
-  const getSectionStatus = (moduleId: number, sectionId: number) => {
-    if (!progress) return "locked";
-
-    const completion = progress.sectionCompletions.find(
-      (sc) => sc.moduleId === moduleId && sc.sectionId === sectionId
-    );
-
-    if (completion?.isComplete) return "completed";
-    if (completion && !completion.isComplete) return "in_progress";
-    return "locked";
-  };
-
-  const getSectionProgress = (moduleId: number, sectionId: number) => {
-    if (!progress) return 0;
-
-    const completion = progress.sectionCompletions.find(
-      (sc) => sc.moduleId === moduleId && sc.sectionId === sectionId
-    );
-
-    if (!completion) return 0;
-
-    const pagesProgress =
-      completion.totalPages > 0
-        ? (completion.pagesVisited / completion.totalPages) * 50
-        : 0;
-    const quizzesProgress =
-      completion.quizzesTotal > 0
-        ? (completion.quizzesCompleted / completion.quizzesTotal) * 50
-        : 0;
-
-    return Math.round(pagesProgress + quizzesProgress);
-  };
-
-  if (loading) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#FFFFFF",
-        }}
-      >
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{ textAlign: "center" }}
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            style={{
-              width: 48,
-              height: 48,
-              border: `4px solid ${PRIMARY_COLOR}22`,
-              borderTop: `4px solid ${PRIMARY_COLOR}`,
-              borderRadius: "50%",
-              margin: "0 auto 16px",
-            }}
-          />
-          <p style={{ fontSize: 18, color: "#666" }}>Cargando progreso...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        background: "#FFFFFF",
-        fontFamily:
-          "Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
-        padding: "40px 20px",
-      }}
-    >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{ marginBottom: 40 }}
-        >
-          <h1
-            style={{
-              fontSize: 42,
-              fontWeight: 800,
-              marginBottom: 16,
-              color: "#111",
-            }}
-          >
-            Tu Progreso
-          </h1>
-
-          {/* Overall Progress */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              padding: 24,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 12,
-              }}
-            >
-              <span style={{ fontSize: 18, fontWeight: 700 }}>
-                Progreso General
-              </span>
-              <span
-                style={{ fontSize: 24, fontWeight: 800, color: PRIMARY_COLOR }}
-              >
-                {progress?.overallProgress || 0}%
-              </span>
-            </div>
-
-            <div
-              style={{
-                width: "100%",
-                height: 12,
-                background: "#E5E5E5",
-                borderRadius: 999,
-                overflow: "hidden",
-              }}
-            >
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${progress?.overallProgress || 0}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                style={{
-                  height: "100%",
-                  background: PRIMARY_COLOR,
-                  borderRadius: 999,
-                }}
-              />
-            </div>
-
-            <p style={{ marginTop: 12, color: "#666", fontSize: 14 }}>
-              {progress?.completedSections || 0} de{" "}
-              {progress?.totalSections || 18} secciones completadas
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Modules */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          {COURSE_STRUCTURE.map((module, moduleIndex) => (
-            <motion.div
-              key={module.moduleId}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: moduleIndex * 0.1 }}
-              style={{
-                background: "#fff",
-                borderRadius: 16,
-                padding: 24,
-                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: 24,
-                  fontWeight: 800,
-                  marginBottom: 20,
-                  color: "#111",
-                }}
-              >
-                Módulo {module.moduleId}: {module.moduleName}
-              </h2>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                  gap: 16,
-                }}
-              >
-                {Array.from({ length: module.sections }).map((_, idx) => {
-                  const sectionId = idx + 1;
-                  const status = getSectionStatus(module.moduleId, sectionId);
-                  const progressPct = getSectionProgress(
-                    module.moduleId,
-                    sectionId
-                  );
-
-                  return (
-                    <motion.div
-                      key={sectionId}
-                      whileHover={status !== "locked" ? { scale: 1.02 } : {}}
-                      style={{
-                        border: `2px solid ${
-                          status === "completed"
-                            ? PRIMARY_COLOR
-                            : "rgba(0,0,0,0.1)"
-                        }`,
-                        borderRadius: 12,
-                        padding: 16,
-                        background:
-                          status === "locked" ? "#F5F5F5" : "#FFFFFF",
-                        opacity: status === "locked" ? 0.6 : 1,
-                        cursor: status !== "locked" ? "pointer" : "not-allowed",
-                        position: "relative",
-                      }}
-                      onClick={() => {
-                        if (status !== "locked") {
-                          router.push(
-                            `/module/${module.moduleId}/section/${sectionId}`
-                          );
-                        }
-                      }}
-                    >
-                      {/* Status Icon */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 12,
-                          right: 12,
-                          fontSize: 24,
-                        }}
-                      >
-                        {status === "completed"
-                          ? "✅"
-                          : status === "in_progress"
-                          ? "📝"
-                          : "🔒"}
-                      </div>
-
-                      <h3
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 700,
-                          marginBottom: 12,
-                          paddingRight: 32,
-                        }}
-                      >
-                        Sección {sectionId}
-                      </h3>
-
-                      {/* Progress Bar */}
-                      {status !== "locked" && (
-                        <>
-                          <div
-                            style={{
-                              width: "100%",
-                              height: 8,
-                              background: "#E5E5E5",
-                              borderRadius: 999,
-                              overflow: "hidden",
-                              marginBottom: 8,
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: `${progressPct}%`,
-                                height: "100%",
-                                background: PRIMARY_COLOR,
-                                borderRadius: 999,
-                                transition: "width 0.3s ease",
-                              }}
-                            />
-                          </div>
-                          <p style={{ fontSize: 14, color: "#666", margin: 0 }}>
-                            {progressPct}% completado
-                          </p>
-                        </>
-                      )}
-
-                      {status === "locked" && (
-                        <p style={{ fontSize: 14, color: "#999", margin: 0 }}>
-                          Completa la sección anterior
-                        </p>
-                      )}
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Back to Dashboard */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          style={{ marginTop: 40, textAlign: "center" }}
-        >
-          <Link
-            href="/dashboard"
-            style={{
-              display: "inline-block",
-              padding: "14px 32px",
-              background: PRIMARY_COLOR,
-              color: "#fff",
-              borderRadius: 12,
-              fontSize: 16,
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
-            Volver al Dashboard
-          </Link>
-        </motion.div>
-      </div>
-    </div>
-  );
+interface Certificate {
+  id: string
+  courseTitle: string
+  issuedAt: string
+  url?: string
 }
 
+interface CourseProgress {
+  id: string
+  title: string
+  progress: number
+  lessonsCompleted: number
+  totalLessons: number
+  quizzesPassed: number
+  totalQuizzes: number
+}
+
+export default function ProgressPage() {
+  const { user, loading } = useAuth()
+  const router = useRouter()
+  const [certificates, setCertificates] = useState<Certificate[]>([])
+  const [courses, setCourses] = useState<CourseProgress[]>([])
+  const [loadingData, setLoadingData] = useState(true)
+
+  useEffect(() => {
+    if (loading) return
+    if (!user) {
+      router.replace("/login")
+      return
+    }
+
+    // TODO: Fetch real data from API
+    const fetchData = async () => {
+      try {
+        setLoadingData(true)
+        // Placeholder data
+        setCertificates([
+          {
+            id: "cert-1",
+            courseTitle: "Fundamentos de Finanzas Personales",
+            issuedAt: "2025-10-15T10:30:00",
+            url: "/certificates/cert-1.pdf"
+          }
+        ])
+
+        setCourses([
+          {
+            id: "course-1",
+            title: "Fundamentos de Finanzas Personales",
+            progress: 45,
+            lessonsCompleted: 12,
+            totalLessons: 24,
+            quizzesPassed: 3,
+            totalQuizzes: 6
+          },
+          {
+            id: "course-2",
+            title: "Inversión para Principiantes",
+            progress: 10,
+            lessonsCompleted: 2,
+            totalLessons: 18,
+            quizzesPassed: 0,
+            totalQuizzes: 4
+          }
+        ])
+      } catch (error) {
+        console.error("Error fetching progress:", error)
+      } finally {
+        setLoadingData(false)
+      }
+    }
+
+    fetchData()
+  }, [user, loading, router])
+
+  if (loading || loadingData) {
+    return (
+      <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "Montserrat, sans-serif" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: "4px solid #0F62FE22",
+            borderTop: "4px solid #0F62FE",
+            borderRadius: "50%",
+            margin: "0 auto 16px",
+            animation: "spin 1s linear infinite",
+          }} />
+          <p style={{ color: "#666", fontSize: 16 }}>Cargando progreso...</p>
+        </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  if (!user) return null
+
+  const totalProgress = courses.length > 0
+    ? Math.round(courses.reduce((sum, c) => sum + c.progress, 0) / courses.length)
+    : 0
+
+  return (
+    <main style={{ 
+      maxWidth: 1000, 
+      margin: "0 auto", 
+      padding: "clamp(20px, 4vw, 40px)",
+      fontFamily: "Montserrat, sans-serif"
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: 40 }}>
+        <h1 style={{ 
+          margin: 0, 
+          fontSize: "clamp(28px, 6vw, 36px)", 
+          fontWeight: 800,
+          background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text"
+        }}>
+          🏆 Mi Progreso
+        </h1>
+        <p style={{ margin: "8px 0 0", color: "#666", fontSize: "clamp(14px, 3vw, 16px)" }}>
+          Revisa tus logros y certificados
+        </p>
+      </div>
+
+      {/* Overall Progress Card */}
+      <Card style={{ 
+        padding: "32px 28px", 
+        marginBottom: 32,
+        background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
+        color: "#fff"
+      }}>
+        <h2 style={{ margin: "0 0 20px", fontSize: 22, fontWeight: 700 }}>
+          Progreso General
+        </h2>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: 20
+        }}>
+          <div>
+            <div style={{ fontSize: 40, fontWeight: 800 }}>{totalProgress}%</div>
+            <div style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>Progreso Promedio</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 40, fontWeight: 800 }}>{courses.length}</div>
+            <div style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>Cursos Activos</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 40, fontWeight: 800 }}>{certificates.length}</div>
+            <div style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>Certificados Obtenidos</div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Certificates Section */}
+      <div style={{ marginBottom: 40 }}>
+        <h2 style={{ 
+          margin: "0 0 20px", 
+          fontSize: 22, 
+          fontWeight: 700 
+        }}>
+          🎓 Certificados
+        </h2>
+        
+        {certificates.length > 0 ? (
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: 20 
+          }}>
+            {certificates.map(cert => (
+              <Card 
+                key={cert.id}
+                style={{
+                  padding: 0,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease"
+                }}
+                onClick={() => {
+                  if (cert.url) {
+                    window.open(cert.url, "_blank")
+                  }
+                }}
+                onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.currentTarget.style.transform = "translateY(-4px)"
+                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.2)"
+                }}
+                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.currentTarget.style.transform = "translateY(0)"
+                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.06)"
+                }}
+              >
+                {/* Certificate Header */}
+                <div style={{
+                  padding: "28px 24px",
+                  background: "linear-gradient(135deg, #F59E0B 0%, #F97316 100%)",
+                  color: "#fff",
+                  textAlign: "center"
+                }}>
+                  <div style={{ fontSize: 48, marginBottom: 8 }}>🏆</div>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>
+                    Certificado de Finalización
+                  </h3>
+                </div>
+
+                {/* Certificate Info */}
+                <div style={{ padding: "20px 24px" }}>
+                  <div style={{ 
+                    fontSize: 16, 
+                    fontWeight: 600, 
+                    color: "#111",
+                    marginBottom: 12,
+                    lineHeight: 1.4
+                  }}>
+                    {cert.courseTitle}
+                  </div>
+                  <div style={{ fontSize: 14, color: "#666", marginBottom: 16 }}>
+                    Emitido: {new Date(cert.issuedAt).toLocaleDateString('es-ES', { 
+                      month: 'long', 
+                      day: 'numeric', 
+                      year: 'numeric' 
+                    })}
+                  </div>
+                  {cert.url && (
+                    <Button 
+                      variant="ghost"
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                        e.stopPropagation()
+                        window.open(cert.url, "_blank")
+                      }}
+                      style={{ width: "100%" }}
+                    >
+                      Descargar PDF →
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card style={{ padding: "40px 24px", textAlign: "center" }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🎓</div>
+            <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>
+              Aún no tienes certificados
+            </h3>
+            <p style={{ margin: 0, color: "#666", fontSize: 14 }}>
+              Completa tus cursos para obtener certificados
+            </p>
+          </Card>
+        )}
+      </div>
+
+      {/* Course Progress Section */}
+      <div>
+        <h2 style={{ 
+          margin: "0 0 20px", 
+          fontSize: 22, 
+          fontWeight: 700 
+        }}>
+          📊 Progreso por Curso
+        </h2>
+        
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {courses.map(course => (
+            <Card 
+              key={course.id}
+              style={{ 
+                padding: 24,
+                cursor: "pointer",
+                transition: "all 0.3s ease"
+              }}
+              onClick={() => router.push(`/courses/${course.id}`)}
+              onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                e.currentTarget.style.transform = "translateX(4px)"
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.15)"
+              }}
+              onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
+                e.currentTarget.style.transform = "translateX(0)"
+                e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.06)"
+              }}
+            >
+              <div style={{ marginBottom: 16 }}>
+                <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>
+                  {course.title}
+                </h3>
+                <div style={{
+                  display: "flex",
+                  gap: 16,
+                  fontSize: 14,
+                  color: "#666",
+                  flexWrap: "wrap"
+                }}>
+                  <span>📖 {course.lessonsCompleted}/{course.totalLessons} lecciones</span>
+                  <span>✅ {course.quizzesPassed}/{course.totalQuizzes} quizzes aprobados</span>
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: 14,
+                  color: "#666",
+                  marginBottom: 8
+                }}>
+                  <span>Progreso</span>
+                  <span>{course.progress}%</span>
+                </div>
+                <div style={{
+                  width: "100%",
+                  height: 10,
+                  background: "#E5E7EB",
+                  borderRadius: 10,
+                  overflow: "hidden"
+                }}>
+                  <div style={{
+                    height: "100%",
+                    width: `${course.progress}%`,
+                    background: "linear-gradient(90deg, #0F62FE 0%, #10B981 100%)",
+                    borderRadius: 10,
+                    transition: "width 0.5s ease"
+                  }} />
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
 

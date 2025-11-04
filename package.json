@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} seed/seed.ts",
+    "seed:clear": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} seed/clear-content.ts",
+    "seed:demo": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed-demo.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -37,6 +40,7 @@
     "eslint-config-next": "15.5.4",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

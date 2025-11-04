@@ -1,14 +1,12 @@
 // src/app/layout.tsx
 import type { Metadata } from "next"
 import { AuthProvider } from "@/contexts/AuthContext"
-import GlobalButtonSounds from "@/components/GlobalButtonSounds"
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper"
-import BillyChatbot from "@/components/BillyChatbot"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "BIZEN",
-  description: "App BIZEN",
+  title: "BIZEN App",
+  description: "Modern web app scaffold",
   viewport: {
     width: "device-width",
     initialScale: 1,
@@ -19,14 +17,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" style={{ height: "100%" }}>
-      <body style={{ margin: 0, background: "#fff", height: "100%", minHeight: "100vh", width: "100vw", overflowX: "hidden" }}>
+    <html lang="es" style={{ height: "100%", margin: 0, padding: 0 }}>
+      <body style={{ margin: 0, padding: 0, background: "#fff", height: "100%", minHeight: "100vh", width: "100vw", overflowX: "hidden" }}>
         <AuthProvider>
-          <GlobalButtonSounds />
           <ClientLayoutWrapper>
             {children}
           </ClientLayoutWrapper>
-          <BillyChatbot />
         </AuthProvider>
       </body>
     </html>

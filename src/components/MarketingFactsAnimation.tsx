@@ -38,54 +38,6 @@ const defaultFacts: FactStep[] = [
   }
 ]
 
-// Specific facts for M1S2P3 (True/False Quiz)
-const m1s2p3Facts: FactStep[] = [
-  {
-    character: 'billy',
-    text: 'El 82% de los influencers usa Instagram como plataforma principal.',
-    characterImage: '/2.png'
-  },
-  {
-    character: 'drago',
-    text: 'TikTok genera un 15% más de interacción que Instagram en campañas de influencia.',
-    characterImage: '/drago1.png'
-  },
-  {
-    character: 'billy',
-    text: 'El 69% de las marcas planea aumentar su presupuesto en influencers este año.',
-    characterImage: '/2.png'
-  },
-  {
-    character: 'drago',
-    text: '4 de cada 10 usuarios compran después de ver una recomendación de influencer.',
-    characterImage: '/drago1.png'
-  }
-]
-
-// Specific facts for M3S2P4 (Non-verbal Communication Quiz)
-export const m3s2p4Facts: FactStep[] = [
-  {
-    character: 'billy',
-    text: 'El estilo personal puede mejorar tu autoconfianza hasta un 40%.',
-    characterImage: '/2.png'
-  },
-  {
-    character: 'drago',
-    text: 'Los accesorios bien elegidos pueden elevar un outfit básico hasta un 50%.',
-    characterImage: '/drago1.png'
-  },
-  {
-    character: 'billy',
-    text: 'La limpieza y el cuidado personal son la base del branding visual.',
-    characterImage: '/2.png'
-  },
-  {
-    character: 'drago',
-    text: 'El 75% de las decisiones sociales se forman en los primeros 30 segundos.',
-    characterImage: '/drago1.png'
-  }
-]
-
 export default function MarketingFactsAnimation({ facts, baseFontSize = 18 }: MarketingFactsAnimationProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false)

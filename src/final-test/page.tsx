@@ -24,7 +24,7 @@ export default function FinalTestPage() {
         return
       }
 
-      // Check if user has completed M6S1 (file upload)
+      // Check if user has completed Module 6 Section 1 (file upload requirement)
       try {
         const response = await fetch("/api/progress/user-progress", {
           method: "GET",
@@ -35,21 +35,21 @@ export default function FinalTestPage() {
           console.log('[FINAL_TEST] User progress data:', data)
           console.log('[FINAL_TEST] Section completions:', data.sectionCompletions)
           
-          const m6s1Completed = data.sectionCompletions?.some((section: any) => 
+          const finalModuleCompleted = data.sectionCompletions?.some((section: any) => 
             section.moduleId === 6 && section.sectionId === 1 && section.isComplete
           )
           
-          console.log('[FINAL_TEST] M6S1 completed:', m6s1Completed)
+          console.log('[FINAL_TEST] Module 6 Section 1 completed:', finalModuleCompleted)
           
-          if (!m6s1Completed) {
-            // User hasn't completed M6S1, redirect to modules
-            console.log('[FINAL_TEST] M6S1 not completed, redirecting to modules')
+          if (!finalModuleCompleted) {
+            // User hasn't completed the prerequisite, redirect to modules
+            console.log('[FINAL_TEST] Module 6 Section 1 not completed, redirecting to modules')
             router.push("/modules/menu")
             return
           }
         }
       } catch (error) {
-        console.error("Error checking M6S1 completion:", error)
+        console.error("Error checking module completion:", error)
         // If database is unavailable, allow them to take the test
       }
       

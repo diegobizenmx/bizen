@@ -130,55 +130,6 @@ export default function MarkCompletePage() {
           </div>
         )}
 
-        <div style={{
-          marginTop: 32,
-          padding: 20,
-          background: "#f8f9fa",
-          borderRadius: 8,
-        }}>
-          <h3 style={{ fontSize: 16, marginBottom: 12 }}>Quick Actions:</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <button
-              onClick={() => { setModuleId("1"); setSectionId("1"); markComplete(); }}
-              style={{
-                padding: "8px 12px",
-                background: "#fff",
-                border: "1px solid #ddd",
-                borderRadius: 6,
-                cursor: "pointer",
-                textAlign: "left",
-              }}
-            >
-              Mark M1S1 Complete
-            </button>
-            <button
-              onClick={() => { setModuleId("1"); setSectionId("2"); markComplete(); }}
-              style={{
-                padding: "8px 12px",
-                background: "#fff",
-                border: "1px solid #ddd",
-                borderRadius: 6,
-                cursor: "pointer",
-                textAlign: "left",
-              }}
-            >
-              Mark M1S2 Complete
-            </button>
-            <button
-              onClick={() => { setModuleId("1"); setSectionId("3"); markComplete(); }}
-              style={{
-                padding: "8px 12px",
-                background: "#fff",
-                border: "1px solid #ddd",
-                borderRadius: 6,
-                cursor: "pointer",
-                textAlign: "left",
-              }}
-            >
-              Mark M1S3 Complete
-            </button>
-          </div>
-        </div>
 
         <div style={{ marginTop: 20, textAlign: "center" }}>
           <button

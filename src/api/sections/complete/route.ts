@@ -4,36 +4,9 @@ import { createServerClient } from "@supabase/ssr"
 import type { Database } from "@/types/supabase"
 import prisma from "@/lib/prisma"
 
-// Quiz configuration - matches the QUIZ_PAGES from page.tsx
+// Quiz configuration - TODO: Replace with database-driven configuration
 const QUIZ_PAGES: Record<number, Record<number, Record<number, { type: string }>>> = {
-  1: { // Module 1
-    1: { 4: { type: "true_false" }, 5: { type: "multiple_choice" } }, // M1S1: pages 4, 5
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M1S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M1S3: pages 3, 4
-  },
-  2: { // Module 2
-    1: { 3: { type: "true_false" }, 4: { type: "true_false" } }, // M2S1: pages 3, 4
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M2S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M2S3: pages 3, 4
-  },
-  3: { // Module 3
-    1: { 4: { type: "multiple_choice" } }, // M3S1: page 4 only (1 quiz)
-    2: { 4: { type: "multiple_choice" } }, // M3S2: page 4 only (1 quiz - page 3 is tips)
-    3: { 3: { type: "true_false" } }, // M3S3: page 3 only (1 quiz - page 4 is form, page 5 is activity)
-  },
-  4: { // Module 4
-    1: { 4: { type: "true_false" }, 5: { type: "multiple_choice" } }, // M4S1: pages 4, 5
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M4S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M4S3: pages 3, 4
-  },
-  5: { // Module 5
-    1: { 4: { type: "true_false" }, 5: { type: "multiple_choice" } }, // M5S1: pages 4, 5
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M5S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M5S3: pages 3, 4
-  },
-  6: { // Module 6
-    1: {}, // No quizzes
-  },
+  // Structure: { moduleId: { sectionId: { pageNumber: { type: "quiz_type" } } } }
 };
 
 // Helper function to get the actual number of quizzes for a section

@@ -9,58 +9,17 @@ import { SectionGate } from "@/components/SectionGate";
 import { QuizTracker } from "@/components/QuizTracker";
 import FinalTestQuiz from "@/components/FinalTestQuiz";
 import BillyFinalTestIntro from "@/components/BillyFinalTestIntro";
-import M1S1_CONTENT from "@/components/bizen/m1s1/Section1Pages";
-import M1S2_CONTENT from "@/components/bizen/m1s2/Section2Pages";
-import M1S3_CONTENT from "@/components/bizen/m1s3/Section3Pages";
-import M2S1_CONTENT from "@/components/bizen/m2s1/Section1Pages";
-import M2S2_CONTENT from "@/components/bizen/m2s2/Section2Pages";
-import M2S3_CONTENT from "@/components/bizen/m2s3/Section3Pages";
-import M3S1_CONTENT from "@/components/bizen/m3s1/Section1Pages";
-import M3S2_CONTENT from "@/components/bizen/m3s2/Section2Pages";
-import M3S3_CONTENT from "@/components/bizen/m3s3/Section3Pages";
-import M4S1_CONTENT from "@/components/bizen/m4s1/Section1Pages";
-import M4S2_CONTENT from "@/components/bizen/m4s2/Section2Pages";
-import M4S3_CONTENT from "@/components/bizen/m4s3/Section3Pages";
-import M5S1_CONTENT from "@/components/bizen/m5s1/Section1Pages";
-import M5S2_CONTENT from "@/components/bizen/m5s2/Section2Pages";
-import M5S3_CONTENT from "@/components/bizen/m5s3/Section3Pages";
-import M6S1_CONTENT from "@/components/bizen/m6s1/Section1Pages";
+// Content imports removed - using database-driven content instead
 
 // =========================
 // Config
 // =========================
 
 // Quiz page configuration - which pages have quizzes and their types
-// Based on exact quiz locations provided
+// TODO: Replace with database-driven quiz configuration from seed script
 const QUIZ_PAGES: Record<number, Record<number, Record<number, { type: "true_false" | "multiple_choice" }>>> = {
-  1: { // Module 1
-    1: { 4: { type: "true_false" }, 5: { type: "multiple_choice" } }, // M1S1: pages 4, 5
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M1S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M1S3: pages 3, 4
-  },
-  2: { // Module 2
-    1: { 3: { type: "true_false" }, 4: { type: "true_false" } }, // M2S1: pages 3, 4 (page 5 is practical activities)
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M2S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M2S3: pages 3, 4
-  },
-  3: { // Module 3
-    1: { 4: { type: "multiple_choice" } }, // M3S1: page 4 only (1 quiz)
-    2: { 4: { type: "multiple_choice" } }, // M3S2: page 4 only (1 quiz - page 3 is tips)
-    3: { 3: { type: "true_false" } }, // M3S3: page 3 only (1 quiz - page 4 is form, page 5 is activity)
-  },
-  4: { // Module 4
-    1: { 4: { type: "true_false" }, 5: { type: "multiple_choice" } }, // M4S1: pages 4, 5
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M4S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M4S3: pages 3, 4
-  },
-  5: { // Module 5
-    1: { 4: { type: "true_false" } }, // M5S1: page 4 only (page 5 is Workshop Interactivo, not a quiz)
-    2: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M5S2: pages 3, 4
-    3: { 3: { type: "true_false" }, 4: { type: "multiple_choice" } }, // M5S3: pages 3, 4
-  },
-  6: { // Module 6
-    1: {}, // No quizzes specified
-  },
+  // Structure: { moduleId: { sectionId: { pageNumber: { type: "quiz_type" } } } }
+  // Example: 1: { 1: { 4: { type: "true_false" } } } means Module 1, Section 1, Page 4 has a true/false quiz
 };
 
 // ==========================================
@@ -74,35 +33,15 @@ type SectionLayoutOverride = {
   firstPageBackLabel?: string;
 };
 
+// Content will now come from database via seed script or manual entry
 const SECTION_CONTENT: Record<number, Record<number, Record<number, React.ReactNode>>> = {
-  1: { // Module 1
-    1: M1S1_CONTENT, // Section 1 - Panorama del marketing de influencia
-    2: M1S2_CONTENT, // Section 2 - Tipos de influencers
-    3: M1S3_CONTENT, // Section 3 - (Content pending, redirects to completion)
-  },
-  2: { // Module 2
-    1: M2S1_CONTENT, // Section 1 - Identidad digital
-    2: M2S2_CONTENT, // Section 2 - Storytelling y narrativa personal
-    3: M2S3_CONTENT, // Section 3 - Confianza y coherencia
-  },
-  3: {
-    1: M3S1_CONTENT,
-    2: M3S2_CONTENT,
-    3: M3S3_CONTENT,
-  },
-  4: {
-    1: M4S1_CONTENT,
-    2: M4S2_CONTENT,
-    3: M4S3_CONTENT,
-  },
-  5: {
-    1: M5S1_CONTENT,
-    2: M5S2_CONTENT,
-    3: M5S3_CONTENT,
-  },
-  6: {
-    1: M6S1_CONTENT,
-  },
+  // TODO: Populate with content from database or seed script
+  // Structure:
+  // 1: { // Module 1
+  //   1: { 1: <Page1Content />, 2: <Page2Content />, ... },
+  //   2: { 1: <Page1Content />, 2: <Page2Content />, ... },
+  //   3: { 1: <Page1Content />, 2: <Page2Content />, ... },
+  // },
 };
 
 const SECTION_LAYOUT_OVERRIDES: Partial<Record<number, Partial<Record<number, SectionLayoutOverride>>>> = {
@@ -369,11 +308,8 @@ export default function Page() {
   
   // Debug logging
   React.useEffect(() => {
-    console.log(`🎯 Page State - M${moduleId}S${section}P${page}: isQuizPage=${isQuizPage}, quizCompleted=${quizCompleted}`);
-    console.log(`📋 QUIZ_PAGES[${moduleId}][${section}][${page}] =`, quizConfig);
-    if (moduleId === 5 && section === 1 && page === 5) {
-      console.log(`✅ M5S1P5 is configured as NOT a quiz - navigation should be unlocked`);
-    }
+    console.log(`🎯 Page State - Module ${moduleId}, Section ${section}, Page ${page}: isQuizPage=${isQuizPage}, quizCompleted=${quizCompleted}`);
+    console.log(`📋 Quiz config:`, quizConfig);
   }, [moduleId, section, page, isQuizPage, quizCompleted, quizConfig]);
   
   // Callback to handle quiz completion status changes

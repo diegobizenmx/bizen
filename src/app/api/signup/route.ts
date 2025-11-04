@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         message: '✅ ¡Cuenta creada exitosamente! Redirigiendo...',
-        redirect: '/welcome'
+        redirect: '/dashboard'
       }, { headers: response.headers })
     }
 
