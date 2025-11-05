@@ -29,7 +29,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     <>
       {!isAuthPage && <AppHeader />}
       <div style={{ 
-        marginRight: !isAuthPage ? 280 : 0,
+        marginRight: !isAuthPage ? "280px" : 0,
         minHeight: "100vh"
       }}>
         {children}
