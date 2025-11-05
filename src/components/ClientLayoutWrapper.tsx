@@ -28,7 +28,12 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   return (
     <>
       {!isAuthPage && <AppHeader />}
-      {children}
+      <div style={{ 
+        marginRight: !isAuthPage ? "min(320px, 90vw)" : 0,
+        minHeight: "100vh"
+      }}>
+        {children}
+      </div>
       <NavigationLoading isLoading={isNavigating} />
     </>
   );
