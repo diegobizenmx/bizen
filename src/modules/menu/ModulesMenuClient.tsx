@@ -67,7 +67,7 @@ export default function MondragonMenuClient({
   padding = 40,
   gap = 20,                // 👈 BIGGER gap between modules (was 16)
   radius = 14,
-  sidebarWidth = 300,
+  sidebarWidth = 350,
 
   // Colores
   pageBg = "#f8fafc",

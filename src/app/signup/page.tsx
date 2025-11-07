@@ -29,7 +29,7 @@ function Card(props: React.HTMLAttributes<HTMLDivElement>) {
         border: "1px solid rgba(0,0,0,0.08)",
         boxShadow: "0 8px 30px rgba(0,0,0,0.06)",
         background: "#fff",
-        padding: 24,
+        padding: "clamp(20px, 5vw, 24px)",
         minWidth: 0,
         overflow: "hidden" as const,
         ...(props.style || {}),
@@ -158,16 +158,17 @@ export default function BIZENSignupPage() {
   }
 
   return (
-    <main style={{ background: bgColor, minHeight: "100dvh", padding: 24, display: "grid" as const, placeItems: "center" }}>
+    <main style={{ background: bgColor, minHeight: "100dvh", padding: "clamp(16px, 4vw, 24px)", display: "grid" as const, placeItems: "center" }}>
       <div style={{
-        position: "fixed" as const, top: 0, left: 0, right: 0, height: 64,
+        position: "fixed" as const, top: 0, left: 0, right: 0, 
+        height: "clamp(56px, 12vw, 64px)",
         display: "flex" as const, alignItems: "center" as const, justifyContent: "flex-start" as const,
         background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.08)", color: "#111",
-        paddingLeft: 24,
+        paddingLeft: "clamp(16px, 4vw, 24px)",
       }}>
         <Link href="/bizen" style={{ display: "flex" as const, alignItems: "center" as const, gap: 10, textDecoration: "none", color: "inherit" }}>
           <Image src={logoSrc} alt={`${brandName} logo`} width={40} height={40} priority />
-          <strong style={{ fontSize: 20, color: "#0B71FE", fontFamily: 'Montserrat, sans-serif' }}>{brandName}</strong>
+          <strong style={{ fontSize: "clamp(16px, 4vw, 20px)", color: "#0B71FE", fontFamily: 'Montserrat, sans-serif' }}>{brandName}</strong>
         </Link>
       </div>
 
@@ -175,19 +176,20 @@ export default function BIZENSignupPage() {
         width: "100%",
         maxWidth: 1200,
         margin: "0 auto",
-        paddingTop: 80,
+        paddingTop: "clamp(70px, 15vw, 100px)",
         display: "flex" as const,
         flexDirection: "row" as const,
         alignItems: "center" as const,
         justifyContent: "center" as const,
-        gap: 60,
+        gap: "clamp(24px, 6vw, 60px)",
+        flexWrap: "wrap" as const,
       }}>
         <div style={{ width: "100%", maxWidth: 480, flex: "1 1 480px" }}>
         <Card>
-          <div style={{ display: "grid" as const, gap: 8, marginBottom: 16, textAlign: "center" }}>
+          <div style={{ display: "grid" as const, gap: "clamp(6px, 1.5vw, 8px)", marginBottom: "clamp(12px, 3vw, 16px)", textAlign: "center" }}>
             <h1 style={{ 
               margin: 0, 
-              fontSize: 28, 
+              fontSize: "clamp(22px, 5vw, 28px)", 
               background: "linear-gradient(90deg, #0B71FE 0%, #4A9EFF 50%, #0B71FE 100%)",
               backgroundSize: "200% auto",
               WebkitBackgroundClip: "text",
@@ -196,7 +198,7 @@ export default function BIZENSignupPage() {
               animation: "shimmer-text 3s ease-in-out infinite",
               fontWeight: 700
             }}>Crear cuenta</h1>
-            <p style={{ margin: 0, fontSize: 16, color: "#525252" }}>
+            <p style={{ margin: 0, fontSize: "clamp(14px, 3vw, 16px)", color: "#525252" }}>
               Bienvenido a <strong>{brandName}</strong>. Completa tus datos para empezar.
             </p>
           </div>
@@ -245,9 +247,28 @@ export default function BIZENSignupPage() {
         </div>
         </div>
 
-        <div style={{ flex: "0 0 auto", width: "100%", maxWidth: "600px", display: "flex", justifyContent: "center" }}>
-          <div style={{ position: "relative", background: "white", borderRadius: "32px", padding: "50px", boxShadow: "0 24px 64px rgba(15, 98, 254, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08)" }}>
-            <Image src="/Billy looking at the right.jpeg" alt="Billy" width={320} height={320} style={{ display: "block", borderRadius: "16px" }} priority />
+        <div style={{ flex: "0 0 auto", width: "100%", maxWidth: "600px", display: "flex", justifyContent: "center", order: 2 }}>
+          <div style={{ 
+            position: "relative", 
+            background: "white", 
+            borderRadius: "clamp(16px, 4vw, 32px)", 
+            padding: "clamp(24px, 5vw, 50px)", 
+            boxShadow: "0 24px 64px rgba(15, 98, 254, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08)" 
+          }}>
+            <Image 
+              src="/Billy looking at the right.jpeg" 
+              alt="Billy" 
+              width={320} 
+              height={320} 
+              style={{ 
+                display: "block", 
+                borderRadius: "16px",
+                width: "100%",
+                height: "auto",
+                maxWidth: "clamp(240px, 40vw, 320px)",
+              }} 
+              priority 
+            />
           </div>
         </div>
       </div>
@@ -255,6 +276,18 @@ export default function BIZENSignupPage() {
       <style>{`
         @keyframes shimmer-text { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes shimmer-button { 0% { background-position: 0% 0%; } 50% { background-position: 100% 0%; } 100% { background-position: 0% 0%; } }
+        @media (max-width: 1024px) {
+          main > div {
+            flex-direction: column !important;
+            gap: 32px !important;
+          }
+          main > div > div:last-child {
+            order: 1;
+          }
+          main > div > div:first-child {
+            order: 2;
+          }
+        }
       `}</style>
     </main>
   )

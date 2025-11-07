@@ -194,8 +194,8 @@ function BIZENLoginContent() {
           <div style={{
             position: "relative",
             background: "white",
-            borderRadius: "32px",
-            padding: "50px",
+            borderRadius: "clamp(16px, 4vw, 32px)",
+            padding: "clamp(24px, 5vw, 50px)",
             boxShadow: "0 24px 64px rgba(15, 98, 254, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08)",
           }}>
             <Image
@@ -206,6 +206,9 @@ function BIZENLoginContent() {
               style={{ 
                 display: "block",
                 borderRadius: "16px",
+                width: "100%",
+                height: "auto",
+                maxWidth: "clamp(240px, 40vw, 320px)",
               }}
               priority
             />

@@ -156,7 +156,7 @@ Entender el dinero es fundamental para tomar decisiones financieras informadas e
         gap: 16
       }}>
         <button
-          onClick={() => router.push(`/courses/${courseId}`)}
+          onClick={() => router.push("/courses")}
           style={{
             background: "transparent",
             border: "none",
@@ -302,7 +302,7 @@ Entender el dinero es fundamental para tomar decisiones financieras informadas e
             if (lesson.prevLessonId) {
               router.push(`/learn/${courseId}/${unitId}/${lesson.prevLessonId}`)
             } else {
-              router.push(`/courses/${courseId}`)
+              router.push("/courses")
             }
           }}
           style={{ minWidth: 150 }}

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import Card from "@/components/ui/Card"
 
@@ -15,6 +15,7 @@ interface DashboardStats {
 export default function FixedSidebar() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const router = useRouter()
+  const pathname = usePathname()
   const { user } = useAuth()
 
   useEffect(() => {
@@ -33,15 +34,20 @@ export default function FixedSidebar() {
     router.push(path)
   }
 
+  // Adjust positioning based on whether we're on courses page (no header)
+  const isCoursesPage = pathname === '/courses'
+  const topPosition = isCoursesPage ? 0 : 72
+  const heightCalc = isCoursesPage ? "100vh" : "calc(100vh - 72px)"
+
   return (
     <>
       {/* Fixed Sidebar Panel */}
       <div style={{
         position: "fixed",
-        top: 72,
+        top: topPosition,
         right: 0,
-        width: "280px",
-        height: "calc(100vh - 72px)",
+        width: "320px",
+        height: heightCalc,
         background: "#fff",
         boxShadow: "-4px 0 20px rgba(0, 0, 0, 0.1)",
         zIndex: 1000,

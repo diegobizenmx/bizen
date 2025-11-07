@@ -25,11 +25,14 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                      pathname === '/' || // Landing page
                      pathname === '/landing'
 
+  // Courses page has different layout
+  const isCoursesPage = pathname === '/courses'
+
   return (
     <>
       {!isAuthPage && <AppHeader />}
       <div style={{ 
-        marginRight: !isAuthPage ? "280px" : 0,
+        marginRight: !isAuthPage && !isCoursesPage ? "320px" : 0,
         minHeight: "100vh"
       }}>
         {children}

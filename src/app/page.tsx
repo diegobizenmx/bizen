@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import Head from "next/head"
 
 export default function WelcomePage() {
   const [isMouthOpen, setIsMouthOpen] = useState(false)
@@ -21,11 +20,6 @@ export default function WelcomePage() {
 
   return (
     <>
-      <Head>
-        <title>BIZEN - Aprende, crece y domina tus finanzas</title>
-        <meta name="description" content="En BIZEN nuestro lema es aprender. Aprende, crece y domina tus finanzas." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
       <div style={{
         minHeight: "100vh",
         background: "linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%)",
@@ -40,7 +34,7 @@ export default function WelcomePage() {
         position: "relative",
         zIndex: 10,
         width: "100%",
-        padding: "24px 40px",
+        padding: "clamp(16px, 3vw, 24px) clamp(20px, 4vw, 40px)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -52,19 +46,30 @@ export default function WelcomePage() {
         <Link href="/" style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
+          gap: "clamp(8px, 2vw, 10px)",
           textDecoration: "none",
         }}>
-          <Image src="/bizen-logo.png" alt="BIZEN logo" width={40} height={40} priority />
-          <strong style={{ fontSize: "20px", color: "#0B71FE", fontFamily: 'Montserrat, sans-serif' }}>BIZEN</strong>
+          <Image 
+            src="/bizen-logo.png" 
+            alt="BIZEN logo" 
+            width={40} 
+            height={40} 
+            priority 
+            style={{ width: "clamp(32px, 5vw, 40px)", height: "auto" }}
+          />
+          <strong style={{ 
+            fontSize: "clamp(18px, 3vw, 20px)", 
+            color: "#0B71FE", 
+            fontFamily: 'Montserrat, sans-serif' 
+          }}>BIZEN</strong>
         </Link>
 
-        <nav style={{ display: "flex", gap: "32px" }}>
+        <nav style={{ display: "flex", gap: "clamp(16px, 4vw, 32px)" }}>
           <Link href="/landing" style={{
             color: "#0F62FE",
             textDecoration: "none",
             fontWeight: 600,
-            fontSize: "16px",
+            fontSize: "clamp(14px, 2vw, 16px)",
             transition: "color 0.3s",
           }}>Explorar</Link>
         </nav>
@@ -73,12 +78,14 @@ export default function WelcomePage() {
       {/* Decorative blue accents */}
       <div style={{
         position: "absolute",
-        top: "-200px",
-        right: "-200px",
-        width: "800px",
-        height: "800px",
+        top: "clamp(-100px, -15vw, -200px)",
+        right: "clamp(-100px, -15vw, -200px)",
+        width: "clamp(300px, 50vw, 800px)",
+        height: "clamp(300px, 50vw, 800px)",
         background: "radial-gradient(circle, rgba(15, 98, 254, 0.06) 0%, transparent 70%)",
         borderRadius: "50%",
+        overflow: "hidden",
+        pointerEvents: "none",
       }} />
 
       {/* Main Content */}
@@ -91,13 +98,13 @@ export default function WelcomePage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "40px",
+        padding: "clamp(20px, 4vw, 40px)",
       }}>
         
         <div className="main-content" style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "80px",
+          gap: "clamp(32px, 6vw, 80px)",
           alignItems: "center",
           width: "100%",
         }}>
@@ -113,8 +120,8 @@ export default function WelcomePage() {
             <div style={{
               position: "relative",
               background: "white",
-              borderRadius: "32px",
-              padding: "50px",
+              borderRadius: "clamp(16px, 4vw, 32px)",
+              padding: "clamp(24px, 5vw, 50px)",
               boxShadow: "0 24px 64px rgba(15, 98, 254, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08)",
             }}>
               <Image
@@ -125,6 +132,9 @@ export default function WelcomePage() {
                 style={{ 
                   display: "block",
                   borderRadius: "16px",
+                  width: "100%",
+                  height: "auto",
+                  maxWidth: "clamp(240px, 40vw, 320px)",
                 }}
                 priority
               />
@@ -135,17 +145,18 @@ export default function WelcomePage() {
           <div style={{
             display: "flex",
             flexDirection: "column",
-            gap: "40px",
+            gap: "clamp(24px, 4vw, 40px)",
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateX(0)" : "translateX(50px)",
             transition: "opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s",
+            textAlign: "center",
           }}>
             {/* BIZEN Title */}
             <div>
               <h1 style={{
-                fontSize: "clamp(180px, 25vw, 400px)",
+                fontSize: "clamp(64px, 12vw, 160px)",
                 fontWeight: 900,
-                margin: "0 0 24px 0",
+                margin: "0 0 clamp(16px, 3vw, 24px) 0",
                 letterSpacing: "0.03em",
                 fontFamily: "Montserrat, sans-serif",
                 lineHeight: 1,
@@ -159,16 +170,16 @@ export default function WelcomePage() {
                 BIZEN
               </h1>
               <p style={{
-                fontSize: "clamp(18px, 2.2vw, 26px)",
+                fontSize: "clamp(16px, 2.2vw, 26px)",
                 color: "#4A5568",
-                margin: "0 0 12px 0",
+                margin: "0 0 clamp(8px, 1.5vw, 12px) 0",
                 fontWeight: 500,
                 lineHeight: 1.5,
               }}>
                 En BIZEN nuestro lema es aprender.
               </p>
               <p style={{
-                fontSize: "clamp(16px, 2vw, 22px)",
+                fontSize: "clamp(14px, 2vw, 22px)",
                 color: "#718096",
                 margin: 0,
                 fontWeight: 400,
@@ -182,21 +193,21 @@ export default function WelcomePage() {
             <div style={{
               display: "flex",
               flexDirection: "column",
-              gap: "16px",
-              marginTop: "20px",
+              gap: "clamp(12px, 2vw, 16px)",
+              marginTop: "clamp(16px, 2.5vw, 20px)",
             }}>
               <Link
                 href="/dashboard"
                 style={{
-                  padding: "20px 48px",
-                  fontSize: "18px",
+                  padding: "clamp(16px, 3vw, 20px) clamp(32px, 6vw, 48px)",
+                  fontSize: "clamp(16px, 2.2vw, 18px)",
                   fontWeight: 700,
                   fontFamily: "Montserrat, sans-serif",
                   background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
                   backgroundSize: "200% auto",
                   color: "white",
                   border: "none",
-                  borderRadius: "12px",
+                  borderRadius: "clamp(10px, 1.5vw, 12px)",
                   textDecoration: "none",
                   cursor: "pointer",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -204,6 +215,10 @@ export default function WelcomePage() {
                   textAlign: "center",
                   letterSpacing: "0.3px",
                   animation: "shimmerButton 3s ease-in-out infinite",
+                  minHeight: "44px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
@@ -220,20 +235,24 @@ export default function WelcomePage() {
               <Link
                 href="/login"
                 style={{
-                  padding: "20px 48px",
-                  fontSize: "18px",
+                  padding: "clamp(16px, 3vw, 20px) clamp(32px, 6vw, 48px)",
+                  fontSize: "clamp(16px, 2.2vw, 18px)",
                   fontWeight: 700,
                   fontFamily: "Montserrat, sans-serif",
                   background: "white",
                   color: "#0F62FE",
                   border: "2px solid #0F62FE",
-                  borderRadius: "12px",
+                  borderRadius: "clamp(10px, 1.5vw, 12px)",
                   textDecoration: "none",
                   cursor: "pointer",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   boxShadow: "0 4px 16px rgba(15, 98, 254, 0.1)",
                   textAlign: "center",
                   letterSpacing: "0.3px",
+                  minHeight: "44px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
@@ -260,7 +279,7 @@ export default function WelcomePage() {
         position: "relative",
         zIndex: 10,
         width: "100%",
-        padding: "40px",
+        padding: "clamp(24px, 4vw, 40px)",
         background: "rgba(255, 255, 255, 0.9)",
         backdropFilter: "blur(10px)",
         borderTop: "1px solid rgba(15, 98, 254, 0.1)",
@@ -273,8 +292,8 @@ export default function WelcomePage() {
           justifyContent: "center",
           alignItems: "center",
           flexWrap: "wrap",
-          gap: "32px",
-          fontSize: "14px",
+          gap: "clamp(16px, 3vw, 32px)",
+          fontSize: "clamp(12px, 1.8vw, 14px)",
           color: "#718096",
         }}>
           <Link href="/landing" style={{ color: "#4A5568", textDecoration: "none" }}>
@@ -312,35 +331,66 @@ export default function WelcomePage() {
         }
         @media (max-width: 768px) {
           header {
-            padding: 16px 20px !important;
+            flex-wrap: wrap;
+            gap: 12px;
           }
           header nav {
-            gap: 20px !important;
-            font-size: 14px !important;
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
           }
           .main-content {
             grid-template-columns: 1fr !important;
-            gap: 40px !important;
-            padding: 20px !important;
+            gap: clamp(24px, 5vw, 40px) !important;
           }
-          footer {
-            padding: 24px 20px !important;
+          .main-content > div:first-child {
+            order: 2;
+          }
+          .main-content > div:last-child {
+            order: 1;
+          }
+          h1 {
+            font-size: clamp(48px, 18vw, 120px) !important;
+            line-height: 1 !important;
+            text-align: center;
+          }
+          .main-content > div:first-child > div {
+            padding: clamp(16px, 4vw, 24px) !important;
+          }
+          .main-content > div:first-child img {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
           }
           footer > div {
             flex-direction: column !important;
             text-align: center !important;
+            gap: 12px !important;
+          }
+          /* Ensure buttons are full width on mobile */
+          .main-content > div:last-child > div:last-child a {
+            width: 100%;
+          }
+        }
+        @media (max-width: 480px) {
+          h1 {
+            font-size: clamp(40px, 20vw, 80px) !important;
+          }
+          .main-content > div:first-child > div {
+            padding: 12px !important;
+          }
+        }
+        @media (min-width: 769px) {
+          .main-content > div:last-child {
+            text-align: left;
+          }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .main-content {
+            gap: clamp(40px, 6vw, 60px) !important;
           }
           h1 {
-            font-size: clamp(80px, 30vw, 200px) !important;
-            line-height: 0.9 !important;
-          }
-          .main-content > div:first-child {
-            padding: 24px !important;
-          }
-          .main-content > div:first-child img {
-            width: 100% !important;
-            max-width: 280px !important;
-            height: auto !important;
+            font-size: clamp(80px, 14vw, 140px) !important;
           }
         }
       `}</style>

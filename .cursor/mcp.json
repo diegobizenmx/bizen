@@ -2,6 +2,10 @@
     "mcpServers": {
       "supabase": {
         "url": "https://mcp.supabase.com/mcp?project_ref=jbodeaqxjaezzjwewvrg"
+      },
+      "chrome-devtools": {
+        "command": "npx",
+        "args": ["chrome-devtools-mcp@latest"]
       }
     }
   }

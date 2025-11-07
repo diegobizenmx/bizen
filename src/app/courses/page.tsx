@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import Button from "@/components/ui/Button"
 
 interface Lesson {
@@ -33,115 +34,116 @@ interface Course {
   lessons: Lesson[]
 }
 
-// Island component
+// 3D Star component using star.png
 function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; offsetX: number; isNext: boolean; onClick: () => void }) {
+  // Show "START" label and rotation only for the next lesson to complete
+  const showStartLabel = isNext
+  
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ 
-        opacity: 1, 
-        scale: isNext ? [1, 1.08, 1] : 1
-      }}
-      transition={{ 
-        duration: isNext ? 1.5 : 0.4,
-        ease: "easeInOut",
-        repeat: isNext ? Infinity : 0,
-        repeatType: isNext ? "reverse" : undefined
-      }}
-      onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.92 }}
+    <div 
+      className="lesson-island-wrapper"
       style={{
-        width: 180,
-        height: 180,
-        borderRadius: "50%",
         position: "relative",
-        transform: `translateX(${offsetX}px)`,
-        cursor: "pointer",
-        transition: "transform 0.3s ease",
-        filter: lesson.isLocked ? "brightness(0.95)" : "none"
+        transform: `translateX(${offsetX}px)`
       }}
     >
-      {/* Bottom shadow */}
-      <div style={{
-        position: "absolute",
-        bottom: -5,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: 190,
-        height: 25,
-        background: "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%)",
-        borderRadius: "50%",
-        filter: "blur(6px)",
-        zIndex: 0
-      }} />
-
-      {/* Side edge */}
-      <div style={{
-        position: "absolute",
-        top: 16,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: 180,
-        height: 180,
-        borderRadius: "50%",
-        background: lesson.isCompleted
-          ? "#059669"
-          : lesson.isLocked
-          ? "#3B82F6"
-          : "#1E40AF",
-        zIndex: 1
-      }} />
-
-      {/* Top surface */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: 180,
-        height: 180,
-        borderRadius: "50%",
-        background: lesson.isCompleted
-          ? "#10B981"
-          : lesson.isLocked
-          ? "#60A5FA"
-          : "#3B82F6",
-        border: "6px solid #fff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 2,
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"
-      }}>
-        {/* Top highlight */}
+      <motion.div
+        onClick={onClick}
+        whileTap={{ scale: 0.9 }}
+        style={{
+          width: "clamp(120px, 25vw, 180px)",
+          height: "clamp(120px, 25vw, 180px)",
+          position: "relative",
+          cursor: "pointer"
+        }}
+      >
+      {/* "START" Label above star - animated */}
+      {showStartLabel && (
         <div style={{
           position: "absolute",
-          top: "15%",
+          top: "-35px",
           left: "50%",
           transform: "translateX(-50%)",
-          width: "60%",
-          height: "30%",
-          background: "linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%)",
-          borderRadius: "50%",
-          pointerEvents: "none"
-        }} />
-      </div>
+          zIndex: 20,
+          animation: "bounce 1.5s ease-in-out infinite"
+        }}>
+          {/* Speech bubble */}
+          <div style={{
+            background: "white",
+            padding: "8px 16px",
+            borderRadius: "12px",
+            border: "2px solid #3B82F6",
+            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+            position: "relative"
+          }}>
+            <div style={{
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              fontWeight: 900,
+              color: "#3B82F6",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px"
+            }}>
+              START
+            </div>
+            
+            {/* Pointer/tail pointing down to star */}
+            <div style={{
+              position: "absolute",
+              bottom: "-10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 0,
+              height: 0,
+              borderLeft: "10px solid transparent",
+              borderRight: "10px solid transparent",
+              borderTop: "10px solid #3B82F6",
+              zIndex: 1
+            }} />
+            <div style={{
+              position: "absolute",
+              bottom: "-7px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 0,
+              height: 0,
+              borderLeft: "8px solid transparent",
+              borderRight: "8px solid transparent",
+              borderTop: "8px solid white",
+              zIndex: 2
+            }} />
+          </div>
+        </div>
+      )}
+      
+       {/* Star Image */}
+       <Image
+         src="/star.png"
+         alt="Lesson star"
+         width={180}
+         height={180}
+         style={{
+           width: "100%",
+           height: "100%",
+           objectFit: "contain",
+           filter: lesson.isLocked ? "grayscale(1) brightness(0.7)" : "none"
+         }}
+         priority
+       />
 
       {/* Status Badges */}
       {lesson.isLocked && (
         <div style={{
           position: "absolute",
-          top: -8,
-          right: -8,
-          width: 32,
-          height: 32,
+          top: "clamp(-6px, -1vw, -8px)",
+          right: "clamp(-6px, -1vw, -8px)",
+          width: "clamp(24px, 5vw, 32px)",
+          height: "clamp(24px, 5vw, 32px)",
           background: "#fff",
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 16,
+          fontSize: "clamp(12px, 2.5vw, 16px)",
           boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
           zIndex: 10
         }}>
@@ -152,16 +154,16 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
       {lesson.isCompleted && lesson.score && lesson.score >= 90 && (
         <div style={{
           position: "absolute",
-          top: -8,
-          right: -8,
-          width: 32,
-          height: 32,
+          top: "clamp(-6px, -1vw, -8px)",
+          right: "clamp(-6px, -1vw, -8px)",
+          width: "clamp(24px, 5vw, 32px)",
+          height: "clamp(24px, 5vw, 32px)",
           background: "#FFD700",
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 18,
+          fontSize: "clamp(14px, 3vw, 18px)",
           boxShadow: "0 2px 8px rgba(255, 215, 0, 0.4)",
           zIndex: 10
         }}>
@@ -172,16 +174,16 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
       {lesson.isCompleted && (!lesson.score || lesson.score < 90) && (
         <div style={{
           position: "absolute",
-          top: -8,
-          right: -8,
-          width: 32,
-          height: 32,
+          top: "clamp(-6px, -1vw, -8px)",
+          right: "clamp(-6px, -1vw, -8px)",
+          width: "clamp(24px, 5vw, 32px)",
+          height: "clamp(24px, 5vw, 32px)",
           background: "#10B981",
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 18,
+          fontSize: "clamp(14px, 3vw, 18px)",
           color: "#fff",
           fontWeight: 800,
           boxShadow: "0 2px 8px rgba(16, 185, 129, 0.4)",
@@ -190,7 +192,8 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
           ✓
         </div>
       )}
-    </motion.div>
+      </motion.div>
+    </div>
   )
 }
 
@@ -535,19 +538,192 @@ export default function CoursesPage() {
 
   if (!user) return null
 
+  // Function to scroll to a specific course
+  const scrollToCourse = (courseOrder: number) => {
+    const element = document.getElementById(`course-course-${courseOrder}`)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
+
   return (
     <>
-      {/* Sticky Course Bar - Below AppHeader */}
-      <div
-        style={{
+      {/* Left Difficulty Navigation Panel */}
+      <div style={{
         position: "fixed",
-          top: 85,
+        top: 0,
         left: 0,
-          right: 0,
-          zIndex: 99999,
+        width: "200px",
+        height: "100vh",
+        background: "rgba(255, 255, 255, 0.95)",
+        backdropFilter: "blur(10px)",
+        boxShadow: "4px 0 20px rgba(0, 0, 0, 0.08)",
+        zIndex: 998,
+        padding: "32px 16px",
+        fontFamily: "Montserrat, sans-serif",
+        borderRight: "2px solid rgba(59, 130, 246, 0.1)"
+      }}>
+        {/* Logo and Brand */}
+        <div style={{
           display: "flex",
-          justifyContent: "center",
-          pointerEvents: "none"
+          flexDirection: "column",
+          alignItems: "center",
+          marginBottom: 32
+        }}>
+          <Image 
+            src="/bizen-logo.png" 
+            alt="BIZEN Logo" 
+            width={50} 
+            height={50}
+            priority
+            style={{
+              objectFit: "contain",
+              marginBottom: 12
+            }}
+          />
+          <span style={{
+            fontSize: 20,
+            fontWeight: 800,
+            color: "#0F62FE",
+      fontFamily: "Montserrat, sans-serif",
+            letterSpacing: "0.5px"
+          }}>
+            BIZEN
+          </span>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Principiante - Course 1 */}
+          <button
+            onClick={() => scrollToCourse(1)}
+            style={{
+              padding: "16px 12px",
+              background: "#3B82F6",
+              border: "none",
+              borderRadius: 12,
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateX(8px)"
+              e.currentTarget.style.boxShadow = "0 6px 16px rgba(59, 130, 246, 0.4)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateX(0)"
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)"
+            }}
+          >
+            <div style={{
+              fontSize: 14,
+          fontWeight: 800,
+              color: "#fff",
+              textAlign: "center"
+            }}>
+              Principiante
+      </div>
+      <div style={{ 
+              fontSize: 10,
+              color: "rgba(255, 255, 255, 0.8)",
+              marginTop: 4,
+              textAlign: "center"
+            }}>
+              Cursos 1-3
+            </div>
+          </button>
+
+          {/* Intermedio - Course 4 */}
+          <button
+            onClick={() => scrollToCourse(4)}
+            style={{
+              padding: "16px 12px",
+              background: "#3B82F6",
+              border: "none",
+              borderRadius: 12,
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateX(8px)"
+              e.currentTarget.style.boxShadow = "0 6px 16px rgba(59, 130, 246, 0.4)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateX(0)"
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)"
+            }}
+          >
+        <div style={{ 
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#fff",
+              textAlign: "center"
+            }}>
+              Intermedio
+          </div>
+          <div style={{ 
+              fontSize: 10,
+              color: "rgba(255, 255, 255, 0.8)",
+              marginTop: 4,
+              textAlign: "center"
+            }}>
+              Cursos 4-7
+          </div>
+          </button>
+
+          {/* Avanzado - Course 8 */}
+          <button
+            onClick={() => scrollToCourse(8)}
+            style={{
+              padding: "16px 12px",
+              background: "#3B82F6",
+              border: "none",
+              borderRadius: 12,
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateX(8px)"
+              e.currentTarget.style.boxShadow = "0 6px 16px rgba(59, 130, 246, 0.4)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateX(0)"
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)"
+            }}
+          >
+        <div style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#fff",
+              textAlign: "center"
+            }}>
+              Avanzado
+            </div>
+          <div style={{
+              fontSize: 10,
+              color: "rgba(255, 255, 255, 0.8)",
+              marginTop: 4,
+              textAlign: "center"
+            }}>
+              Cursos 8-14
+            </div>
+          </button>
+          </div>
+        </div>
+
+      {/* Sticky Course Bar */}
+      <div
+              style={{
+        position: "fixed",
+          top: "20px",
+        left: "200px",
+          right: "320px",
+          zIndex: 99999,
+                display: "flex",
+                justifyContent: "center",
+        pointerEvents: "none",
+          padding: "0 clamp(16px, 4vw, 24px)",
         }}
       >
         {currentCourse && (
@@ -555,27 +731,29 @@ export default function CoursesPage() {
             style={{
               background: "#3B82F6",
               boxShadow: "0 6px 20px rgba(37, 99, 235, 0.5)",
-              padding: "10px 24px",
+              padding: "clamp(14px, 2.5vw, 18px) clamp(32px, 5vw, 48px)",
               borderRadius: 20,
               border: "3px solid #fff",
               pointerEvents: "auto",
-              display: "inline-block"
+              display: "inline-block",
+              maxWidth: "clamp(300px, 70vw, 500px)",
+              minWidth: "clamp(250px, 60vw, 400px)"
             }}
           >
-            <div style={{
-              fontSize: 9,
+                <div style={{
+              fontSize: "clamp(10px, 2vw, 12px)",
               fontWeight: 700,
               color: "rgba(255, 255, 255, 0.8)",
               textTransform: "uppercase",
               letterSpacing: "0.5px",
-              marginBottom: 3,
+              marginBottom: 4,
               textAlign: "center",
               whiteSpace: "nowrap"
             }}>
               CURSO {currentCourse.order}
-            </div>
-        <div style={{
-              fontSize: 14,
+                </div>
+      <div style={{ 
+              fontSize: "clamp(16px, 3vw, 18px)",
               fontWeight: 800,
               color: "#fff",
               lineHeight: 1.2,
@@ -584,69 +762,122 @@ export default function CoursesPage() {
             }}>
               {currentCourse.title}
             </div>
-          </div>
+        </div>
         )}
       </div>
 
     <main style={{ 
         minHeight: "100vh",
-        paddingTop: 120,
-        paddingBottom: 80,
+        paddingTop: "80px",
+        paddingBottom: "clamp(40px, 8vw, 80px)",
+        paddingLeft: "200px",
+        paddingRight: "320px",
       fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(to bottom, #f0f7ff 0%, #ffffff 100%)"
+        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        position: "relative"
       }}>
+        {/* Decorative Background - Duolingo Style */}
+      <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+        width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 0,
+          overflow: "hidden"
+        }}>
+          {/* Soft gradient orbs */}
+        <div style={{
+            position: "absolute",
+            top: "15%",
+            right: "8%",
+            width: "400px",
+            height: "400px",
+            background: "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
+            borderRadius: "50%",
+            filter: "blur(60px)"
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: "15%",
+            left: "8%",
+            width: "450px",
+            height: "450px",
+            background: "radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)",
+            borderRadius: "50%",
+            filter: "blur(70px)"
+          }} />
+          <div style={{
+            position: "absolute",
+            top: "40%",
+            left: "50%",
+            width: "500px",
+            height: "500px",
+            background: "radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 70%)",
+            borderRadius: "50%",
+            filter: "blur(80px)"
+          }} />
+        </div>
         {/* Island Path */}
-        <div style={{ 
+        <div style={{
           maxWidth: 800,
           margin: "0 auto",
-          position: "relative"
+          position: "relative",
+          zIndex: 1
         }}>
           {courses.map((course) => (
-            <div key={course.id} id={`course-${course.id}`} style={{ marginBottom: 80 }}>
+            <div key={course.id} id={`course-${course.id}`} style={{ marginBottom: "clamp(40px, 8vw, 80px)" }}>
               {/* Course Separator - Subtle */}
-          <div style={{ 
-                textAlign: "center",
-                marginBottom: 80,
-                padding: "20px 0"
-        }}>
           <div style={{
-                  display: "inline-block",
-                  padding: "14px 28px",
-                  background: "rgba(255, 255, 255, 0.95)",
-                  borderRadius: 24,
-                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
-                  border: "2px solid #E5E7EB"
-                }}>
+                textAlign: "center",
+                marginBottom: "clamp(40px, 8vw, 80px)",
+                padding: "clamp(12px, 3vw, 20px) 0"
+        }}>
             <div style={{
-                    fontSize: 15,
+                  display: "inline-block",
+                  padding: "clamp(10px, 2vw, 14px) clamp(20px, 4vw, 28px)",
+                  background: "rgba(255, 255, 255, 0.95)",
+                  borderRadius: "clamp(16px, 3vw, 24px)",
+                  boxShadow: "0 4px 20px rgba(59, 130, 246, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1)",
+                  border: "2px solid rgba(147, 197, 253, 0.4)",
+                  backdropFilter: "blur(10px)"
+                }}>
+                <div style={{
+                    fontSize: "clamp(13px, 2.5vw, 15px)",
                     fontWeight: 800,
-                    color: "#111"
+                    color: "#1E40AF"
                   }}>
                     📘 {course.title}
-                  </div>
-          </div>
+                </div>
         </div>
+      </div>
 
               {/* Lessons in Smooth Curve */}
-        <div style={{ 
-                display: "flex",
+      <div style={{
+          display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: 80
+                gap: "clamp(40px, 8vw, 80px)"
               }}>
                 {course.lessons.map((lesson, lessonIdx) => {
                   // Irregular positioning - more organic, less perfect
-                  const baseAmplitude = 150
+                  // Responsive amplitude: smaller on mobile, larger on desktop
+                  const baseAmplitude = typeof window !== 'undefined' 
+                    ? Math.min(150, Math.max(80, window.innerWidth * 0.4))
+                    : 150
                   const randomOffset = (lessonIdx * 73) % 40 - 20 // Pseudo-random offset
                   const waveOffset = Math.sin(lessonIdx * 0.7) * baseAmplitude
                   const offsetX = waveOffset + randomOffset
                   
-                  // Determine if this is the next lesson
+                  // Determine if this is the next lesson to complete
                   const isNext = !lesson.isLocked && !lesson.isCompleted && 
                     (lessonIdx === 0 || course.lessons[lessonIdx - 1]?.isCompleted)
                   
                   const isSelected = selectedLesson?.id === lesson.id
-                  const isLeftSide = offsetX < 0
+                  
+                  // Alternate panel position: even indices on right, odd on left
+                  const showOnRight = lessonIdx % 2 === 0
             
             return (
               <div
@@ -666,83 +897,96 @@ export default function CoursesPage() {
                         onClick={() => setSelectedLesson(selectedLesson?.id === lesson.id ? null : lesson)}
                       />
                       
-                      {/* Preview Panel Next to Island */}
+                      {/* Preview Panel - Alternates between right and left */}
                       <AnimatePresence>
                         {isSelected && (
                           <motion.div
-                            initial={{ opacity: 0, scale: 0.9, x: isLeftSide ? -10 : 10 }}
-                            animate={{ opacity: 1, scale: 1, x: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, x: isLeftSide ? -10 : 10 }}
-                            style={{
-                    position: "absolute",
-                              top: "50%",
-                    transform: "translateY(-50%)",
-                              left: isLeftSide ? "calc(50% + 120px)" : "auto",
-                              right: !isLeftSide ? "calc(50% + 120px)" : "auto",
-                              width: 300,
-                              background: "#F3F4F6",
-                              borderRadius: 16,
-                              boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                            initial={{ opacity: 0, x: showOnRight ? -10 : 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: showOnRight ? -10 : 10 }}
+                  style={{ 
+                              position: "absolute",
+                              top: "0",
+                              [showOnRight ? 'left' : 'right']: showOnRight 
+                                ? `calc(50% + ${offsetX}px + clamp(60px, 12.5vw, 90px) + clamp(25px, 5vw, 35px))`
+                                : `calc(50% - ${offsetX}px + clamp(60px, 12.5vw, 90px) + clamp(25px, 5vw, 35px))`,
+                              transform: "translateY(0)",
+                              width: "clamp(200px, 45vw, 260px)",
+                              maxWidth: "calc(100vw - 40px)",
+                              background: "rgba(224, 242, 254, 0.95)",
+                              borderRadius: "clamp(10px, 1.5vw, 12px)",
+                              boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08)",
                               zIndex: 100,
-                              border: "2px solid #E5E7EB"
+                              border: "2px solid rgba(147, 197, 253, 0.5)",
+                              backdropFilter: "blur(12px)"
                             }}
                           >
-                            {/* Preview Content */}
-                            <div style={{ padding: "20px" }}>
+                            {/* Tail/Pointer - points left if on right, points right if on left */}
                     <div style={{
-                                fontSize: 11,
+                      position: "absolute",
+                              top: "50%",
+                      [showOnRight ? 'left' : 'right']: "-20px",
+                              transform: "translateY(-50%)",
+                              width: 0,
+                              height: 0,
+                              borderTop: "20px solid transparent",
+                              borderBottom: "20px solid transparent",
+                              [showOnRight ? 'borderRight' : 'borderLeft']: "20px solid #E5E7EB",
+                              zIndex: 101
+                            }} />
+                      <div style={{
+                        position: "absolute",
+                              top: "50%",
+                        [showOnRight ? 'left' : 'right']: "-17px",
+                        transform: "translateY(-50%)",
+                        width: 0,
+                        height: 0,
+                              borderTop: "18px solid transparent",
+                              borderBottom: "18px solid transparent",
+                              [showOnRight ? 'borderRight' : 'borderLeft']: "18px solid #F3F4F6",
+                              zIndex: 102
+                            }} />
+                            
+                            {/* Preview Content */}
+                            <div style={{ padding: "clamp(12px, 2vw, 14px)" }}>
+            <div style={{
+                                fontSize: "clamp(9px, 1.5vw, 10px)",
                       fontWeight: 700,
                                 color: "#6B7280",
-                                marginBottom: 6,
+                                marginBottom: 4,
                                 textTransform: "uppercase"
                               }}>
                                 Lección {lesson.order}
               </div>
               <h3 style={{ 
-                                margin: "0 0 6px",
-                                fontSize: 16,
+                                margin: "0 0 4px",
+                                fontSize: "clamp(12px, 2vw, 14px)",
                       fontWeight: 800,
                                 color: "#111"
               }}>
                                 {lesson.title}
               </h3>
                               <div style={{
-                                fontSize: 12,
+                                fontSize: "clamp(10px, 1.5vw, 11px)",
                                 color: "#6B7280",
-                                marginBottom: 16
+                                marginBottom: 12
                               }}>
                                 {lesson.unitTitle}
             </div>
 
-                              {lesson.isLocked ? (
-              <div style={{
-                                  padding: "14px",
-                                  background: "#FEF3C7",
-                                  borderRadius: 10,
-                      textAlign: "center",
-                                  border: "1px solid #F59E0B"
-                                }}>
-                                  <div style={{ fontSize: 28, marginBottom: 6 }}>🔒</div>
-                                  <div style={{ fontSize: 13, fontWeight: 700, color: "#92400E" }}>
-                                    Bloqueada
-                      </div>
-                                  <div style={{ fontSize: 11, color: "#78350F", marginTop: 4 }}>
-                                    Completa la lección anterior
-                  </div>
-                </div>
-                              ) : (
+                              {!lesson.isLocked && (
                                 <motion.div whileTap={{ scale: 0.95 }}>
                                   <Button
                                     onClick={() => {
                                       router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}`)
                                     }}
-                                    style={{ width: "100%", fontSize: 14, padding: "10px 16px" }}
+                                    style={{ width: "100%", fontSize: "clamp(11px, 2vw, 12px)", padding: "clamp(8px, 1.5vw, 10px) clamp(10px, 2vw, 12px)" }}
                                   >
                                     {lesson.isCompleted ? "Revisar →" : "Comenzar →"}
                                   </Button>
                                 </motion.div>
                               )}
-            </div>
+                      </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -765,6 +1009,38 @@ export default function CoursesPage() {
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+          0%, 100% { transform: translateX(-50%) translateY(0); }
+          50% { transform: translateX(-50%) translateY(-8px); }
+        }
+        
+        @keyframes softRotate {
+          0% { transform: rotateY(0deg); }
+          100% { transform: rotateY(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+          /* Make preview panel full width on mobile */
+          [style*="position: absolute"][style*="top: 50%"] {
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-top: 16px !important;
+          }
+          
+          /* Reduce lesson island size on very small screens */
+          @media (max-width: 480px) {
+            [style*="width: clamp(120px"] {
+              width: clamp(100px, 22vw, 140px) !important;
+              height: clamp(100px, 22vw, 140px) !important;
+            }
+          }
         }
       `}</style>
     </>

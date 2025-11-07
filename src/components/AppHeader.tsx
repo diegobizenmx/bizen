@@ -1,11 +1,19 @@
 "use client"
 
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import FixedSidebar from "./FixedSidebar"
 
 export default function AppHeader() {
   const router = useRouter()
+  const pathname = usePathname()
+  
+  // Don't show header on courses page
+  const isCoursesPage = pathname === '/courses'
+  
+  if (isCoursesPage) {
+    return <FixedSidebar />
+  }
 
   return (
     <>
