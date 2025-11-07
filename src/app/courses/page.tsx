@@ -224,12 +224,12 @@ export default function CoursesPage() {
             id: "course-1", title: "Fundamentos del Dinero", description: "Aprende los conceptos básicos sobre el dinero", level: "Beginner", order: 1,
             lessons: [
               { unitTitle: "¿Qué es el dinero?", title: "Historia del dinero" },
-              { unitTitle: "¿Qué es el dinero?", title: "Cómo gana valor" },
+              { unitTitle: "¿Qué es el dinero?", title: "¿Cómo gana valor?" },
               { unitTitle: "¿Qué es el dinero?", title: "Dinero físico vs digital" },
               { unitTitle: "Conceptos financieros básicos", title: "Ingresos y gastos" },
-              { unitTitle: "Conceptos financieros básicos", title: "Qué es el presupuesto" },
+              { unitTitle: "Conceptos financieros básicos", title: "¿Qué es el presupuesto?" },
               { unitTitle: "Conceptos financieros básicos", title: "Ciclo del dinero" },
-              { unitTitle: "Educación financiera personal", title: "Por qué importa" },
+              { unitTitle: "Educación financiera personal", title: "¿Por qué importa?" },
               { unitTitle: "Educación financiera personal", title: "Finanzas en la vida diaria" },
               { unitTitle: "Educación financiera personal", title: "Mentalidad financiera" }
             ]
@@ -237,15 +237,15 @@ export default function CoursesPage() {
           {
             id: "course-2", title: "Finanzas Personales", description: "Gestión de presupuesto personal", level: "Beginner", order: 2,
             lessons: [
-              { unitTitle: "Presupuesto y control", title: "Cómo crear un presupuesto" },
+              { unitTitle: "Presupuesto y control", title: "¿Cómo crear un presupuesto?" },
               { unitTitle: "Presupuesto y control", title: "Apps para organizar dinero" },
               { unitTitle: "Presupuesto y control", title: "Errores comunes" },
               { unitTitle: "Ahorro inteligente", title: "Métodos para ahorrar" },
               { unitTitle: "Ahorro inteligente", title: "Fondo de emergencia" },
               { unitTitle: "Ahorro inteligente", title: "Metas financieras" },
-              { unitTitle: "Deudas y crédito", title: "Qué es el crédito" },
+              { unitTitle: "Deudas y crédito", title: "¿Qué es el crédito?" },
               { unitTitle: "Deudas y crédito", title: "Tipos de deuda" },
-              { unitTitle: "Deudas y crédito", title: "Cómo evitar sobreendeudarte" }
+              { unitTitle: "Deudas y crédito", title: "¿Cómo evitar sobreendeudarte?" }
             ]
           },
           {
@@ -273,19 +273,19 @@ export default function CoursesPage() {
               { unitTitle: "Finanzas del negocio", title: "Flujo de efectivo" },
               { unitTitle: "Crecimiento", title: "Branding y marketing" },
               { unitTitle: "Crecimiento", title: "Control de inventario" },
-              { unitTitle: "Crecimiento", title: "Cómo reinvertir utilidades" }
+              { unitTitle: "Crecimiento", title: "¿Cómo reinvertir utilidades?" }
             ]
           },
           {
             id: "course-5", title: "Impuestos y Obligaciones", description: "Todo sobre impuestos en México", level: "Intermediate", order: 5,
             lessons: [
-              { unitTitle: "SAT y RFC", title: "Qué son los impuestos" },
+              { unitTitle: "SAT y RFC", title: "¿Qué son los impuestos?" },
               { unitTitle: "SAT y RFC", title: "Tipos de contribuyentes" },
               { unitTitle: "SAT y RFC", title: "RFC y e.firma" },
               { unitTitle: "Declarar y facturar", title: "Declaración anual" },
               { unitTitle: "Declarar y facturar", title: "Facturación electrónica" },
               { unitTitle: "Declarar y facturar", title: "Deducciones personales" },
-              { unitTitle: "Derechos y errores comunes", title: "Qué pasa si no declaras" },
+              { unitTitle: "Derechos y errores comunes", title: "¿Qué pasa si no declaras?" },
               { unitTitle: "Derechos y errores comunes", title: "Multas y beneficios" },
               { unitTitle: "Derechos y errores comunes", title: "Usar tus impuestos a favor" }
             ]
@@ -309,11 +309,11 @@ export default function CoursesPage() {
             lessons: [
               { unitTitle: "Comunicación financiera", title: "Hablar de dinero sin discutir" },
               { unitTitle: "Comunicación financiera", title: "Expectativas y valores" },
-              { unitTitle: "Comunicación financiera", title: "Cuentas separadas o conjuntas" },
+              { unitTitle: "Comunicación financiera", title: "¿Cuentas separadas o conjuntas?" },
               { unitTitle: "Presupuesto familiar", title: "Planear ingresos y gastos" },
               { unitTitle: "Presupuesto familiar", title: "Gastos compartidos" },
               { unitTitle: "Presupuesto familiar", title: "Fondo para emergencias" },
-              { unitTitle: "Decisiones grandes", title: "Comprar o rentar" },
+              { unitTitle: "Decisiones grandes", title: "¿Comprar o rentar?" },
               { unitTitle: "Decisiones grandes", title: "Matrimonio y finanzas" },
               { unitTitle: "Decisiones grandes", title: "Prevenir crisis financieras" }
             ]
@@ -321,22 +321,22 @@ export default function CoursesPage() {
           {
             id: "course-8", title: "Inversiones Básicas", description: "Introducción al mundo de las inversiones", level: "Intermediate", order: 8,
             lessons: [
-              { unitTitle: "Por qué invertir", title: "Interés compuesto" },
-              { unitTitle: "Por qué invertir", title: "Riesgo vs rendimiento" },
-              { unitTitle: "Por qué invertir", title: "Inversión a corto y largo plazo" },
+              { unitTitle: "¿Por qué invertir?", title: "Interés compuesto" },
+              { unitTitle: "¿Por qué invertir?", title: "Riesgo vs rendimiento" },
+              { unitTitle: "¿Por qué invertir?", title: "Inversión a corto y largo plazo" },
               { unitTitle: "Instrumentos financieros", title: "Cetes y bonos" },
               { unitTitle: "Instrumentos financieros", title: "Acciones y fondos" },
               { unitTitle: "Instrumentos financieros", title: "Criptomonedas" },
               { unitTitle: "Estrategias de inversión", title: "Diversificación" },
               { unitTitle: "Estrategias de inversión", title: "Errores comunes" },
-              { unitTitle: "Estrategias de inversión", title: "Cómo empezar con poco dinero" }
+              { unitTitle: "Estrategias de inversión", title: "¿Cómo empezar con poco dinero?" }
             ]
           },
           {
             id: "course-9", title: "Inversiones para Jóvenes", description: "Estrategias de inversión juvenil", level: "Advanced", order: 9,
             lessons: [
               { unitTitle: "Tu primer portafolio", title: "Cetes, fondos y apps" },
-              { unitTitle: "Tu primer portafolio", title: "Cuánto invertir" },
+              { unitTitle: "Tu primer portafolio", title: "¿Cuánto invertir?" },
               { unitTitle: "Tu primer portafolio", title: "Riesgos y recompensas" },
               { unitTitle: "Inversión digital", title: "Cripto y blockchain" },
               { unitTitle: "Inversión digital", title: "Robo-advisors" },
@@ -349,9 +349,9 @@ export default function CoursesPage() {
           {
             id: "course-10", title: "Finanzas Sostenibles y ESG", description: "Inversión responsable y ESG", level: "Advanced", order: 10,
             lessons: [
-              { unitTitle: "Qué es ESG", title: "Medio ambiente, sociedad, gobernanza" },
-              { unitTitle: "Qué es ESG", title: "Empresas sostenibles" },
-              { unitTitle: "Qué es ESG", title: "Evaluar impacto" },
+              { unitTitle: "¿Qué es ESG?", title: "Medio ambiente, sociedad, gobernanza" },
+              { unitTitle: "¿Qué es ESG?", title: "Empresas sostenibles" },
+              { unitTitle: "¿Qué es ESG?", title: "Evaluar impacto" },
               { unitTitle: "Consumo consciente", title: "Finanzas éticas" },
               { unitTitle: "Consumo consciente", title: "Reducir y reutilizar" },
               { unitTitle: "Consumo consciente", title: "Finanzas personales sostenibles" },
@@ -511,6 +511,24 @@ export default function CoursesPage() {
     return () => observer.disconnect()
   }, [courses, currentCourse])
 
+  // Set body and html background for this page
+  useEffect(() => {
+    const htmlEl = document.documentElement
+    const bodyEl = document.body
+    
+    htmlEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+    htmlEl.style.backgroundAttachment = "fixed"
+    bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+    bodyEl.style.backgroundAttachment = "fixed"
+    
+    return () => {
+      htmlEl.style.background = ""
+      htmlEl.style.backgroundAttachment = ""
+      bodyEl.style.background = "#fff"
+      bodyEl.style.backgroundAttachment = "scroll"
+    }
+  }, [])
+
   if (loading || loadingData) {
     return (
       <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "Montserrat, sans-serif" }}>
@@ -547,7 +565,51 @@ export default function CoursesPage() {
   }
 
   return (
-    <>
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      overflowY: "auto",
+      overflowX: "hidden"
+    }}>
+      {/* Decorative Orbs */}
+      <div style={{
+        position: "fixed",
+        top: "15%",
+        right: "8%",
+        width: "400px",
+        height: "400px",
+        background: "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(60px)",
+        pointerEvents: "none"
+      }} />
+      <div style={{
+        position: "fixed",
+        bottom: "15%",
+        left: "8%",
+        width: "450px",
+        height: "450px",
+        background: "radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(70px)",
+        pointerEvents: "none"
+      }} />
+      <div style={{
+        position: "fixed",
+        top: "40%",
+        left: "50%",
+        width: "500px",
+        height: "500px",
+        background: "radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(80px)",
+        pointerEvents: "none"
+      }} />
+
       {/* Left Difficulty Navigation Panel */}
       <div style={{
         position: "fixed",
@@ -555,37 +617,36 @@ export default function CoursesPage() {
         left: 0,
         width: "200px",
         height: "100vh",
-        background: "rgba(255, 255, 255, 0.95)",
-        backdropFilter: "blur(10px)",
-        boxShadow: "4px 0 20px rgba(0, 0, 0, 0.08)",
+        background: "transparent",
         zIndex: 998,
         padding: "32px 16px",
         fontFamily: "Montserrat, sans-serif",
-        borderRight: "2px solid rgba(59, 130, 246, 0.1)"
+        borderRight: "2px solid rgba(147, 197, 253, 0.3)"
       }}>
         {/* Logo and Brand */}
         <div style={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           alignItems: "center",
-          marginBottom: 32
+          justifyContent: "center",
+          marginBottom: 32,
+          gap: 10
         }}>
           <Image 
             src="/bizen-logo.png" 
             alt="BIZEN Logo" 
-            width={50} 
-            height={50}
+            width={40} 
+            height={40}
             priority
             style={{
-              objectFit: "contain",
-              marginBottom: 12
+              objectFit: "contain"
             }}
           />
           <span style={{
             fontSize: 20,
             fontWeight: 800,
             color: "#0F62FE",
-      fontFamily: "Montserrat, sans-serif",
+            fontFamily: "Montserrat, sans-serif",
             letterSpacing: "0.5px"
           }}>
             BIZEN
@@ -766,6 +827,7 @@ export default function CoursesPage() {
         )}
       </div>
 
+
     <main style={{ 
         minHeight: "100vh",
         paddingTop: "80px",
@@ -773,52 +835,9 @@ export default function CoursesPage() {
         paddingLeft: "200px",
         paddingRight: "320px",
       fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "transparent",
         position: "relative"
       }}>
-        {/* Decorative Background - Duolingo Style */}
-      <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-        width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          zIndex: 0,
-          overflow: "hidden"
-        }}>
-          {/* Soft gradient orbs */}
-        <div style={{
-            position: "absolute",
-            top: "15%",
-            right: "8%",
-            width: "400px",
-            height: "400px",
-            background: "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
-            borderRadius: "50%",
-            filter: "blur(60px)"
-          }} />
-          <div style={{
-            position: "absolute",
-            bottom: "15%",
-            left: "8%",
-            width: "450px",
-            height: "450px",
-            background: "radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)",
-            borderRadius: "50%",
-            filter: "blur(70px)"
-          }} />
-          <div style={{
-            position: "absolute",
-            top: "40%",
-            left: "50%",
-            width: "500px",
-            height: "500px",
-            background: "radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 70%)",
-            borderRadius: "50%",
-            filter: "blur(80px)"
-          }} />
-        </div>
         {/* Island Path */}
         <div style={{
           maxWidth: 800,
@@ -1043,6 +1062,6 @@ export default function CoursesPage() {
           }
         }
       `}</style>
-    </>
+    </div>
   )
 }

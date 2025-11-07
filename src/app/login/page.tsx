@@ -147,7 +147,7 @@ function BIZENLoginContent() {
       setLoading(true)
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw error
-      router.replace("/dashboard")
+      router.replace("/courses")
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Error al iniciar sesión"
       setMessage(translateAuthError(errorMessage))

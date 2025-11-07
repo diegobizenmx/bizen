@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.redirect(`${origin}/bizen/dashboard`)
+    return NextResponse.redirect(`${origin}/courses`)
   }
 
   return NextResponse.redirect(`${origin}/login`)
