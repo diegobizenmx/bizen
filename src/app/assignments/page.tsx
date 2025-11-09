@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import Card from "@/components/ui/Card"
 import Button from "@/components/ui/Button"
+import PageLogo from "@/components/PageLogo"
 
 interface Assignment {
   id: string
@@ -25,6 +26,19 @@ export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [loadingAssignments, setLoadingAssignments] = useState(true)
   const [filter, setFilter] = useState<"all" | "pending" | "submitted" | "graded">("all")
+
+  useEffect(() => {
+    // Set blue gradient background for this page
+    const bodyEl = document.body
+    if (bodyEl) {
+      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.backgroundAttachment = "fixed"
+    }
+    return () => {
+      bodyEl.style.background = "#fff"
+      bodyEl.style.backgroundAttachment = "scroll"
+    }
+  }, [])
 
   useEffect(() => {
     if (loading) return
@@ -141,26 +155,75 @@ export default function AssignmentsPage() {
   }
 
   return (
+    <div style={{
+      position: "relative",
+      minHeight: "100vh",
+      paddingTop: 40,
+      paddingBottom: 80,
+      fontFamily: "Montserrat, sans-serif",
+      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      backgroundAttachment: "fixed"
+    }}>
+      {/* Decorative Orbs */}
+      <div style={{
+        position: "fixed",
+        top: "10%",
+        left: "5%",
+        width: 300,
+        height: 300,
+        background: "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(60px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
+      <div style={{
+        position: "fixed",
+        top: "60%",
+        right: "8%",
+        width: 400,
+        height: 400,
+        background: "radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(80px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
+      <div style={{
+        position: "fixed",
+        bottom: "5%",
+        left: "15%",
+        width: 350,
+        height: 350,
+        background: "radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(70px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
+
     <main style={{ 
+        position: "relative",
       maxWidth: 1000, 
       margin: "0 auto", 
       padding: "clamp(20px, 4vw, 40px)",
+        zIndex: 1,
       fontFamily: "Montserrat, sans-serif"
     }}>
+        {/* Logo */}
+        <PageLogo />
+
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ 
           margin: 0, 
           fontSize: "clamp(28px, 6vw, 36px)", 
           fontWeight: 800,
-          background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text"
+            color: "#1E40AF"
         }}>
-          📝 Mis Asignaciones
+            Mis Asignaciones
         </h1>
-        <p style={{ margin: "8px 0 0", color: "#666", fontSize: "clamp(14px, 3vw, 16px)" }}>
+          <p style={{ margin: "8px 0 0", color: "#374151", fontSize: "clamp(14px, 3vw, 16px)", fontWeight: 600 }}>
           Gestiona y envía tus tareas
         </p>
       </div>
@@ -172,18 +235,42 @@ export default function AssignmentsPage() {
         gap: 16,
         marginBottom: 32
       }}>
-        <Card style={{ textAlign: "center", padding: "20px 16px" }}>
+          <div style={{ 
+            textAlign: "center", 
+            padding: "20px 16px",
+            background: "rgba(255, 255, 255, 0.4)",
+            backdropFilter: "blur(20px)",
+            borderRadius: 16,
+            border: "2px solid rgba(255, 255, 255, 0.6)",
+            boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
+          }}>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#F59E0B" }}>{pendingCount}</div>
-          <div style={{ fontSize: 14, color: "#666", marginTop: 4 }}>Pendientes</div>
-        </Card>
-        <Card style={{ textAlign: "center", padding: "20px 16px" }}>
+            <div style={{ fontSize: 14, color: "#374151", fontWeight: 600, marginTop: 4 }}>Pendientes</div>
+          </div>
+          <div style={{ 
+            textAlign: "center", 
+            padding: "20px 16px",
+            background: "rgba(255, 255, 255, 0.4)",
+            backdropFilter: "blur(20px)",
+            borderRadius: 16,
+            border: "2px solid rgba(255, 255, 255, 0.6)",
+            boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
+          }}>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#0F62FE" }}>{submittedCount}</div>
-          <div style={{ fontSize: 14, color: "#666", marginTop: 4 }}>Enviadas</div>
-        </Card>
-        <Card style={{ textAlign: "center", padding: "20px 16px" }}>
+            <div style={{ fontSize: 14, color: "#374151", fontWeight: 600, marginTop: 4 }}>Enviadas</div>
+          </div>
+          <div style={{ 
+            textAlign: "center", 
+            padding: "20px 16px",
+            background: "rgba(255, 255, 255, 0.4)",
+            backdropFilter: "blur(20px)",
+            borderRadius: 16,
+            border: "2px solid rgba(255, 255, 255, 0.6)",
+            boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
+          }}>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#10B981" }}>{gradedCount}</div>
-          <div style={{ fontSize: 14, color: "#666", marginTop: 4 }}>Calificadas</div>
-        </Card>
+            <div style={{ fontSize: 14, color: "#374151", fontWeight: 600, marginTop: 4 }}>Calificadas</div>
+          </div>
       </div>
 
       {/* Filter Tabs */}
@@ -191,7 +278,11 @@ export default function AssignmentsPage() {
         display: "flex",
         gap: 8,
         marginBottom: 24,
-        borderBottom: "2px solid #E5E7EB",
+          background: "rgba(255, 255, 255, 0.4)",
+          backdropFilter: "blur(20px)",
+          borderRadius: 16,
+          padding: 8,
+          border: "2px solid rgba(255, 255, 255, 0.6)",
         flexWrap: "wrap"
       }}>
         {[
@@ -205,14 +296,15 @@ export default function AssignmentsPage() {
             onClick={() => setFilter(tab.key as any)}
             style={{
               padding: "12px 20px",
-              background: "transparent",
+                background: filter === tab.key ? "rgba(15, 98, 254, 0.15)" : "transparent",
               border: "none",
-              borderBottom: filter === tab.key ? "3px solid #0F62FE" : "3px solid transparent",
+                borderRadius: 12,
               color: filter === tab.key ? "#0F62FE" : "#6B7280",
-              fontWeight: filter === tab.key ? 700 : 500,
+                fontWeight: filter === tab.key ? 700 : 600,
               fontSize: 15,
               cursor: "pointer",
-              transition: "all 0.2s ease"
+                transition: "all 0.2s ease",
+                fontFamily: "Montserrat, sans-serif"
             }}
           >
             {tab.label}
@@ -223,21 +315,26 @@ export default function AssignmentsPage() {
       {/* Assignments List */}
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {filteredAssignments.map(assignment => (
-          <Card 
+            <div 
             key={assignment.id}
             style={{ 
               padding: 24,
               cursor: "pointer",
-              transition: "all 0.3s ease"
+                transition: "all 0.3s ease",
+                background: "rgba(255, 255, 255, 0.4)",
+                backdropFilter: "blur(20px)",
+                borderRadius: 20,
+                border: "2px solid rgba(255, 255, 255, 0.6)",
+                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
             }}
             onClick={() => router.push(`/assignments/${assignment.id}`)}
             onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
               e.currentTarget.style.transform = "translateY(-2px)"
-              e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.1)"
+                e.currentTarget.style.boxShadow = "0 12px 40px rgba(59, 130, 246, 0.2)"
             }}
             onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
               e.currentTarget.style.transform = "translateY(0)"
-              e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.06)"
+                e.currentTarget.style.boxShadow = "0 8px 32px rgba(31, 38, 135, 0.15)"
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20, flexWrap: "wrap" }}>
@@ -256,11 +353,11 @@ export default function AssignmentsPage() {
                   {getStatusLabel(assignment.status)}
                 </div>
 
-                <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>
+                <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700, color: "#1E40AF" }}>
                   {assignment.title}
                 </h3>
 
-                <div style={{ fontSize: 14, color: "#666", marginBottom: 12 }}>
+                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600, marginBottom: 12 }}>
                   {assignment.courseTitle} › {assignment.unitTitle}
                 </div>
 
@@ -268,11 +365,12 @@ export default function AssignmentsPage() {
                   display: "flex", 
                   gap: 16, 
                   fontSize: 13, 
-                  color: "#666",
+                  color: "#374151",
+                  fontWeight: 600,
                   flexWrap: "wrap"
                 }}>
-                  <span>📅 Entrega: {new Date(assignment.dueAt).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                  <span>⭐ {assignment.points} puntos</span>
+                  <span>Entrega: {new Date(assignment.dueAt).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  <span>{assignment.points} puntos</span>
                   {assignment.status === "graded" && assignment.score !== undefined && (
                     <span style={{ color: "#10B981", fontWeight: 600 }}>
                       ✓ Calificación: {assignment.score}/{assignment.points}
@@ -309,26 +407,35 @@ export default function AssignmentsPage() {
                 </Button>
               )}
             </div>
-          </Card>
+            </div>
         ))}
       </div>
 
       {/* Empty State */}
       {filteredAssignments.length === 0 && (
-        <Card style={{ padding: "60px 40px", textAlign: "center" }}>
+          <div style={{ 
+            padding: "60px 40px", 
+            textAlign: "center",
+            background: "rgba(255, 255, 255, 0.4)",
+            backdropFilter: "blur(20px)",
+            borderRadius: 20,
+            border: "2px solid rgba(255, 255, 255, 0.6)",
+            boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
+          }}>
           <div style={{ fontSize: 64, marginBottom: 16 }}>📝</div>
-          <h3 style={{ margin: "0 0 8px", fontSize: 20, fontWeight: 700 }}>
+            <h3 style={{ margin: "0 0 8px", fontSize: 20, fontWeight: 700, color: "#1E40AF" }}>
             No hay asignaciones {filter !== "all" && getStatusLabel(filter).toLowerCase()}
           </h3>
-          <p style={{ margin: 0, color: "#666", fontSize: 14 }}>
+            <p style={{ margin: 0, color: "#374151", fontSize: 14, fontWeight: 600 }}>
             {filter === "pending" && "¡Genial! Estás al día con tus tareas"}
             {filter === "submitted" && "No tienes asignaciones esperando calificación"}
             {filter === "graded" && "Aún no tienes asignaciones calificadas"}
             {filter === "all" && "No tienes asignaciones aún"}
           </p>
-        </Card>
+          </div>
       )}
     </main>
+    </div>
   )
 }
 

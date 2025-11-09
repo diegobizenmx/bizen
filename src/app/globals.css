@@ -353,3 +353,92 @@ body, html {
   }
 }
 
+/* ==========================================
+   THEME SYSTEM (Dark Mode & Accessibility)
+   ========================================== */
+
+:root {
+  --transition-duration: 300ms;
+}
+
+/* Light Theme (Default) */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --text-primary: #0f172a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --border-color: #e5e7eb;
+  --accent-color: #0f62fe;
+  --accent-hover: #0842a0;
+}
+
+/* Dark Theme */
+.dark {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --border-color: #475569;
+  --accent-color: #3b82f6;
+  --accent-hover: #60a5fa;
+}
+
+html.dark {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+html.dark body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --bg-primary: #000000;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #c0c0c0;
+  --border-color: #ffffff;
+  --accent-color: #ffff00;
+  --accent-hover: #ffcc00;
+}
+
+.high-contrast * {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast a,
+.high-contrast button {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Apply transition duration from settings */
+* {
+  transition-duration: var(--transition-duration) !important;
+}
+
+/* Keyboard Navigation Focus Styles */
+html.keyboard-nav *:focus {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 2px;
+}
+

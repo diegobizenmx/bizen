@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import NavigationLoading from './NavigationLoading';
-import AppHeader from './AppHeader';
+import FixedSidebar from './FixedSidebar';
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isNavigating, setIsNavigating] = useState(false);
@@ -15,7 +15,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  // Don't show header on auth pages and landing
+  // Don't show sidebar on auth pages and landing
   const isAuthPage = pathname === '/login' || 
                      pathname === '/signup' || 
                      pathname === '/reset-password' ||
@@ -25,15 +25,13 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                      pathname === '/' || // Landing page
                      pathname === '/landing'
 
-  // Courses page has different layout
-  const isCoursesPage = pathname === '/courses'
-
   return (
     <>
-      {!isAuthPage && <AppHeader />}
+      {!isAuthPage && <FixedSidebar />}
       <div style={{ 
-        marginRight: !isAuthPage && !isCoursesPage ? "320px" : 0,
-        minHeight: "100vh"
+        marginRight: !isAuthPage ? "320px" : 0,
+        minHeight: "100vh",
+        background: "transparent"
       }}>
         {children}
       </div>

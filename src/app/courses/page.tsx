@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import { useSettings } from "@/contexts/SettingsContext"
+import { useTranslation } from "@/lib/translations"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import Button from "@/components/ui/Button"
+import PageLogo from "@/components/PageLogo"
 
 interface Lesson {
   id: string
@@ -48,22 +51,22 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
       }}
     >
       <motion.div
-        onClick={onClick}
+      onClick={onClick}
         whileTap={{ scale: 0.9 }}
-        style={{
+      style={{
           width: "clamp(120px, 25vw, 180px)",
           height: "clamp(120px, 25vw, 180px)",
-          position: "relative",
+        position: "relative",
           cursor: "pointer"
-        }}
-      >
+      }}
+    >
       {/* "START" Label above star - animated */}
       {showStartLabel && (
-        <div style={{
-          position: "absolute",
+      <div style={{
+        position: "absolute",
           top: "-35px",
-          left: "50%",
-          transform: "translateX(-50%)",
+        left: "50%",
+        transform: "translateX(-50%)",
           zIndex: 20,
           animation: "bounce 1.5s ease-in-out infinite"
         }}>
@@ -87,31 +90,31 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
             </div>
             
             {/* Pointer/tail pointing down to star */}
-            <div style={{
-              position: "absolute",
+      <div style={{
+        position: "absolute",
               bottom: "-10px",
-              left: "50%",
-              transform: "translateX(-50%)",
+        left: "50%",
+        transform: "translateX(-50%)",
               width: 0,
               height: 0,
               borderLeft: "10px solid transparent",
               borderRight: "10px solid transparent",
               borderTop: "10px solid #3B82F6",
-              zIndex: 1
-            }} />
-            <div style={{
-              position: "absolute",
+        zIndex: 1
+      }} />
+      <div style={{
+        position: "absolute",
               bottom: "-7px",
-              left: "50%",
-              transform: "translateX(-50%)",
+        left: "50%",
+        transform: "translateX(-50%)",
               width: 0,
               height: 0,
               borderLeft: "8px solid transparent",
               borderRight: "8px solid transparent",
               borderTop: "8px solid white",
               zIndex: 2
-            }} />
-          </div>
+        }} />
+      </div>
         </div>
       )}
       
@@ -192,7 +195,7 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
           ✓
         </div>
       )}
-      </motion.div>
+    </motion.div>
     </div>
   )
 }
@@ -200,10 +203,13 @@ function LessonIsland({ lesson, offsetX, isNext, onClick }: { lesson: Lesson; of
 export default function CoursesPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const { settings } = useSettings()
+  const t = useTranslation(settings.language)
   const [courses, setCourses] = useState<Course[]>([])
   const [loadingData, setLoadingData] = useState(true)
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
   const [currentCourse, setCurrentCourse] = useState<Course | null>(null)
+  const [activeLevel, setActiveLevel] = useState<number>(1) // Track active difficulty level
 
   useEffect(() => {
     if (loading) return
@@ -216,8 +222,15 @@ export default function CoursesPage() {
       try {
         setLoadingData(true)
         
-        const completedCourses: string[] = [] 
-        const completedLessons: string[] = []
+        // Refresh session to get latest user metadata
+        const { createClient } = await import("@/lib/supabase/client")
+        const supabase = createClient()
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        // Get completed lessons from user metadata
+        const completedLessons: string[] = session?.user?.user_metadata?.completedLessons || []
+        console.log('✅ Completed lessons:', completedLessons)
+        const completedCourses: string[] = []
 
         const coursesData = [
           {
@@ -429,6 +442,15 @@ export default function CoursesPage() {
             const previousLessonId = lessonIndex > 0 ? `l${courseData.order}-${lessonIndex}` : null
             const previousCompleted = previousLessonId ? completedLessons.includes(previousLessonId) : true
             
+            // Debug logging
+            if (lessonIndex <= 2) {
+              console.log(`🔍 Lesson ${lessonId}:`, {
+                previousLessonId,
+                previousCompleted,
+                isLocked: courseIsLocked || (!isFirstLesson && !previousCompleted)
+              })
+            }
+            
             return {
               id: lessonId,
               title: lessonData.title,
@@ -493,6 +515,15 @@ export default function CoursesPage() {
           if (course && course.id !== currentCourse?.id) {
             console.log(`📍 Now viewing: Curso ${course.order} - ${course.title}`)
             setCurrentCourse(course)
+            
+            // Update active level based on course order
+            if (course.order >= 1 && course.order <= 3) {
+              setActiveLevel(1) // Principiante
+            } else if (course.order >= 4 && course.order <= 7) {
+              setActiveLevel(2) // Intermedio
+            } else if (course.order >= 8) {
+              setActiveLevel(3) // Avanzado
+            }
           }
         }
       })
@@ -542,7 +573,7 @@ export default function CoursesPage() {
             margin: "0 auto 16px",
             animation: "spin 1s linear infinite",
           }} />
-          <p style={{ color: "#666", fontSize: 16 }}>Cargando camino de aprendizaje...</p>
+          <p style={{ color: "#666", fontSize: 16 }}>{t.courses.loadingPath}</p>
         </div>
         <style>{`
           @keyframes spin {
@@ -565,63 +596,65 @@ export default function CoursesPage() {
   }
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
+      <div style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
       background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
       overflowY: "auto",
       overflowX: "hidden"
     }}>
       {/* Decorative Orbs */}
-      <div style={{
+        <div style={{
         position: "fixed",
         top: "15%",
         right: "8%",
         width: "400px",
         height: "400px",
         background: "radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)",
-        borderRadius: "50%",
-        filter: "blur(60px)",
+          borderRadius: "50%",
+          filter: "blur(60px)",
         pointerEvents: "none"
-      }} />
-      <div style={{
+        }} />
+        <div style={{
         position: "fixed",
         bottom: "15%",
         left: "8%",
         width: "450px",
         height: "450px",
         background: "radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)",
-        borderRadius: "50%",
+          borderRadius: "50%",
         filter: "blur(70px)",
         pointerEvents: "none"
-      }} />
-      <div style={{
+        }} />
+        <div style={{
         position: "fixed",
-        top: "40%",
-        left: "50%",
+          top: "40%",
+          left: "50%",
         width: "500px",
         height: "500px",
         background: "radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 70%)",
-        borderRadius: "50%",
-        filter: "blur(80px)",
+          borderRadius: "50%",
+          filter: "blur(80px)",
         pointerEvents: "none"
       }} />
 
       {/* Left Difficulty Navigation Panel */}
-      <div style={{
+        <div style={{
         position: "fixed",
-        top: 0,
-        left: 0,
+          top: 0,
+          left: 0,
         width: "200px",
         height: "100vh",
         background: "transparent",
         zIndex: 998,
         padding: "32px 16px",
-        fontFamily: "Montserrat, sans-serif",
-        borderRight: "2px solid rgba(147, 197, 253, 0.3)"
+      fontFamily: "Montserrat, sans-serif",
+        borderRight: "2px solid rgba(147, 197, 253, 0.3)",
+        display: "flex",
+        flexDirection: "column"
       }}>
         {/* Logo and Brand */}
         <div style={{
@@ -629,7 +662,7 @@ export default function CoursesPage() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-          marginBottom: 32,
+          marginBottom: 24,
           gap: 10
         }}>
           <Image 
@@ -644,52 +677,96 @@ export default function CoursesPage() {
           />
           <span style={{
             fontSize: 20,
-            fontWeight: 800,
+          fontWeight: 800,
             color: "#0F62FE",
             fontFamily: "Montserrat, sans-serif",
             letterSpacing: "0.5px"
           }}>
             BIZEN
           </span>
+      </div>
+
+        {/* Overall Progress */}
+      <div style={{ 
+          background: "rgba(255, 255, 255, 0.9)",
+          backdropFilter: "blur(10px)",
+          borderRadius: 12,
+          padding: "16px 12px",
+          marginBottom: 24,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"
+      }}>
+        <div style={{ 
+            fontSize: 11,
+            fontWeight: 700,
+            color: "#6B7280",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+            marginBottom: 8,
+            textAlign: "center"
+          }}>
+            {t.courses.progress.yourProgress}
+          </div>
+          <div style={{ 
+            fontSize: 24,
+            fontWeight: 900, 
+            color: "#0F62FE",
+            textAlign: "center",
+            marginBottom: 4
+          }}>
+            0 / 14
+          </div>
+        <div style={{
+            fontSize: 10,
+            color: "#6B7280",
+            textAlign: "center"
+          }}>
+            {t.courses.progress.coursesCompleted}
+          </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {/* Principiante - Course 1 */}
           <button
             onClick={() => scrollToCourse(1)}
-            style={{
+              style={{
               padding: "16px 12px",
-              background: "#3B82F6",
-              border: "none",
+              background: activeLevel === 1 ? "#1E40AF" : "#3B82F6",
+              border: activeLevel === 1 ? "3px solid #FBBF24" : "none",
               borderRadius: 12,
-              cursor: "pointer",
+                cursor: "pointer",
               transition: "all 0.3s ease",
-              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+              boxShadow: activeLevel === 1 
+                ? "0 6px 20px rgba(251, 191, 36, 0.4)" 
+                : "0 4px 12px rgba(59, 130, 246, 0.3)"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateX(8px)"
-              e.currentTarget.style.boxShadow = "0 6px 16px rgba(59, 130, 246, 0.4)"
+              e.currentTarget.style.boxShadow = activeLevel === 1
+                ? "0 8px 24px rgba(251, 191, 36, 0.5)"
+                : "0 6px 16px rgba(59, 130, 246, 0.4)"
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateX(0)"
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)"
+              e.currentTarget.style.boxShadow = activeLevel === 1
+                ? "0 6px 20px rgba(251, 191, 36, 0.4)"
+                : "0 4px 12px rgba(59, 130, 246, 0.3)"
             }}
           >
-            <div style={{
+                <div style={{
               fontSize: 14,
           fontWeight: 800,
               color: "#fff",
               textAlign: "center"
             }}>
-              Principiante
-      </div>
-      <div style={{ 
+              {t.courses.levels.beginner}
+                </div>
+              <div style={{
               fontSize: 10,
               color: "rgba(255, 255, 255, 0.8)",
               marginTop: 4,
               textAlign: "center"
             }}>
-              Cursos 1-3
+              {t.courses.levels.courses} 1-3
             </div>
           </button>
 
@@ -698,91 +775,137 @@ export default function CoursesPage() {
             onClick={() => scrollToCourse(4)}
             style={{
               padding: "16px 12px",
-              background: "#3B82F6",
-              border: "none",
-              borderRadius: 12,
+              background: activeLevel === 2 ? "#1E40AF" : "#3B82F6",
+              border: activeLevel === 2 ? "3px solid #FBBF24" : "none",
+                borderRadius: 12,
               cursor: "pointer",
               transition: "all 0.3s ease",
-              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+              boxShadow: activeLevel === 2 
+                ? "0 6px 20px rgba(251, 191, 36, 0.4)" 
+                : "0 4px 12px rgba(59, 130, 246, 0.3)"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateX(8px)"
-              e.currentTarget.style.boxShadow = "0 6px 16px rgba(59, 130, 246, 0.4)"
+              e.currentTarget.style.boxShadow = activeLevel === 2
+                ? "0 8px 24px rgba(251, 191, 36, 0.5)"
+                : "0 6px 16px rgba(59, 130, 246, 0.4)"
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateX(0)"
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)"
+              e.currentTarget.style.boxShadow = activeLevel === 2
+                ? "0 6px 20px rgba(251, 191, 36, 0.4)"
+                : "0 4px 12px rgba(59, 130, 246, 0.3)"
             }}
           >
-        <div style={{ 
+      <div style={{
               fontSize: 14,
               fontWeight: 800,
               color: "#fff",
               textAlign: "center"
             }}>
-              Intermedio
-          </div>
-          <div style={{ 
+              {t.courses.levels.intermediate}
+              </div>
+        <div style={{
               fontSize: 10,
               color: "rgba(255, 255, 255, 0.8)",
               marginTop: 4,
               textAlign: "center"
             }}>
-              Cursos 4-7
+              {t.courses.levels.courses} 4-7
           </div>
           </button>
 
           {/* Avanzado - Course 8 */}
           <button
             onClick={() => scrollToCourse(8)}
-            style={{
+            style={{ 
               padding: "16px 12px",
-              background: "#3B82F6",
-              border: "none",
+              background: activeLevel === 3 ? "#1E40AF" : "#3B82F6",
+              border: activeLevel === 3 ? "3px solid #FBBF24" : "none",
               borderRadius: 12,
               cursor: "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+                  transition: "all 0.3s ease",
+              boxShadow: activeLevel === 3 
+                ? "0 6px 20px rgba(251, 191, 36, 0.4)" 
+                : "0 4px 12px rgba(59, 130, 246, 0.3)"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateX(8px)"
-              e.currentTarget.style.boxShadow = "0 6px 16px rgba(59, 130, 246, 0.4)"
+              e.currentTarget.style.boxShadow = activeLevel === 3
+                ? "0 8px 24px rgba(251, 191, 36, 0.5)"
+                : "0 6px 16px rgba(59, 130, 246, 0.4)"
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateX(0)"
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.3)"
+              e.currentTarget.style.boxShadow = activeLevel === 3
+                ? "0 6px 20px rgba(251, 191, 36, 0.4)"
+                : "0 4px 12px rgba(59, 130, 246, 0.3)"
             }}
           >
-        <div style={{
-              fontSize: 14,
+                  <div style={{
+                fontSize: 14,
               fontWeight: 800,
-              color: "#fff",
+                  color: "#fff",
               textAlign: "center"
-            }}>
-              Avanzado
+              }}>
+              {t.courses.levels.advanced}
             </div>
-          <div style={{
+              <div style={{
               fontSize: 10,
               color: "rgba(255, 255, 255, 0.8)",
               marginTop: 4,
               textAlign: "center"
             }}>
-              Cursos 8-14
+              {t.courses.levels.courses} 8-14
             </div>
           </button>
-          </div>
-        </div>
+                </div>
+
+        {/* Back to Dashboard Button */}
+        <button
+          onClick={() => router.push("/dashboard")}
+                  style={{ 
+            marginTop: "auto",
+            padding: "12px 16px",
+            background: "rgba(255, 255, 255, 0.9)",
+            backdropFilter: "blur(10px)",
+            border: "2px solid rgba(59, 130, 246, 0.3)",
+            borderRadius: 12,
+            cursor: "pointer",
+              transition: "all 0.3s ease",
+                    display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+                fontSize: 14,
+            fontWeight: 700,
+            color: "#0F62FE",
+            fontFamily: "Montserrat, sans-serif"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(59, 130, 246, 0.1)"
+            e.currentTarget.style.transform = "translateY(-2px)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.9)"
+            e.currentTarget.style.transform = "translateY(0)"
+          }}
+        >
+          <span style={{ fontSize: 16 }}>←</span>
+          {t.nav.dashboard}
+        </button>
+      </div>
 
       {/* Sticky Course Bar */}
       <div
-              style={{
+        style={{
         position: "fixed",
           top: "20px",
         left: "200px",
           right: "320px",
           zIndex: 99999,
-                display: "flex",
-                justifyContent: "center",
+          display: "flex",
+          justifyContent: "center",
         pointerEvents: "none",
           padding: "0 clamp(16px, 4vw, 24px)",
         }}
@@ -801,7 +924,7 @@ export default function CoursesPage() {
               minWidth: "clamp(250px, 60vw, 400px)"
             }}
           >
-                <div style={{
+                    <div style={{
               fontSize: "clamp(10px, 2vw, 12px)",
               fontWeight: 700,
               color: "rgba(255, 255, 255, 0.8)",
@@ -811,9 +934,9 @@ export default function CoursesPage() {
               textAlign: "center",
               whiteSpace: "nowrap"
             }}>
-              CURSO {currentCourse.order}
-                </div>
-      <div style={{ 
+              {t.courses.course} {currentCourse.order}
+                      </div>
+                      <div style={{
               fontSize: "clamp(16px, 3vw, 18px)",
               fontWeight: 800,
               color: "#fff",
@@ -822,9 +945,9 @@ export default function CoursesPage() {
               whiteSpace: "nowrap"
             }}>
               {currentCourse.title}
-            </div>
-        </div>
-        )}
+                </div>
+                    </div>
+                  )}
       </div>
 
 
@@ -839,7 +962,7 @@ export default function CoursesPage() {
         position: "relative"
       }}>
         {/* Island Path */}
-        <div style={{
+            <div style={{
           maxWidth: 800,
           margin: "0 auto",
           position: "relative",
@@ -848,34 +971,47 @@ export default function CoursesPage() {
           {courses.map((course) => (
             <div key={course.id} id={`course-${course.id}`} style={{ marginBottom: "clamp(40px, 8vw, 80px)" }}>
               {/* Course Separator - Subtle */}
-          <div style={{
+          <div style={{ 
                 textAlign: "center",
                 marginBottom: "clamp(40px, 8vw, 80px)",
                 padding: "clamp(12px, 3vw, 20px) 0"
         }}>
-            <div style={{
-                  display: "inline-block",
-                  padding: "clamp(10px, 2vw, 14px) clamp(20px, 4vw, 28px)",
+              <div style={{
+                display: "inline-block",
+                  padding: "clamp(12px, 2vw, 16px) clamp(20px, 4vw, 28px)",
                   background: "rgba(255, 255, 255, 0.95)",
                   borderRadius: "clamp(16px, 3vw, 24px)",
                   boxShadow: "0 4px 20px rgba(59, 130, 246, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1)",
                   border: "2px solid rgba(147, 197, 253, 0.4)",
                   backdropFilter: "blur(10px)"
                 }}>
-                <div style={{
+                  <div style={{
                     fontSize: "clamp(13px, 2.5vw, 15px)",
-                    fontWeight: 800,
-                    color: "#1E40AF"
+                      fontWeight: 800,
+                    color: "#1E40AF",
+                    marginBottom: 6
+              }}>
+                {course.title}
+                  </div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 12,
+                    fontSize: "clamp(10px, 1.8vw, 12px)",
+                    color: "#6B7280"
                   }}>
-                    📘 {course.title}
+                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      {course.lessons.length} {t.courses.lessons}
+                    </span>
+                  </div>
                 </div>
-        </div>
-      </div>
+            </div>
 
               {/* Lessons in Smooth Curve */}
-      <div style={{
-          display: "flex",
-                flexDirection: "column",
+              <div style={{
+                    display: "flex",
+                    flexDirection: "column",
                 alignItems: "center",
                 gap: "clamp(40px, 8vw, 80px)"
               }}>
@@ -923,8 +1059,8 @@ export default function CoursesPage() {
                             initial={{ opacity: 0, x: showOnRight ? -10 : 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: showOnRight ? -10 : 10 }}
-                  style={{ 
-                              position: "absolute",
+                            style={{
+                    position: "absolute",
                               top: "0",
                               [showOnRight ? 'left' : 'right']: showOnRight 
                                 ? `calc(50% + ${offsetX}px + clamp(60px, 12.5vw, 90px) + clamp(25px, 5vw, 35px))`
@@ -954,7 +1090,7 @@ export default function CoursesPage() {
                               zIndex: 101
                             }} />
                       <div style={{
-                        position: "absolute",
+                position: "absolute",
                               top: "50%",
                         [showOnRight ? 'left' : 'right']: "-17px",
                         transform: "translateY(-50%)",
@@ -968,15 +1104,15 @@ export default function CoursesPage() {
                             
                             {/* Preview Content */}
                             <div style={{ padding: "clamp(12px, 2vw, 14px)" }}>
-            <div style={{
+                    <div style={{
                                 fontSize: "clamp(9px, 1.5vw, 10px)",
-                      fontWeight: 700,
+                fontWeight: 700,
                                 color: "#6B7280",
                                 marginBottom: 4,
                                 textTransform: "uppercase"
                               }}>
-                                Lección {lesson.order}
-              </div>
+                                {t.courses.lesson} {lesson.order}
+                      </div>
               <h3 style={{ 
                                 margin: "0 0 4px",
                                 fontSize: "clamp(12px, 2vw, 14px)",
@@ -985,27 +1121,32 @@ export default function CoursesPage() {
               }}>
                                 {lesson.title}
               </h3>
-                              <div style={{
+                      <div style={{
                                 fontSize: "clamp(10px, 1.5vw, 11px)",
                                 color: "#6B7280",
                                 marginBottom: 12
                               }}>
                                 {lesson.unitTitle}
-            </div>
+                  </div>
 
                               {!lesson.isLocked && (
                                 <motion.div whileTap={{ scale: 0.95 }}>
                                   <Button
                                     onClick={() => {
-                                      router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}`)
+                                      // First two lessons go to interactive mode
+                                      if (lesson.order === 1 || lesson.order === 2) {
+                                        router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}/interactive`)
+                                      } else {
+                                        router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}`)
+                                      }
                                     }}
                                     style={{ width: "100%", fontSize: "clamp(11px, 2vw, 12px)", padding: "clamp(8px, 1.5vw, 10px) clamp(10px, 2vw, 12px)" }}
                                   >
-                                    {lesson.isCompleted ? "Revisar →" : "Comenzar →"}
+                                    {lesson.isCompleted ? t.courses.review : t.courses.begin}
                                   </Button>
                                 </motion.div>
                               )}
-                      </div>
+                </div>
                           </motion.div>
                         )}
                       </AnimatePresence>

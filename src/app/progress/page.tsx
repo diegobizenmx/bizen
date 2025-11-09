@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import Card from "@/components/ui/Card"
 import Button from "@/components/ui/Button"
+import PageLogo from "@/components/PageLogo"
 
 interface Certificate {
   id: string
@@ -23,12 +24,33 @@ interface CourseProgress {
   totalQuizzes: number
 }
 
+interface DashboardStats {
+  coursesEnrolled: number
+  lessonsCompleted: number
+  currentStreak: number
+  totalPoints: number
+}
+
 export default function ProgressPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const [certificates, setCertificates] = useState<Certificate[]>([])
   const [courses, setCourses] = useState<CourseProgress[]>([])
   const [loadingData, setLoadingData] = useState(true)
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+
+  useEffect(() => {
+    // Set blue gradient background for this page
+    const bodyEl = document.body
+    if (bodyEl) {
+      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.backgroundAttachment = "fixed"
+    }
+    return () => {
+      bodyEl.style.background = "#fff"
+      bodyEl.style.backgroundAttachment = "scroll"
+    }
+  }, [])
 
   useEffect(() => {
     if (loading) return
@@ -71,6 +93,14 @@ export default function ProgressPage() {
             totalQuizzes: 4
           }
         ])
+
+        // Fetch user stats
+        setStats({
+          coursesEnrolled: 2,
+          lessonsCompleted: 15,
+          currentStreak: 7,
+          totalPoints: 450
+        })
       } catch (error) {
         console.error("Error fetching progress:", error)
       } finally {
@@ -113,37 +143,152 @@ export default function ProgressPage() {
     : 0
 
   return (
-    <main style={{ 
-      maxWidth: 1000, 
-      margin: "0 auto", 
-      padding: "clamp(20px, 4vw, 40px)",
-      fontFamily: "Montserrat, sans-serif"
+    <div style={{
+      position: "relative",
+      minHeight: "100vh",
+      paddingTop: 40,
+      paddingBottom: 80,
+      fontFamily: "Montserrat, sans-serif",
+      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      backgroundAttachment: "fixed"
     }}>
-      {/* Header */}
-      <div style={{ marginBottom: 40 }}>
-        <h1 style={{ 
-          margin: 0, 
-          fontSize: "clamp(28px, 6vw, 36px)", 
-          fontWeight: 800,
-          background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text"
-        }}>
-          🏆 Mi Progreso
-        </h1>
-        <p style={{ margin: "8px 0 0", color: "#666", fontSize: "clamp(14px, 3vw, 16px)" }}>
-          Revisa tus logros y certificados
-        </p>
-      </div>
+      {/* Decorative Orbs */}
+      <div style={{
+        position: "fixed",
+        top: "10%",
+        left: "5%",
+        width: 300,
+        height: 300,
+        background: "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(60px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
+      <div style={{
+        position: "fixed",
+        top: "60%",
+        right: "8%",
+        width: 400,
+        height: 400,
+        background: "radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(80px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
+      <div style={{
+        position: "fixed",
+        bottom: "5%",
+        left: "15%",
+        width: 350,
+        height: 350,
+        background: "radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(70px)",
+        pointerEvents: "none",
+        zIndex: 0
+      }} />
 
-      {/* Overall Progress Card */}
-      <Card style={{ 
-        padding: "32px 28px", 
-        marginBottom: 32,
-        background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
-        color: "#fff"
+      <main style={{ 
+        position: "relative",
+        maxWidth: 1000, 
+        margin: "0 auto", 
+        padding: "clamp(20px, 4vw, 40px)",
+        zIndex: 1,
+        fontFamily: "Montserrat, sans-serif"
       }}>
+        {/* Logo */}
+        <PageLogo />
+
+        {/* Header */}
+        <div style={{ marginBottom: 40 }}>
+          <h1 style={{ 
+            margin: 0, 
+            fontSize: "clamp(28px, 6vw, 36px)", 
+            fontWeight: 800,
+            color: "#1E40AF"
+          }}>
+            Mi Progreso
+          </h1>
+          <p style={{ margin: "8px 0 0", color: "#374151", fontSize: "clamp(14px, 3vw, 16px)", fontWeight: 600 }}>
+            Revisa tus logros y certificados
+          </p>
+        </div>
+
+        {/* Stats Section */}
+        {stats && (
+          <div style={{ marginBottom: 32 }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+              gap: 16
+            }}>
+              <div style={{ 
+                textAlign: "center", 
+                padding: "24px 16px", 
+                background: "rgba(255, 255, 255, 0.4)", 
+                backdropFilter: "blur(20px)", 
+                borderRadius: 20, 
+                border: "2px solid rgba(255, 255, 255, 0.6)",
+                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+                transition: "all 0.3s ease"
+              }}>
+                <div style={{ fontSize: 36, fontWeight: 800, color: "#0F62FE", marginBottom: 8 }}>{stats.coursesEnrolled}</div>
+                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Cursos</div>
+              </div>
+              <div style={{ 
+                textAlign: "center", 
+                padding: "24px 16px", 
+                background: "rgba(255, 255, 255, 0.4)", 
+                backdropFilter: "blur(20px)", 
+                borderRadius: 20, 
+                border: "2px solid rgba(255, 255, 255, 0.6)",
+                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+                transition: "all 0.3s ease"
+              }}>
+                <div style={{ fontSize: 36, fontWeight: 800, color: "#10B981", marginBottom: 8 }}>{stats.lessonsCompleted}</div>
+                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Lecciones</div>
+              </div>
+              <div style={{ 
+                textAlign: "center", 
+                padding: "24px 16px", 
+                background: "rgba(255, 255, 255, 0.4)", 
+                backdropFilter: "blur(20px)", 
+                borderRadius: 20, 
+                border: "2px solid rgba(255, 255, 255, 0.6)",
+                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+                transition: "all 0.3s ease"
+              }}>
+                <div style={{ fontSize: 36, fontWeight: 800, color: "#F59E0B", marginBottom: 8 }}>🔥 {stats.currentStreak}</div>
+                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Racha</div>
+              </div>
+              <div style={{ 
+                textAlign: "center", 
+                padding: "24px 16px", 
+                background: "rgba(255, 255, 255, 0.4)", 
+                backdropFilter: "blur(20px)", 
+                borderRadius: 20, 
+                border: "2px solid rgba(255, 255, 255, 0.6)",
+                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+                transition: "all 0.3s ease"
+              }}>
+                <div style={{ fontSize: 36, fontWeight: 800, color: "#8B5CF6", marginBottom: 8 }}>{stats.totalPoints}</div>
+                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Puntos</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Overall Progress Card */}
+        <div style={{ 
+          padding: "32px 28px", 
+          marginBottom: 32,
+          background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
+          color: "#fff",
+          borderRadius: 20,
+          boxShadow: "0 8px 32px rgba(15, 98, 254, 0.3)"
+        }}>
         <h2 style={{ margin: "0 0 20px", fontSize: 22, fontWeight: 700 }}>
           Progreso General
         </h2>
@@ -165,17 +310,18 @@ export default function ProgressPage() {
             <div style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>Certificados Obtenidos</div>
           </div>
         </div>
-      </Card>
+        </div>
 
-      {/* Certificates Section */}
-      <div style={{ marginBottom: 40 }}>
-        <h2 style={{ 
-          margin: "0 0 20px", 
-          fontSize: 22, 
-          fontWeight: 700 
-        }}>
-          🎓 Certificados
-        </h2>
+        {/* Certificates Section */}
+        <div style={{ marginBottom: 40 }}>
+          <h2 style={{ 
+            margin: "0 0 20px", 
+            fontSize: 22, 
+            fontWeight: 700,
+            color: "#1E40AF"
+          }}>
+            Certificados
+          </h2>
         
         {certificates.length > 0 ? (
           <div style={{ 
@@ -184,13 +330,18 @@ export default function ProgressPage() {
             gap: 20 
           }}>
             {certificates.map(cert => (
-              <Card 
+              <div 
                 key={cert.id}
                 style={{
                   padding: 0,
                   overflow: "hidden",
                   cursor: "pointer",
-                  transition: "all 0.3s ease"
+                  transition: "all 0.3s ease",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  backdropFilter: "blur(20px)",
+                  borderRadius: 20,
+                  border: "2px solid rgba(255, 255, 255, 0.6)",
+                  boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
                 }}
                 onClick={() => {
                   if (cert.url) {
@@ -199,11 +350,11 @@ export default function ProgressPage() {
                 }}
                 onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.currentTarget.style.transform = "translateY(-4px)"
-                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.2)"
+                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(15, 98, 254, 0.25)"
                 }}
                 onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.currentTarget.style.transform = "translateY(0)"
-                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.06)"
+                  e.currentTarget.style.boxShadow = "0 8px 32px rgba(31, 38, 135, 0.15)"
                 }}
               >
                 {/* Certificate Header */}
@@ -223,14 +374,14 @@ export default function ProgressPage() {
                 <div style={{ padding: "20px 24px" }}>
                   <div style={{ 
                     fontSize: 16, 
-                    fontWeight: 600, 
-                    color: "#111",
+                    fontWeight: 700, 
+                    color: "#1E40AF",
                     marginBottom: 12,
                     lineHeight: 1.4
                   }}>
                     {cert.courseTitle}
                   </div>
-                  <div style={{ fontSize: 14, color: "#666", marginBottom: 16 }}>
+                  <div style={{ fontSize: 14, color: "#374151", fontWeight: 600, marginBottom: 16 }}>
                     Emitido: {new Date(cert.issuedAt).toLocaleDateString('es-ES', { 
                       month: 'long', 
                       day: 'numeric', 
@@ -250,64 +401,79 @@ export default function ProgressPage() {
                     </Button>
                   )}
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         ) : (
-          <Card style={{ padding: "40px 24px", textAlign: "center" }}>
+          <div style={{ 
+            padding: "40px 24px", 
+            textAlign: "center",
+            background: "rgba(255, 255, 255, 0.4)",
+            backdropFilter: "blur(20px)",
+            borderRadius: 20,
+            border: "2px solid rgba(255, 255, 255, 0.6)",
+            boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
+          }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>🎓</div>
-            <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>
+            <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700, color: "#1E40AF" }}>
               Aún no tienes certificados
             </h3>
-            <p style={{ margin: 0, color: "#666", fontSize: 14 }}>
+            <p style={{ margin: 0, color: "#374151", fontSize: 14, fontWeight: 600 }}>
               Completa tus cursos para obtener certificados
             </p>
-          </Card>
+          </div>
         )}
-      </div>
+        </div>
 
-      {/* Course Progress Section */}
-      <div>
-        <h2 style={{ 
-          margin: "0 0 20px", 
-          fontSize: 22, 
-          fontWeight: 700 
-        }}>
-          📊 Progreso por Curso
-        </h2>
-        
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {courses.map(course => (
-            <Card 
-              key={course.id}
-              style={{ 
-                padding: 24,
-                cursor: "pointer",
-                transition: "all 0.3s ease"
-              }}
-              onClick={() => router.push(`/courses/${course.id}`)}
-              onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
-                e.currentTarget.style.transform = "translateX(4px)"
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.15)"
-              }}
-              onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-                e.currentTarget.style.transform = "translateX(0)"
-                e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.06)"
-              }}
-            >
+        {/* Course Progress Section */}
+        <div>
+          <h2 style={{ 
+            margin: "0 0 20px", 
+            fontSize: 22, 
+            fontWeight: 700,
+            color: "#1E40AF"
+          }}>
+            Progreso por Curso
+          </h2>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {courses.map(course => (
+              <div 
+                key={course.id}
+                style={{ 
+                  padding: 24,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  background: "rgba(255, 255, 255, 0.4)",
+                  backdropFilter: "blur(20px)",
+                  borderRadius: 20,
+                  border: "2px solid rgba(255, 255, 255, 0.6)",
+                  boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)"
+                }}
+                onClick={() => router.push(`/courses/${course.id}`)}
+                onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.currentTarget.style.transform = "translateX(4px)"
+                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(15, 98, 254, 0.25)"
+                }}
+                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.currentTarget.style.transform = "translateX(0)"
+                  e.currentTarget.style.boxShadow = "0 8px 32px rgba(31, 38, 135, 0.15)"
+                }}
+              >
               <div style={{ marginBottom: 16 }}>
-                <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>
+                <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700, color: "#1E40AF" }}>
                   {course.title}
                 </h3>
                 <div style={{
                   display: "flex",
                   gap: 16,
                   fontSize: 14,
-                  color: "#666",
+                  color: "#374151",
+                  fontWeight: 600,
                   flexWrap: "wrap"
                 }}>
-                  <span>📖 {course.lessonsCompleted}/{course.totalLessons} lecciones</span>
-                  <span>✅ {course.quizzesPassed}/{course.totalQuizzes} quizzes aprobados</span>
+                  <span>{course.lessonsCompleted}/{course.totalLessons} lecciones</span>
+                  <span>{course.quizzesPassed}/{course.totalQuizzes} quizzes aprobados</span>
                 </div>
               </div>
 
@@ -317,7 +483,8 @@ export default function ProgressPage() {
                   display: "flex",
                   justifyContent: "space-between",
                   fontSize: 14,
-                  color: "#666",
+                  color: "#374151",
+                  fontWeight: 600,
                   marginBottom: 8
                 }}>
                   <span>Progreso</span>
@@ -326,7 +493,7 @@ export default function ProgressPage() {
                 <div style={{
                   width: "100%",
                   height: 10,
-                  background: "#E5E7EB",
+                  background: "rgba(59, 130, 246, 0.2)",
                   borderRadius: 10,
                   overflow: "hidden"
                 }}>
@@ -335,15 +502,17 @@ export default function ProgressPage() {
                     width: `${course.progress}%`,
                     background: "linear-gradient(90deg, #0F62FE 0%, #10B981 100%)",
                     borderRadius: 10,
-                    transition: "width 0.5s ease"
+                    transition: "width 0.5s ease",
+                    boxShadow: "0 0 12px rgba(15, 98, 254, 0.4)"
                   }} />
                 </div>
               </div>
-            </Card>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }
 

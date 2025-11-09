@@ -52,6 +52,8 @@ model Profile {
   fullName  String   @map("full_name")
   role      String // "student" | "teacher" | "school_admin"
   schoolId  String?  @map("school_id")
+  xp        Int      @default(0) // Experience points
+  level     Int      @default(1) // Current level
   createdAt DateTime @default(now()) @map("created_at")
 
   school       School?       @relation(fields: [schoolId], references: [id])
@@ -119,6 +121,7 @@ model Lesson {
   title       String
   contentType String   @map("content_type") // "video" | "reading" | "exercise"
   order       Int
+  xpReward    Int      @default(50) @map("xp_reward") // XP awarded on completion
   createdAt   DateTime @default(now()) @map("created_at")
 
   unit             Unit              @relation(fields: [unitId], references: [id], onDelete: Cascade)

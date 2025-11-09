@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from "next"
 import { AuthProvider } from "@/contexts/AuthContext"
+import { SettingsProvider } from "@/contexts/SettingsContext"
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper"
 import "./globals.css"
 
@@ -18,12 +19,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" style={{ height: "100%", margin: 0, padding: 0 }}>
-      <body style={{ margin: 0, padding: 0, background: "#fff", height: "100%", minHeight: "100vh", width: "100vw", overflowX: "hidden" }}>
-        <AuthProvider>
-          <ClientLayoutWrapper>
-            {children}
-          </ClientLayoutWrapper>
-        </AuthProvider>
+      <body style={{ margin: 0, padding: 0, height: "100%", minHeight: "100vh", width: "100vw", overflowX: "hidden" }}>
+        <SettingsProvider>
+          <AuthProvider>
+            <ClientLayoutWrapper>
+              {children}
+            </ClientLayoutWrapper>
+          </AuthProvider>
+        </SettingsProvider>
       </body>
     </html>
   )

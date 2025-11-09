@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import Card from "@/components/ui/Card"
 
@@ -15,8 +15,14 @@ interface DashboardStats {
 export default function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false)
   const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [showExitDialog, setShowExitDialog] = useState(false)
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null)
   const router = useRouter()
+  const pathname = usePathname()
   const { user } = useAuth()
+
+  // Check if user is on a lesson page
+  const isOnLessonPage = pathname?.includes('/learn/')
 
   useEffect(() => {
     if (user) {
@@ -33,8 +39,29 @@ export default function HamburgerMenu() {
   const toggleMenu = () => setIsOpen(!isOpen)
 
   const navigateTo = (path: string) => {
+    // If on lesson page, show confirmation dialog
+    if (isOnLessonPage) {
+      setPendingNavigation(path)
+      setShowExitDialog(true)
+    } else {
+      // If not on lesson page, navigate directly
+      setIsOpen(false)
+      router.push(path)
+    }
+  }
+
+  const confirmExit = () => {
+    setShowExitDialog(false)
     setIsOpen(false)
-    router.push(path)
+    if (pendingNavigation) {
+      router.push(pendingNavigation)
+      setPendingNavigation(null)
+    }
+  }
+
+  const cancelExit = () => {
+    setShowExitDialog(false)
+    setPendingNavigation(null)
   }
 
   return (
@@ -382,6 +409,107 @@ export default function HamburgerMenu() {
           </div>
         </div>
       </div>
+
+      {/* Exit Confirmation Dialog */}
+      {showExitDialog && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1100,
+          padding: 20,
+          fontFamily: "Montserrat, sans-serif"
+        }}>
+          <div style={{
+            background: "white",
+            borderRadius: 16,
+            padding: "32px",
+            maxWidth: 450,
+            width: "100%",
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
+          }}>
+            <div style={{
+              fontSize: 24,
+              fontWeight: 800,
+              marginBottom: 16,
+              background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text"
+            }}>
+              ⚠️ ¿Estás seguro?
+            </div>
+            
+            <p style={{
+              fontSize: 16,
+              color: "#374151",
+              lineHeight: 1.6,
+              marginBottom: 24
+            }}>
+              Si sales ahora, se perderá tu progreso de la lección actual. ¿Deseas continuar?
+            </p>
+
+            <div style={{
+              display: "flex",
+              gap: 12,
+              flexDirection: "column"
+            }}>
+              <button
+                onClick={cancelExit}
+                style={{
+                  padding: "14px 24px",
+                  background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "transform 0.2s ease",
+                  boxShadow: "0 4px 12px rgba(11, 113, 254, 0.3)",
+                  fontFamily: "Montserrat, sans-serif"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+              >
+                Continuar con la lección
+              </button>
+
+              <button
+                onClick={confirmExit}
+                style={{
+                  padding: "14px 24px",
+                  background: "white",
+                  color: "#DC2626",
+                  border: "1px solid rgba(220, 38, 38, 0.3)",
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  fontFamily: "Montserrat, sans-serif"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#FEF2F2"
+                  e.currentTarget.style.transform = "scale(1.02)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white"
+                  e.currentTarget.style.transform = "scale(1)"
+                }}
+              >
+                Salir de la lección
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes fadeIn {
