@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import Link from "next/link"
@@ -48,7 +48,7 @@ interface ForumTopic {
 
 type SortOption = 'new' | 'top' | 'unanswered'
 
-export default function ForumPage() {
+function ForumContent() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -490,5 +490,13 @@ export default function ForumPage() {
       }
     `}</style>
     </>
+  )
+}
+
+export default function ForumPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Cargando...</div>}>
+      <ForumContent />
+    </Suspense>
   )
 }
