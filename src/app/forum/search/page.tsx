@@ -1,9 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import Link from "next/link"
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
 
 interface SearchResult {
   id: string
@@ -28,7 +31,7 @@ interface SearchResult {
   }>
 }
 
-export default function ForumSearchPage() {
+function ForumSearchContent() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -276,6 +279,14 @@ export default function ForumSearchPage() {
         )}
       </main>
     </div>
+  )
+}
+
+export default function ForumSearchPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)" }}>Buscando...</div>}>
+      <ForumSearchContent />
+    </Suspense>
   )
 }
 
