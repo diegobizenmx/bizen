@@ -299,11 +299,17 @@ export default function WelcomePage() {
           fontSize: "clamp(12px, 1.8vw, 14px)",
           color: "#718096",
         }}>
-          <Link href="/landing" style={{ color: "#4A5568", textDecoration: "none" }}>
-            Cursos
+          <Link href="/signup" style={{ color: "#4A5568", textDecoration: "none", fontWeight: 500 }}>
+            Crear cuenta
           </Link>
-          <Link href="/login" style={{ color: "#4A5568", textDecoration: "none" }}>
-            Microcredenciales
+          <Link href="/login" style={{ color: "#4A5568", textDecoration: "none", fontWeight: 500 }}>
+            Iniciar sesión
+          </Link>
+          <Link href="/bizen/terminos" style={{ color: "#4A5568", textDecoration: "none" }}>
+            Términos
+          </Link>
+          <Link href="/bizen/privacidad" style={{ color: "#4A5568", textDecoration: "none" }}>
+            Aviso de Privacidad
           </Link>
           <span>© 2025 BIZEN</span>
         </div>
