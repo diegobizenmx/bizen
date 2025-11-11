@@ -52,11 +52,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Add small delay to prevent rate limiting during development
     await new Promise(resolve => setTimeout(resolve, 1000))
     
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${origin}/auth/callback`
       }
     })
     return { error }
@@ -71,10 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: `${origin}/auth/callback`
       }
     })
     return { error }
@@ -86,8 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const resetPassword = async (email: string) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?type=recovery`
+      redirectTo: `${origin}/auth/callback?type=recovery`
     })
     return { error }
   }

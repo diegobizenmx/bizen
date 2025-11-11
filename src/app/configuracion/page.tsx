@@ -8,6 +8,8 @@ import PageLogo from "@/components/PageLogo"
 
 // Force dynamic rendering to avoid prerendering issues
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = 0
 
 function SettingsContent() {
   const router = useRouter()
