@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 import { useSettings, Language, Theme, TextSize, ContrastMode } from "@/contexts/SettingsContext"
 import { useAuth } from "@/contexts/AuthContext"
@@ -9,7 +9,7 @@ import PageLogo from "@/components/PageLogo"
 // Force dynamic rendering to avoid prerendering issues
 export const dynamic = 'force-dynamic'
 
-export default function SettingsPage() {
+function SettingsContent() {
   const router = useRouter()
   const { user } = useAuth()
   const { settings, updateSettings, resetSettings } = useSettings()
@@ -1202,6 +1202,14 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)" }}>Cargando configuración...</div>}>
+      <SettingsContent />
+    </Suspense>
   )
 }
 
