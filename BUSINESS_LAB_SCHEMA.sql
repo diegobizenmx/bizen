@@ -55,6 +55,15 @@ CREATE TABLE IF NOT EXISTS lab_steps (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Add missing columns if they don't exist (for existing tables)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name = 'lab_steps' AND column_name = 'estimated_time') THEN
+    ALTER TABLE lab_steps ADD COLUMN estimated_time TEXT;
+  END IF;
+END $$;
+
 -- ============================================
 -- 3. LAB STEP PROGRESS (User progress on steps)
 -- ============================================
