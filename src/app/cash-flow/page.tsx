@@ -214,14 +214,14 @@ export default function CashFlowPage() {
         {/* Header */}
         <div style={{
           width: "100%",
-          background: "white",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
           borderRadius: 24,
           padding: "40px",
           marginBottom: 32,
-          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+          boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
           textAlign: "center",
           position: "relative",
-          border: "1px solid rgba(11, 113, 254, 0.1)",
+          border: "2px solid rgba(11, 113, 254, 0.2)",
           boxSizing: "border-box"
         }}>
           <button
@@ -283,12 +283,12 @@ export default function CashFlowPage() {
         {!loadingGames && games.length > 0 && !showNewGame && (
           <div style={{
             width: "100%",
-            background: "white",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
             borderRadius: 24,
             padding: "40px",
             marginBottom: 32,
-            boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-            border: "1px solid rgba(11, 113, 254, 0.1)",
+            boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
+            border: "2px solid rgba(11, 113, 254, 0.2)",
             boxSizing: "border-box"
           }}>
             <div style={{
@@ -487,12 +487,12 @@ export default function CashFlowPage() {
         {(showNewGame || games.length === 0) && (
         <div style={{
           width: "100%",
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
           borderRadius: 24,
           padding: "32px",
           marginBottom: 32,
-          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-          border: "1px solid rgba(11, 113, 254, 0.1)",
+          boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
+          border: "2px solid rgba(11, 113, 254, 0.2)",
           boxSizing: "border-box"
         }}>
           <h2 style={{
@@ -501,7 +501,7 @@ export default function CashFlowPage() {
             margin: "0 0 16px",
             color: "#333"
           }}>
-            📋 Cómo Jugar
+            ❓ Cómo Jugar
           </h2>
           <div style={{
             display: "grid",
@@ -543,11 +543,11 @@ export default function CashFlowPage() {
         {(showNewGame || games.length === 0) && (
         <div style={{
           width: "100%",
-          background: "white",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
           borderRadius: 24,
           padding: "48px",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-          border: "1px solid rgba(11, 113, 254, 0.1)",
+          boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
+          border: "2px solid rgba(11, 113, 254, 0.2)",
           boxSizing: "border-box"
         }}>
           <h2 style={{
@@ -589,16 +589,16 @@ export default function CashFlowPage() {
                     style={{
                       background: isSelected 
                         ? "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)" 
-                        : "white",
-                      border: isSelected ? "3px solid #0B71FE" : "2px solid #e5e7eb",
+                        : "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(239,246,255,0.98) 100%)",
+                      border: isSelected ? "3px solid #0B71FE" : "2px solid rgba(59,130,246,0.3)",
                       borderRadius: 20,
                       padding: 24,
                       cursor: "pointer",
                       transition: "all 0.3s ease",
                       transform: isSelected ? "scale(1.03)" : "scale(1)",
                       boxShadow: isSelected 
-                        ? "0 12px 32px rgba(11, 113, 254, 0.25)" 
-                        : "0 4px 12px rgba(0,0,0,0.06)",
+                        ? "0 12px 32px rgba(11, 113, 254, 0.35)" 
+                        : "0 4px 16px rgba(11, 113, 254, 0.12)",
                       userSelect: "none"
                     }}
                     onMouseEnter={(e) => {
@@ -611,8 +611,8 @@ export default function CashFlowPage() {
                     onMouseLeave={(e) => {
                       if (!isSelected) {
                         e.currentTarget.style.transform = "scale(1)"
-                        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)"
-                        e.currentTarget.style.borderColor = "#e5e7eb"
+                        e.currentTarget.style.boxShadow = "0 4px 16px rgba(11, 113, 254, 0.12)"
+                        e.currentTarget.style.borderColor = "rgba(59,130,246,0.3)"
                       }
                     }}
                   >

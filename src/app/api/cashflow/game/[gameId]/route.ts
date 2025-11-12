@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function GET(
   request: NextRequest,
@@ -19,72 +18,101 @@ export async function GET(
 
     const gameId = parseInt(params.gameId)
 
-    // Get game session with player and profession details
-    const gameSession = await prisma.gameSession.findUnique({
-      where: { id: gameId },
-      include: {
-        players: {
-          where: { userId: user.id },
-          include: {
-            profession: true,
-            playerInvestments: {
-              where: { isSold: false },
-              include: {
-                opportunityCard: true
-              }
-            },
-            playerLiabilities: {
-              where: { isPaidOff: false }
-            },
-            playerDoodads: true
-          }
-        }
-      }
-    })
+    // Get game session
+    const { data: gameSession, error: gameError } = await supabase
+      .from('game_sessions')
+      .select('*')
+      .eq('id', gameId)
+      .eq('user_id', user.id)
+      .single()
 
-    if (!gameSession) {
+    if (gameError || !gameSession) {
       return NextResponse.json(
         { error: "Game not found" },
         { status: 404 }
       )
     }
 
-    if (gameSession.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      )
-    }
+    // Get player with profession
+    const { data: players, error: playerError } = await supabase
+      .from('players')
+      .select('*, professions(*)')
+      .eq('game_session_id', gameId)
+      .eq('user_id', user.id)
 
-    const player = gameSession.players[0]
-    if (!player) {
+    if (playerError || !players || players.length === 0) {
       return NextResponse.json(
         { error: "Player not found" },
         { status: 404 }
       )
     }
 
+    const player = players[0]
+
+    // Get active investments
+    const { data: investments } = await supabase
+      .from('player_investments')
+      .select('*, opportunity_cards(*)')
+      .eq('player_id', player.id)
+      .eq('is_sold', false)
+
+    // Get unpaid liabilities
+    const { data: liabilities } = await supabase
+      .from('player_liabilities')
+      .select('*')
+      .eq('player_id', player.id)
+      .eq('is_paid_off', false)
+
+    // Get doodads
+    const { data: doodads } = await supabase
+      .from('player_doodads')
+      .select('*')
+      .eq('player_id', player.id)
+
+    // Transform to camelCase for frontend
+    const profession = player.professions
+    
     return NextResponse.json({
       id: gameSession.id,
       status: gameSession.status,
-      currentPhase: gameSession.currentPhase,
-      totalTurns: gameSession.totalTurns,
+      currentPhase: gameSession.current_phase,
+      totalTurns: gameSession.total_turns,
       player: {
         id: player.id,
-        cashOnHand: player.cashOnHand,
+        cashOnHand: player.cash_on_hand,
         savings: player.savings,
-        numChildren: player.numChildren,
-        currentTurn: player.currentTurn,
-        passiveIncome: player.passiveIncome,
-        totalIncome: player.totalIncome,
-        totalExpenses: player.totalExpenses,
-        cashFlow: player.cashFlow,
-        hasEscapedRatRace: player.hasEscapedRatRace,
-        isOnFastTrack: player.isOnFastTrack,
-        profession: player.profession,
-        investments: player.playerInvestments,
-        liabilities: player.playerLiabilities,
-        doodads: player.playerDoodads
+        numChildren: player.num_children,
+        currentTurn: player.current_turn,
+        passiveIncome: player.passive_income,
+        totalIncome: player.total_income,
+        totalExpenses: player.total_expenses,
+        cashFlow: player.cash_flow,
+        hasEscapedRatRace: player.has_escaped_rat_race,
+        isOnFastTrack: player.is_on_fast_track,
+        profession: {
+          id: profession.id,
+          name: profession.name,
+          description: profession.description,
+          salary: profession.salary,
+          taxes: profession.taxes,
+          homeMortgagePayment: profession.home_mortgage_payment,
+          schoolLoanPayment: profession.school_loan_payment,
+          carLoanPayment: profession.car_loan_payment,
+          creditCardPayment: profession.credit_card_payment,
+          retailPayment: profession.retail_payment,
+          otherExpenses: profession.other_expenses,
+          childExpense: profession.child_expense,
+          homeMortgage: profession.home_mortgage,
+          schoolLoans: profession.school_loans,
+          carLoans: profession.car_loans,
+          creditCards: profession.credit_cards,
+          retailDebt: profession.retail_debt,
+          startingCash: profession.starting_cash,
+          startingSavings: profession.starting_savings
+        },
+        investments: investments || [],
+        liabilities: liabilities || [],
+        doodads: doodads || []
       }
     })
 

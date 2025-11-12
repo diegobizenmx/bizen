@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,11 +23,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Get profession details
-    const profession = await prisma.profession.findUnique({
-      where: { id: professionId }
-    })
+    const { data: profession, error: profError } = await supabase
+      .from('professions')
+      .select('*')
+      .eq('id', professionId)
+      .single()
 
-    if (!profession) {
+    if (profError || !profession) {
       return NextResponse.json(
         { error: "Profession not found" },
         { status: 404 }
@@ -36,43 +37,53 @@ export async function POST(request: NextRequest) {
     }
 
     // Create game session
-    const gameSession = await prisma.gameSession.create({
-      data: {
-        userId: user.id,
+    const { data: gameSession, error: gameError } = await supabase
+      .from('game_sessions')
+      .insert({
+        user_id: user.id,
         status: "active",
-        currentPhase: "rat_race",
-        totalTurns: 0
-      }
-    })
+        current_phase: "rat_race",
+        total_turns: 0
+      })
+      .select()
+      .single()
+
+    if (gameError) throw gameError
 
     // Create player
-    const player = await prisma.player.create({
-      data: {
-        gameSessionId: gameSession.id,
-        userId: user.id,
-        professionId: profession.id,
-        cashOnHand: profession.startingCash,
-        savings: profession.startingSavings,
-        numChildren: 0,
-        currentPosition: 0,
-        currentTurn: 1,
-        passiveIncome: 0
-      }
-    })
+    const { data: player, error: playerError } = await supabase
+      .from('players')
+      .insert({
+        game_session_id: gameSession.id,
+        user_id: user.id,
+        profession_id: profession.id,
+        cash_on_hand: profession.starting_cash,
+        savings: profession.starting_savings,
+        num_children: 0,
+        current_position: 0,
+        current_turn: 1,
+        passive_income: 0
+      })
+      .select()
+      .single()
+
+    if (playerError) throw playerError
 
     // Log game start event
-    await prisma.gameEvent.create({
-      data: {
-        gameSessionId: gameSession.id,
-        playerId: player.id,
-        eventType: "game_started",
-        eventData: {
+    const { error: eventError } = await supabase
+      .from('game_events')
+      .insert({
+        game_session_id: gameSession.id,
+        player_id: player.id,
+        event_type: "game_started",
+        event_data: {
           professionId: profession.id,
           professionName: profession.name
         },
-        turnNumber: 1
-      }
-    })
+        turn_number: 1
+      })
+
+    if (eventError) throw eventError
 
     return NextResponse.json({
       gameId: gameSession.id,

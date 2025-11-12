@@ -1,402 +1,707 @@
-'use client';
+"use client"
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { ChecklistItem } from '@/components/lab/ChecklistItem';
-import { ArtifactCard } from '@/components/lab/ArtifactCard';
-import { AIButton } from '@/components/lab/AIButton';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Plus, MessageSquare, Sparkles } from 'lucide-react';
-import Link from 'next/link';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import React, { useEffect, useState } from "react"
+import { useRouter, useParams } from "next/navigation"
+import Link from "next/link"
 
 interface StepData {
-  id: string;
-  title: string;
-  description: string | null;
-  goal: string | null;
-  order: number;
+  id: string
+  title: string
+  description: string | null
+  goal: string | null
+  order: number
   lab_tracks: {
-    title: string;
-    key: string;
-  };
+    title: string
+    key: string
+  }
   checklists: Array<{
-    id: string;
-    text: string;
-    done: boolean;
-    order: number;
-  }>;
+    id: string
+    text: string
+    done: boolean
+    order: number
+  }>
   artifacts: Array<{
-    id: string;
-    type: string;
-    title: string;
-    content: string | null;
-    url: string | null;
-    created_at: string;
-  }>;
-  experiments: Array<any>;
+    id: string
+    type: string
+    title: string
+    content: string | null
+    url: string | null
+    created_at: string
+  }>
+  experiments: Array<any>
   progress: {
-    is_completed: boolean;
-  } | null;
+    is_completed: boolean
+  } | null
 }
 
 export default function StepDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const stepId = params.id as string;
+  const params = useParams()
+  const router = useRouter()
+  const stepId = params.id as string
   
-  const [stepData, setStepData] = useState<StepData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [newChecklistText, setNewChecklistText] = useState('');
-  const [showArtifactDialog, setShowArtifactDialog] = useState(false);
+  const [stepData, setStepData] = useState<StepData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [newChecklistText, setNewChecklistText] = useState("")
+  const [showArtifactDialog, setShowArtifactDialog] = useState(false)
   const [newArtifact, setNewArtifact] = useState({
-    title: '',
-    type: 'note',
-    content: ''
-  });
+    title: "",
+    type: "note",
+    content: ""
+  })
 
   useEffect(() => {
-    fetchStepData();
-  }, [stepId]);
+    fetchStepData()
+  }, [stepId])
 
   const fetchStepData = async () => {
     try {
-      const response = await fetch(`/api/lab/steps/${stepId}`);
+      const response = await fetch(`/api/lab/steps/${stepId}`)
       if (!response.ok) {
         if (response.status === 401) {
-          router.push('/login');
-          return;
+          router.push("/login")
+          return
         }
-        throw new Error('Failed to fetch step');
+        throw new Error("Failed to fetch step")
       }
-      const data = await response.json();
-      setStepData(data.data);
+      const data = await response.json()
+      setStepData(data.data)
     } catch (error) {
-      console.error('Error fetching step:', error);
+      console.error("Error fetching step:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const toggleChecklist = async (id: string, currentDone: boolean) => {
     try {
-      await fetch('/api/lab/checklists', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/lab/checklists", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, done: !currentDone })
-      });
-      fetchStepData();
+      })
+      fetchStepData()
     } catch (error) {
-      console.error('Error toggling checklist:', error);
+      console.error("Error toggling checklist:", error)
     }
-  };
+  }
 
   const addChecklist = async () => {
-    if (!newChecklistText.trim()) return;
+    if (!newChecklistText.trim()) return
     
     try {
-      await fetch('/api/lab/checklists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/lab/checklists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           step_id: stepId,
           text: newChecklistText,
           order: stepData?.checklists.length || 0
         })
-      });
-      setNewChecklistText('');
-      fetchStepData();
+      })
+      setNewChecklistText("")
+      fetchStepData()
     } catch (error) {
-      console.error('Error adding checklist:', error);
+      console.error("Error adding checklist:", error)
     }
-  };
+  }
 
   const saveArtifact = async () => {
-    if (!newArtifact.title.trim()) return;
+    if (!newArtifact.title.trim()) return
     
     try {
-      await fetch('/api/lab/artifacts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/lab/artifacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           step_id: stepId,
           ...newArtifact
         })
-      });
-      setNewArtifact({ title: '', type: 'note', content: '' });
-      setShowArtifactDialog(false);
-      fetchStepData();
+      })
+      setNewArtifact({ title: "", type: "note", content: "" })
+      setShowArtifactDialog(false)
+      fetchStepData()
     } catch (error) {
-      console.error('Error saving artifact:', error);
+      console.error("Error saving artifact:", error)
     }
-  };
+  }
 
   const markStepComplete = async () => {
-    // Mark step as complete
-    const allChecklistsDone = stepData?.checklists.every(c => c.done) ?? false;
+    const allChecklistsDone = stepData?.checklists.every(c => c.done) ?? false
     if (!allChecklistsDone) {
-      alert('Por favor completa todos los items de la checklist primero');
-      return;
+      alert("Por favor completa todos los items de la checklist primero")
+      return
     }
     
-    // Call API to update step progress (you may need to create this endpoint)
-    alert('¡Paso completado! Avanzando al siguiente...');
-    router.push(`/lab/track/${stepData?.lab_tracks.key}`);
-  };
+    alert("¡Paso completado! Avanzando al siguiente...")
+    router.push(`/business-lab/track/${stepData?.lab_tracks.key}`)
+  }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando paso...</p>
+      <div style={{ 
+        minHeight: "100vh", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        marginRight: "320px"
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: "4px solid #0F62FE22",
+            borderTop: "4px solid #0F62FE",
+            borderRadius: "50%",
+            margin: "0 auto 16px",
+            animation: "spin 1s linear infinite",
+          }} />
+          <p style={{ color: "#666", fontSize: 16, fontFamily: "Montserrat, sans-serif" }}>
+            Cargando paso...
+          </p>
         </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
-    );
+    )
   }
 
   if (!stepData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Paso no encontrado</h2>
+      <div style={{ 
+        minHeight: "100vh", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        marginRight: "320px",
+        fontFamily: "Montserrat, sans-serif"
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Paso no encontrado</h2>
           <Link href="/business-lab">
-            <Button>Volver al Lab</Button>
+            <button style={{
+              padding: "12px 24px",
+              background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
+              color: "white",
+              border: "none",
+              borderRadius: 12,
+              fontWeight: 700,
+              fontSize: 15,
+              cursor: "pointer"
+            }}>
+              Volver al Lab
+            </button>
           </Link>
         </div>
       </div>
-    );
+    )
   }
 
-  const allChecklistsDone = stepData.checklists.every(c => c.done);
-  const isCompleted = stepData.progress?.is_completed || false;
+  const allChecklistsDone = stepData.checklists.every(c => c.done)
+  const isCompleted = stepData.progress?.is_completed || false
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Back Button */}
-        <Link href={`/lab/track/${stepData.lab_tracks.key}`}>
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver a {stepData.lab_tracks.title}
-          </Button>
-        </Link>
+    <>
+      <main style={{
+        marginRight: "320px",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        padding: "40px",
+        fontFamily: "Montserrat, sans-serif",
+        width: "100%",
+        boxSizing: "border-box" as const
+      }}>
+      {/* Back Button */}
+      <button 
+        onClick={() => router.push(`/business-lab/track/${stepData.lab_tracks.key}`)}
+        style={{
+          padding: "8px 16px",
+          background: "white",
+          border: "2px solid #E5E7EB",
+          borderRadius: 8,
+          fontSize: 14,
+          fontWeight: 600,
+          color: "#374151",
+          cursor: "pointer",
+          marginBottom: 24,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          transition: "all 0.2s ease"
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.borderColor = "#0B71FE"}
+        onMouseLeave={(e) => e.currentTarget.style.borderColor = "#E5E7EB"}
+      >
+        ← Volver a {stepData.lab_tracks.title}
+      </button>
 
         {/* Step Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
+        <div style={{ marginBottom: 32, width: "100%" }}>
+          <h1 style={{
+            fontSize: 36,
+            fontWeight: 900,
+            marginBottom: 12,
+            color: "#111"
+          }}>
             {stepData.order}. {stepData.title}
           </h1>
           {stepData.description && (
-            <p className="text-gray-600 text-lg mb-3">{stepData.description}</p>
+            <p style={{ fontSize: 16, color: "#6B7280", marginBottom: 16, lineHeight: 1.6 }}>
+              {stepData.description}
+            </p>
           )}
           {stepData.goal && (
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
-              🎯 <span className="font-medium">Objetivo:</span> {stepData.goal}
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "#DBEAFE",
+              color: "#1E40AF",
+              padding: "10px 20px",
+              borderRadius: 24,
+              fontSize: 14,
+              fontWeight: 600
+            }}>
+              🎯 <span>Objetivo:</span> {stepData.goal}
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 350px",
+          gap: 24,
+          width: "100%"
+        }}>
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 24 }}>
             {/* Checklist */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Checklist</CardTitle>
-                <CardDescription>
-                  Completa estos items para avanzar
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 mb-4">
-                  {stepData.checklists.map((item) => (
-                    <ChecklistItem
-                      key={item.id}
-                      text={item.text}
-                      done={item.done}
-                      onToggle={() => toggleChecklist(item.id, item.done)}
+            <div style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 24,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "2px solid #E5E7EB",
+              width: "100%"
+            }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111", marginBottom: 8 }}>
+                Checklist
+              </h2>
+              <p style={{ fontSize: 14, color: "#6B7280", marginBottom: 20 }}>
+                Completa estos items para avanzar
+              </p>
+              
+              <div style={{ marginBottom: 20 }}>
+                {stepData.checklists.map((item) => (
+                  <div key={item.id} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "12px 0",
+                    borderBottom: "1px solid #F3F4F6"
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={item.done}
+                      onChange={() => toggleChecklist(item.id, item.done)}
+                      style={{
+                        width: 20,
+                        height: 20,
+                        cursor: "pointer",
+                        accentColor: "#0B71FE"
+                      }}
                     />
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Agregar nuevo item..."
-                    value={newChecklistText}
-                    onChange={(e) => setNewChecklistText(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && addChecklist()}
-                  />
-                  <Button onClick={addChecklist} size="sm">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                    <span style={{
+                      fontSize: 15,
+                      color: item.done ? "#9CA3AF" : "#374151",
+                      textDecoration: item.done ? "line-through" : "none"
+                    }}>
+                      {item.text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  type="text"
+                  placeholder="Agregar nuevo item..."
+                  value={newChecklistText}
+                  onChange={(e) => setNewChecklistText(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && addChecklist()}
+                  style={{
+                    flex: 1,
+                    padding: "10px 14px",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none"
+                  }}
+                />
+                <button onClick={addChecklist} style={{
+                  padding: "10px 16px",
+                  background: "#0B71FE",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}>
+                  +
+                </button>
+              </div>
+            </div>
 
             {/* Artifacts */}
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Mis Artefactos</CardTitle>
-                    <CardDescription>
-                      Outputs y documentos que has creado
-                    </CardDescription>
-                  </div>
-                  <Button onClick={() => setShowArtifactDialog(true)} size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nuevo
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {stepData.artifacts.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
-                    Aún no has creado ningún artefacto. Usa las herramientas AI o crea uno manualmente.
+            <div style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 24,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "2px solid #E5E7EB",
+              width: "100%"
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <div>
+                  <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111", marginBottom: 4 }}>
+                    Mis Artefactos
+                  </h2>
+                  <p style={{ fontSize: 14, color: "#6B7280" }}>
+                    Outputs y documentos que has creado
                   </p>
-                ) : (
-                  <div className="grid gap-4">
-                    {stepData.artifacts.map((artifact) => (
-                      <ArtifactCard
-                        key={artifact.id}
-                        title={artifact.title}
-                        type={artifact.type}
-                        content={artifact.content}
-                        url={artifact.url}
-                        createdAt={artifact.created_at}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+                <button onClick={() => setShowArtifactDialog(true)} style={{
+                  padding: "8px 16px",
+                  background: "#0B71FE",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6
+                }}>
+                  + Nuevo
+                </button>
+              </div>
+              
+              {stepData.artifacts.length === 0 ? (
+                <p style={{ textAlign: "center", color: "#9CA3AF", padding: "40px 0", fontSize: 14 }}>
+                  Aún no has creado ningún artefacto. Usa las herramientas AI o crea uno manualmente.
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
+                  {stepData.artifacts.map((artifact) => (
+                    <div key={artifact.id} style={{
+                      padding: 16,
+                      background: "#F9FAFB",
+                      borderRadius: 12,
+                      border: "1px solid #E5E7EB"
+                    }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                        <span style={{ fontSize: 18 }}>
+                          {artifact.type === "canvas" ? "📊" : artifact.type === "persona" ? "👤" : "📝"}
+                        </span>
+                        <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111" }}>
+                          {artifact.title}
+                        </h3>
+                      </div>
+                      {artifact.content && (
+                        <p style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.5 }}>
+                          {artifact.content.substring(0, 150)}...
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Mark Complete */}
             {allChecklistsDone && !isCompleted && (
-              <Card className="border-2 border-green-200 bg-green-50">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg mb-1">
-                        ¿Listo para continuar?
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Has completado todos los items. Marca este paso como completado.
-                      </p>
-                    </div>
-                    <Button
-                      onClick={markStepComplete}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      Marcar Completo
-                    </Button>
+              <div style={{
+                background: "#D1FAE5",
+                borderRadius: 16,
+                padding: 24,
+                border: "2px solid #6EE7B7",
+                boxShadow: "0 2px 12px rgba(16,185,129,0.15)",
+                width: "100%"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 6, color: "#065F46" }}>
+                      ¿Listo para continuar?
+                    </h3>
+                    <p style={{ fontSize: 14, color: "#047857" }}>
+                      Has completado todos los items. Marca este paso como completado.
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
+                  <button onClick={markStepComplete} style={{
+                    padding: "12px 24px",
+                    background: "#10B981",
+                    color: "white",
+                    border: "none",
+                    borderRadius: 12,
+                    fontWeight: 700,
+                    fontSize: 15,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap"
+                  }}>
+                    Marcar Completo
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 20 }}>
             {/* AI Helpers */}
-            <Card className="border-2 border-purple-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-purple-600" />
+            <div style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 20,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "2px solid #E9D5FF"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <span style={{ fontSize: 20 }}>✨</span>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#7C3AED" }}>
                   Herramientas AI
-                </CardTitle>
-                <CardDescription>
-                  Asistentes inteligentes para este paso
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <AIButton
-                  label="Refinar Idea"
-                  onClick={() => alert('AI Helper en desarrollo')}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                />
-                <AIButton
-                  label="Generar Entrevista"
-                  onClick={() => alert('AI Helper en desarrollo')}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                />
-                <AIButton
-                  label="Crear Lean Canvas"
-                  onClick={() => alert('AI Helper en desarrollo')}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                />
-              </CardContent>
-            </Card>
+                </h3>
+              </div>
+              <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>
+                Asistentes inteligentes para este paso
+              </p>
+              
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+                <button onClick={() => alert("AI Helper en desarrollo")} style={{
+                  padding: "10px 16px",
+                  background: "white",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#374151",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "#7C3AED"
+                  e.currentTarget.style.background = "#F5F3FF"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E5E7EB"
+                  e.currentTarget.style.background = "white"
+                }}
+                >
+                  Refinar Idea
+                </button>
+                <button onClick={() => alert("AI Helper en desarrollo")} style={{
+                  padding: "10px 16px",
+                  background: "white",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#374151",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "#7C3AED"
+                  e.currentTarget.style.background = "#F5F3FF"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E5E7EB"
+                  e.currentTarget.style.background = "white"
+                }}
+                >
+                  Generar Entrevista
+                </button>
+                <button onClick={() => alert("AI Helper en desarrollo")} style={{
+                  padding: "10px 16px",
+                  background: "white",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#374151",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "#7C3AED"
+                  e.currentTarget.style.background = "#F5F3FF"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E5E7EB"
+                  e.currentTarget.style.background = "white"
+                }}
+                >
+                  Crear Lean Canvas
+                </button>
+              </div>
+            </div>
 
             {/* Ask Forum */}
-            <Card className="border-2 border-blue-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
+            <div style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 20,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "2px solid #BFDBFE"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <span style={{ fontSize: 20 }}>💬</span>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1E40AF" }}>
                   ¿Necesitas ayuda?
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-3">
-                  Pregunta a la comunidad sobre este paso
-                </p>
-                <Link href={`/forum/new?context=business-lab-step-${stepId}`}>
-                  <Button variant="outline" className="w-full">
-                    Preguntar en el Foro
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+                </h3>
+              </div>
+              <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
+                Pregunta a la comunidad sobre este paso
+              </p>
+              <Link href={`/forum/new?context=business-lab-step-${stepId}`}>
+                <button style={{
+                  width: "100%",
+                  padding: "10px 16px",
+                  background: "white",
+                  border: "1px solid #0B71FE",
+                  color: "#0B71FE",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#0B71FE"
+                  e.currentTarget.style.color = "white"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white"
+                  e.currentTarget.style.color = "#0B71FE"
+                }}
+                >
+                  Preguntar en el Foro
+                </button>
+              </Link>
+            </div>
 
             {/* Templates */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">📄 Templates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link href="/business-lab/templates">
-                  <Button variant="outline" className="w-full">
-                    Ver Templates
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <div style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 20,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "2px solid #E5E7EB"
+            }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111", marginBottom: 12 }}>
+                📄 Templates
+              </h3>
+              <Link href="/business-lab/templates">
+                <button style={{
+                  width: "100%",
+                  padding: "10px 16px",
+                  background: "white",
+                  border: "1px solid #E5E7EB",
+                  color: "#374151",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = "#0B71FE"}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = "#E5E7EB"}
+                >
+                  Ver Templates
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Artifact Dialog */}
-        <Dialog open={showArtifactDialog} onOpenChange={setShowArtifactDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Crear Nuevo Artefacto</DialogTitle>
-              <DialogDescription>
+        {showArtifactDialog && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: 20
+          }}
+          onClick={() => setShowArtifactDialog(false)}
+          >
+            <div style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 32,
+              maxWidth: 500,
+              width: "100%",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.3)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+            >
+              <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
+                Crear Nuevo Artefacto
+              </h2>
+              <p style={{ fontSize: 14, color: "#6B7280", marginBottom: 24 }}>
                 Guarda tu trabajo, ideas o documentos relacionados con este paso
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-1 block">Título</label>
-                <Input
+              </p>
+              
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: "block", fontSize: 14, fontWeight: 600, marginBottom: 6 }}>
+                  Título
+                </label>
+                <input
+                  type="text"
                   value={newArtifact.title}
                   onChange={(e) => setNewArtifact({...newArtifact, title: e.target.value})}
                   placeholder="Ej: Mi Lean Canvas v1"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none"
+                  }}
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">Tipo</label>
+
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: "block", fontSize: 14, fontWeight: 600, marginBottom: 6 }}>
+                  Tipo
+                </label>
                 <select
-                  className="w-full border rounded-md p-2"
                   value={newArtifact.type}
                   onChange={(e) => setNewArtifact({...newArtifact, type: e.target.value})}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none"
+                  }}
                 >
                   <option value="note">Nota</option>
                   <option value="canvas">Canvas</option>
@@ -405,28 +710,68 @@ export default function StepDetailPage() {
                   <option value="pitch">Pitch</option>
                 </select>
               </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">Contenido</label>
-                <Textarea
+
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: "block", fontSize: 14, fontWeight: 600, marginBottom: 6 }}>
+                  Contenido
+                </label>
+                <textarea
                   value={newArtifact.content}
                   onChange={(e) => setNewArtifact({...newArtifact, content: e.target.value})}
                   placeholder="Escribe tu contenido aquí..."
                   rows={6}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none",
+                    resize: "vertical" as const,
+                    fontFamily: "inherit"
+                  }}
                 />
               </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowArtifactDialog(false)}>
-                Cancelar
-              </Button>
-              <Button onClick={saveArtifact}>
-                Guardar Artefacto
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
-  );
-}
 
+              <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
+                <button onClick={() => setShowArtifactDialog(false)} style={{
+                  padding: "10px 20px",
+                  background: "white",
+                  border: "1px solid #E5E7EB",
+                  color: "#374151",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}>
+                  Cancelar
+                </button>
+                <button onClick={saveArtifact} style={{
+                  padding: "10px 20px",
+                  background: "#0B71FE",
+                  border: "none",
+                  color: "white",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}>
+                  Guardar Artefacto
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      <aside style={{
+        position: "fixed",
+        top: 0,
+        right: 0,
+        width: "320px",
+        height: "100vh",
+        pointerEvents: "none"
+      }} />
+    </>
+  )
+}

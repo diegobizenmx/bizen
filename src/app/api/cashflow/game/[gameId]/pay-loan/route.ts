@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function POST(
   request: NextRequest,
@@ -11,115 +10,77 @@ export async function POST(
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const { liabilityId } = await request.json()
     const gameId = parseInt(params.gameId)
 
-    // Get game and player
-    const gameSession = await prisma.gameSession.findUnique({
-      where: { id: gameId },
-      include: {
-        players: {
-          where: { userId: user.id }
-        }
-      }
-    })
+    // Get player
+    const { data: player } = await supabase
+      .from('players')
+      .select('*')
+      .eq('game_session_id', gameId)
+      .eq('user_id', user.id)
+      .single()
 
-    if (!gameSession || gameSession.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      )
-    }
-
-    const player = gameSession.players[0]
     if (!player) {
-      return NextResponse.json(
-        { error: "Player not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Player not found" }, { status: 404 })
     }
 
-    // Get the liability
-    const liability = await prisma.playerLiability.findUnique({
-      where: { id: liabilityId }
-    })
+    // Get liability
+    const { data: liability } = await supabase
+      .from('player_liabilities')
+      .select('*')
+      .eq('id', liabilityId)
+      .eq('player_id', player.id)
+      .single()
 
-    if (!liability || liability.playerId !== player.id) {
-      return NextResponse.json(
-        { error: "Loan not found" },
-        { status: 404 }
-      )
-    }
-
-    if (liability.isPaidOff) {
-      return NextResponse.json(
-        { error: "Loan already paid off" },
-        { status: 400 }
-      )
+    if (!liability || liability.is_paid_off) {
+      return NextResponse.json({ error: "Liability not found or already paid" }, { status: 404 })
     }
 
     // Check if player has enough cash
-    if (player.cashOnHand < liability.remainingBalance) {
-      return NextResponse.json(
-        { error: "Not enough cash to pay off loan" },
-        { status: 400 }
-      )
+    if (player.cash_on_hand < liability.remaining_balance) {
+      return NextResponse.json({ error: "Not enough cash to pay off loan" }, { status: 400 })
     }
 
-    // Mark loan as paid off
-    await prisma.playerLiability.update({
-      where: { id: liabilityId },
-      data: {
-        isPaidOff: true,
-        paidOffAt: new Date(),
-        remainingBalance: 0
-      }
-    })
+    // Mark as paid off
+    await supabase
+      .from('player_liabilities')
+      .update({
+        is_paid_off: true,
+        remaining_balance: 0,
+        paid_off_at: new Date().toISOString()
+      })
+      .eq('id', liabilityId)
 
-    // Deduct cash from player
-    const updatedPlayer = await prisma.player.update({
-      where: { id: player.id },
-      data: {
-        cashOnHand: player.cashOnHand - liability.remainingBalance
-      }
-    })
+    // Update player cash
+    await supabase
+      .from('players')
+      .update({ cash_on_hand: player.cash_on_hand - liability.remaining_balance })
+      .eq('id', player.id)
 
-    // Log payoff event
-    await prisma.gameEvent.create({
-      data: {
-        gameSessionId: gameId,
-        playerId: player.id,
-        eventType: "loan_paid",
-        eventData: {
-          loanId: liability.id,
-          amount: liability.remainingBalance,
-          monthlyPaymentSaved: liability.monthlyPayment
-        },
-        cashChange: -liability.remainingBalance,
-        cashFlowChange: liability.monthlyPayment, // positive because expense is removed
-        turnNumber: player.currentTurn
-      }
+    // Log payment event
+    await supabase.from('game_events').insert({
+      game_session_id: gameId,
+      player_id: player.id,
+      event_type: "loan_paid",
+      event_data: {
+        liabilityId,
+        amount: liability.remaining_balance
+      },
+      cash_change: -liability.remaining_balance,
+      turn_number: player.current_turn
     })
 
     return NextResponse.json({
       message: "Loan paid off successfully",
-      amountPaid: liability.remainingBalance,
-      monthlyPaymentSaved: liability.monthlyPayment,
-      newCash: updatedPlayer.cashOnHand
+      newCash: player.cash_on_hand - liability.remaining_balance
     })
 
   } catch (error) {
-    console.error("Error paying off loan:", error)
-    return NextResponse.json(
-      { error: "Failed to pay off loan" },
-      { status: 500 }
-    )
+    console.error("Error paying loan:", error)
+    return NextResponse.json({ error: "Failed to pay loan" }, { status: 500 })
   }
 }
-

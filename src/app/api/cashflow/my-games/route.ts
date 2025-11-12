@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function GET() {
   try {
@@ -14,49 +13,51 @@ export async function GET() {
       )
     }
 
-    // Get all game sessions for this user
-    const games = await prisma.gameSession.findMany({
-      where: {
-        userId: user.id
-      },
-      include: {
-        players: {
-          include: {
-            profession: true,
-            playerInvestments: {
-              where: { isSold: false }
-            }
-          }
-        }
-      },
-      orderBy: {
-        lastActivityAt: 'desc'
-      }
-    })
+    // Get all game sessions for this user with joins
+    const { data: games, error } = await supabase
+      .from('game_sessions')
+      .select(`
+        *,
+        players (
+          *,
+          professions (name),
+          player_investments!inner (
+            id
+          )
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('last_activity_at', { ascending: false })
+
+    if (error) {
+      console.error("Supabase query error:", error)
+      throw error
+    }
 
     // Transform data for frontend
-    const gamesData = games.map(game => {
-      const player = game.players[0]
+    const gamesData = games?.map((game: any) => {
+      const player = game.players?.[0]
+      const activeInvestments = player?.player_investments?.filter((inv: any) => !inv.is_sold) || []
       
       return {
         id: game.id,
         status: game.status,
-        currentPhase: game.currentPhase,
-        startedAt: game.startedAt,
-        completedAt: game.completedAt,
-        lastActivityAt: game.lastActivityAt,
-        totalTurns: game.totalTurns,
+        currentPhase: game.current_phase,
+        startedAt: game.started_at,
+        completedAt: game.completed_at,
+        lastActivityAt: game.last_activity_at,
+        totalTurns: game.total_turns,
         player: player ? {
           id: player.id,
-          profession: player.profession.name,
-          currentTurn: player.currentTurn,
-          cashOnHand: player.cashOnHand,
-          passiveIncome: player.passiveIncome,
-          hasEscapedRatRace: player.hasEscapedRatRace,
-          numInvestments: player.playerInvestments.length
+          profession: player.professions?.name || 'Unknown',
+          currentTurn: player.current_turn,
+          cashOnHand: player.cash_on_hand,
+          passiveIncome: player.passive_income,
+          hasEscapedRatRace: player.has_escaped_rat_race,
+          numInvestments: activeInvestments.length
         } : null
       }
-    })
+    }) || []
 
     return NextResponse.json(gamesData)
 

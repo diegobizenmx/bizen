@@ -105,16 +105,18 @@ export default function LabPage() {
   const progressPercentage = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
 
   return (
-    <>
-      <main style={{
-        marginRight: "320px",
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-        padding: "40px",
-        fontFamily: "Montserrat, sans-serif",
-        width: "100%",
-        boxSizing: "border-box" as const
-      }}>
+    <main style={{
+      marginRight: "320px",
+      paddingTop: "40px",
+      paddingBottom: "40px",
+      paddingLeft: "40px",
+      paddingRight: "40px",
+      overflow: "auto",
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      fontFamily: "Montserrat, sans-serif",
+      boxSizing: "border-box" as const
+    }}>
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
           <h1 style={{
@@ -140,7 +142,8 @@ export default function LabPage() {
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           marginBottom: 24,
           border: "2px solid #DBEAFE",
-          width: "100%"
+          width: "100%",
+          boxSizing: "border-box" as const
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <span style={{ fontSize: 24 }}>🎯</span>
@@ -188,7 +191,8 @@ export default function LabPage() {
             boxShadow: "0 4px 20px rgba(139,92,246,0.15)",
             marginBottom: 24,
             border: "2px solid #DDD6FE",
-            width: "100%"
+            width: "100%",
+            boxSizing: "border-box" as const
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
               <span style={{ fontSize: 24 }}>💡</span>
@@ -453,7 +457,8 @@ export default function LabPage() {
           padding: 24,
           border: "2px solid #FDE68A",
           boxShadow: "0 2px 12px rgba(251,191,36,0.15)",
-          width: "100%"
+          width: "100%",
+          boxSizing: "border-box" as const
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <span style={{ fontSize: 24 }}>⚠️</span>
@@ -474,15 +479,5 @@ export default function LabPage() {
           </ul>
         </div>
       </main>
-
-      <aside style={{
-        position: "fixed",
-        top: 0,
-        right: 0,
-        width: "320px",
-        height: "100vh",
-        pointerEvents: "none"
-      }} />
-    </>
   )
 }

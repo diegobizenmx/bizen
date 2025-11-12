@@ -28,13 +28,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   return (
     <>
       {!isAuthPage && <FixedSidebar />}
-      <div style={{ 
-        marginRight: !isAuthPage ? "320px" : 0,
-        minHeight: "100vh",
-        background: "transparent"
-      }}>
-        {children}
-      </div>
+      {children}
       <NavigationLoading isLoading={isNavigating} />
     </>
   );

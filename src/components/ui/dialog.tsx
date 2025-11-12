@@ -26,6 +26,10 @@ const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
   )
 }
 
+const DialogTrigger = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  return <div {...props}>{children}</div>
+}
+
 const DialogContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => (
     <div
@@ -82,6 +86,7 @@ DialogDescription.displayName = "DialogDescription"
 
 export {
   Dialog,
+  DialogTrigger,
   DialogContent,
   DialogDescription,
   DialogFooter,

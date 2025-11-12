@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function POST(
   request: NextRequest,
@@ -11,134 +10,103 @@ export async function POST(
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const gameId = parseInt(params.gameId)
 
-    // Get game and player
-    const gameSession = await prisma.gameSession.findUnique({
-      where: { id: gameId },
-      include: {
-        players: {
-          where: { userId: user.id },
-          include: {
-            profession: true,
-            playerInvestments: {
-              where: { isSold: false }
-            },
-            playerLiabilities: {
-              where: { isPaidOff: false }
-            }
-          }
-        }
-      }
-    })
+    // Get player with all related data
+    const { data: player } = await supabase
+      .from('players')
+      .select('*, professions(*)')
+      .eq('game_session_id', gameId)
+      .eq('user_id', user.id)
+      .single()
 
-    if (!gameSession || gameSession.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      )
-    }
-
-    const player = gameSession.players[0]
     if (!player) {
-      return NextResponse.json(
-        { error: "Player not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Player not found" }, { status: 404 })
     }
 
-    // Calculate total income from investments
-    const investmentIncome = player.playerInvestments.reduce(
-      (sum, inv) => sum + (inv.currentCashFlow || 0),
-      0
-    )
+    // Get active investments
+    const { data: investments } = await supabase
+      .from('player_investments')
+      .select('*')
+      .eq('player_id', player.id)
+      .eq('is_sold', false)
+
+    // Get unpaid liabilities
+    const { data: liabilities } = await supabase
+      .from('player_liabilities')
+      .select('*')
+      .eq('player_id', player.id)
+      .eq('is_paid_off', false)
+
+    // Calculate investment income
+    const investmentIncome = investments?.reduce((sum, inv) => sum + (inv.current_cash_flow || 0), 0) || 0
 
     // Calculate loan payments
-    const loanPayments = player.playerLiabilities.reduce(
-      (sum, liability) => sum + liability.monthlyPayment,
-      0
-    )
+    const loanPayments = liabilities?.reduce((sum, l) => sum + l.monthly_payment, 0) || 0
 
-    // Calculate monthly cash flow
+    const profession = player.professions
     const totalExpenses = 
-      player.profession.taxes +
-      player.profession.homeMortgagePayment +
-      player.profession.schoolLoanPayment +
-      player.profession.carLoanPayment +
-      player.profession.creditCardPayment +
-      player.profession.retailPayment +
-      player.profession.otherExpenses +
-      (player.profession.childExpense * player.numChildren) +
+      profession.taxes +
+      profession.home_mortgage_payment +
+      profession.school_loan_payment +
+      profession.car_loan_payment +
+      profession.credit_card_payment +
+      profession.retail_payment +
+      profession.other_expenses +
+      (profession.child_expense * player.num_children) +
       loanPayments
 
-    const monthlyCashFlow = player.profession.salary + investmentIncome - totalExpenses
+    const monthlyCashFlow = profession.salary + investmentIncome - totalExpenses
 
-    // Update player for new turn
-    const updatedPlayer = await prisma.player.update({
-      where: { id: player.id },
-      data: {
-        currentTurn: player.currentTurn + 1,
-        cashOnHand: player.cashOnHand + monthlyCashFlow
-      }
+    // Update player
+    await supabase
+      .from('players')
+      .update({
+        cash_on_hand: player.cash_on_hand + monthlyCashFlow,
+        current_turn: player.current_turn + 1,
+        passive_income: investmentIncome,
+        total_income: profession.salary + investmentIncome,
+        total_expenses: totalExpenses,
+        cash_flow: monthlyCashFlow
+      })
+      .eq('id', player.id)
+
+    // Update game session
+    await supabase
+      .from('game_sessions')
+      .update({
+        total_turns: player.current_turn + 1,
+        last_activity_at: new Date().toISOString()
+      })
+      .eq('id', gameId)
+
+    // Log turn end event
+    await supabase.from('game_events').insert({
+      game_session_id: gameId,
+      player_id: player.id,
+      event_type: "turn_ended",
+      event_data: {
+        salary: profession.salary,
+        investmentIncome,
+        totalExpenses,
+        cashFlow: monthlyCashFlow
+      },
+      cash_change: monthlyCashFlow,
+      turn_number: player.current_turn + 1
     })
-
-    // Update game session total turns
-    await prisma.gameSession.update({
-      where: { id: gameId },
-      data: {
-        totalTurns: gameSession.totalTurns + 1,
-        lastActivityAt: new Date()
-      }
-    })
-
-    // Log payday event
-    await prisma.gameEvent.create({
-      data: {
-        gameSessionId: gameId,
-        playerId: player.id,
-        eventType: "payday",
-        eventData: {
-          salary: player.profession.salary,
-          passiveIncome: investmentIncome,
-          expenses: totalExpenses,
-          netCashFlow: monthlyCashFlow
-        },
-        cashChange: monthlyCashFlow,
-        turnNumber: player.currentTurn + 1
-      }
-    })
-
-    // Update investment income totals
-    for (const investment of player.playerInvestments) {
-      if (investment.currentCashFlow && investment.currentCashFlow > 0) {
-        await prisma.playerInvestment.update({
-          where: { id: investment.id },
-          data: {
-            totalIncomeEarned: investment.totalIncomeEarned + investment.currentCashFlow
-          }
-        })
-      }
-    }
 
     return NextResponse.json({
       message: "Turn ended successfully",
-      newTurn: updatedPlayer.currentTurn,
-      cashReceived: monthlyCashFlow,
-      newCash: updatedPlayer.cashOnHand
+      newCash: player.cash_on_hand + monthlyCashFlow,
+      cashFlow: monthlyCashFlow,
+      newTurn: player.current_turn + 1
     })
 
   } catch (error) {
     console.error("Error ending turn:", error)
-    return NextResponse.json(
-      { error: "Failed to end turn" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to end turn" }, { status: 500 })
   }
 }
-

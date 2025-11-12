@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function POST(
   request: NextRequest,
@@ -19,29 +18,27 @@ export async function POST(
 
     const gameId = parseInt(params.gameId)
 
-    // Verify game belongs to user
-    const gameSession = await prisma.gameSession.findUnique({
-      where: { id: gameId },
-      include: {
-        players: {
-          where: { userId: user.id }
-        }
-      }
-    })
+    // Verify game belongs to user and get player
+    const { data: gameSession } = await supabase
+      .from('game_sessions')
+      .select('*')
+      .eq('id', gameId)
+      .eq('user_id', user.id)
+      .single()
 
-    if (!gameSession || gameSession.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      )
+    if (!gameSession) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
-    const player = gameSession.players[0]
+    const { data: players } = await supabase
+      .from('players')
+      .select('*, professions(*)')
+      .eq('game_session_id', gameId)
+      .eq('user_id', user.id)
+
+    const player = players?.[0]
     if (!player) {
-      return NextResponse.json(
-        { error: "Player not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Player not found" }, { status: 404 })
     }
 
     // Random card type: 15% doodad, 20% market event, 65% opportunity
@@ -50,104 +47,83 @@ export async function POST(
     const isMarketEvent = rand >= 0.15 && rand < 0.35
 
     if (isDoodad) {
-      // Get random doodad (tempting luxury purchase)
-      const doodadCount = await prisma.doodad.count({
-        where: { isActive: true }
-      })
+      // Get random doodad
+      const { data: doodads, count } = await supabase
+        .from('doodads')
+        .select('*', { count: 'exact' })
+        .eq('is_active', true)
 
-      const skip = Math.floor(Math.random() * doodadCount)
-      
-      const doodad = await prisma.doodad.findMany({
-        where: { isActive: true },
-        skip,
-        take: 1
-      })
+      if (doodads && doodads.length > 0) {
+        const randomDoodad = doodads[Math.floor(Math.random() * doodads.length)]
 
-      if (doodad && doodad.length > 0) {
         // Log doodad drawn
-        await prisma.gameEvent.create({
-          data: {
-            gameSessionId: gameId,
-            playerId: player.id,
-            eventType: "opportunity_drawn",
-            eventData: {
-              doodadId: doodad[0].id,
-              doodadName: doodad[0].name,
-              type: "doodad"
-            },
-            turnNumber: player.currentTurn
-          }
+        await supabase.from('game_events').insert({
+          game_session_id: gameId,
+          player_id: player.id,
+          event_type: "opportunity_drawn",
+          event_data: {
+            doodadId: randomDoodad.id,
+            doodadName: randomDoodad.name,
+            type: "doodad"
+          },
+          turn_number: player.current_turn
         })
 
         return NextResponse.json({
           isDoodad: true,
-          doodad: doodad[0]
+          doodad: randomDoodad
         })
       }
     }
 
     if (isMarketEvent) {
       // Get random market event
-      const eventCount = await prisma.marketCard.count({
-        where: { isActive: true }
-      })
+      const { data: marketCards } = await supabase
+        .from('market_cards')
+        .select('*')
+        .eq('is_active', true)
 
-      const skip = Math.floor(Math.random() * eventCount)
-      
-      const event = await prisma.marketCard.findMany({
-        where: { isActive: true },
-        skip,
-        take: 1
-      })
-
-      if (event && event.length > 0) {
-        const marketEvent = event[0]
+      if (marketCards && marketCards.length > 0) {
+        const marketEvent = marketCards[Math.floor(Math.random() * marketCards.length)]
         let cashChange = 0
         let message = ""
+        const profession = player.professions
 
-        // Apply market event effects  
+        // Apply market event effects
         switch (marketEvent.type) {
           case "baby":
-            await prisma.player.update({
-              where: { id: player.id },
-              data: {
-                numChildren: player.numChildren + 1
-              }
-            })
-            message = `¡Nació un bebé! Ahora tienes ${player.numChildren + 1} hijo(s). Tus gastos mensuales aumentan $${player.profession.childExpense}.`
+            await supabase
+              .from('players')
+              .update({ num_children: player.num_children + 1 })
+              .eq('id', player.id)
+            message = `¡Nació un bebé! Ahora tienes ${player.num_children + 1} hijo(s). Tus gastos mensuales aumentan $${profession.child_expense}.`
             break
 
           case "downsized":
-            cashChange = -(player.profession.salary * 2)
-            await prisma.player.update({
-              where: { id: player.id },
-              data: {
-                cashOnHand: player.cashOnHand + cashChange
-              }
-            })
+            cashChange = -(profession.salary * 2)
+            await supabase
+              .from('players')
+              .update({ cash_on_hand: player.cash_on_hand + cashChange })
+              .eq('id', player.id)
             message = `¡Te despidieron! Pierdes 2 turnos de salario (-$${Math.abs(cashChange).toLocaleString()}).`
             break
 
           case "charity":
-            const donation = Math.floor(player.profession.salary * 0.1)
+            const donation = Math.floor(profession.salary * 0.1)
             cashChange = -donation
-            await prisma.player.update({
-              where: { id: player.id },
-              data: {
-                cashOnHand: player.cashOnHand + cashChange
-              }
-            })
+            await supabase
+              .from('players')
+              .update({ cash_on_hand: player.cash_on_hand + cashChange })
+              .eq('id', player.id)
             message = `Donas a caridad. Contribuyes $${Math.abs(cashChange).toLocaleString()} y recibes beneficios fiscales.`
             break
 
           case "paycheck":
-            cashChange = player.profession.salary
-            await prisma.player.update({
-              where: { id: player.id },
-              data: {
-                cashOnHand: player.cashOnHand + cashChange
-              }
-            })
+            cashChange = profession.salary
+            await supabase
+              .from('players')
+              .update({ cash_on_hand: player.cash_on_hand + cashChange })
+              .eq('id', player.id)
             message = `¡Día de pago extra! Recibes tu salario mensual de $${cashChange.toLocaleString()}.`
             break
 
@@ -155,26 +131,25 @@ export async function POST(
             message = marketEvent.description
         }
 
-        // Get updated profession data
-        const updatedPlayer = await prisma.player.findUnique({
-          where: { id: player.id },
-          include: { profession: true }
-        })
+        // Get updated player
+        const { data: updatedPlayers } = await supabase
+          .from('players')
+          .select('num_children')
+          .eq('id', player.id)
+          .single()
 
         // Log market event
-        await prisma.gameEvent.create({
-          data: {
-            gameSessionId: gameId,
-            playerId: player.id,
-            eventType: "market_event",
-            eventData: {
-              eventId: marketEvent.id,
-              eventName: marketEvent.name,
-              eventType: marketEvent.type
-            },
-            cashChange,
-            turnNumber: player.currentTurn
-          }
+        await supabase.from('game_events').insert({
+          game_session_id: gameId,
+          player_id: player.id,
+          event_type: "market_event",
+          event_data: {
+            eventId: marketEvent.id,
+            eventName: marketEvent.name,
+            eventType: marketEvent.type
+          },
+          cash_change: cashChange,
+          turn_number: player.current_turn
         })
 
         return NextResponse.json({
@@ -184,55 +159,40 @@ export async function POST(
             message
           },
           cashChange,
-          newChildren: updatedPlayer?.numChildren
+          newChildren: updatedPlayers?.num_children
         })
       }
     }
 
-    // Get a random opportunity card (filter by phase)
-    const isOnFastTrack = player.isOnFastTrack
+    // Get random opportunity card (filter by phase)
+    const isOnFastTrack = player.is_on_fast_track
     
-    const cardCount = await prisma.opportunityCard.count({
-      where: { 
-        isActive: true,
-        isFastTrack: isOnFastTrack // Only Fast Track cards if player is on Fast Track
-      }
-    })
+    const { data: cards } = await supabase
+      .from('opportunity_cards')
+      .select('*')
+      .eq('is_active', true)
+      .eq('is_fast_track', isOnFastTrack)
 
-    const skip = Math.floor(Math.random() * cardCount)
-    
-    const card = await prisma.opportunityCard.findMany({
-      where: { 
-        isActive: true,
-        isFastTrack: isOnFastTrack
-      },
-      skip,
-      take: 1
-    })
-
-    if (!card || card.length === 0) {
-      return NextResponse.json(
-        { error: "No cards available" },
-        { status: 404 }
-      )
+    if (!cards || cards.length === 0) {
+      return NextResponse.json({ error: "No cards available" }, { status: 404 })
     }
 
+    const card = cards[Math.floor(Math.random() * cards.length)]
+
     // Log the draw event
-    await prisma.gameEvent.create({
-      data: {
-        gameSessionId: gameId,
-        playerId: player.id,
-        eventType: "opportunity_drawn",
-        eventData: {
-          cardId: card[0].id,
-          cardName: card[0].name,
-          cardType: card[0].type
-        },
-        turnNumber: player.currentTurn
-      }
+    await supabase.from('game_events').insert({
+      game_session_id: gameId,
+      player_id: player.id,
+      event_type: "opportunity_drawn",
+      event_data: {
+        cardId: card.id,
+        cardName: card.name,
+        cardType: card.type
+      },
+      turn_number: player.current_turn
     })
 
-    return NextResponse.json({ isMarketEvent: false, card: card[0] })
+    return NextResponse.json({ isMarketEvent: false, card })
 
   } catch (error) {
     console.error("Error drawing card:", error)
@@ -242,4 +202,3 @@ export async function POST(
     )
   }
 }
-

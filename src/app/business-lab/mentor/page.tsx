@@ -1,148 +1,164 @@
-import React from 'react';
-import { redirect } from 'next/navigation';
-import { createSupabaseServer } from '@/lib/supabase/server';
-import { getActiveMentors } from '@/lib/lab/db';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Users, Star, MessageSquare, Sparkles } from 'lucide-react';
-import Link from 'next/link';
+import React from "react"
+import { redirect } from "next/navigation"
+import { createSupabaseServer } from "@/lib/supabase/server"
+import { getActiveMentors } from "@/lib/lab/db"
+import Link from "next/link"
 
 export const metadata = {
-  title: 'Mentores | Business Lab',
-  description: 'Encuentra mentores que te ayuden con tu startup'
-};
-
-export default async function MentorPage() {
-  const supabase = await createSupabaseServer();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  
-  if (authError || !user) {
-    redirect('/login');
-  }
-
-  const mentors = await getActiveMentors();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <Link href="/business-lab">
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver al Lab
-          </Button>
-        </Link>
-
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Users className="w-8 h-8 text-blue-600" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Encuentra un Mentor
-            </h1>
-          </div>
-          <p className="text-gray-600 text-lg">
-            Conecta con emprendedores experimentados que pueden guiarte
-          </p>
-        </div>
-
-        {/* AI Match */}
-        <Card className="mb-8 border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-600" />
-              Encuentra tu Mentor Ideal con AI
-            </CardTitle>
-            <CardDescription>
-              Responde algunas preguntas y te recomendaremos mentores perfectos para ti
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-              Comenzar Match AI
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Mentors List */}
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold mb-2">Mentores Disponibles</h2>
-          <p className="text-gray-600">
-            {mentors.length} mentores activos en la comunidad
-          </p>
-        </div>
-
-        {mentors.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Próximamente</h3>
-              <p className="text-gray-600 mb-4">
-                Estamos reclutando mentores experimentados para ayudarte en tu startup.
-              </p>
-              <Button variant="outline">
-                Quiero ser mentor
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {mentors.map((mentor: any) => (
-              <Card key={mentor.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg">
-                        {mentor.profiles?.nickname || 'Mentor'}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-2 mt-1">
-                        <Star className="w-4 h-4 text-yellow-500" />
-                        {mentor.profiles?.reputation || 0} reputación
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {mentor.bio && (
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {mentor.bio}
-                    </p>
-                  )}
-                  {mentor.topics && mentor.topics.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {mentor.topics.slice(0, 3).map((topic: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">
-                          {topic}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  <Button className="w-full" variant="outline">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Solicitar Sesión
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-
-        {/* Become Mentor */}
-        <Card className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200">
-          <CardHeader>
-            <CardTitle>¿Quieres ser mentor?</CardTitle>
-            <CardDescription>
-              Si tienes experiencia emprendiendo, puedes ayudar a otros en su camino
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button>
-              Aplicar como Mentor
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
+  title: "Mentores | Business Lab",
+  description: "Conecta con mentores expertos"
 }
 
+export default async function MentorPage() {
+  const supabase = await createSupabaseServer()
+  
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  
+  if (authError || !user) {
+    redirect("/login")
+  }
+
+  const mentors = await getActiveMentors()
+
+  return (
+    <div style={{
+      marginRight: "320px",
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      padding: "40px",
+      fontFamily: "Montserrat, sans-serif",
+      width: "100%",
+      boxSizing: "border-box" as const
+    }}>
+      <Link href="/business-lab" style={{ textDecoration: "none" }}>
+        <button style={{
+          padding: "8px 16px",
+          background: "white",
+          border: "2px solid #E5E7EB",
+          borderRadius: 8,
+          fontSize: 14,
+          fontWeight: 600,
+          color: "#374151",
+          cursor: "pointer",
+          marginBottom: 24,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          transition: "all 0.2s ease"
+        }}
+        onMouseEnter={(e: any) => e.currentTarget.style.borderColor = "#0B71FE"}
+        onMouseLeave={(e: any) => e.currentTarget.style.borderColor = "#E5E7EB"}
+        >
+          ← Volver al Lab
+        </button>
+      </Link>
+
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{
+          fontSize: 42,
+          fontWeight: 900,
+          background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          marginBottom: 12
+        }}>
+          👨‍🏫 Mentores
+        </h1>
+        <p style={{ fontSize: 16, color: "#6B7280", lineHeight: 1.6 }}>
+          Conecta con emprendedores experimentados que pueden guiarte
+        </p>
+      </div>
+
+      {mentors && mentors.length > 0 ? (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: 20,
+          width: "100%"
+        }}>
+          {mentors.map((mentor: any) => (
+            <div key={mentor.id} style={{
+              background: "white",
+              borderRadius: 16,
+              padding: 24,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              border: "2px solid #E5E7EB",
+              transition: "all 0.2s ease"
+            }}
+            onMouseEnter={(e: any) => {
+              e.currentTarget.style.transform = "translateY(-4px)"
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(11,113,254,0.2)"
+              e.currentTarget.style.borderColor = "#0B71FE"
+            }}
+            onMouseLeave={(e: any) => {
+              e.currentTarget.style.transform = "translateY(0)"
+              e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)"
+              e.currentTarget.style.borderColor = "#E5E7EB"
+            }}
+            >
+              <div style={{ fontSize: 48, marginBottom: 16, textAlign: "center" as const }}>
+                👤
+              </div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 8, textAlign: "center" as const }}>
+                {mentor.profiles?.nickname || "Mentor"}
+              </h3>
+              {mentor.bio && (
+                <p style={{ fontSize: 14, color: "#6B7280", marginBottom: 16, lineHeight: 1.5 }}>
+                  {mentor.bio}
+                </p>
+              )}
+              {mentor.expertise && mentor.expertise.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+                  {mentor.expertise.map((exp: string, i: number) => (
+                    <span key={i} style={{
+                      fontSize: 12,
+                      padding: "4px 10px",
+                      background: "#E0F2FE",
+                      color: "#0B71FE",
+                      borderRadius: 6,
+                      fontWeight: 600
+                    }}>
+                      {exp}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <button style={{
+                width: "100%",
+                padding: "12px 20px",
+                background: "#0B71FE",
+                border: "none",
+                color: "white",
+                borderRadius: 12,
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: "pointer"
+              }}>
+                Contactar
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{
+          background: "white",
+          borderRadius: 16,
+          padding: 60,
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          border: "2px solid #E5E7EB",
+          textAlign: "center" as const,
+          width: "100%"
+        }}>
+          <div style={{ fontSize: 64, marginBottom: 20 }}>🚧</div>
+          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#111" }}>
+            Próximamente
+          </h2>
+          <p style={{ fontSize: 16, color: "#6B7280", maxWidth: 500, margin: "0 auto" }}>
+            El marketplace de mentores estará disponible pronto. Podrás conectar con
+            emprendedores experimentados para recibir guía personalizada.
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}

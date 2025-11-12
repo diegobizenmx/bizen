@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { prisma } from "@/lib/prisma"
 
 export async function DELETE(
   request: NextRequest,
@@ -11,48 +10,36 @@ export async function DELETE(
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const gameId = parseInt(params.gameId)
 
     // Verify game belongs to user
-    const gameSession = await prisma.gameSession.findUnique({
-      where: { id: gameId }
-    })
+    const { data: gameSession } = await supabase
+      .from('game_sessions')
+      .select('*')
+      .eq('id', gameId)
+      .eq('user_id', user.id)
+      .single()
 
     if (!gameSession) {
-      return NextResponse.json(
-        { error: "Game not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
-    if (gameSession.userId !== user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      )
-    }
+    // Delete game (cascade will handle related records)
+    const { error: deleteError } = await supabase
+      .from('game_sessions')
+      .delete()
+      .eq('id', gameId)
+      .eq('user_id', user.id)
 
-    // Delete game (cascade will delete all related data)
-    await prisma.gameSession.delete({
-      where: { id: gameId }
-    })
+    if (deleteError) throw deleteError
 
-    return NextResponse.json({
-      message: "Game deleted successfully"
-    })
+    return NextResponse.json({ message: "Game deleted successfully" })
 
   } catch (error) {
     console.error("Error deleting game:", error)
-    return NextResponse.json(
-      { error: "Failed to delete game" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to delete game" }, { status: 500 })
   }
 }
-

@@ -37,7 +37,7 @@ BEGIN
                  WHERE table_name = 'lab_tracks' AND column_name = 'color') THEN
     ALTER TABLE lab_tracks ADD COLUMN color TEXT;
   END IF;
-END $$;
+END $
 
 -- ============================================
 -- 2. LAB STEPS (Individual steps in each track)

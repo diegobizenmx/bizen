@@ -1,0 +1,262 @@
+/**
+ * Page: /simuladores
+ * Financial Simulators Catalog
+ */
+
+import Link from 'next/link';
+import { createSupabaseServer } from '@/lib/supabase/server';
+
+export const metadata = {
+  title: 'Simuladores Financieros | BIZEN',
+  description: 'Herramientas educativas para aprender sobre finanzas personales',
+};
+
+interface Simulator {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  category: string;
+  icon: string;
+  sort_order: number;
+}
+
+export default async function SimulatorsPage() {
+  const supabase = await createSupabaseServer();
+  
+  const { data: simulators, error } = await supabase
+    .from('simulators')
+    .select('*')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+  
+  const simulatorsList: Simulator[] = simulators || [];
+  
+  const categoryLabels: Record<string, string> = {
+    budgeting: 'Presupuesto',
+    savings: 'Ahorro',
+    credit: 'Crédito',
+    investment: 'Inversión',
+    inflation: 'Inflación',
+  };
+  
+  return (
+    <main style={{
+      marginRight: "320px",
+      paddingTop: "40px",
+      paddingBottom: "40px",
+      paddingLeft: "40px",
+      paddingRight: "40px",
+      overflow: "auto",
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      fontFamily: "Montserrat, sans-serif",
+      boxSizing: "border-box" as const
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: 32, textAlign: "center" }}>
+        <h1 style={{
+          fontSize: 56,
+          fontWeight: 900,
+          margin: "0 0 20px",
+          background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          letterSpacing: "-0.02em"
+        }}>
+          💰 Simuladores Financieros
+        </h1>
+        <p style={{
+          fontSize: 19,
+          color: "#64748b",
+          margin: "0 auto",
+          lineHeight: 1.7,
+          maxWidth: 800
+        }}>
+          Herramientas prácticas para aprender sobre finanzas personales de forma interactiva
+        </p>
+      </div>
+        
+      {/* Educational Disclaimer */}
+      <div style={{
+        background: "rgba(96, 165, 250, 0.1)",
+        border: "2px solid rgba(59, 130, 246, 0.3)",
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 24,
+        maxWidth: 900,
+        margin: "0 auto 24px"
+      }}>
+        <p style={{ fontSize: 14, color: "#1e40af", lineHeight: 1.6, margin: 0 }}>
+          <strong>⚠️ Propósito Educativo:</strong> Estos simuladores son herramientas de aprendizaje.
+          Los resultados son aproximaciones y no constituyen asesoría financiera profesional.
+          Siempre consulta con un experto para decisiones financieras importantes.
+        </p>
+      </div>
+      
+      {/* Quick Links */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 16, marginBottom: 32 }}>
+        <Link href="/simuladores/history" style={{ textDecoration: "none" }}>
+          <button style={{
+            padding: "12px 24px",
+            background: "white",
+            color: "#0B71FE",
+            border: "2px solid #0B71FE",
+            borderRadius: 12,
+            fontSize: 15,
+            fontWeight: 700,
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            fontFamily: "Montserrat, sans-serif",
+            boxShadow: "0 2px 8px rgba(11,113,254,0.1)"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#0B71FE"
+            e.currentTarget.style.color = "white"
+            e.currentTarget.style.transform = "translateY(-2px)"
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(11,113,254,0.3)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "white"
+            e.currentTarget.style.color = "#0B71FE"
+            e.currentTarget.style.transform = "translateY(0)"
+            e.currentTarget.style.boxShadow = "0 2px 8px rgba(11,113,254,0.1)"
+          }}>
+            📋 Mis Simulaciones Guardadas
+          </button>
+        </Link>
+      </div>
+        
+      {/* Simulators Grid */}
+      {error ? (
+        <div style={{ textAlign: "center", padding: "48px 0", color: "#ef4444", fontSize: 16 }}>
+          Error al cargar los simuladores. Por favor, intenta más tarde.
+        </div>
+      ) : (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: 20,
+          marginBottom: 32
+        }}>
+          {simulatorsList.map((simulator) => (
+            <Link
+              key={simulator.id}
+              href={`/simuladores/${simulator.slug}`}
+              style={{ textDecoration: "none" }}
+            >
+              <div style={{
+                background: "white",
+                borderRadius: 20,
+                padding: 24,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                border: "2px solid #E5E7EB",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+                height: "100%",
+                position: "relative" as const,
+                overflow: "hidden"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)"
+                e.currentTarget.style.boxShadow = "0 8px 32px rgba(11,113,254,0.2)"
+                e.currentTarget.style.borderColor = "#0B71FE"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)"
+                e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)"
+                e.currentTarget.style.borderColor = "#E5E7EB"
+              }}>
+                {/* Color accent bar */}
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 4,
+                  background: "linear-gradient(90deg, #0B71FE, #4A9EFF)"
+                }} />
+                
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
+                    <div style={{ fontSize: 40 }}>{simulator.icon}</div>
+                    <span style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      padding: "4px 10px",
+                      background: "#E0F2FE",
+                      color: "#1E40AF",
+                      borderRadius: 8
+                    }}>
+                      {categoryLabels[simulator.category] || simulator.category}
+                    </span>
+                  </div>
+                  <h3 style={{ 
+                    fontSize: 20, 
+                    fontWeight: 700, 
+                    color: "#111", 
+                    marginBottom: 8 
+                  }}>
+                    {simulator.name}
+                  </h3>
+                  <p style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.6 }}>
+                    {simulator.description}
+                  </p>
+                </div>
+
+                <button style={{
+                  width: "100%",
+                  padding: "12px",
+                  background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "transform 0.2s ease",
+                  fontFamily: "Montserrat, sans-serif"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
+                  Abrir Simulador →
+                </button>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+      
+      {/* Empty State */}
+      {!error && simulatorsList.length === 0 && (
+        <div style={{ textAlign: "center", padding: "48px 0", color: "#6B7280", fontSize: 16 }}>
+          No hay simuladores disponibles en este momento.
+        </div>
+      )}
+      
+      {/* Footer Note */}
+      <div style={{
+        marginTop: 40,
+        padding: 24,
+        background: "rgba(254, 243, 199, 0.5)",
+        borderRadius: 16,
+        border: "2px solid rgba(251, 191, 36, 0.3)",
+        maxWidth: 800,
+        margin: "40px auto 0"
+      }}>
+        <p style={{
+          fontSize: 14,
+          color: "#78350F",
+          lineHeight: 1.7,
+          margin: 0,
+          textAlign: "center"
+        }}>
+          💡 <strong>Tip:</strong> Usa los botones de "Valores de Prueba" en cada simulador
+          para explorar rápidamente cómo funcionan. Luego, personaliza con tus propios datos.
+        </p>
+      </div>
+    </main>
+  );
+}
+
