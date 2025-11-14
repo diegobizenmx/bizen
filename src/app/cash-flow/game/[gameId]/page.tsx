@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter, useParams } from "next/navigation"
 import GameBoard from "@/components/cashflow/GameBoard"
+import { useCashflowSounds } from "@/hooks/useCashflowSounds"
 
 type Player = {
   id: number
@@ -11,6 +12,7 @@ type Player = {
   savings: number
   numChildren: number
   currentTurn: number
+  currentPosition: number
   passiveIncome: number
   totalIncome: number | null
   totalExpenses: number | null
@@ -133,6 +135,102 @@ export default function CashFlowGamePage() {
   const [actionInProgress, setActionInProgress] = useState(false)
   const [isRollingDice, setIsRollingDice] = useState(false)
   const [diceResult, setDiceResult] = useState<number | null>(null)
+  const { playDiceRoll, playCardReveal, playReward, playDecision, playNegative, playSuccessChime } = useCashflowSounds()
+
+  const modalOverlayStyle: React.CSSProperties = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: "320px",
+    bottom: 0,
+    background: "rgba(15, 23, 42, 0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2000,
+    padding: 40
+  }
+
+  const modalCardStyle: React.CSSProperties = {
+    width: "100%",
+    maxWidth: 520,
+    background: "white",
+    borderRadius: 20,
+    padding: 32,
+    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
+  }
+
+  const modalTitleStyle: React.CSSProperties = {
+    fontSize: 28,
+    fontWeight: 900,
+    margin: "0 0 16px",
+    color: "#333"
+  }
+
+  const modalDescriptionStyle: React.CSSProperties = {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 20,
+    lineHeight: 1.6
+  }
+
+  const modalInfoBoxStyle: React.CSSProperties = {
+    background: "#f8f9fa",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20
+  }
+
+  const modalInfoRowStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    fontSize: 14
+  }
+
+  const modalInfoLabelStyle: React.CSSProperties = { fontWeight: 600 }
+  const modalInfoValueStyle: React.CSSProperties = { fontWeight: 700 }
+
+  const modalActionsStyle: React.CSSProperties = { display: "flex", gap: 12 }
+  const modalPrimaryButtonStyle: React.CSSProperties = {
+    flex: 1,
+    padding: "14px",
+    background: "linear-gradient(135deg, #10b981, #059669)",
+    color: "white",
+    border: "none",
+    borderRadius: 12,
+    fontSize: 16,
+    fontWeight: 700,
+    fontFamily: "Montserrat, sans-serif"
+  }
+  const modalSecondaryButtonStyle: React.CSSProperties = {
+    flex: 1,
+    padding: "14px",
+    background: "white",
+    border: "2px solid #ef4444",
+    borderRadius: 12,
+    fontSize: 16,
+    fontWeight: 700,
+    fontFamily: "Montserrat, sans-serif"
+  }
+
+  const warningBoxStyle: React.CSSProperties = {
+    background: "#fef2f2",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    border: "1px solid #ef4444"
+  }
+  const warningTextStyle: React.CSSProperties = {
+    fontSize: 13,
+    color: "#991b1b",
+    marginBottom: 8
+  }
+  const warningQuoteStyle: React.CSSProperties = {
+    fontSize: 12,
+    color: "#dc2626",
+    fontStyle: "italic"
+  }
 
   useEffect(() => {
     if (!loading && !user) {
@@ -219,11 +317,13 @@ export default function CashFlowGamePage() {
           console.log("🎰 Doodad drawn:", data.doodad?.name)
           setCurrentDoodad(data.doodad)
           setShowDoodadModal(true)
+          playCardReveal()
         } else if (data.isMarketEvent) {
           // Market event occurred
           console.log("📉 Market event:", data.marketEvent?.name)
           setMarketEventData(data)
           setShowMarketEvent(true)
+          playCardReveal()
           console.log("🔄 Refreshing game state after market event...")
           await fetchGameState() // Refresh to show updated state
         } else {
@@ -231,14 +331,17 @@ export default function CashFlowGamePage() {
           console.log("🃏 Opportunity card:", data.card?.name)
           setCurrentCard(data.card)
           setShowCard(true)
+          playCardReveal()
         }
       } else {
         const errorData = await response.json()
         console.error("❌ Failed to draw card:", errorData)
+        playNegative()
         alert(`❌ Error al sacar carta:\n\n${errorData.error || 'Error desconocido'}\n\n${errorData.details ? `Detalles: ${errorData.details}` : 'Revisa la consola del navegador para más información.'}`)
       }
     } catch (error) {
       console.error("❌ Error drawing card:", error)
+      playNegative()
       alert(`❌ Error de red al sacar carta.\n\n${error instanceof Error ? error.message : 'Error desconocido'}\n\nRevisa tu conexión y la consola del navegador.`)
     } finally {
       setActionInProgress(false)
@@ -260,9 +363,11 @@ export default function CashFlowGamePage() {
         await fetchGameState()
         setShowCard(false)
         setCurrentCard(null)
+        playSuccessChime()
       }
     } catch (error) {
       console.error("Error purchasing investment:", error)
+      playNegative()
     } finally {
       setActionInProgress(false)
     }
@@ -271,11 +376,13 @@ export default function CashFlowGamePage() {
   const passCard = () => {
     setShowCard(false)
     setCurrentCard(null)
+    playDecision()
   }
 
   const closeMarketEvent = () => {
     setShowMarketEvent(false)
     setMarketEventData(null)
+    playDecision()
   }
 
   const openSellModal = (investment: Investment) => {
@@ -289,6 +396,7 @@ export default function CashFlowGamePage() {
     setShowSellModal(false)
     setSelectedInvestment(null)
     setSalePrice(0)
+    playDecision()
   }
 
   const sellInvestment = async () => {
@@ -308,9 +416,11 @@ export default function CashFlowGamePage() {
       if (response.ok) {
         await fetchGameState()
         closeSellModal()
+        playSuccessChime()
       }
     } catch (error) {
       console.error("Error selling investment:", error)
+      playNegative()
     } finally {
       setActionInProgress(false)
     }
@@ -334,13 +444,16 @@ export default function CashFlowGamePage() {
         console.log("🔄 Refreshing game state...")
         await fetchGameState()
         setShowLoanModal(false)
+        playReward()
       } else {
         const errorData = await response.json()
         console.error("❌ Failed to take loan:", errorData)
+        playNegative()
         alert(`❌ Error al solicitar préstamo:\n\n${errorData.error || 'Error desconocido'}\n\n${errorData.details ? `Detalles: ${errorData.details}` : 'Revisa la consola del navegador para más información.'}`)
       }
     } catch (error) {
       console.error("❌ Error taking loan:", error)
+      playNegative()
       alert(`❌ Error de red al solicitar el préstamo.\n\n${error instanceof Error ? error.message : 'Error desconocido'}\n\nRevisa tu conexión y la consola del navegador.`)
     } finally {
       setActionInProgress(false)
@@ -355,6 +468,7 @@ export default function CashFlowGamePage() {
   const closePayOffModal = () => {
     setShowPayOffModal(false)
     setSelectedLoan(null)
+    playDecision()
   }
 
   const payOffLoan = async () => {
@@ -371,12 +485,15 @@ export default function CashFlowGamePage() {
       if (response.ok) {
         await fetchGameState()
         closePayOffModal()
+        playSuccessChime()
       } else {
         const data = await response.json()
+        playNegative()
         alert(data.error || "No puedes pagar este préstamo")
       }
     } catch (error) {
       console.error("Error paying off loan:", error)
+      playNegative()
     } finally {
       setActionInProgress(false)
     }
@@ -397,12 +514,15 @@ export default function CashFlowGamePage() {
         await fetchGameState()
         setShowDoodadModal(false)
         setCurrentDoodad(null)
+        playNegative()
       } else {
         const data = await response.json()
+        playNegative()
         alert(data.error || "No puedes comprar este artículo")
       }
     } catch (error) {
       console.error("Error buying doodad:", error)
+      playNegative()
     } finally {
       setActionInProgress(false)
     }
@@ -411,6 +531,7 @@ export default function CashFlowGamePage() {
   const passDoodad = () => {
     setShowDoodadModal(false)
     setCurrentDoodad(null)
+    playDecision()
   }
 
   const nextTutorialStep = () => {
@@ -439,8 +560,10 @@ export default function CashFlowGamePage() {
   }
 
   const rollDice = async () => {
+    setDiceResult(null)
     setIsRollingDice(true)
     setActionInProgress(true)
+    playDiceRoll()
     
     // Simulate dice roll animation
     const roll = Math.floor(Math.random() * 6) + 1
@@ -455,14 +578,19 @@ export default function CashFlowGamePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ diceRoll: roll })
       })
-      
+
       if (response.ok) {
         const data = await response.json()
+        const finalRoll = typeof data.diceRoll === "number" ? data.diceRoll : roll
+        setDiceResult(finalRoll)
         console.log("🎲 Dice rolled:", data)
-        
+
         // Move player and handle landing
         await fetchGameState()
-        
+        if (data.cashChange > 0 || data.landedSpace === "payday") {
+          playReward()
+        }
+
         // Check what space they landed on and trigger action
         if (data.landedSpace) {
           handleSpaceLanding(data.landedSpace)
@@ -473,7 +601,6 @@ export default function CashFlowGamePage() {
     } finally {
       setIsRollingDice(false)
       setActionInProgress(false)
-      setDiceResult(null)
     }
   }
 
@@ -558,6 +685,134 @@ export default function CashFlowGamePage() {
   const totalIncome = player.profession.salary + player.passiveIncome
   const cashFlow = totalIncome - totalExpenses
 
+  const renderCardModal = () => (
+    <div style={modalOverlayStyle}>
+      <div style={modalCardStyle}>
+        <h2 style={modalTitleStyle}>
+          {currentCard?.type === "real_estate" && "🏠"}
+          {currentCard?.type === "stock" && "📈"}
+          {currentCard?.type === "business" && "💼"}
+          {currentCard?.type === "limited_partnership" && "🤝"}{" "}
+          {currentCard?.name}
+        </h2>
+        <p style={modalDescriptionStyle}>{currentCard?.description}</p>
+        {currentCard && (
+          <div style={modalInfoBoxStyle}>
+            <div style={modalInfoRowStyle}>
+              <span style={modalInfoLabelStyle}>Precio:</span>
+              <span style={modalInfoValueStyle}>
+                ${currentCard.cost.toLocaleString()}
+              </span>
+            </div>
+            {currentCard.downPayment && (
+              <div style={modalInfoRowStyle}>
+                <span style={modalInfoLabelStyle}>Enganche:</span>
+                <span style={{ ...modalInfoValueStyle, color: "#ef4444" }}>
+                  ${currentCard.downPayment.toLocaleString()}
+                </span>
+              </div>
+            )}
+            {currentCard.cashFlow && (
+              <div style={modalInfoRowStyle}>
+                <span style={modalInfoLabelStyle}>Flujo mensual:</span>
+                <span style={{
+                  ...modalInfoValueStyle,
+                  color: currentCard.cashFlow > 0 ? "#10b981" : "#ef4444"
+                }}>
+                  ${currentCard.cashFlow.toLocaleString()}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+        <div style={modalActionsStyle}>
+          <button
+            onClick={purchaseInvestment}
+            disabled={actionInProgress}
+            style={{
+              ...modalPrimaryButtonStyle,
+              background: actionInProgress
+                ? "#ccc"
+                : "linear-gradient(135deg, #10b981, #059669)",
+              cursor: actionInProgress ? "not-allowed" : "pointer"
+            }}
+          >
+            💰 Comprar
+          </button>
+          <button
+            onClick={passCard}
+            disabled={actionInProgress}
+            style={{
+              ...modalSecondaryButtonStyle,
+              cursor: actionInProgress ? "not-allowed" : "pointer"
+            }}
+          >
+            ❌ Pasar
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderDoodadModal = () => (
+    <div style={modalOverlayStyle}>
+      <div style={modalCardStyle}>
+        <h2 style={modalTitleStyle}>
+          {currentDoodad?.category === "toys" && "🎮"}
+          {currentDoodad?.category === "entertainment" && "🎬"}
+          {currentDoodad?.category === "fashion" && "👔"}
+          {currentDoodad?.category === "travel" && "✈️"}
+          {currentDoodad?.category === "food" && "🍽️"}
+          {!currentDoodad?.category && "💎"} {currentDoodad?.name}
+        </h2>
+        <p style={modalDescriptionStyle}>{currentDoodad?.description}</p>
+        <div style={warningBoxStyle}>
+          <div style={warningTextStyle}>
+            ⚠️ <strong>ADVERTENCIA:</strong> Este es un gasto de lujo que NO genera ningún ingreso.
+          </div>
+          <div style={warningQuoteStyle}>
+            "Los pobres y la clase media compran lujos primero. Los ricos compran activos primero." - Robert Kiyosaki
+          </div>
+        </div>
+        <div style={{ ...modalInfoBoxStyle, textAlign: "center" as const }}>
+          <div style={{ fontSize: 14, color: "#666", marginBottom: 4 }}>
+            Costo
+          </div>
+          <div style={{ fontSize: 36, fontWeight: 900, color: "#ef4444" }}>
+            ${currentDoodad?.cost.toLocaleString()}
+          </div>
+          <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
+            Tu efectivo: ${player.cashOnHand.toLocaleString()}
+          </div>
+        </div>
+        <div style={modalActionsStyle}>
+          <button
+            onClick={passDoodad}
+            style={modalPrimaryButtonStyle}
+          >
+            ✅ Pasar (Decisión Inteligente)
+          </button>
+          <button
+            onClick={buyDoodad}
+            disabled={actionInProgress || !currentDoodad || player.cashOnHand < currentDoodad.cost}
+            style={{
+              ...modalSecondaryButtonStyle,
+              background: (actionInProgress || !currentDoodad || player.cashOnHand < currentDoodad.cost)
+                ? "#ccc"
+                : "linear-gradient(135deg, #ef4444, #dc2626)",
+              border: "none",
+              color: "white",
+              cursor: (actionInProgress || !currentDoodad || player.cashOnHand < currentDoodad.cost)
+                ? "not-allowed"
+                : "pointer"
+            }}
+          >
+            💸 Comprar (Mala Idea)
+          </button>
+        </div>
+      </div>
+    </div>
+  )
   return (
     <div style={{
       display: "flex",
@@ -676,7 +931,7 @@ export default function CashFlowGamePage() {
               margin: "0 0 16px",
               color: "#333"
             }}>
-              📊 Estado Financiero
+              Estado Financiero
             </h2>
 
             {/* Income */}
@@ -932,7 +1187,7 @@ export default function CashFlowGamePage() {
               margin: "0 0 16px",
               color: "#333"
             }}>
-              💎 Activos
+              Activos
             </h2>
 
             <div style={{
@@ -1160,11 +1415,12 @@ export default function CashFlowGamePage() {
 
         {/* Game Board */}
         <GameBoard
-          playerPosition={player.currentTurn % 24}
+          playerPosition={player.currentPosition ?? (player.currentTurn % 24)}
           isRolling={isRollingDice}
           onRollDice={rollDice}
           canRoll={!actionInProgress && !showCard && !showMarketEvent && !showDoodadModal}
           isOnFastTrack={player.isOnFastTrack}
+          diceResult={diceResult}
         />
 
         {/* Quick Actions */}
@@ -1181,7 +1437,7 @@ export default function CashFlowGamePage() {
             margin: "0 0 16px",
             color: "#333"
           }}>
-            ⚡ Acciones Rápidas
+            Acciones Rápidas
           </h2>
 
           <div style={{
@@ -1632,579 +1888,10 @@ export default function CashFlowGamePage() {
       )}
 
       {/* Card Modal */}
-      {showCard && currentCard && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.7)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2000,
-          padding: 20
-        }}>
-          <div style={{
-            background: "white",
-            borderRadius: 20,
-            padding: 32,
-            maxWidth: 500,
-            width: "100%",
-            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
-          }}>
-            <h2 style={{
-              fontSize: 28,
-              fontWeight: 900,
-              margin: "0 0 16px",
-              color: "#333"
-            }}>
-              {currentCard.type === "real_estate" && "🏠"}
-              {currentCard.type === "stock" && "📈"}
-              {currentCard.type === "business" && "💼"}
-              {currentCard.type === "limited_partnership" && "🤝"}
-              {" "}
-              {currentCard.name}
-            </h2>
-
-            <p style={{
-              fontSize: 14,
-              color: "#666",
-              marginBottom: 20,
-              lineHeight: 1.6
-            }}>
-              {currentCard.description}
-            </p>
-
-            <div style={{
-              background: "#f8f9fa",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 20
-            }}>
-              <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 12,
-                fontSize: 14
-              }}>
-                <span style={{ fontWeight: 600 }}>Precio:</span>
-                <span style={{ fontWeight: 700 }}>
-                  ${currentCard.cost.toLocaleString()}
-                </span>
-              </div>
-              
-              {currentCard.downPayment && (
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: 12,
-                  fontSize: 14
-                }}>
-                  <span style={{ fontWeight: 600 }}>Enganche:</span>
-                  <span style={{ fontWeight: 700, color: "#ef4444" }}>
-                    ${currentCard.downPayment.toLocaleString()}
-                  </span>
-                </div>
-              )}
-
-              {currentCard.cashFlow && (
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: 14
-                }}>
-                  <span style={{ fontWeight: 600 }}>Flujo mensual:</span>
-                  <span style={{
-                    fontWeight: 700,
-                    color: currentCard.cashFlow > 0 ? "#10b981" : "#ef4444"
-                  }}>
-                    ${currentCard.cashFlow.toLocaleString()}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div style={{
-              display: "flex",
-              gap: 12
-            }}>
-              <button
-                onClick={purchaseInvestment}
-                disabled={actionInProgress}
-                style={{
-                  flex: 1,
-                  padding: "14px",
-                  background: actionInProgress 
-                    ? "#ccc" 
-                    : "linear-gradient(135deg, #10b981, #059669)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  cursor: actionInProgress ? "not-allowed" : "pointer",
-                  fontFamily: "Montserrat, sans-serif"
-                }}
-              >
-                💰 Comprar
-              </button>
-
-              <button
-                onClick={passCard}
-                disabled={actionInProgress}
-                style={{
-                  flex: 1,
-                  padding: "14px",
-                  background: "white",
-                  color: "#ef4444",
-                  border: "2px solid #ef4444",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  cursor: actionInProgress ? "not-allowed" : "pointer",
-                  fontFamily: "Montserrat, sans-serif"
-                }}
-              >
-                ❌ Pasar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Win Screen Modal */}
-      {showWinScreen && gameState && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: gameState.player.passiveIncome >= 50000
-            ? "linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.95))"
-            : "linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95))",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 3000,
-          padding: 20,
-          animation: "fadeIn 0.5s ease-in"
-        }}>
-          <div style={{
-            background: "white",
-            borderRadius: 24,
-            padding: "48px",
-            maxWidth: 600,
-            width: "100%",
-            boxShadow: "0 25px 80px rgba(0, 0, 0, 0.3)",
-            textAlign: "center",
-            position: "relative",
-            overflow: "hidden"
-          }}>
-            {/* Confetti Effect */}
-            <div style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 100,
-              background: "linear-gradient(180deg, rgba(251, 191, 36, 0.2), transparent)",
-              pointerEvents: "none"
-            }} />
-
-            {/* Trophy Icon */}
-            <div style={{
-              fontSize: 80,
-              marginBottom: 16,
-              animation: "bounce 1s infinite"
-            }}>
-              {gameState.player.passiveIncome >= 50000 ? "👑" : "🏆"}
-            </div>
-
-            <h1 style={{
-              fontSize: 48,
-              fontWeight: 900,
-              margin: "0 0 16px",
-              background: gameState.player.passiveIncome >= 50000
-                ? "linear-gradient(135deg, #fbbf24, #f59e0b)"
-                : "linear-gradient(135deg, #10b981, #059669)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text"
-            }}>
-              {gameState.player.passiveIncome >= 50000 ? "¡VICTORIA DEFINITIVA!" : "¡FELICIDADES!"}
-            </h1>
-
-            <h2 style={{
-              fontSize: 28,
-              fontWeight: 800,
-              color: "#333",
-              margin: "0 0 24px"
-            }}>
-              {gameState.player.passiveIncome >= 50000 
-                ? "¡Alcanzaste $50,000 en Ingreso Pasivo! 👑" 
-                : "¡Escapaste de la Carrera de Ratas! 🎉"}
-            </h2>
-
-            <p style={{
-              fontSize: 18,
-              color: "#666",
-              lineHeight: 1.6,
-              marginBottom: 32
-            }}>
-              {gameState.player.passiveIncome >= 50000 ? (
-                <>
-                  ¡Has dominado completamente el juego! Con <strong style={{ color: "#fbbf24" }}>${gameState.player.passiveIncome.toLocaleString()}/mes</strong> en 
-                  ingreso pasivo, eres financieramente libre y rico.
-                  <br/><br/>
-                  <strong>¡ERES UN MAESTRO DE LAS FINANZAS!</strong>
-                </>
-              ) : (
-                <>
-                  Tu ingreso pasivo de <strong style={{ color: "#10b981" }}>${gameState.player.passiveIncome.toLocaleString()}/mes</strong> ahora 
-                  supera tus gastos de <strong style={{ color: "#ef4444" }}>${totalExpenses.toLocaleString()}/mes</strong>.
-                  <br/>
-                  ¡Ya no necesitas trabajar para vivir!
-                  <br/><br/>
-                  {gameState.player.isOnFastTrack && (
-                    <strong style={{ color: "#f59e0b" }}>
-                      ⚡ Ahora en Fast Track: ¡Alcanza $50,000 en ingreso pasivo para ganar definitivamente!
-                    </strong>
-                  )}
-                </>
-              )}
-            </p>
-
-            {/* Game Statistics */}
-            <div style={{
-              background: "#f8f9fa",
-              borderRadius: 16,
-              padding: 24,
-              marginBottom: 32
-            }}>
-              <h3 style={{
-                fontSize: 18,
-                fontWeight: 800,
-                color: "#333",
-                margin: "0 0 20px"
-              }}>
-                📊 Estadísticas del Juego
-              </h3>
-
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 16,
-                textAlign: "left"
-              }}>
-                <div>
-                  <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-                    Profesión
-                  </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#333" }}>
-                    {gameState.player.profession.name}
-                  </div>
-                </div>
-
-                <div>
-                  <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-                    Turnos para ganar
-                  </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#333" }}>
-                    {gameState.player.currentTurn}
-                  </div>
-                </div>
-
-                <div>
-                  <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-                    Efectivo actual
-                  </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#10b981" }}>
-                    ${gameState.player.cashOnHand.toLocaleString()}
-                  </div>
-                </div>
-
-                <div>
-                  <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-                    Inversiones activas
-                  </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#2563eb" }}>
-                    {gameState.player.investments?.length || 0}
-                  </div>
-                </div>
-
-                <div>
-                  <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-                    Ingreso pasivo
-                  </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#10b981" }}>
-                    ${gameState.player.passiveIncome.toLocaleString()}/mes
-                  </div>
-                </div>
-
-                <div>
-                  <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-                    Cash Flow
-                  </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#10b981" }}>
-                    ${cashFlow.toLocaleString()}/mes
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 12
-            }}>
-              {gameState.player.passiveIncome < 50000 ? (
-                <button
-                  onClick={() => setShowWinScreen(false)}
-                  style={{
-                    padding: "16px 32px",
-                    background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: 12,
-                    fontSize: 18,
-                    fontWeight: 800,
-                    cursor: "pointer",
-                    boxShadow: "0 6px 20px rgba(251, 191, 36, 0.3)",
-                    transition: "transform 0.2s",
-                    fontFamily: "Montserrat, sans-serif"
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-                >
-                  ⚡ Continuar al Fast Track
-                </button>
-              ) : (
-                <button
-                  onClick={() => router.push("/cash-flow")}
-                  style={{
-                    padding: "16px 32px",
-                    background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: 12,
-                    fontSize: 18,
-                    fontWeight: 800,
-                    cursor: "pointer",
-                    boxShadow: "0 6px 20px rgba(251, 191, 36, 0.3)",
-                    transition: "transform 0.2s",
-                    fontFamily: "Montserrat, sans-serif"
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-                >
-                  🎉 ¡Juego Completado!
-                </button>
-              )}
-
-              <button
-                onClick={() => router.push("/cash-flow")}
-                style={{
-                  padding: "16px 32px",
-                  background: "white",
-                  color: "#10b981",
-                  border: "2px solid #10b981",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  fontFamily: "Montserrat, sans-serif"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#f0fdf4"
-                  e.currentTarget.style.transform = "scale(1.02)"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "white"
-                  e.currentTarget.style.transform = "scale(1)"
-                }}
-              >
-                🏠 Volver al Menú
-              </button>
-            </div>
-
-            <div style={{
-              marginTop: 24,
-              fontSize: 14,
-              color: "#999",
-              fontStyle: "italic"
-            }}>
-              {gameState.player.passiveIncome >= 50000 ? (
-                <>
-                  "No trabajes por dinero, haz que el dinero trabaje por ti." - Robert Kiyosaki
-                </>
-              ) : (
-                <>
-                  "La libertad financiera no es tener más dinero,<br/>
-                  es tener más tiempo." - Robert Kiyosaki
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {showCard && currentCard && renderCardModal()}
 
       {/* Doodad Modal */}
-      {showDoodadModal && currentDoodad && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.7)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2000,
-          padding: 20
-        }}>
-          <div style={{
-            background: "white",
-            borderRadius: 20,
-            padding: 32,
-            maxWidth: 500,
-            width: "100%",
-            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
-          }}>
-            <h2 style={{
-              fontSize: 28,
-              fontWeight: 900,
-              margin: "0 0 16px",
-              color: "#333"
-            }}>
-              {currentDoodad.category === "toys" && "🎮"}
-              {currentDoodad.category === "entertainment" && "🎬"}
-              {currentDoodad.category === "fashion" && "👔"}
-              {currentDoodad.category === "travel" && "✈️"}
-              {currentDoodad.category === "food" && "🍽️"}
-              {!currentDoodad.category && "💎"}
-              {" "}
-              {currentDoodad.name}
-            </h2>
-
-            <p style={{
-              fontSize: 14,
-              color: "#666",
-              marginBottom: 20,
-              lineHeight: 1.6
-            }}>
-              {currentDoodad.description}
-            </p>
-
-            {/* Warning Box */}
-            <div style={{
-              background: "#fef2f2",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 20,
-              border: "1px solid #ef4444"
-            }}>
-              <div style={{
-                fontSize: 13,
-                color: "#991b1b",
-                marginBottom: 8
-              }}>
-                ⚠️ <strong>ADVERTENCIA:</strong> Este es un gasto de lujo que NO genera ningún ingreso.
-                Tu dinero desaparecerá sin retorno.
-              </div>
-              <div style={{
-                fontSize: 12,
-                color: "#dc2626",
-                fontStyle: "italic"
-              }}>
-                "Los pobres y la clase media compran lujos primero. Los ricos compran activos primero." - Robert Kiyosaki
-              </div>
-            </div>
-
-            {/* Cost Display */}
-            <div style={{
-              background: "#f8f9fa",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 20,
-              textAlign: "center"
-            }}>
-              <div style={{
-                fontSize: 14,
-                color: "#666",
-                marginBottom: 4
-              }}>
-                Costo
-              </div>
-              <div style={{
-                fontSize: 36,
-                fontWeight: 900,
-                color: "#ef4444"
-              }}>
-                ${currentDoodad.cost.toLocaleString()}
-              </div>
-              <div style={{
-                fontSize: 12,
-                color: "#999",
-                marginTop: 4
-              }}>
-                Tu efectivo: ${player.cashOnHand.toLocaleString()}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{
-              display: "flex",
-              gap: 12
-            }}>
-              <button
-                onClick={passDoodad}
-                style={{
-                  flex: 1,
-                  padding: "14px",
-                  background: "linear-gradient(135deg, #10b981, #059669)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  fontFamily: "Montserrat, sans-serif"
-                }}
-              >
-                ✅ Pasar (Decisión Inteligente)
-              </button>
-
-              <button
-                onClick={buyDoodad}
-                disabled={actionInProgress || player.cashOnHand < currentDoodad.cost}
-                style={{
-                  flex: 1,
-                  padding: "14px",
-                  background: (actionInProgress || player.cashOnHand < currentDoodad.cost)
-                    ? "#ccc"
-                    : "linear-gradient(135deg, #ef4444, #dc2626)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  cursor: (actionInProgress || player.cashOnHand < currentDoodad.cost) ? "not-allowed" : "pointer",
-                  fontFamily: "Montserrat, sans-serif"
-                }}
-              >
-                💸 Comprar (Mala Idea)
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {showDoodadModal && currentDoodad && renderDoodadModal()}
       {/* Market Event Modal */}
       {showMarketEvent && marketEventData && (
         <div style={{
@@ -2237,8 +1924,7 @@ export default function CashFlowGamePage() {
               {marketEventData.marketEvent.type === "baby" && "👶"}
               {marketEventData.marketEvent.type === "downsized" && "📉"}
               {marketEventData.marketEvent.type === "charity" && "❤️"}
-              {marketEventData.marketEvent.type === "paycheck" && "💵"}
-              {" "}
+              {marketEventData.marketEvent.type === "paycheck" && "💵"}{" "}
               {marketEventData.marketEvent.name}
             </h2>
 
@@ -2258,7 +1944,6 @@ export default function CashFlowGamePage() {
               }}>
                 {marketEventData.marketEvent.message}
               </p>
-              
               {marketEventData.cashChange !== 0 && (
                 <div style={{
                   fontSize: 32,

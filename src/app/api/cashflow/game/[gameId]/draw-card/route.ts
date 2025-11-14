@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
+import { translateOpportunityCard, translateMarketEvent } from "@/lib/cashflow/translations"
 
 export async function POST(
   request: NextRequest,
@@ -175,11 +176,13 @@ export async function POST(
           turn_number: player.current_turn
         })
 
+        const translatedMarketEvent = translateMarketEvent(marketEvent)
+
         return NextResponse.json({
           isMarketEvent: true,
           marketEvent: {
-            ...marketEvent,
-            message
+            ...translatedMarketEvent,
+            message: message || translatedMarketEvent.description
           },
           cashChange,
           newChildren: updatedPlayers?.num_children
@@ -214,6 +217,7 @@ export async function POST(
 
     console.log(`✅ Found ${cards.length} opportunity cards`)
     const card = cards[Math.floor(Math.random() * cards.length)]
+    const translatedCard = translateOpportunityCard(card)
 
     // Log the draw event
     const { error: eventError } = await supabase.from('game_events').insert({
@@ -233,7 +237,7 @@ export async function POST(
     }
 
     console.log(`✅ Card drawn successfully:`, { cardId: card.id, cardName: card.name, cardType: card.type })
-    return NextResponse.json({ isDoodad: false, isMarketEvent: false, card })
+    return NextResponse.json({ isDoodad: false, isMarketEvent: false, card: translatedCard })
 
   } catch (error) {
     console.error("❌ Error drawing card:", error)

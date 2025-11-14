@@ -39,17 +39,19 @@ export async function POST(
       return NextResponse.json({ error: "Player not found" }, { status: 404 })
     }
 
-    console.log("✅ Player found:", { currentPosition: player.current_turn % 24 })
+    const boardSize = BOARD_SPACES.length
+    const currentPosition = player.current_position ?? 0
+
+    console.log("✅ Player found:", { currentPosition })
 
     // Calculate new position (circular board)
-    const currentPosition = player.current_turn % 24
-    const newPosition = (currentPosition + diceRoll) % 24
+    const newPosition = (currentPosition + diceRoll) % boardSize
     const landedSpace = BOARD_SPACES[newPosition]
 
     console.log("📍 New position:", newPosition, "Space type:", landedSpace)
 
     // Check if passed Payday (position 0)
-    const passedPayday = newPosition < currentPosition || (currentPosition + diceRoll >= 24)
+    const passedPayday = currentPosition + diceRoll >= boardSize
     
     let cashChange = 0
     let message = ""
@@ -91,7 +93,8 @@ export async function POST(
       .from('players')
       .update({ 
         cash_on_hand: player.cash_on_hand + cashChange,
-        current_turn: player.current_turn + 1
+        current_turn: player.current_turn + 1,
+        current_position: newPosition
       })
       .eq('id', player.id)
 

@@ -120,6 +120,7 @@ export async function GET(
         savings: player.savings,
         numChildren: player.num_children,
         currentTurn: player.current_turn,
+        currentPosition: player.current_position ?? 0,
         passiveIncome: player.passive_income,
         totalIncome: player.total_income,
         totalExpenses: player.total_expenses,

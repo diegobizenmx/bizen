@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import Dice from "@/components/cashflow/Dice"
 
 type SpaceType = 'opportunity' | 'payday' | 'market' | 'doodad' | 'charity' | 'baby'
 
@@ -18,6 +18,7 @@ type GameBoardProps = {
   onRollDice: () => void
   canRoll: boolean
   isOnFastTrack: boolean
+  diceResult: number | null
 }
 
 // Define the Rat Race board spaces (24 spaces)
@@ -70,50 +71,56 @@ const FAST_TRACK_SPACES: BoardSpace[] = [
   // ... continue pattern (abbreviated for brevity)
 ]
 
-export default function GameBoard({ playerPosition, isRolling, onRollDice, canRoll, isOnFastTrack }: GameBoardProps) {
+export default function GameBoard({ playerPosition, isRolling, onRollDice, canRoll, isOnFastTrack, diceResult }: GameBoardProps) {
   const spaces = isOnFastTrack ? FAST_TRACK_SPACES : RAT_RACE_SPACES
   
+  const spaceSize = 118
+  const gap = 14
+  const columns = 9 // includes both corners on each row
+  const interiorRows = 3 // rows between top and bottom corners
+  const totalRows = interiorRows + 2
+  const boardPadding = 28
+  const boardWidth = boardPadding * 2 + (columns * spaceSize) + ((columns - 1) * gap)
+  const boardHeight = boardPadding * 2 + (totalRows * spaceSize) + ((totalRows - 1) * gap)
+
   // Calculate position on rectangular board (Monopoly-style)
-  // 24 spaces total: 8 on top/bottom, 4 on left/right sides
   const getSpacePosition = (index: number) => {
-    const spaceWidth = 130
-    const spaceHeight = 120
-    const cornerSize = 145
-    const gap = 15
-    const boardWidth = 1300
-    const boardHeight = 750
-    
-    // Corners are spaces: 0, 8, 12, 20
-    const isCorner = index === 0 || index === 8 || index === 12 || index === 20
-    
-    if (index === 0) {
-      // Bottom-right corner (START/PAYDAY)
-      return { x: boardWidth - cornerSize, y: boardHeight - cornerSize, isCorner: true }
-    } else if (index >= 1 && index <= 7) {
-      // Bottom row (right to left) - 7 spaces
-      const position = index
-      return { x: boardWidth - cornerSize - (position * (spaceWidth + gap)), y: boardHeight - spaceHeight, isCorner: false }
-    } else if (index === 8) {
-      // Bottom-left corner (CHARITY)
-      return { x: 0, y: boardHeight - cornerSize, isCorner: true }
-    } else if (index >= 9 && index <= 11) {
-      // Left side (bottom to top) - 3 spaces
-      const position = index - 8
-      return { x: 0, y: boardHeight - cornerSize - (position * (spaceHeight + gap)), isCorner: false }
-    } else if (index === 12) {
-      // Top-left corner (MARKET)
-      return { x: 0, y: 0, isCorner: true }
-    } else if (index >= 13 && index <= 19) {
-      // Top row (left to right) - 7 spaces
-      const position = index - 12
-      return { x: cornerSize + ((position - 1) * (spaceWidth + gap)), y: 0, isCorner: false }
-    } else if (index === 20) {
-      // Top-right corner (BABY)
-      return { x: boardWidth - cornerSize, y: 0, isCorner: true }
-    } else {
-      // Right side (top to bottom) - 3 spaces
-      const position = index - 20
-      return { x: boardWidth - spaceWidth, y: cornerSize + ((position - 1) * (spaceHeight + gap)), isCorner: false }
+    // Bottom edge (indexes 0-8 inclusive)
+    if (index >= 0 && index <= 8) {
+      const column = columns - 1 - index
+      return {
+        x: boardPadding + column * (spaceSize + gap),
+        y: boardPadding + (totalRows - 1) * (spaceSize + gap),
+        isCorner: index === 0 || index === 8
+      }
+    }
+
+    // Left edge moving upward (indexes 9-11)
+    if (index >= 9 && index <= 11) {
+      const row = (totalRows - 2) - (index - 9)
+      return {
+        x: boardPadding,
+        y: boardPadding + row * (spaceSize + gap),
+        isCorner: false
+      }
+    }
+
+    // Top edge (indexes 12-20 inclusive)
+    if (index >= 12 && index <= 20) {
+      const column = index - 12
+      return {
+        x: boardPadding + column * (spaceSize + gap),
+        y: boardPadding,
+        isCorner: index === 12 || index === 20
+      }
+    }
+
+    // Right edge moving downward (indexes 21-23)
+    const row = index - 20
+    return {
+      x: boardPadding + (columns - 1) * (spaceSize + gap),
+      y: boardPadding + row * (spaceSize + gap),
+      isCorner: false
     }
   }
 
@@ -128,67 +135,46 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
       {/* Board Container */}
       <div style={{
         position: 'relative',
-        width: 1300,
-        height: 750,
+        width: boardWidth,
+        height: boardHeight,
         margin: '0 auto',
         background: 'linear-gradient(135deg, #fafafa, #f5f5f5)',
-        borderRadius: 20,
+        borderRadius: 28,
         padding: 0
       }}>
-        {/* Center Area - Dice and Info */}
+        {/* Center controls */}
         <div style={{
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 450,
-          height: 280,
-          background: isOnFastTrack 
-            ? 'linear-gradient(135deg, #fef3c7, #fbbf24)'
-            : 'linear-gradient(135deg, #dbeafe, #3b82f6)',
-          borderRadius: 20,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
-          zIndex: 10,
-          border: '4px solid white'
+          gap: 24,
+          zIndex: 20
         }}>
-          {isOnFastTrack && (
-            <div style={{
-              fontSize: 48,
-              fontWeight: 900,
-              color: '#78350f',
-              marginBottom: 16,
-              textAlign: 'center',
-              lineHeight: 1
-            }}>
-              ⚡
-            </div>
-          )}
-          
           <button
             onClick={onRollDice}
             disabled={!canRoll || isRolling}
             style={{
-              background: isOnFastTrack ? '#f59e0b' : '#2563eb',
+              background: isOnFastTrack ? '#fbbf24' : '#2563eb',
               color: 'white',
               border: 'none',
-              borderRadius: 12,
-              padding: '16px 32px',
-              fontSize: 18,
+              borderRadius: 999,
+              padding: '18px 40px',
+              fontSize: 20,
               fontWeight: 800,
               cursor: canRoll && !isRolling ? 'pointer' : 'not-allowed',
-              opacity: canRoll && !isRolling ? 1 : 0.5,
+              opacity: canRoll && !isRolling ? 1 : 0.6,
               transition: 'all 0.2s',
               fontFamily: 'Montserrat, sans-serif',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+              boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
               animation: isRolling ? 'shake 0.5s infinite' : 'none'
             }}
             onMouseEnter={(e) => {
               if (canRoll && !isRolling) {
-                e.currentTarget.style.transform = 'scale(1.05)'
+                e.currentTarget.style.transform = 'scale(1.06)'
               }
             }}
             onMouseLeave={(e) => {
@@ -197,33 +183,14 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           >
             {isRolling ? '🎲 Tirando...' : '🎲 Tirar Dado'}
           </button>
-          
-          <div style={{
-            color: isOnFastTrack ? '#78350f' : '#1e40af',
-            fontSize: 14,
-            fontWeight: 700,
-            marginTop: 16,
-            textAlign: 'center'
-          }}>
-            Espacio {playerPosition + 1} de 24
-          </div>
-          
-          <div style={{
-            color: isOnFastTrack ? '#92400e' : '#1e3a8a',
-            fontSize: 12,
-            fontWeight: 600,
-            marginTop: 8,
-            textAlign: 'center'
-          }}>
-            {isOnFastTrack ? 'Fast Track' : 'Carrera de Ratas'}
-          </div>
+          <Dice isRolling={isRolling} result={diceResult} />
         </div>
 
         {/* Board Spaces */}
         {spaces.map((space, index) => {
           const pos = getSpacePosition(index)
           const isPlayerHere = playerPosition === index
-          const isCorner = index === 0 || index === 8 || index === 12 || index === 20
+          const isCorner = pos.isCorner
           
           return (
             <div
@@ -232,8 +199,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
                 position: 'absolute',
                 left: pos.x,
                 top: pos.y,
-                width: isCorner ? 145 : 130,
-                height: isCorner ? 145 : 120,
+                width: spaceSize,
+                height: spaceSize,
                 background: isPlayerHere 
                   ? 'linear-gradient(135deg, #fcd34d, #fbbf24)'
                   : space.color,
@@ -248,18 +215,11 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
                 border: isPlayerHere 
                   ? '3px solid #fbbf24' 
                   : '2px solid white',
-                transition: 'all 0.3s ease',
-                animation: isPlayerHere ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                transition: 'box-shadow 0.3s ease, border 0.3s ease',
+                animation: isPlayerHere ? 'pulse 1.8s ease-in-out infinite' : 'none',
                 cursor: 'pointer',
-                zIndex: isPlayerHere ? 5 : 1
-              }}
-              onMouseEnter={(e) => {
-                if (!isPlayerHere) {
-                  e.currentTarget.style.transform = 'scale(1.05)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)'
+                zIndex: isPlayerHere ? 5 : 1,
+                transformOrigin: 'center'
               }}
             >
               <div style={{ fontSize: isCorner ? 48 : 38 }}>{space.icon}</div>
@@ -274,17 +234,6 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
               }}>
                 {space.label}
               </div>
-              {isPlayerHere && (
-                <div style={{
-                  position: 'absolute',
-                  top: -16,
-                  fontSize: 40,
-                  animation: 'bounce 0.8s infinite',
-                  filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.4))'
-                }}>
-                  🎯
-                </div>
-              )}
             </div>
           )
         })}
@@ -325,8 +274,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           75% { transform: rotate(-5deg); }
         }
         @keyframes pulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); }
-          50% { transform: translate(-50%, -50%) scale(1.1); }
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
         }
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }

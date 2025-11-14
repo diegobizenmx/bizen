@@ -34,6 +34,13 @@ export default function LabPage() {
   const [nextStep, setNextStep] = useState<NextStep | null>(null)
   const [loadingData, setLoadingData] = useState(true)
 
+  const primaryGradient = "linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)"
+  const secondaryGradient = "linear-gradient(135deg, #2563eb 0%, #60a5fa 100%)"
+  const softGradient = "linear-gradient(135deg, #dbeafe 0%, rgba(99,102,241,0.25) 100%)"
+  const tileGradient = "linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%)"
+  const tileShadow = "0 16px 28px rgba(15, 76, 129, 0.15)"
+  const cardShadow = "0 18px 35px rgba(37, 99, 235, 0.25)"
+
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login")
@@ -136,33 +143,34 @@ export default function LabPage() {
 
         {/* Overall Progress Card */}
         <div style={{
-          background: "white",
+          background: primaryGradient,
           borderRadius: 16,
           padding: 24,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          boxShadow: cardShadow,
           marginBottom: 24,
-          border: "2px solid #DBEAFE",
+          border: "1px solid rgba(255,255,255,0.2)",
           width: "100%",
-          boxSizing: "border-box" as const
+          boxSizing: "border-box" as const,
+          color: "#f8fbff"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <span style={{ fontSize: 24 }}>🎯</span>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1E40AF" }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#ffffff" }}>
               Tu Progreso General
             </h2>
           </div>
-          <p style={{ color: "#6B7280", marginBottom: 16, fontSize: 14 }}>
+          <p style={{ color: "rgba(255,255,255,0.85)", marginBottom: 16, fontSize: 14 }}>
             Has completado {completedSteps} de {totalSteps} pasos en el programa
           </p>
           <div style={{
-            background: "#E0F2FE",
+            background: "rgba(255,255,255,0.25)",
             borderRadius: 12,
             height: 24,
             overflow: "hidden",
             position: "relative"
           }}>
             <div style={{
-              background: "linear-gradient(90deg, #0B71FE, #4A9EFF)",
+              background: "linear-gradient(90deg, #bfdbfe, #ffffff)",
               height: "100%",
               width: `${progressPercentage}%`,
               transition: "width 0.5s ease",
@@ -175,7 +183,7 @@ export default function LabPage() {
               transform: "translate(-50%, -50%)",
               fontSize: 12,
               fontWeight: 700,
-              color: progressPercentage > 50 ? "white" : "#0B71FE"
+              color: progressPercentage > 50 ? "#1e3a8a" : "#0f172a"
             }}>
               {progressPercentage}%
             </span>
@@ -185,50 +193,58 @@ export default function LabPage() {
         {/* Next Step Card */}
         {nextStep && (
           <div style={{
-            background: "linear-gradient(135deg, #F3E8FF 0%, #E0E7FF 100%)",
+            background: secondaryGradient,
             borderRadius: 16,
             padding: 24,
-            boxShadow: "0 4px 20px rgba(139,92,246,0.15)",
+            boxShadow: cardShadow,
             marginBottom: 24,
-            border: "2px solid #DDD6FE",
+            border: "1px solid rgba(255,255,255,0.2)",
             width: "100%",
-            boxSizing: "border-box" as const
+            boxSizing: "border-box" as const,
+            color: "#eff6ff"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
               <span style={{ fontSize: 24 }}>💡</span>
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#5B21B6" }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#ffffff" }}>
                 Siguiente Paso Recomendado
               </h2>
             </div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: "#111" }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: "#ffffff" }}>
               {nextStep.title}
             </h3>
-            <p style={{ color: "#4B5563", marginBottom: 12, fontSize: 14 }}>
+            <p style={{ color: "rgba(255,255,255,0.85)", marginBottom: 12, fontSize: 14 }}>
               {nextStep.description}
             </p>
             {nextStep.goal && (
-              <p style={{ fontSize: 14, color: "#7C3AED", marginBottom: 16, fontWeight: 600 }}>
+              <p style={{ fontSize: 14, color: "#dbeafe", marginBottom: 16, fontWeight: 600 }}>
                 🎯 {nextStep.goal}
               </p>
             )}
             <Link href={`/business-lab/step/${nextStep.id}`}>
               <button style={{
                 padding: "12px 24px",
-                background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
-                color: "white",
-                border: "none",
+                background: "rgba(255,255,255,0.15)",
+                color: "#ffffff",
+                border: "1px solid rgba(255,255,255,0.5)",
                 borderRadius: 12,
                 fontWeight: 700,
                 fontSize: 15,
                 cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(11,113,254,0.3)",
-                transition: "transform 0.2s ease",
+                boxShadow: "0 6px 18px rgba(14,116,255,0.35)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 8
+                gap: 8,
+                backdropFilter: "blur(4px)"
               }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
-              onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)"
+                e.currentTarget.style.boxShadow = "0 8px 22px rgba(14,116,255,0.45)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)"
+                e.currentTarget.style.boxShadow = "0 6px 18px rgba(14,116,255,0.35)"
+              }}
               >
                 Comenzar
                 <span>→</span>
@@ -247,24 +263,25 @@ export default function LabPage() {
         }}>
           <Link href="/business-lab/templates" style={{ textDecoration: "none" }}>
             <div style={{
-              background: "white",
+              background: tileGradient,
               borderRadius: 16,
               padding: 20,
-              boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+              boxShadow: tileShadow,
               border: "2px solid transparent",
               transition: "all 0.2s ease",
               cursor: "pointer",
-              height: "100%"
+              height: "100%",
+              color: "#0f172a"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "#0B71FE"
               e.currentTarget.style.transform = "translateY(-4px)"
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(11,113,254,0.2)"
+              e.currentTarget.style.boxShadow = "0 16px 32px rgba(15,76,129,0.25)"
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = "transparent"
               e.currentTarget.style.transform = "translateY(0)"
-              e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)"
+              e.currentTarget.style.boxShadow = tileShadow
             }}
             >
               <div style={{ fontSize: 32, marginBottom: 12 }}>📄</div>
@@ -279,24 +296,25 @@ export default function LabPage() {
 
           <Link href="/business-lab/simulators" style={{ textDecoration: "none" }}>
             <div style={{
-              background: "white",
+              background: tileGradient,
               borderRadius: 16,
               padding: 20,
-              boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+              boxShadow: tileShadow,
               border: "2px solid transparent",
               transition: "all 0.2s ease",
               cursor: "pointer",
-              height: "100%"
+              height: "100%",
+              color: "#0f172a"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "#0B71FE"
               e.currentTarget.style.transform = "translateY(-4px)"
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(11,113,254,0.2)"
+              e.currentTarget.style.boxShadow = "0 16px 32px rgba(15,76,129,0.25)"
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = "transparent"
               e.currentTarget.style.transform = "translateY(0)"
-              e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)"
+              e.currentTarget.style.boxShadow = tileShadow
             }}
             >
               <div style={{ fontSize: 32, marginBottom: 12 }}>🧮</div>
@@ -311,24 +329,25 @@ export default function LabPage() {
 
           <Link href="/business-lab/score" style={{ textDecoration: "none" }}>
             <div style={{
-              background: "white",
+              background: tileGradient,
               borderRadius: 16,
               padding: 20,
-              boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+              boxShadow: tileShadow,
               border: "2px solid transparent",
               transition: "all 0.2s ease",
               cursor: "pointer",
-              height: "100%"
+              height: "100%",
+              color: "#0f172a"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = "#0B71FE"
               e.currentTarget.style.transform = "translateY(-4px)"
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(11,113,254,0.2)"
+              e.currentTarget.style.boxShadow = "0 16px 32px rgba(15,76,129,0.25)"
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = "transparent"
               e.currentTarget.style.transform = "translateY(0)"
-              e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)"
+              e.currentTarget.style.boxShadow = tileShadow
             }}
             >
               <div style={{ fontSize: 32, marginBottom: 12 }}>📈</div>
@@ -366,26 +385,27 @@ export default function LabPage() {
                 style={{ textDecoration: "none" }}
               >
                 <div style={{
-                  background: "white",
+                  background: tileGradient,
                   borderRadius: 16,
                   padding: 24,
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-                  border: "2px solid #E5E7EB",
+                  boxShadow: tileShadow,
+                  border: "2px solid transparent",
                   transition: "all 0.2s ease",
                   cursor: "pointer",
                   height: "100%",
                   position: "relative" as const,
-                  overflow: "hidden"
+                  overflow: "hidden",
+                  color: "#0f172a"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-4px)"
-                  e.currentTarget.style.boxShadow = "0 8px 32px rgba(11,113,254,0.2)"
+                  e.currentTarget.style.boxShadow = "0 18px 36px rgba(15,76,129,0.25)"
                   e.currentTarget.style.borderColor = track.color || "#0B71FE"
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)"
-                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)"
-                  e.currentTarget.style.borderColor = "#E5E7EB"
+                  e.currentTarget.style.boxShadow = tileShadow
+                  e.currentTarget.style.borderColor = "transparent"
                 }}
                 >
                   {/* Color accent bar */}
@@ -452,23 +472,24 @@ export default function LabPage() {
 
         {/* Guidelines Card */}
         <div style={{
-          background: "#FEF3C7",
+          background: tileGradient,
           borderRadius: 16,
           padding: 24,
-          border: "2px solid #FDE68A",
-          boxShadow: "0 2px 12px rgba(251,191,36,0.15)",
+          border: "2px solid transparent",
+          boxShadow: tileShadow,
           width: "100%",
-          boxSizing: "border-box" as const
+          boxSizing: "border-box" as const,
+          color: "#0f172a"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <span style={{ fontSize: 24 }}>⚠️</span>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#92400E" }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a" }}>
               Normas de Uso
             </h3>
           </div>
           <ul style={{ 
             marginLeft: 20, 
-            color: "#78350F", 
+            color: "#1e3a8a", 
             fontSize: 14,
             lineHeight: 1.8
           }}>
