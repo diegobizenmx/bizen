@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import NavigationLoading from './NavigationLoading';
 import FixedSidebar from './FixedSidebar';
+import MobileBottomNav from './MobileBottomNav';
 import GlobalLogo from './GlobalLogo';
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
@@ -69,6 +70,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   return (
     <>
       {!isAuthPage && <FixedSidebar />}
+      {!isAuthPage && <MobileBottomNav />}
       <GlobalLogo />
       {children}
       <NavigationLoading isLoading={isNavigating} />

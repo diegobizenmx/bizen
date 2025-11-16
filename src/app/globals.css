@@ -304,11 +304,13 @@ body, html {
   overflow-x: hidden !important;
   width: 100% !important;
   max-width: 100vw !important;
+  position: relative; /* For proper scrolling context */
 }
 
 /* Prevent any element from causing horizontal scroll */
 * {
   max-width: 100vw;
+  box-sizing: border-box; /* Ensure padding doesn't cause overflow */
 }
 
 /* Force containers to stay within viewport - MOBILE ONLY */
@@ -316,6 +318,19 @@ body, html {
   body > * {
     width: 100% !important;
     max-width: 100vw !important;
+  }
+  
+  /* Allow vertical scrolling on mobile */
+  body, html {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important; /* Smooth scrolling on iOS */
+  }
+  
+  /* Prevent scroll on fixed elements that shouldn't scroll */
+  [data-fixed-sidebar],
+  [data-mobile-bottom-nav] {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -350,6 +365,303 @@ body, html {
   .mobile-center h1, .mobile-center h2, .mobile-center h3, 
   .mobile-center h4, .mobile-center h5, .mobile-center h6 {
     text-align: center !important;
+  }
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS (Phones < 768px)
+   ========================================== */
+
+/* Hide FixedSidebar on mobile to maximize content space */
+@media (max-width: 767px) {
+  [data-fixed-sidebar] {
+    display: none !important;
+  }
+  
+  /* Remove right margins that account for sidebar on mobile */
+  main[style*="marginRight"]:not([style*="marginRight: 0"]):not([style*="marginRight:0"]):not([style*="marginRight: \"0\""]),
+  div[style*="marginRight"]:not([style*="marginRight: 0"]):not([style*="marginRight:0"]):not([style*="marginRight: \"0\""]) {
+    margin-right: 0 !important;
+  }
+  
+  /* Adjust right padding to be responsive instead of fixed sidebar values (320px, 340px) */
+  main[style*="paddingRight"]:not([style*="paddingRight: 0"]):not([style*="paddingRight:0"]):not([style*="paddingRight: \"0\""]),
+  div[style*="paddingRight"]:not([style*="paddingRight: 0"]):not([style*="paddingRight:0"]):not([style*="paddingRight: \"0\""]) {
+    padding-right: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Remove left padding that accounts for sidebar if any */
+  main[style*="paddingLeft"]:not([style*="paddingLeft: 0"]):not([style*="paddingLeft:0"]):not([style*="paddingLeft: \"0\""]),
+  div[style*="paddingLeft"]:not([style*="paddingLeft: 0"]):not([style*="paddingLeft:0"]):not([style*="paddingLeft: \"0\""]) {
+    padding-left: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Ensure content containers don't exceed viewport width */
+  main[style*="maxWidth"] {
+    max-width: 100% !important;
+  }
+  
+  /* Box sizing for all main elements */
+  main {
+    box-sizing: border-box !important;
+  }
+  
+  /* Specific fixes for common patterns */
+  /* Forum pages background containers */
+  div[style*="marginRight"][style*="background"] {
+    margin-right: 0 !important;
+  }
+  
+  /* Learning pages that use 160px for centering */
+  div[style*="marginRight"][style*="160px"] {
+    margin-right: 0 !important;
+  }
+  
+  /* Hide fixed left panels on mobile (like courses difficulty navigation) */
+  div[style*="position: fixed"][style*="left: 0"][style*="width: 200px"],
+  div[style*="position:fixed"][style*="left:0"][style*="width:200px"] {
+    display: none !important;
+  }
+  
+  /* Remove left margins that account for fixed panels on mobile */
+  div[style*="marginLeft"][style*="200px"],
+  div[style*="marginLeft"][style*="200"] {
+    margin-left: 0 !important;
+  }
+  
+  /* Adjust left padding that accounts for fixed panels */
+  div[style*="paddingLeft"][style*="200px"],
+  div[style*="paddingLeft"][style*="200"] {
+    padding-left: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Fix calc() widths that account for sidebar - make full width on mobile */
+  /* Specifically target calc() patterns in style attributes */
+  *[style*="calc(100% - 320px)"],
+  *[style*="calc(100vw - 320px)"],
+  *[style*="calc(100vw - 340px)"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Ensure all main elements use full width on mobile */
+  main {
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding-left: clamp(16px, 4vw, 24px) !important;
+    padding-right: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Container elements should also be full width on mobile */
+  div[role="main"],
+  div[style*="maxWidth"] {
+    max-width: 100% !important;
+  }
+  
+  /* Optimize decorative elements on mobile */
+  div[style*="position: fixed"][style*="width: 400px"],
+  div[style*="position:fixed"][style*="width:400px"],
+  div[style*="position: fixed"][style*="width: 450px"],
+  div[style*="position:fixed"][style*="width:450px"],
+  div[style*="position: fixed"][style*="width: 500px"],
+  div[style*="position:fixed"][style*="width:500px"] {
+    width: 150px !important;
+    height: 150px !important;
+    opacity: 0.3 !important;
+  }
+  
+  /* Fix sticky course bar positioning on mobile */
+  div[style*="left: 200px"][style*="right: 320px"],
+  div[style*="left:200px"][style*="right:320px"] {
+    left: 0 !important;
+    right: 0 !important;
+    padding: 0 clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Optimize course content container on mobile */
+  div[style*="marginLeft: 200px"],
+  div[style*="marginLeft:200px"],
+  div[style*="paddingLeft: 200px"],
+  div[style*="paddingLeft:200px"] {
+    margin-left: 0 !important;
+    padding-left: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Ensure main containers use responsive padding */
+  main {
+    padding-left: clamp(16px, 4vw, 24px) !important;
+    padding-right: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Remove right margins that account for sidebar on specific pages */
+  div[style*="marginRight: 340px"],
+  div[style*="marginRight:340px"],
+  div[style*="marginRight: \"340px\""] {
+    margin-right: 0 !important;
+  }
+  
+  /* Optimize form inputs for mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    min-height: 48px !important; /* Touch-friendly */
+    padding: 12px 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure buttons are touch-friendly */
+  button, a[role="button"] {
+    min-height: 48px !important;
+    padding: 14px 20px !important;
+    font-size: 16px !important;
+    touch-action: manipulation; /* Removes 300ms delay */
+    -webkit-tap-highlight-color: rgba(15, 98, 254, 0.2); /* iOS tap highlight */
+    user-select: none; /* Prevent text selection on tap */
+    -webkit-user-select: none;
+  }
+  
+  /* Mobile nav buttons get extra touch optimization */
+  [data-mobile-bottom-nav] button {
+    min-height: 56px !important; /* Larger touch target for nav */
+    min-width: 56px !important;
+  }
+  
+  /* Stack form elements vertically on mobile */
+  /* Only apply to direct children to avoid breaking nested layouts */
+  form > input:not([type="checkbox"]):not([type="radio"]),
+  form > textarea,
+  form > select,
+  form > button:not(:last-child) {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+  
+  /* Optimize cards for mobile */
+  [class*="card"],
+  div[style*="background"][style*="borderRadius"] {
+    padding: clamp(16px, 4vw, 24px) !important;
+    margin-bottom: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Optimize tables for mobile */
+  table {
+    width: 100% !important;
+    font-size: 14px !important;
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Optimize images for mobile */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+  
+  /* Optimize multi-column grid layouts for mobile - only for 2+ columns */
+  [style*="grid-template-columns: repeat(2"],
+  [style*="grid-template-columns: repeat(3"],
+  [style*="grid-template-columns: repeat(4"],
+  [style*="grid-template-columns: repeat(5"],
+  [style*="grid-template-columns: repeat(6"] {
+    grid-template-columns: 1fr !important;
+    gap: clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Optimize flex row layouts for mobile - only when explicitly set to row */
+  /* Note: Only apply when it's safe to stack vertically */
+  [style*="display: flex"][style*="flex-direction: row"] {
+    /* Don't force column - let components handle their own responsive behavior */
+  }
+  
+  /* Ensure modals and dialogs are mobile-friendly */
+  div[style*="position: fixed"][style*="max-width: 480px"],
+  div[style*="position:fixed"][style*="max-width:480px"] {
+    max-width: 90vw !important;
+    margin: 20px auto !important;
+    left: 5vw !important;
+    right: 5vw !important;
+  }
+  
+  /* Optimize text sizes for mobile readability */
+  small {
+    font-size: 12px !important;
+  }
+  
+  /* Improve font rendering on mobile */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Prevent text size adjustment on orientation change (iOS) */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Optimize paragraph spacing for mobile readability */
+  /* Only apply if not already set inline */
+  p:not([style*="margin"]) {
+    line-height: 1.6 !important;
+    margin-bottom: 16px !important;
+  }
+  
+  /* Remove any fixed heights that might cause issues */
+  /* But preserve heights for sidebar and mobile nav */
+  div[style*="height: 100vh"]:not([data-fixed-sidebar]):not([data-mobile-bottom-nav]):not([data-keep-height]) {
+    min-height: 100vh !important;
+    height: auto !important;
+  }
+  
+  /* Ensure courses page container scrolls properly */
+  div[style*="overflowY: auto"][style*="overflowX: hidden"] {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Add bottom padding to account for mobile bottom nav */
+  /* Use safe area insets for iOS devices with notches */
+  body:has([data-mobile-bottom-nav]) {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+  }
+  
+  /* Fallback for browsers that don't support :has() */
+  @supports not selector(:has(*)) {
+    body {
+      padding-bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+    }
+  }
+  
+  /* Ensure viewport meta tag respects safe areas */
+  @supports (padding: max(0px)) {
+    body:has([data-mobile-bottom-nav]) {
+      padding-bottom: max(70px, calc(70px + env(safe-area-inset-bottom))) !important;
+    }
+  }
+  
+  /* Prevent content from being hidden behind mobile nav */
+  main,
+  div[role="main"] {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+  
+  /* Optimize modal z-index to appear above mobile nav */
+  /* Only target modals/dialogs, not all fixed elements */
+  div[style*="position: fixed"][style*="backdrop-filter"],
+  div[style*="position:fixed"][style*="backdropFilter"] {
+    z-index: 10001 !important; /* Above mobile nav (10000) */
   }
 }
 

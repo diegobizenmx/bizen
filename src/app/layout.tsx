@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     initialScale: 1,
     maximumScale: 5,
     userScalable: true,
+    viewportFit: "cover", // Enable safe area insets for iOS devices with notches
   },
 }
 
