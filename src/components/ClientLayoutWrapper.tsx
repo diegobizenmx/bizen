@@ -79,13 +79,15 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     }
   }, [pathname]);
 
-  // Don't show sidebar on auth pages and landing
+  // Don't show sidebar on auth pages, landing, and payment pages
   const isAuthPage = pathname === '/login' || 
                      pathname === '/signup' || 
                      pathname === '/reset-password' ||
                      pathname === '/forgot-password' ||
                      pathname === '/bizen/signup' ||
-                     pathname === '/' // Landing page
+                     pathname === '/' || // Landing page
+                     pathname === '/payment' ||
+                     pathname.startsWith('/payment/') // Payment pages
 
   return (
     <>
