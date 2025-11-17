@@ -12,7 +12,6 @@ export default function GlobalLogo() {
                      pathname === '/signup' || 
                      pathname === '/reset-password' ||
                      pathname === '/forgot-password' ||
-                     pathname === '/bizen/login' ||
                      pathname === '/bizen/signup' ||
                      pathname === '/'
 

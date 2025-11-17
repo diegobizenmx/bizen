@@ -101,9 +101,6 @@ export default function PaymentPage() {
     email: "",
     company: "",
     phone: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,13 +112,37 @@ export default function PaymentPage() {
     e.preventDefault()
     setLoading(true)
     
-    // TODO: Integrate with payment processor (Stripe, PayPal, etc.)
-    // For now, simulate processing
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Redirect to success page or dashboard
-    alert("¡Pago procesado con éxito! Te redirigiremos a tu cuenta.")
-    router.push("/dashboard")
+    try {
+      // Create Stripe Checkout Session
+      const response = await fetch('/api/payment/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          planName: 'Plan Emprendedor',
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session')
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error('No checkout URL received')
+      }
+    } catch (error: any) {
+      console.error('Payment error:', error)
+      alert(error.message || 'Error al procesar el pago. Por favor, intenta de nuevo.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -367,54 +388,21 @@ export default function PaymentPage() {
                   </div>
                 </div>
 
-                {/* Payment Information */}
-                <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16, color: "#475569" }}>
-                    Información de tarjeta
-                  </h3>
-                  <div style={{ display: "grid", gap: 16 }}>
-                    <div>
-                      <Label htmlFor="cardNumber">Número de tarjeta *</Label>
-                      <TextField
-                        id="cardNumber"
-                        name="cardNumber"
-                        type="text"
-                        required
-                        value={formData.cardNumber}
-                        onChange={handleInputChange}
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                      />
-                    </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                      <div>
-                        <Label htmlFor="expiryDate">Fecha de expiración *</Label>
-                        <TextField
-                          id="expiryDate"
-                          name="expiryDate"
-                          type="text"
-                          required
-                          value={formData.expiryDate}
-                          onChange={handleInputChange}
-                          placeholder="MM/YY"
-                          maxLength={5}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="cvv">CVV *</Label>
-                        <TextField
-                          id="cvv"
-                          name="cvv"
-                          type="text"
-                          required
-                          value={formData.cvv}
-                          onChange={handleInputChange}
-                          placeholder="123"
-                          maxLength={4}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                {/* Payment Information Note */}
+                <div
+                  style={{
+                    padding: 16,
+                    background: "linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)",
+                    borderRadius: 12,
+                    border: "1px solid rgba(15, 98, 254, 0.1)",
+                  }}
+                >
+                  <p style={{ fontSize: 14, color: "#475569", margin: 0, lineHeight: 1.6 }}>
+                    <strong style={{ color: "#0F62FE" }}>🔒 Pago seguro con Stripe</strong>
+                    <br />
+                    Serás redirigido a Stripe Checkout para completar el pago de forma segura. 
+                    No almacenamos información de tarjeta en nuestros servidores.
+                  </p>
                 </div>
 
                 {/* Submit Button */}

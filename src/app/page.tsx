@@ -881,7 +881,7 @@ const defaultPlans: Plan[] = [
   {
     name: "Emprendedor",
     cta: "Solicitar demo",
-    ctaUrl: "#contacto",
+    ctaUrl: "/payment",
     priceNote: "Pilotos y licenciamiento",
     highlighted: true,
     features: [

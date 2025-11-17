@@ -59,7 +59,7 @@ export default function CashFlowPage() {
   useEffect(() => {
     if (!loading && !user) {
       console.log("No user found, redirecting to login")
-      router.push("/bizen/login")
+      router.push("/login")
     } else if (user) {
       console.log("User logged in:", user.email)
     }

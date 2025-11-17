@@ -58,7 +58,7 @@ export default function BIZENHomePage() {
           gap: 16
         }}>
           <Link
-            href="/bizen/login"
+            href="/login"
             style={{
               display: "block",
               padding: "16px 32px",

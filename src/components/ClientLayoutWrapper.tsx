@@ -84,7 +84,6 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                      pathname === '/signup' || 
                      pathname === '/reset-password' ||
                      pathname === '/forgot-password' ||
-                     pathname === '/bizen/login' ||
                      pathname === '/bizen/signup' ||
                      pathname === '/' // Landing page
 
