@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const sessionId = searchParams.get('session_id')
@@ -203,6 +203,41 @@ export default function PaymentSuccessPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%)",
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: "4px solid #0F62FE22",
+            borderTop: "4px solid #0F62FE",
+            borderRadius: "50%",
+            margin: "0 auto 16px",
+            animation: "spin 1s linear infinite",
+          }} />
+          <p style={{ color: "#666", fontSize: 16 }}>Cargando...</p>
+        </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }
 
