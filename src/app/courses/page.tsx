@@ -686,6 +686,25 @@ export default function CoursesPage() {
     }
   }, [])
 
+  // Mobile sidebar toggle state - MUST be before any early returns (Rules of Hooks)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  // Close sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const sidebar = document.querySelector('[data-fixed-sidebar]')
+      const toggleBtn = document.querySelector('.mobile-sidebar-toggle')
+      if (isSidebarOpen && sidebar && !sidebar.contains(e.target as Node) && !toggleBtn?.contains(e.target as Node)) {
+        setIsSidebarOpen(false)
+        sidebar.classList.remove('mobile-sidebar-open')
+      }
+    }
+    if (isSidebarOpen) {
+      document.addEventListener('click', handleClickOutside)
+    }
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [isSidebarOpen])
+
   if (loading || loadingData) {
     return (
       <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "Montserrat, sans-serif" }}>
@@ -719,37 +738,19 @@ export default function CoursesPage() {
     }
   }
 
-  // Mobile sidebar toggle state
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-
   // Toggle mobile sidebar
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
+    const newState = !isSidebarOpen
+    setIsSidebarOpen(newState)
     const sidebar = document.querySelector('[data-fixed-sidebar]')
     if (sidebar) {
-      if (!isSidebarOpen) {
+      if (newState) {
         sidebar.classList.add('mobile-sidebar-open')
       } else {
         sidebar.classList.remove('mobile-sidebar-open')
       }
     }
   }
-
-  // Close sidebar when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const sidebar = document.querySelector('[data-fixed-sidebar]')
-      const toggleBtn = document.querySelector('.mobile-sidebar-toggle')
-      if (isSidebarOpen && sidebar && !sidebar.contains(e.target as Node) && !toggleBtn?.contains(e.target as Node)) {
-        setIsSidebarOpen(false)
-        sidebar.classList.remove('mobile-sidebar-open')
-      }
-    }
-    if (isSidebarOpen) {
-      document.addEventListener('click', handleClickOutside)
-    }
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [isSidebarOpen])
 
   return (
       <div style={{
