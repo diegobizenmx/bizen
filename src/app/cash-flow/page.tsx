@@ -259,7 +259,7 @@ export default function CashFlowPage() {
         width: "100%",
         minHeight: "100vh",
         background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-        fontFamily: "Montserrat, sans-serif",
+        fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
         overflowX: "hidden",
         overflowY: "auto",
         boxSizing: "border-box"
@@ -305,7 +305,7 @@ export default function CashFlowPage() {
               fontSize: "clamp(12px, 2.5vw, 14px)",
               fontWeight: 700,
               cursor: "pointer",
-              fontFamily: "Montserrat, sans-serif",
+              fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
               transition: "all 0.2s",
               whiteSpace: "nowrap"
             }}
@@ -385,7 +385,7 @@ export default function CashFlowPage() {
                   fontWeight: 700,
                   cursor: "pointer",
                   boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
-                  fontFamily: "Montserrat, sans-serif",
+                  fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                   alignSelf: "flex-start"
                 }}
               >
@@ -527,7 +527,7 @@ export default function CashFlowPage() {
                           fontSize: "14px",
                           fontWeight: 700,
                           cursor: "pointer",
-                          fontFamily: "Montserrat, sans-serif",
+                          fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                           whiteSpace: "nowrap",
                           textAlign: "center",
                           minWidth: 0,
@@ -550,7 +550,7 @@ export default function CashFlowPage() {
                           fontSize: "14px",
                           fontWeight: 700,
                           cursor: "pointer",
-                          fontFamily: "Montserrat, sans-serif",
+                          fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                           flexShrink: 0,
                           display: "flex",
                           alignItems: "center",
@@ -852,7 +852,7 @@ export default function CashFlowPage() {
                       fontWeight: 800,
                       cursor: "pointer",
                       transition: "all 0.3s ease",
-                      fontFamily: "Montserrat, sans-serif",
+                      fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                       minWidth: "120px"
                     }}
                   >
@@ -876,7 +876,7 @@ export default function CashFlowPage() {
                     cursor: startingGame ? "not-allowed" : "pointer",
                     boxShadow: "0 8px 24px rgba(16, 185, 129, 0.3)",
                     transition: "all 0.3s ease",
-                    fontFamily: "Montserrat, sans-serif",
+                    fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                     minWidth: "180px"
                   }}
                   onMouseEnter={(e) => {

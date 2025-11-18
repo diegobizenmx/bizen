@@ -378,7 +378,7 @@ function SettingsContent() {
       minHeight: "100vh",
       background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
       backgroundAttachment: "fixed",
-      fontFamily: "Montserrat, sans-serif",
+      fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
       padding: "40px",
       maxWidth: "100%",
       overflowX: "hidden"
@@ -483,7 +483,7 @@ function SettingsContent() {
                   fontSize: 14,
                   fontWeight: activeSection === section.id ? 700 : 600,
                   color: activeSection === section.id ? "#0F62FE" : "#6B7280",
-                  fontFamily: "Montserrat, sans-serif"
+                  fontFamily: "'Feather Bold', 'Montserrat', sans-serif"
                 }}
                 onMouseEnter={(e) => {
                   if (activeSection !== section.id) {
@@ -717,7 +717,7 @@ function SettingsContent() {
                             background: "rgba(255, 255, 255, 0.7)",
                             color: "#1E40AF",
                             fontWeight: 600,
-                            fontFamily: "Montserrat, sans-serif",
+                            fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                             outline: "none",
                             transition: "all 0.2s ease",
                           }}
@@ -743,7 +743,7 @@ function SettingsContent() {
                             fontWeight: 700,
                             cursor: saving ? "not-allowed" : "pointer",
                             transition: "all 0.2s ease",
-                            fontFamily: "Montserrat, sans-serif",
+                            fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                             whiteSpace: "nowrap"
                           }}
                           onMouseEnter={(e) => {
@@ -788,7 +788,7 @@ function SettingsContent() {
                             fontWeight: 700,
                             cursor: "pointer",
                             transition: "all 0.2s ease",
-                            fontFamily: "Montserrat, sans-serif"
+                            fontFamily: "'Feather Bold', 'Montserrat', sans-serif"
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.transform = "translateY(-2px)"
@@ -817,7 +817,7 @@ function SettingsContent() {
                               background: "rgba(255, 255, 255, 0.7)",
                               color: "#1E40AF",
                               fontWeight: 600,
-                              fontFamily: "Montserrat, sans-serif",
+                              fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                               outline: "none",
                               transition: "all 0.2s ease",
                               boxSizing: "border-box"
@@ -846,7 +846,7 @@ function SettingsContent() {
                               background: "rgba(255, 255, 255, 0.7)",
                               color: "#1E40AF",
                               fontWeight: 600,
-                              fontFamily: "Montserrat, sans-serif",
+                              fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                               outline: "none",
                               transition: "all 0.2s ease",
                               boxSizing: "border-box"
@@ -876,7 +876,7 @@ function SettingsContent() {
                                 fontWeight: 700,
                                 cursor: saving ? "not-allowed" : "pointer",
                                 transition: "all 0.2s ease",
-                                fontFamily: "Montserrat, sans-serif"
+                                fontFamily: "'Feather Bold', 'Montserrat', sans-serif"
                               }}
                               onMouseEnter={(e) => {
                                 if (!saving) {
@@ -909,7 +909,7 @@ function SettingsContent() {
                                 fontWeight: 700,
                                 cursor: "pointer",
                                 transition: "all 0.2s ease",
-                                fontFamily: "Montserrat, sans-serif"
+                                fontFamily: "'Feather Bold', 'Montserrat', sans-serif"
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = "rgba(107, 114, 128, 0.3)"
@@ -1228,7 +1228,7 @@ function SettingsContent() {
                       fontWeight: 700,
                       cursor: saving ? "not-allowed" : "pointer",
                       transition: "all 0.2s ease",
-                      fontFamily: "Montserrat, sans-serif"
+                      fontFamily: "'Feather Bold', 'Montserrat', sans-serif"
                     }}
                     onMouseEnter={(e) => {
                       if (!saving) {

@@ -731,7 +731,7 @@ export default function CoursesPage() {
 
   if (loading || loadingData) {
     return (
-      <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "Montserrat, sans-serif" }}>
+      <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "'Feather Bold', 'Montserrat', sans-serif" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{
             width: 48,
@@ -896,14 +896,12 @@ export default function CoursesPage() {
 
   return (
       <div style={{
-        position: "fixed",
+        position: "relative",
         top: 0,
         left: 0,
         width: "100%",
-        height: "100%",
         minHeight: "100vh",
-      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-      overflowY: "auto",
+        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
         overflowX: "hidden",
         boxSizing: "border-box"
     }}>
@@ -955,7 +953,7 @@ export default function CoursesPage() {
           backdropFilter: "blur(20px)",
           zIndex: 9998,
           padding: "80px 16px 24px 16px",
-      fontFamily: "Montserrat, sans-serif",
+      fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
         borderRight: "2px solid rgba(147, 197, 253, 0.3)",
         display: "flex",
           flexDirection: "column",
@@ -1036,7 +1034,7 @@ export default function CoursesPage() {
               border: activeLevel === 1 ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid rgba(147, 197, 253, 0.4)",
               borderRadius: 10,
                 cursor: "pointer",
-              fontFamily: "Montserrat, sans-serif",
+              fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
               fontSize: 14,
               fontWeight: activeLevel === 1 ? 700 : 600,
               transition: "all 0.2s ease",
@@ -1066,7 +1064,7 @@ export default function CoursesPage() {
               border: activeLevel === 2 ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid rgba(147, 197, 253, 0.4)",
               borderRadius: 10,
               cursor: "pointer",
-              fontFamily: "Montserrat, sans-serif",
+              fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
               fontSize: 14,
               fontWeight: activeLevel === 2 ? 700 : 600,
               transition: "all 0.2s ease",
@@ -1096,7 +1094,7 @@ export default function CoursesPage() {
               border: activeLevel === 3 ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid rgba(147, 197, 253, 0.4)",
               borderRadius: 10,
               cursor: "pointer",
-              fontFamily: "Montserrat, sans-serif",
+              fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
               fontSize: 14,
               fontWeight: activeLevel === 3 ? 700 : 600,
               transition: "all 0.2s ease",
@@ -1126,7 +1124,7 @@ export default function CoursesPage() {
             backdropFilter: "blur(20px)",
             zIndex: 9999,
             padding: "24px 20px",
-      fontFamily: "Montserrat, sans-serif",
+      fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
             borderLeft: "2px solid rgba(147, 197, 253, 0.3)",
         display: "flex",
             flexDirection: "column",
@@ -1191,7 +1189,7 @@ export default function CoursesPage() {
                 borderRadius: 12,
               cursor: "pointer",
               transition: "all 0.3s ease",
-                  fontFamily: "Montserrat, sans-serif",
+                  fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                   fontSize: 15,
                   fontWeight: 700,
                   color: "white",
@@ -1218,7 +1216,7 @@ export default function CoursesPage() {
                 borderRadius: 10,
                 cursor: "pointer",
                 transition: "all 0.2s ease",
-                fontFamily: "Montserrat, sans-serif",
+                fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                 fontSize: 14,
                 fontWeight: pathname === "/business-lab" || pathname?.startsWith("/business-lab") ? 700 : 600,
                 textAlign: "left",
@@ -1248,7 +1246,7 @@ export default function CoursesPage() {
                 borderRadius: 10,
                 cursor: "pointer",
                 transition: "all 0.2s ease",
-                fontFamily: "Montserrat, sans-serif",
+                fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                 fontSize: 14,
                 fontWeight: pathname === "/courses" ? 700 : 600,
                 textAlign: "left",
@@ -1276,7 +1274,7 @@ export default function CoursesPage() {
                 borderRadius: 10,
                 cursor: "pointer",
                 transition: "all 0.2s ease",
-                fontFamily: "Montserrat, sans-serif",
+                fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
               fontSize: 14,
                 fontWeight: pathname === "/cash-flow" || pathname?.startsWith("/cash-flow") ? 700 : 600,
                 textAlign: "left",
@@ -1304,7 +1302,7 @@ export default function CoursesPage() {
                 borderRadius: 10,
               cursor: "pointer",
                 transition: "all 0.2s ease",
-                fontFamily: "Montserrat, sans-serif",
+                fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                 fontSize: 14,
                 fontWeight: pathname === "/simuladores" || pathname?.startsWith("/simuladores") ? 700 : 600,
                 textAlign: "left",
@@ -1336,7 +1334,7 @@ export default function CoursesPage() {
                     borderRadius: 10,
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                    fontFamily: "Montserrat, sans-serif",
+                    fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                     fontSize: 14,
                     fontWeight: pathname === "/progress" || pathname?.startsWith("/progress") ? 700 : 600,
                     textAlign: "left",
@@ -1364,7 +1362,7 @@ export default function CoursesPage() {
                     borderRadius: 10,
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                    fontFamily: "Montserrat, sans-serif",
+                    fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                 fontSize: 14,
                     fontWeight: pathname === "/forum" || pathname?.startsWith("/forum") ? 700 : 600,
                     textAlign: "left",
@@ -1392,7 +1390,7 @@ export default function CoursesPage() {
                     borderRadius: 10,
               cursor: "pointer",
                     transition: "all 0.2s ease",
-                    fontFamily: "Montserrat, sans-serif",
+                    fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                     fontSize: 14,
                     fontWeight: pathname === "/profile" || pathname?.startsWith("/profile") ? 700 : 600,
                     textAlign: "left",
@@ -1420,7 +1418,7 @@ export default function CoursesPage() {
                     borderRadius: 10,
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                    fontFamily: "Montserrat, sans-serif",
+                    fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                     fontSize: 14,
                     fontWeight: pathname === "/cuenta" || pathname?.startsWith("/cuenta") ? 700 : 600,
                     textAlign: "left",
@@ -1448,7 +1446,7 @@ export default function CoursesPage() {
                     borderRadius: 10,
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                    fontFamily: "Montserrat, sans-serif",
+                    fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
                 fontSize: 14,
                     fontWeight: pathname === "/configuracion" || pathname?.startsWith("/configuracion") ? 700 : 600,
                     textAlign: "left",
@@ -1562,7 +1560,7 @@ export default function CoursesPage() {
         paddingBottom: "clamp(40px, 8vw, 80px)",
         paddingLeft: "16px",
         paddingRight: "16px",
-      fontFamily: "Montserrat, sans-serif",
+      fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
         background: "transparent",
         position: "relative",
         display: "flex",
@@ -2217,13 +2215,42 @@ export default function CoursesPage() {
             opacity: 0 !important;
           }
           
+          /* Fix main container for mobile scrolling */
+          div[style*="position: relative"][style*="minHeight: 100vh"] {
+            position: relative !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-y: visible !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+          }
+          
           /* Adjust main content padding on mobile - no left padding since panel is hidden */
           main[style*="paddingLeft"],
           main[style*="padding-left"] {
             padding-left: 16px !important;
             padding-right: 16px !important;
             padding-top: 80px !important; /* Space for hamburger button */
-            padding-bottom: 40px !important;
+            padding-bottom: 80px !important; /* Space for mobile footer (65px + 15px gap) */
+          }
+          
+          /* Ensure body can scroll on mobile */
+          body {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            position: relative !important;
+            height: auto !important;
+            min-height: 100vh !important;
+          }
+          
+          /* Ensure html can scroll on mobile */
+          html {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            height: auto !important;
+            min-height: 100vh !important;
           }
           
           /* Ensure island path container fits in available space on mobile */

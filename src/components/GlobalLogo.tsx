@@ -81,7 +81,7 @@ export default function GlobalLogo() {
         fontSize: 22,
         fontWeight: 700,
         color: "#0F62FE",
-        fontFamily: "Montserrat, sans-serif",
+        fontFamily: "'Feather Bold', 'Montserrat', sans-serif",
         letterSpacing: "0.3px"
       }}>
         BIZEN
