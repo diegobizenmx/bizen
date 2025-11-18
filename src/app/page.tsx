@@ -534,7 +534,7 @@ export default function WelcomePage() {
             max-width: 100% !important;
             box-sizing: border-box !important;
           }
-          .main-content > div:first-child img {
+          .main-content > div:first-child img:not(.billy-image) {
             width: 100% !important;
             max-width: 100% !important;
             height: auto !important;
