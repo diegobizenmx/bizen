@@ -467,6 +467,17 @@ input, textarea, select {
   [style*="display: flex"][style*="row"] {
     flex-direction: column !important;
   }
+
+  /* Explicit opt-out for components that must remain horizontal */
+  [data-allow-row="true"] {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    gap: 4px !important;
+  }
+
+  [data-allow-row="true"] > * {
+    flex: 1 1 auto !important;
+  }
 }
 
 /* Images and Media - Responsive */
@@ -641,6 +652,7 @@ div[style*="overflowX: hidden"]:not([style*="overflowY"]):not([data-decorative])
   .mobile-center h4, .mobile-center h5, .mobile-center h6 {
     text-align: center !important;
   }
+
 }
 
 /* ==========================================

@@ -106,30 +106,30 @@ export default function WelcomePage() {
           gap: "clamp(80px, 20vw, 350px)",
           width: "100%",
           maxWidth: "1200px",
-        }}>
-          {/* Logo and Brand */}
-          <Link href="/" style={{
-            display: "flex",
-            alignItems: "center",
+      }}>
+        {/* Logo and Brand */}
+        <Link href="/" style={{
+          display: "flex",
+          alignItems: "center",
             gap: "clamp(6px, 1.5vw, 10px)",
-            textDecoration: "none",
+          textDecoration: "none",
             flexShrink: 0,
-          }}>
-            <Image 
-              src="/bizen-logo.png" 
-              alt="BIZEN logo" 
-              width={40} 
-              height={40} 
-              priority 
+        }}>
+          <Image 
+            src="/bizen-logo.png" 
+            alt="BIZEN logo" 
+            width={40} 
+            height={40} 
+            priority 
               style={{ width: "clamp(28px, 4vw, 40px)", height: "auto", flexShrink: 0 }}
-            />
-            <strong style={{ 
+          />
+          <strong style={{ 
               fontSize: "clamp(16px, 2.5vw, 20px)", 
-              color: "#0B71FE", 
+            color: "#0B71FE", 
               fontFamily: 'Montserrat, sans-serif',
               whiteSpace: "nowrap"
-            }}>BIZEN</strong>
-          </Link>
+          }}>BIZEN</strong>
+        </Link>
 
           <nav style={{ display: "flex", gap: "clamp(8px, 2vw, 16px)", alignItems: "center", flexShrink: 0 }} className="header-nav">
             <Link href="/signup" style={{
@@ -142,7 +142,7 @@ export default function WelcomePage() {
               color: "white",
               border: "none",
               borderRadius: "clamp(6px, 1.2vw, 10px)",
-              textDecoration: "none",
+            textDecoration: "none",
               cursor: "pointer",
               boxShadow: "0 4px 12px rgba(15, 98, 254, 0.25)",
               textAlign: "center",
@@ -153,7 +153,7 @@ export default function WelcomePage() {
               whiteSpace: "nowrap",
             }}
             className="crear-cuenta-button">Crear cuenta</Link>
-          </nav>
+        </nav>
         </div>
       </header>
 
@@ -694,7 +694,7 @@ export default function WelcomePage() {
       </div>
 
       {/* Fun text between main hero and hero 1 */}
-      <div className="reveal-element reveal-delay-1" style={{
+      <div className="reveal-element reveal-delay-1 fun-text-container" style={{
         textAlign: "center",
         padding: "clamp(8px, 1.5vw, 16px) 0 clamp(120px, 18vw, 200px) 0",
         background: "transparent",
@@ -1008,7 +1008,7 @@ function LandingContent() {
       {/* CÓMO FUNCIONA - Text Left, Image Right */}
       <section id="sobre" className="section about reveal-element" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
         <div className="container">
-          <div className="hero-section-grid" style={{
+          <div className="hero-section-grid hero-grid-alt" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
@@ -1079,7 +1079,7 @@ function LandingContent() {
       {/* BENEFICIOS - Image Left, Text Right */}
       <section className="section benefits reveal-element reveal-delay-1" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
         <div className="container">
-          <div className="hero-section-grid" style={{
+          <div className="hero-section-grid hero-grid-alt" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
@@ -1150,7 +1150,7 @@ function LandingContent() {
       {/* CURSOS - Text Left, Image Right */}
       <section id="cursos" className="section courses reveal-element reveal-delay-2" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
         <div className="container">
-          <div className="hero-section-grid" style={{
+          <div className="hero-section-grid hero-grid-alt" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
@@ -1221,7 +1221,7 @@ function LandingContent() {
       {/* FORO DE EMPRENDEDORES - Image Left, Text Right */}
       <section className="section forum reveal-element reveal-delay-3" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
         <div className="container">
-          <div className="hero-section-grid" style={{
+          <div className="hero-section-grid hero-grid-alt" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
@@ -1393,7 +1393,7 @@ function LandingContent() {
           margin: "0 auto",
           padding: "0 clamp(16px, 4vw, 32px)"
         }}>
-          <div style={{
+          <div className="cta-section-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
@@ -1693,17 +1693,17 @@ function LandingContent() {
 }
 
 const landingCSS = `
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+        @keyframes shimmer {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
 
 :root{
   --c-primary:#0F71FD;
@@ -1956,27 +1956,191 @@ html {
   max-width: 350px !important;
 }
 
-@media (max-width: 768px) {
-  .section > .container > div[style*="grid-template-columns: 1fr 1fr"] {
+/* ==========================================
+   COMPREHENSIVE RESPONSIVE BREAKPOINTS
+   ========================================== */
+
+/* Mobile First - Stack all grids on small screens */
+@media (max-width: 767px) {
+  /* Hero section grids - stack vertically */
+  .hero-section-grid {
     grid-template-columns: 1fr !important;
-    gap: 32px !important;
+    gap: clamp(24px, 6vw, 48px) !important;
+    min-height: auto !important;
   }
-  .section > .container > div[style*="grid-template-columns: 1fr 1fr"] > div:first-child {
-    order: 2;
+  
+  /* CTA section grid - stack vertically */
+  .cta-section-grid {
+    grid-template-columns: 1fr !important;
+    gap: clamp(32px, 6vw, 48px) !important;
+    min-height: auto !important;
   }
-  .section > .container > div[style*="grid-template-columns: 1fr 1fr"] > div:last-child {
-    order: 1;
-  }
+  
+  /* Hero images - responsive sizing */
   .hero-image-small {
-    width: clamp(150px, 45vw, 220px) !important;
-    max-width: clamp(150px, 45vw, 220px) !important;
+            width: 100% !important;
+    max-width: clamp(200px, 60vw, 280px) !important;
+            height: auto !important;
+          }
+  
+  /* Hero text sections */
+  .hero-text {
+    order: 2 !important;
+            text-align: center !important;
+    padding: 0 clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* Hero image sections */
+  .hero-image {
+    order: 1 !important;
+    justify-content: center !important;
+  }
+  
+  /* Alternating layout - first section text after image */
+  .hero-section-grid:first-of-type .hero-text {
+    order: 2 !important;
+  }
+  
+  .hero-section-grid:first-of-type .hero-image {
+    order: 1 !important;
+  }
+  
+  /* Y MUCHO MÁS text - smaller on mobile */
+  .y-mucho-mas-text {
+    font-size: clamp(32px, 8vw, 56px) !important;
+    padding: clamp(32px, 6vw, 64px) clamp(16px, 4vw, 24px) !important;
+  }
+  
+  /* CTA text - smaller on mobile */
+  .cta-section-grid p {
+    font-size: clamp(28px, 7vw, 48px) !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* CTA button - full width on mobile */
+  .empieza-ya-button {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: clamp(14px, 3vw, 18px) clamp(24px, 6vw, 36px) !important;
+    font-size: clamp(16px, 3vw, 20px) !important;
+  }
+  
+  /* Contact form - full width on mobile */
+  .contact-inner {
+    grid-template-columns: 1fr !important;
+    gap: clamp(24px, 5vw, 32px) !important;
+  }
+  
+  /* Plans grid - stack on mobile */
+  .grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: clamp(20px, 4vw, 24px) !important;
+  }
+  
+  /* Section padding - reduce on mobile */
+  .section {
+    padding: clamp(32px, 6vw, 64px) 0 !important;
+  }
+  
+  /* Container padding - increase on mobile for better spacing */
+  .container {
+    padding: 0 clamp(20px, 5vw, 32px) !important;
+  }
+  
+  /* Fun text "Ahorro, invierto..." - adjust for mobile */
+  .fun-text-container {
+    padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 32px) !important;
+  }
+  
+  .fun-text-container h2 {
+    font-size: clamp(24px, 6vw, 40px) !important;
+    line-height: 1.3 !important;
+  }
+  
+  /* Main hero section - adjust for mobile */
+  .main-content-wrapper {
+    padding: clamp(40px, 10vw, 80px) clamp(20px, 5vw, 32px) !important;
+    min-height: 100vh !important;
+  }
+  
+  /* Main content grid - stack on mobile */
+          .main-content {
+    grid-template-columns: 1fr !important;
+    gap: clamp(32px, 6vw, 48px) !important;
   }
 }
 
+/* Small mobile devices (up to 480px) */
 @media (max-width: 480px) {
   .hero-image-small {
-    width: clamp(120px, 40vw, 180px) !important;
-    max-width: clamp(120px, 40vw, 180px) !important;
+    max-width: clamp(180px, 70vw, 240px) !important;
+  }
+  
+  .y-mucho-mas-text {
+    font-size: clamp(28px, 9vw, 48px) !important;
+  }
+  
+  .cta-section-grid p {
+    font-size: clamp(24px, 8vw, 40px) !important;
+  }
+  
+  /* Reduce gaps even more on very small screens */
+  .hero-section-grid {
+    gap: clamp(20px, 5vw, 32px) !important;
+  }
+  
+  .cta-section-grid {
+    gap: clamp(24px, 5vw, 40px) !important;
+  }
+}
+
+/* Tablet Portrait (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-section-grid {
+    gap: clamp(40px, 5vw, 56px) !important;
+  }
+  
+  .hero-image-small {
+    max-width: clamp(280px, 45vw, 320px) !important;
+  }
+  
+  .cta-section-grid {
+    gap: clamp(40px, 5vw, 56px) !important;
+  }
+  
+  /* Contact section - can stay side by side on tablet */
+  .contact-inner {
+    grid-template-columns: 1fr !important;
+    gap: clamp(32px, 4vw, 40px) !important;
+  }
+}
+
+/* Tablet Landscape and Small Desktop (1025px - 1280px) */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .hero-section-grid {
+    gap: clamp(48px, 5vw, 64px) !important;
+  }
+  
+  .hero-image-small {
+    max-width: clamp(320px, 40vw, 380px) !important;
+  }
+}
+
+/* Large Desktop (1281px+) */
+@media (min-width: 1281px) {
+  .hero-section-grid {
+    gap: 64px !important;
+  }
+  
+  .hero-image-small {
+    max-width: 380px !important;
+  }
+}
+
+/* Contact section - side by side on large screens */
+@media (min-width: 980px) {
+  .contact-inner {
+    grid-template-columns: 1.2fr 0.8fr !important;
   }
 }
 
@@ -1998,3 +2162,4 @@ html {
 .btn.ghost{background:white; color:var(--c-text);}
 .btn[disabled]{opacity:.6; cursor:not-allowed}
 `
+

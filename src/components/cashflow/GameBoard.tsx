@@ -74,6 +74,7 @@ const FAST_TRACK_SPACES: BoardSpace[] = [
 export default function GameBoard({ playerPosition, isRolling, onRollDice, canRoll, isOnFastTrack, diceResult }: GameBoardProps) {
   const spaces = isOnFastTrack ? FAST_TRACK_SPACES : RAT_RACE_SPACES
   
+  // Fixed board dimensions (will be scaled with CSS)
   const spaceSize = 118
   const gap = 14
   const columns = 9 // includes both corners on each row
@@ -125,23 +126,104 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
   }
 
   return (
-    <div style={{
-      background: 'white',
-      borderRadius: 20,
-      padding: 20,
-      boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-      position: 'relative'
-    }}>
-      {/* Board Container */}
-      <div style={{
+    <>
+      <style>{`
+        .game-board-wrapper {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: auto !important;
+          overflow-y: visible !important;
+          -webkit-overflow-scrolling: touch !important;
+          scrollbar-width: thin !important;
+          scrollbar-color: rgba(0, 0, 0, 0.3) transparent !important;
+        }
+        .game-board-wrapper::-webkit-scrollbar {
+          height: 8px !important;
+        }
+        .game-board-wrapper::-webkit-scrollbar-track {
+          background: transparent !important;
+        }
+        .game-board-wrapper::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.3) !important;
+          border-radius: 4px !important;
+        }
+        .game-board-inner {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: visible !important;
+          overflow-y: visible !important;
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: flex-start !important;
+        }
+        .game-board-surface {
+          flex-shrink: 0 !important;
+          transform-origin: center top !important;
+        }
+        @media (max-width: 767px) {
+          .game-board-wrapper {
+            padding: clamp(12px, 2vw, 20px) !important;
+          }
+          .game-board-inner {
+            justify-content: flex-start !important;
+          }
+          .game-board-surface {
+            transform: none !important;
+            width: ${boardWidth}px !important;
+            min-width: ${boardWidth}px !important;
+            margin: 0 !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .game-board-inner {
+            justify-content: center !important;
+          }
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 200px) / ${boardWidth}))) !important;
+          }
+        }
+        @media (min-width: 1025px) {
+          .game-board-inner {
+            justify-content: center !important;
+          }
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 400px) / ${boardWidth}))) !important;
+          }
+        }
+      `}</style>
+      <div className="game-board-wrapper" style={{
+        background: 'white',
+        borderRadius: 'clamp(16px, 3vw, 20px)',
+        padding: 'clamp(12px, 2vw, 20px)',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
         position: 'relative',
-        width: boardWidth,
-        height: boardHeight,
-        margin: '0 auto',
-        background: 'linear-gradient(135deg, #fafafa, #f5f5f5)',
-        borderRadius: 28,
-        padding: 0
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        overflow: 'visible'
       }}>
+        {/* Board Container */}
+        <div className="game-board-inner" style={{
+          width: '100%',
+          maxWidth: '100%',
+          overflowX: 'auto',
+          overflowY: 'visible',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          boxSizing: 'border-box'
+        }}>
+          <div className="game-board-surface" style={{
+            position: 'relative',
+            width: boardWidth,
+            height: boardHeight,
+            minWidth: boardWidth,
+            margin: '0 auto',
+            background: 'linear-gradient(135deg, #fafafa, #f5f5f5)',
+            borderRadius: 28,
+            padding: 0,
+            flexShrink: 0
+          }}>
         {/* Center controls */}
         <div style={{
           position: 'absolute',
@@ -238,7 +320,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           )
         })}
 
-      </div>
+          </div>
+        </div>
 
       {/* Legend */}
       <div style={{
@@ -282,7 +365,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           50% { transform: translateY(-10px); }
         }
       `}</style>
-    </div>
+      </div>
+    </>
   )
 }
 

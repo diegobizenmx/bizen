@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import NavigationLoading from './NavigationLoading';
 import FixedSidebar from './FixedSidebar';
 import MobileBottomNav from './MobileBottomNav';
+import MobileFooterNav from './MobileFooterNav';
 import GlobalLogo from './GlobalLogo';
 import { useKeyboardHandler } from '@/hooks/useKeyboardHandler';
 import { useViewportHeight } from '@/hooks/useViewportHeight';
@@ -13,6 +14,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   const [isNavigating, setIsNavigating] = useState(false);
   const pathname = usePathname();
   const previousPathname = useRef(pathname);
+  const [isMobile, setIsMobile] = useState(false)
 
   // Fix iOS Safari viewport height
   useViewportHeight();
@@ -89,10 +91,27 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                      pathname === '/payment' ||
                      pathname.startsWith('/payment/') // Payment pages
 
+  // Detect mobile screen size (≤767px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 767)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   return (
     <>
-      {!isAuthPage && <FixedSidebar />}
-      {!isAuthPage && <MobileBottomNav />}
+      {/* Show FixedSidebar only on larger screens (>767px) */}
+      {!isAuthPage && !isMobile && <FixedSidebar />}
+      
+      {/* Show MobileFooterNav only on mobile (≤767px) */}
+      {!isAuthPage && isMobile && <MobileFooterNav />}
+      
+      {/* Only show MobileBottomNav on desktop/tablet, never on mobile */}
+      {!isAuthPage && !isMobile && <MobileBottomNav />}
+      
       <GlobalLogo />
       {children}
       <NavigationLoading isLoading={isNavigating} />

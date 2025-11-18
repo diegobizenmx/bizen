@@ -181,6 +181,7 @@ function Card1({ onComplete }: CardProps) {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 1.5, type: "spring", stiffness: 100 }}
+          className="interactive-lesson-card-intro"
           style={{
             position: "relative",
             zIndex: 2,
@@ -6758,21 +6759,77 @@ export default function InteractiveLessonPage() {
   if (!user) return null
 
   return (
-    <main style={{
-      minHeight: "100vh",
-      height: "100vh",
-      width: "100vw",
-      background: "linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #DBEAFE 100%)",
-      fontFamily: "Montserrat, sans-serif",
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      overflow: "hidden"
-    }}>
+    <>
+      <style>{`
+        @media (max-width: 767px) {
+          .interactive-lesson-main {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+          }
+          .interactive-lesson-header {
+            top: clamp(12px, 3vw, 24px) !important;
+            right: clamp(12px, 3vw, 24px) !important;
+          }
+          .interactive-lesson-progress {
+            top: clamp(64px, 12vw, 72px) !important;
+          }
+          .interactive-lesson-exit {
+            top: clamp(12px, 3vw, 24px) !important;
+            right: clamp(60px, 15vw, 100px) !important;
+            width: clamp(40px, 10vw, 48px) !important;
+            height: clamp(40px, 10vw, 48px) !important;
+            font-size: clamp(16px, 4vw, 20px) !important;
+          }
+          .interactive-lesson-content {
+            padding: clamp(80px, 20vw, 100px) clamp(16px, 4vw, 24px) clamp(100px, 25vw, 140px) clamp(16px, 4vw, 24px) !important;
+          }
+          .interactive-lesson-wrapper {
+            transform: none !important;
+            max-width: 100% !important;
+          }
+          .interactive-lesson-card-progress {
+            padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px) !important;
+            font-size: clamp(12px, 3vw, 14px) !important;
+          }
+        }
+        .interactive-lesson-card-intro {
+          padding: 0 clamp(16px, 4vw, 40px) !important;
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .interactive-lesson-wrapper {
+            transform: translateX(-90px) !important;
+          }
+          .interactive-lesson-content {
+            padding: clamp(80px, 10vw, 100px) clamp(20px, 3vw, 24px) clamp(80px, 10vw, 100px) clamp(20px, 3vw, 24px) !important;
+          }
+          .interactive-lesson-card-intro {
+            margin-right: 80px !important;
+            padding: 0 clamp(20px, 3vw, 40px) !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .interactive-lesson-card-intro {
+            margin-right: 0 !important;
+            padding: 0 clamp(16px, 4vw, 24px) !important;
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
+      <main className="interactive-lesson-main" style={{
+        minHeight: "100vh",
+        height: "100vh",
+        width: "100vw",
+        background: "linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #DBEAFE 100%)",
+        fontFamily: "Montserrat, sans-serif",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: "hidden"
+      }}>
       {/* Header - Card Progress Only */}
-      <div style={{
+      <div className="interactive-lesson-header" style={{
         position: "fixed",
         top: 24,
         right: 32,
@@ -6780,7 +6837,7 @@ export default function InteractiveLessonPage() {
         pointerEvents: "auto"
       }}>
         {/* Card Progress */}
-        <div style={{
+        <div className="interactive-lesson-card-progress" style={{
           background: "rgba(255, 255, 255, 0.95)",
           padding: "12px 24px",
           borderRadius: 20,
@@ -6794,7 +6851,7 @@ export default function InteractiveLessonPage() {
       </div>
 
       {/* Progress Bar - Below Header */}
-      <div style={{
+      <div className="interactive-lesson-progress" style={{
         position: "fixed",
         top: 72,
         left: 0,
@@ -6818,6 +6875,7 @@ export default function InteractiveLessonPage() {
 
       {/* Exit Button */}
       <button
+        className="interactive-lesson-exit"
         onClick={() => router.push(`/learn/${courseId}/${unitId}/${lessonId}`)}
         style={{
           position: "fixed",
@@ -6853,7 +6911,7 @@ export default function InteractiveLessonPage() {
       </button>
 
       {/* Main Content Area */}
-      <div style={{
+      <div className="interactive-lesson-content" style={{
         width: "100%",
         height: "100vh",
         display: "flex",
@@ -6861,15 +6919,17 @@ export default function InteractiveLessonPage() {
         justifyContent: "center",
         padding: "100px 24px 80px 24px",
         overflow: "hidden",
-        position: "relative"
+        position: "relative",
+        boxSizing: "border-box"
       }}>
-        <div style={{
+        <div className="interactive-lesson-wrapper" style={{
           width: "100%",
           maxWidth: "1200px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transform: "translateX(-180px)"
+          transform: "translateX(-180px)",
+          boxSizing: "border-box"
         }}>
         <AnimatePresence mode="wait">
           {/* Lesson 1: Historia del Dinero */}
@@ -6911,5 +6971,6 @@ export default function InteractiveLessonPage() {
         </div>
       </div>
     </main>
+    </>
   )
 }

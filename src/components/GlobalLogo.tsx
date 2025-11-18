@@ -17,7 +17,9 @@ export default function GlobalLogo() {
 
   if (isAuthPage) return null
 
+  // Only show on courses page
   const isCoursesPage = pathname === '/courses'
+  if (!isCoursesPage) return null
 
   const handleClick = () => {
     router.push("/courses")
@@ -25,59 +27,58 @@ export default function GlobalLogo() {
 
   // On courses page: position at very top-left corner
   // Progress card starts at 32px (panel top padding)
-  // Logo height: ~32px (20px image + 6px padding top + 6px padding bottom)
-  // Position at top: 4px to be clearly above progress section (which starts at 32px)
+  // Logo height: ~36px (image size)
+  // Position at top: 8px to be clearly above progress section (which starts at 80px now)
   // On other pages: standard 16px from top
-  const topPosition = isCoursesPage ? 4 : 16
+  const topPosition = isCoursesPage ? 8 : 16
   const leftPosition = 16 // Always at left edge  
   const zIndexValue = 1001
 
   return (
     <div 
+      className="global-logo-container"
       style={{
         position: "fixed",
         top: topPosition,
         left: leftPosition,
         zIndex: zIndexValue,
-        display: "flex",
+        display: "inline-flex", // Changed from flex to inline-flex to prevent full width
         alignItems: "center",
-        gap: 6,
+        gap: 8,
         cursor: "pointer",
-        padding: "6px 10px",
-        background: "linear-gradient(135deg, rgba(15, 98, 254, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%)",
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        borderRadius: 8,
-        boxShadow: "0 2px 8px rgba(15, 98, 254, 0.15)",
-        border: "1px solid rgba(15, 98, 254, 0.25)",
-        transition: "all 0.2s ease"
+        padding: 0,
+        background: "transparent",
+        backdropFilter: "none",
+        WebkitBackdropFilter: "none",
+        borderRadius: 0,
+        boxShadow: "none",
+        border: "none",
+        transition: "opacity 0.2s ease",
+        width: "auto", // Explicitly set to auto to prevent full width
+        maxWidth: "none", // Ensure no max-width constraints
+        minWidth: "auto", // Ensure no min-width constraints
+        right: "auto", // Ensure right is auto
       }}
       onClick={handleClick}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = "linear-gradient(135deg, rgba(15, 98, 254, 0.25) 0%, rgba(59, 130, 246, 0.2) 100%)"
-        e.currentTarget.style.transform = "scale(1.05)"
-        e.currentTarget.style.boxShadow = "0 4px 12px rgba(15, 98, 254, 0.3)"
-        e.currentTarget.style.borderColor = "rgba(15, 98, 254, 0.4)"
+        e.currentTarget.style.opacity = "0.8"
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = "linear-gradient(135deg, rgba(15, 98, 254, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%)"
-        e.currentTarget.style.transform = "scale(1)"
-        e.currentTarget.style.boxShadow = "0 2px 8px rgba(15, 98, 254, 0.15)"
-        e.currentTarget.style.borderColor = "rgba(15, 98, 254, 0.25)"
+        e.currentTarget.style.opacity = "1"
       }}
     >
       <Image 
         src="/bizen-logo.png" 
         alt="BIZEN Logo" 
-        width={20} 
-        height={20}
+        width={36} 
+        height={36}
         priority
         style={{
           objectFit: "contain"
         }}
       />
       <span style={{
-        fontSize: 14,
+        fontSize: 22,
         fontWeight: 700,
         color: "#0F62FE",
         fontFamily: "Montserrat, sans-serif",
@@ -85,6 +86,31 @@ export default function GlobalLogo() {
       }}>
         BIZEN
       </span>
+      
+      {/* Ensure logo doesn't expand to full width */}
+      <style>{`
+        /* Prevent GlobalLogo from expanding to full width */
+        .global-logo-container {
+          width: auto !important;
+          max-width: none !important;
+          min-width: auto !important;
+          right: auto !important;
+          left: 16px !important;
+          display: inline-flex !important;
+        }
+        
+        @media (max-width: 767px) {
+          /* On mobile, ensure logo stays in top-left corner */
+          .global-logo-container {
+            width: auto !important;
+            max-width: calc(100vw - 80px) !important; /* Leave space for hamburger menu */
+            min-width: auto !important;
+            left: 16px !important;
+            right: auto !important;
+            display: inline-flex !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

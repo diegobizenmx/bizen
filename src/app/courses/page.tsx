@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { useSettings } from "@/contexts/SettingsContext"
 import { useTranslation } from "@/lib/translations"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import Button from "@/components/ui/button"
+import { AvatarDisplay } from "@/components/AvatarDisplay"
 
 interface Lesson {
   id: string
@@ -47,7 +48,13 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
       data-lesson-id={lesson.id}
       style={{
         position: "relative",
-        transform: `translateX(${offsetX}px)`
+        transform: `translateX(${offsetX}px)`,
+        width: "100%",
+        maxWidth: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        overflow: "visible"
       }}
     >
       <motion.div
@@ -65,8 +72,8 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
           delay: 0
         }}
       style={{
-          width: "clamp(120px, 25vw, 180px)",
-          height: "clamp(120px, 25vw, 180px)",
+          width: "clamp(80px, 18vw, 120px)",
+          height: "clamp(80px, 18vw, 120px)",
         position: "relative",
           cursor: "pointer"
       }}
@@ -75,7 +82,7 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
       {showStartLabel && (
       <div style={{
         position: "absolute",
-          top: "-35px",
+          top: "-30px",
         left: "50%",
         transform: "translateX(-50%)",
           zIndex: 20,
@@ -133,8 +140,8 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
        <Image
          src="/star.png"
          alt="Lesson star"
-         width={180}
-         height={180}
+         width={120}
+         height={120}
          style={{
            width: "100%",
            height: "100%",
@@ -214,13 +221,26 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
 export default function CoursesPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
   const { settings } = useSettings()
   const t = useTranslation(settings.language)
   const [courses, setCourses] = useState<Course[]>([])
   const [loadingData, setLoadingData] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+  
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 767)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
   const [currentCourse, setCurrentCourse] = useState<Course | null>(null)
   const [activeLevel, setActiveLevel] = useState<number>(1) // Track active difficulty level
+  const [isManualLevelChange, setIsManualLevelChange] = useState(false) // Track if user manually changed level
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null)
   const [visibleIslands, setVisibleIslands] = useState<Set<string>>(new Set())
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -558,6 +578,9 @@ export default function CoursesPage() {
             console.log(`📍 Now viewing: Curso ${course.order} - ${course.title}`)
             setCurrentCourse(course)
             
+            // Only update active level automatically if user didn't manually change it
+            // Wait a bit after manual change to allow automatic updates again
+            if (!isManualLevelChange) {
             // Update active level based on course order
             if (course.order >= 1 && course.order <= 3) {
               setActiveLevel(1) // Principiante
@@ -565,6 +588,7 @@ export default function CoursesPage() {
               setActiveLevel(2) // Intermedio
             } else if (course.order >= 8) {
               setActiveLevel(3) // Avanzado
+              }
             }
           }
         }
@@ -582,7 +606,7 @@ export default function CoursesPage() {
     })
 
     return () => observer.disconnect()
-  }, [courses, currentCourse])
+  }, [courses, currentCourse, isManualLevelChange])
 
   // Track scroll direction and reveal islands on scroll up
   useEffect(() => {
@@ -732,23 +756,141 @@ export default function CoursesPage() {
 
   // Function to scroll to a specific course
   const scrollToCourse = (courseOrder: number) => {
-    const element = document.getElementById(`course-course-${courseOrder}`)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+    // Find the course by order
+    const course = courses.find(c => c.order === courseOrder)
+    if (!course) {
+      console.error(`Course with order ${courseOrder} not found. Available courses:`, courses.map(c => ({ order: c.order, id: c.id })))
+      return
     }
+    
+    // The element ID is "course-{course.id}" where course.id is like "course-1"
+    const elementId = `course-${course.id}`
+    console.log(`Scrolling to course order ${courseOrder}, element ID: ${elementId}`)
+    
+    // Wait for next tick to ensure DOM is ready
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const element = document.getElementById(elementId)
+        
+        if (element) {
+          // Calculate offset to account for sticky header and panels
+          const offset = 120
+          const elementPosition = element.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - offset
+
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: "smooth"
+          })
+          console.log(`Scrolled to element ${elementId}`)
+        } else {
+          console.error(`Element with id "${elementId}" not found. Looking for:`, elementId)
+          console.log('Available elements with course- prefix:', Array.from(document.querySelectorAll('[id^="course-"]')).map(el => el.id))
+        }
+      })
+    })
   }
 
   // Toggle mobile sidebar
   const toggleSidebar = () => {
     const newState = !isSidebarOpen
     setIsSidebarOpen(newState)
-    const sidebar = document.querySelector('[data-fixed-sidebar]')
+    const sidebar = document.querySelector('.courses-left-nav-panel[data-fixed-sidebar]') as HTMLElement
     if (sidebar) {
+      console.log('Sidebar found, toggling to:', newState)
+      console.log('Sidebar children count:', sidebar.children.length)
       if (newState) {
         sidebar.classList.add('mobile-sidebar-open')
+        // CRITICAL: Use setProperty with !important to override globals.css
+        sidebar.style.setProperty('display', 'flex', 'important')
+        sidebar.style.setProperty('position', 'fixed', 'important')
+        sidebar.style.setProperty('top', '0', 'important')
+        sidebar.style.setProperty('right', '0', 'important')
+        sidebar.style.setProperty('left', 'auto', 'important')
+        sidebar.style.setProperty('width', '280px', 'important')
+        sidebar.style.setProperty('min-width', '280px', 'important')
+        sidebar.style.setProperty('max-width', '85vw', 'important')
+        sidebar.style.setProperty('height', '100vh', 'important')
+        sidebar.style.setProperty('min-height', '100vh', 'important')
+        sidebar.style.setProperty('max-height', '100vh', 'important')
+        sidebar.style.setProperty('transform', 'translateX(0)', 'important')
+        sidebar.style.setProperty('visibility', 'visible', 'important')
+        sidebar.style.setProperty('opacity', '1', 'important')
+        sidebar.style.setProperty('pointer-events', 'auto', 'important')
+        sidebar.style.setProperty('z-index', '10001', 'important')
+        sidebar.style.setProperty('flex-direction', 'column', 'important')
+        sidebar.style.setProperty('background', 'linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)', 'important')
+        sidebar.style.setProperty('padding', '60px 16px 32px 16px', 'important')
+        sidebar.style.setProperty('overflow-y', 'auto', 'important')
+        sidebar.style.setProperty('overflow-x', 'hidden', 'important')
+        sidebar.style.setProperty('box-shadow', '-2px 0 20px rgba(0, 0, 0, 0.15)', 'important')
+        sidebar.style.setProperty('border-left', '2px solid rgba(147, 197, 253, 0.3)', 'important')
+        sidebar.style.setProperty('border-right', 'none', 'important')
+        sidebar.style.setProperty('box-sizing', 'border-box', 'important')
+        // Ensure all children are visible
+        const children = sidebar.querySelectorAll('*')
+        console.log('Making visible:', children.length, 'children')
+        children.forEach((child) => {
+          const el = child as HTMLElement
+          el.style.opacity = '1'
+          el.style.visibility = 'visible'
+          el.style.display = el.tagName === 'BUTTON' ? 'flex' : el.tagName === 'DIV' ? 'block' : 'initial'
+        })
+        // Specifically ensure progress card and buttons are visible
+        const progressCard = sidebar.querySelector('.sidebar-progress-card') as HTMLElement
+        const levelButtons = sidebar.querySelector('.sidebar-level-buttons') as HTMLElement
+        if (progressCard) {
+          progressCard.style.display = 'block'
+          progressCard.style.opacity = '1'
+          progressCard.style.visibility = 'visible'
+          progressCard.style.position = 'relative'
+          progressCard.style.zIndex = '1'
+          console.log('Progress card made visible', progressCard.getBoundingClientRect())
+        }
+        if (levelButtons) {
+          levelButtons.style.display = 'flex'
+          levelButtons.style.flexDirection = 'column'
+          levelButtons.style.opacity = '1'
+          levelButtons.style.visibility = 'visible'
+          levelButtons.style.position = 'relative'
+          levelButtons.style.zIndex = '1'
+          console.log('Level buttons made visible', levelButtons.getBoundingClientRect())
+        }
+        // Log sidebar position to debug
+        const computed = window.getComputedStyle(sidebar)
+        console.log('=== SIDEBAR DEBUG ===')
+        console.log('Sidebar position:', sidebar.getBoundingClientRect())
+        console.log('Sidebar computed width:', computed.width)
+        console.log('Sidebar computed height:', computed.height)
+        console.log('Sidebar computed display:', computed.display)
+        console.log('Sidebar computed visibility:', computed.visibility)
+        console.log('Sidebar computed transform:', computed.transform)
+        console.log('Sidebar inline styles:', sidebar.style.cssText)
+        console.log('Sidebar classes:', sidebar.className)
+        
+        // Force a reflow to ensure styles are applied
+        void sidebar.offsetWidth
+        
+        // Check again after reflow
+        setTimeout(() => {
+          const rect = sidebar.getBoundingClientRect()
+          const computed2 = window.getComputedStyle(sidebar)
+          console.log('=== AFTER REFLOW ===')
+          console.log('Sidebar position:', rect)
+          console.log('Sidebar computed width:', computed2.width)
+          console.log('Sidebar computed height:', computed2.height)
+          console.log('Sidebar computed display:', computed2.display)
+        }, 100)
       } else {
         sidebar.classList.remove('mobile-sidebar-open')
+        sidebar.style.setProperty('transform', 'translateX(100%)', 'important')
+        sidebar.style.setProperty('visibility', 'hidden', 'important')
+        sidebar.style.setProperty('pointer-events', 'none', 'important')
+        sidebar.style.opacity = '0'
+        sidebar.style.pointerEvents = 'none'
       }
+    } else {
+      console.error('Sidebar not found!')
     }
   }
 
@@ -760,11 +902,11 @@ export default function CoursesPage() {
         width: "100%",
         height: "100%",
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-        overflowY: "auto",
+      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      overflowY: "auto",
         overflowX: "hidden",
         boxSizing: "border-box"
-      }}>
+    }}>
       {/* Decorative Orbs */}
         <div style={{
         position: "fixed",
@@ -800,228 +942,530 @@ export default function CoursesPage() {
         pointerEvents: "none"
       }} />
 
-      {/* Left Difficulty Navigation Panel */}
-        <div className="courses-left-nav-panel" style={{
+      {/* Left Panel - Course Navigation & Filters */}
+      <div 
+        className="courses-left-panel" 
+        style={{
         position: "fixed",
           top: 0,
           left: 0,
-        width: "200px",
+          width: "clamp(180px, 20vw, 240px)",
         height: "100vh",
-        background: "transparent",
-        zIndex: 998,
-        padding: "32px 16px",
+          background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+          backdropFilter: "blur(20px)",
+          zIndex: 9998,
+          padding: "80px 16px 24px 16px",
       fontFamily: "Montserrat, sans-serif",
         borderRight: "2px solid rgba(147, 197, 253, 0.3)",
         display: "flex",
-        flexDirection: "column"
-      }}>
-
-        {/* Overall Progress */}
+          flexDirection: "column",
+          boxShadow: "2px 0 12px rgba(0, 0, 0, 0.1)",
+          overflowY: "auto",
+          overflowX: "hidden",
+          boxSizing: "border-box"
+        }}
+      >
+        {/* Lessons Progress */}
+        {courses.length > 0 && (() => {
+          const totalLessons = courses.reduce((sum, course) => sum + course.lessons.length, 0)
+          const completedLessonsCount = courses.reduce((sum, course) => 
+            sum + course.lessons.filter(lesson => lesson.isCompleted).length, 0
+          )
+          return (
       <div style={{ 
-          background: "rgba(255, 255, 255, 0.9)",
+              background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
           backdropFilter: "blur(10px)",
           borderRadius: 12,
-          padding: "16px 12px",
-          marginTop: 40,
-          marginBottom: 24,
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)"
+              padding: "16px",
+              marginBottom: 20,
+              border: "1px solid rgba(147, 197, 253, 0.4)",
+              boxShadow: "0 4px 16px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
       }}>
         <div style={{ 
-            fontSize: 11,
+                fontSize: 12,
             fontWeight: 700,
             color: "#6B7280",
             textTransform: "uppercase",
             letterSpacing: "0.5px",
-            marginBottom: 8,
-            textAlign: "center"
+                marginBottom: 8
           }}>
-            {t.courses.progress.yourProgress}
+                Progreso
           </div>
           <div style={{ 
-            fontSize: 24,
-            fontWeight: 900, 
-            color: "#0F62FE",
-            textAlign: "center",
+                fontSize: 20,
+                fontWeight: 800,
+                color: "#1E40AF",
             marginBottom: 4
           }}>
-            0 / 14
+                {completedLessonsCount} / {totalLessons}
           </div>
         <div style={{
-            fontSize: 10,
+                fontSize: 11,
             color: "#6B7280",
-            textAlign: "center"
+                fontWeight: 500
           }}>
-            {t.courses.progress.coursesCompleted}
+                Lecciones completadas
           </div>
         </div>
+          )
+        })()}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Principiante - Course 1 */}
+        {/* Level Filter Buttons */}
+        <div className="sidebar-level-buttons" style={{ 
+          display: "flex", 
+          flexDirection: "column", 
+          gap: 12,
+          marginTop: 20,
+          marginBottom: 24
+        }}>
           <button
-            onClick={() => scrollToCourse(1)}
+            onClick={() => {
+              setIsManualLevelChange(true)
+              setActiveLevel(1)
+              scrollToCourse(1) // Scroll to first course for Principiante
+              // Reset manual flag after scroll completes
+              setTimeout(() => setIsManualLevelChange(false), 1500)
+            }}
               style={{
-              padding: "16px 12px",
-              background: activeLevel === 1 ? "#1E40AF" : "#3B82F6",
-              border: activeLevel === 1 ? "3px solid #FBBF24" : "none",
-              borderRadius: 12,
+              padding: "12px 16px",
+              background: activeLevel === 1 
+                ? "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)" 
+                : "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
+              backdropFilter: "blur(10px)",
+              color: activeLevel === 1 ? "#fff" : "#1E40AF",
+              border: activeLevel === 1 ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid rgba(147, 197, 253, 0.4)",
+              borderRadius: 10,
                 cursor: "pointer",
-              transition: "all 0.3s ease",
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: 14,
+              fontWeight: activeLevel === 1 ? 700 : 600,
+              transition: "all 0.2s ease",
+              textAlign: "left",
               boxShadow: activeLevel === 1 
-                ? "0 6px 20px rgba(251, 191, 36, 0.4)" 
-                : "0 4px 12px rgba(59, 130, 246, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateX(8px)"
-              e.currentTarget.style.boxShadow = activeLevel === 1
-                ? "0 8px 24px rgba(251, 191, 36, 0.5)"
-                : "0 6px 16px rgba(59, 130, 246, 0.4)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateX(0)"
-              e.currentTarget.style.boxShadow = activeLevel === 1
-                ? "0 6px 20px rgba(251, 191, 36, 0.4)"
-                : "0 4px 12px rgba(59, 130, 246, 0.3)"
+                ? "0 4px 12px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)" 
+                : "0 2px 8px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
             }}
           >
-                <div style={{
+            Principiante
+          </button>
+          <button
+            onClick={() => {
+              setIsManualLevelChange(true)
+              setActiveLevel(2)
+              scrollToCourse(4) // Scroll to course 4 for Intermedio
+              // Reset manual flag after scroll completes
+              setTimeout(() => setIsManualLevelChange(false), 1500)
+            }}
+            style={{
+              padding: "12px 16px",
+              background: activeLevel === 2 
+                ? "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)" 
+                : "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
+              backdropFilter: "blur(10px)",
+              color: activeLevel === 2 ? "#fff" : "#1E40AF",
+              border: activeLevel === 2 ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid rgba(147, 197, 253, 0.4)",
+              borderRadius: 10,
+              cursor: "pointer",
+              fontFamily: "Montserrat, sans-serif",
               fontSize: 14,
+              fontWeight: activeLevel === 2 ? 700 : 600,
+              transition: "all 0.2s ease",
+              textAlign: "left",
+              boxShadow: activeLevel === 2 
+                ? "0 4px 12px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)" 
+                : "0 2px 8px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
+            }}
+          >
+            Intermedio
+          </button>
+          <button
+            onClick={() => {
+              setIsManualLevelChange(true)
+              setActiveLevel(3)
+              scrollToCourse(9) // Scroll to course 9 for Avanzado
+              // Reset manual flag after scroll completes
+              setTimeout(() => setIsManualLevelChange(false), 1500)
+            }}
+            style={{
+              padding: "12px 16px",
+              background: activeLevel === 3 
+                ? "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)" 
+                : "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
+              backdropFilter: "blur(10px)",
+              color: activeLevel === 3 ? "#fff" : "#1E40AF",
+              border: activeLevel === 3 ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid rgba(147, 197, 253, 0.4)",
+              borderRadius: 10,
+              cursor: "pointer",
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: 14,
+              fontWeight: activeLevel === 3 ? 700 : 600,
+              transition: "all 0.2s ease",
+              textAlign: "left",
+              boxShadow: activeLevel === 3 
+                ? "0 4px 12px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)" 
+                : "0 2px 8px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)"
+            }}
+          >
+            Avanzado
+          </button>
+        </div>
+
+      </div>
+
+      {/* Right Navigation Menu Panel */}
+        <div 
+          className="courses-left-nav-panel" 
+          data-fixed-sidebar 
+          style={{
+        position: "fixed",
+          top: 0,
+            right: 0,
+            width: "280px",
+        height: "100vh",
+            background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+            backdropFilter: "blur(20px)",
+            zIndex: 9999,
+            padding: "24px 20px",
+      fontFamily: "Montserrat, sans-serif",
+            borderLeft: "2px solid rgba(147, 197, 253, 0.3)",
+        display: "flex",
+            flexDirection: "column",
+            boxShadow: "-2px 0 12px rgba(0, 0, 0, 0.1)",
+            overflowY: "auto",
+            overflowX: "hidden",
+            boxSizing: "border-box"
+          }}
+        >
+          {/* Username with Avatar or Create Account Button */}
+          {user ? (
+                <div style={{
+          marginBottom: 24,
+              display: "flex",
+              alignItems: "center",
+              gap: 12
+      }}>
+              {/* Avatar */}
+        <div style={{
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: user.user_metadata?.avatar?.gradient || user.user_metadata?.avatar?.bgColor 
+                  ? "transparent" 
+                  : "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 24,
           fontWeight: 800,
               color: "#fff",
-              textAlign: "center"
+                boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
+                flexShrink: 0,
+                overflow: "hidden"
             }}>
-              {t.courses.levels.beginner}
+                <AvatarDisplay 
+                  avatar={user.user_metadata?.avatar || { type: "emoji", value: (user.user_metadata?.full_name || user.email || "U")[0].toUpperCase() }} 
+                  size={48} 
+                />
                 </div>
-              <div style={{
-              fontSize: 10,
-              color: "rgba(255, 255, 255, 0.8)",
-              marginTop: 4,
-              textAlign: "center"
-            }}>
-              {t.courses.levels.courses} 1-3
-            </div>
-          </button>
 
-          {/* Intermedio - Course 4 */}
+              {/* Username */}
+              <h2 style={{
+                margin: 0,
+                fontSize: 18,
+                fontWeight: 700,
+            color: "#0F62FE",
+                flex: 1
+          }}>
+                {user.user_metadata?.username || user.email?.split('@')[0] || t.sidebar.student}
+              </h2>
+            </div>
+          ) : (
+            <div style={{ marginBottom: 24 }}>
           <button
-            onClick={() => scrollToCourse(4)}
+                onClick={() => router.push("/signup")}
             style={{
-              padding: "16px 12px",
-              background: activeLevel === 2 ? "#1E40AF" : "#3B82F6",
-              border: activeLevel === 2 ? "3px solid #FBBF24" : "none",
+                  width: "100%",
+                  padding: "14px 20px",
+                  background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
+                  border: "none",
                 borderRadius: 12,
               cursor: "pointer",
               transition: "all 0.3s ease",
-              boxShadow: activeLevel === 2 
-                ? "0 6px 20px rgba(251, 191, 36, 0.4)" 
-                : "0 4px 12px rgba(59, 130, 246, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateX(8px)"
-              e.currentTarget.style.boxShadow = activeLevel === 2
-                ? "0 8px 24px rgba(251, 191, 36, 0.5)"
-                : "0 6px 16px rgba(59, 130, 246, 0.4)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateX(0)"
-              e.currentTarget.style.boxShadow = activeLevel === 2
-                ? "0 6px 20px rgba(251, 191, 36, 0.4)"
-                : "0 4px 12px rgba(59, 130, 246, 0.3)"
-            }}
-          >
-      <div style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "white",
+                  boxShadow: "0 4px 20px rgba(11, 113, 254, 0.5), 0 0 30px rgba(11, 113, 254, 0.3)",
+                }}
+              >
+                Crear Cuenta
+              </button>
+            </div>
+          )}
+
+          {/* Navigation Menu */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {/* Business Lab */}
+            <button
+              onClick={() => router.push("/business-lab")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px",
+                background: (isMobile ? "transparent" : (pathname === "/business-lab" || pathname?.startsWith("/business-lab") ? "#EFF6FF" : "transparent")),
+                border: "none",
+                borderRadius: 10,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                fontFamily: "Montserrat, sans-serif",
+                fontSize: 14,
+                fontWeight: pathname === "/business-lab" || pathname?.startsWith("/business-lab") ? 700 : 600,
+                textAlign: "left",
+                color: pathname === "/business-lab" || pathname?.startsWith("/business-lab") ? "#0F62FE" : "#000"
+              }}
+            >
+              <Image 
+                src="/bizen-logo.png" 
+                alt="BIZEN" 
+                width={20} 
+                height={20}
+                style={{ objectFit: "contain", filter: "hue-rotate(200deg) saturate(1.5)" }}
+              />
+              <span className="nav-item-label">Business Lab</span>
+            </button>
+
+            {/* Courses */}
+            <button
+              onClick={() => router.push("/courses")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px",
+                background: (isMobile ? "transparent" : (pathname === "/courses" ? "#EFF6FF" : "transparent")),
+                border: "none",
+                borderRadius: 10,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                fontFamily: "Montserrat, sans-serif",
+                fontSize: 14,
+                fontWeight: pathname === "/courses" ? 700 : 600,
+                textAlign: "left",
+                color: pathname === "/courses" ? "#0F62FE" : "#000"
+              }}
+            >
+              <span style={{ 
+                fontSize: 20,
+                filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                display: "inline-block"
+              }}>📚</span>
+              <span className="nav-item-label">{t.nav.exploreCourses}</span>
+            </button>
+
+            {/* Cash Flow */}
+            <button
+              onClick={() => router.push("/cash-flow")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px",
+                background: (isMobile ? "transparent" : (pathname === "/cash-flow" || pathname?.startsWith("/cash-flow") ? "#EFF6FF" : "transparent")),
+                border: "none",
+                borderRadius: 10,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                fontFamily: "Montserrat, sans-serif",
               fontSize: 14,
-              fontWeight: 800,
-              color: "#fff",
-              textAlign: "center"
-            }}>
-              {t.courses.levels.intermediate}
-              </div>
-        <div style={{
-              fontSize: 10,
-              color: "rgba(255, 255, 255, 0.8)",
-              marginTop: 4,
-              textAlign: "center"
-            }}>
-              {t.courses.levels.courses} 4-7
-          </div>
+                fontWeight: pathname === "/cash-flow" || pathname?.startsWith("/cash-flow") ? 700 : 600,
+                textAlign: "left",
+                color: pathname === "/cash-flow" || pathname?.startsWith("/cash-flow") ? "#0F62FE" : "#000"
+              }}
+            >
+              <span style={{ 
+                fontSize: 20,
+                filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                display: "inline-block"
+              }}>💰</span>
+              <span className="nav-item-label">Cash Flow</span>
           </button>
 
-          {/* Avanzado - Course 8 */}
+            {/* Simuladores */}
           <button
-            onClick={() => scrollToCourse(8)}
+              onClick={() => router.push("/simuladores")}
             style={{ 
-              padding: "16px 12px",
-              background: activeLevel === 3 ? "#1E40AF" : "#3B82F6",
-              border: activeLevel === 3 ? "3px solid #FBBF24" : "none",
-              borderRadius: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px",
+                background: (isMobile ? "transparent" : (pathname === "/simuladores" || pathname?.startsWith("/simuladores") ? "#EFF6FF" : "transparent")),
+                border: "none",
+                borderRadius: 10,
               cursor: "pointer",
-                  transition: "all 0.3s ease",
-              boxShadow: activeLevel === 3 
-                ? "0 6px 20px rgba(251, 191, 36, 0.4)" 
-                : "0 4px 12px rgba(59, 130, 246, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateX(8px)"
-              e.currentTarget.style.boxShadow = activeLevel === 3
-                ? "0 8px 24px rgba(251, 191, 36, 0.5)"
-                : "0 6px 16px rgba(59, 130, 246, 0.4)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateX(0)"
-              e.currentTarget.style.boxShadow = activeLevel === 3
-                ? "0 6px 20px rgba(251, 191, 36, 0.4)"
-                : "0 4px 12px rgba(59, 130, 246, 0.3)"
-            }}
-          >
-                  <div style={{
+                transition: "all 0.2s ease",
+                fontFamily: "Montserrat, sans-serif",
                 fontSize: 14,
-              fontWeight: 800,
-                  color: "#fff",
-              textAlign: "center"
-              }}>
-              {t.courses.levels.advanced}
-            </div>
-              <div style={{
-              fontSize: 10,
-              color: "rgba(255, 255, 255, 0.8)",
-              marginTop: 4,
-              textAlign: "center"
-            }}>
-              {t.courses.levels.courses} 8-14
-            </div>
+                fontWeight: pathname === "/simuladores" || pathname?.startsWith("/simuladores") ? 700 : 600,
+                textAlign: "left",
+                color: pathname === "/simuladores" || pathname?.startsWith("/simuladores") ? "#0F62FE" : "#000"
+              }}
+            >
+              <span style={{ 
+                fontSize: 20, 
+                fontWeight: 700,
+                color: "#0B71FE",
+                display: "inline-block"
+              }}>$</span>
+              <span className="nav-item-label">Simuladores</span>
+            </button>
+
+            {/* Only show these navigation items when user is authenticated */}
+            {user && (
+              <>
+                {/* Progreso */}
+                <button
+                  onClick={() => router.push("/progress")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "12px",
+                    background: (isMobile ? "transparent" : (pathname === "/progress" || pathname?.startsWith("/progress") ? "#EFF6FF" : "transparent")),
+                    border: "none",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontFamily: "Montserrat, sans-serif",
+                    fontSize: 14,
+                    fontWeight: pathname === "/progress" || pathname?.startsWith("/progress") ? 700 : 600,
+                    textAlign: "left",
+                    color: pathname === "/progress" || pathname?.startsWith("/progress") ? "#0F62FE" : "#000"
+                  }}
+                >
+                  <span style={{ 
+                    fontSize: 20,
+                    filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                    display: "inline-block"
+                  }}>🏆</span>
+                  <span className="nav-item-label">{t.nav.myProgress}</span>
+                </button>
+
+                {/* Foro */}
+                <button
+                  onClick={() => router.push("/forum")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "12px",
+                    background: (isMobile ? "transparent" : (pathname === "/forum" || pathname?.startsWith("/forum") ? "#EFF6FF" : "transparent")),
+                    border: "none",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontFamily: "Montserrat, sans-serif",
+                fontSize: 14,
+                    fontWeight: pathname === "/forum" || pathname?.startsWith("/forum") ? 700 : 600,
+                    textAlign: "left",
+                    color: pathname === "/forum" || pathname?.startsWith("/forum") ? "#0F62FE" : "#000"
+                  }}
+                >
+                  <span style={{ 
+                    fontSize: 20,
+                    filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                    display: "inline-block"
+                  }}>💬</span>
+                  <span className="nav-item-label">Foro Emprendedor</span>
           </button>
+
+                {/* Perfil */}
+          <button
+                  onClick={() => router.push("/profile")}
+            style={{ 
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "12px",
+                    background: (isMobile ? "transparent" : (pathname === "/profile" || pathname?.startsWith("/profile") ? "#EFF6FF" : "transparent")),
+                    border: "none",
+                    borderRadius: 10,
+              cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontFamily: "Montserrat, sans-serif",
+                    fontSize: 14,
+                    fontWeight: pathname === "/profile" || pathname?.startsWith("/profile") ? 700 : 600,
+                    textAlign: "left",
+                    color: pathname === "/profile" || pathname?.startsWith("/profile") ? "#0F62FE" : "#000"
+                  }}
+                >
+                  <span style={{ 
+                    fontSize: 20,
+                    filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                    display: "inline-block"
+                  }}>👤</span>
+                  <span className="nav-item-label">{t.nav.profile}</span>
+                </button>
+
+                {/* Cuenta */}
+                <button
+                  onClick={() => router.push("/cuenta")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "12px",
+                    background: (isMobile ? "transparent" : (pathname === "/cuenta" || pathname?.startsWith("/cuenta") ? "#EFF6FF" : "transparent")),
+                    border: "none",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontFamily: "Montserrat, sans-serif",
+                    fontSize: 14,
+                    fontWeight: pathname === "/cuenta" || pathname?.startsWith("/cuenta") ? 700 : 600,
+                    textAlign: "left",
+                    color: pathname === "/cuenta" || pathname?.startsWith("/cuenta") ? "#0F62FE" : "#000"
+                  }}
+                >
+                  <span style={{ 
+                    fontSize: 20,
+                    filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                    display: "inline-block"
+                  }}>⚙️</span>
+                  <span className="nav-item-label">{t.nav.account}</span>
+                </button>
+
+                {/* Configuración */}
+                <button
+                  onClick={() => router.push("/configuracion")}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "12px",
+                    background: (isMobile ? "transparent" : (pathname === "/configuracion" || pathname?.startsWith("/configuracion") ? "#EFF6FF" : "transparent")),
+                    border: "none",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    fontFamily: "Montserrat, sans-serif",
+                fontSize: 14,
+                    fontWeight: pathname === "/configuracion" || pathname?.startsWith("/configuracion") ? 700 : 600,
+                    textAlign: "left",
+                    color: pathname === "/configuracion" || pathname?.startsWith("/configuracion") ? "#0F62FE" : "#000"
+                  }}
+                >
+                  <span style={{ 
+                    fontSize: 20,
+                    filter: "hue-rotate(200deg) saturate(1.8) brightness(0.85)",
+                    display: "inline-block"
+                  }}>⚙️</span>
+                  <span className="nav-item-label">{t.nav.settings}</span>
+          </button>
+              </>
+            )}
                 </div>
       </div>
-
-      {/* Mobile Sidebar Toggle Button */}
-      <button
-        className="mobile-sidebar-toggle"
-        onClick={toggleSidebar}
-        style={{
-          position: "fixed",
-          top: "20px",
-          right: "20px",
-          width: "48px",
-          height: "48px",
-          background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
-          border: "none",
-          borderRadius: "12px",
-          zIndex: 10001,
-          boxShadow: "0 4px 12px rgba(11, 113, 254, 0.4)",
-          cursor: "pointer",
-          display: "none", // Hidden on desktop, shown via CSS on mobile
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all 0.3s ease",
-        }}
-        aria-label="Toggle menu"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
 
       {/* Mobile Sidebar Backdrop */}
       {isSidebarOpen && (
@@ -1035,19 +1479,35 @@ export default function CoursesPage() {
             right: 0,
             bottom: 0,
             background: "rgba(0, 0, 0, 0.5)",
-            zIndex: 9999,
+            zIndex: 9998, // Lower than sidebar (10000)
             display: "none", // Hidden on desktop, shown via CSS on mobile
           }}
         />
       )}
 
+      {/* Hide MobileBottomNav on courses page AND override globals.css */}
+      <style>{`
+        /* CRITICAL: Override globals.css that hides [data-fixed-sidebar] on mobile */
+        @media (max-width: 767px) {
+          /* More specific selector to override globals.css */
+          div.courses-left-nav-panel[data-fixed-sidebar] {
+            display: flex !important; /* Override: globals.css has display: none */
+          }
+          
+          [data-mobile-bottom-nav] {
+            display: none !important;
+          }
+        }
+      `}</style>
+
       {/* Sticky Course Bar */}
       <div
+        className="sticky-course-bar"
         style={{
         position: "fixed",
           top: "20px",
-        left: "200px",
-          right: "320px",
+        left: "50%",
+          transform: "translateX(-50%)",
           zIndex: 99999,
           display: "flex",
           justifyContent: "center",
@@ -1100,18 +1560,24 @@ export default function CoursesPage() {
         minHeight: "100vh",
         paddingTop: "80px",
         paddingBottom: "clamp(40px, 8vw, 80px)",
-        paddingLeft: "200px",
-        paddingRight: "320px",
+        paddingLeft: "16px",
+        paddingRight: "16px",
       fontFamily: "Montserrat, sans-serif",
         background: "transparent",
-        position: "relative"
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start"
       }}>
         {/* Island Path */}
             <div style={{
-          maxWidth: 800,
+          width: "100%",
+          maxWidth: "800px",
           margin: "0 auto",
           position: "relative",
-          zIndex: 1
+          zIndex: 1,
+          padding: "0 clamp(16px, 4vw, 24px)",
+          boxSizing: "border-box"
         }}>
           {courses.map((course) => (
             <div key={course.id} id={`course-${course.id}`} style={{ marginBottom: "clamp(40px, 8vw, 80px)" }}>
@@ -1158,17 +1624,57 @@ export default function CoursesPage() {
                     display: "flex",
                     flexDirection: "column",
                 alignItems: "center",
-                gap: "clamp(40px, 8vw, 80px)"
+                gap: "clamp(40px, 8vw, 80px)",
+                width: "100%",
+                maxWidth: "100%",
+                overflow: "visible",
+                position: "relative"
               }}>
                 {course.lessons.map((lesson, lessonIdx) => {
                   // Irregular positioning - more organic, less perfect
                   // Responsive amplitude: smaller on mobile, larger on desktop
-                  const baseAmplitude = typeof window !== 'undefined' 
-                    ? Math.min(150, Math.max(80, window.innerWidth * 0.4))
-                    : 150
-                  const randomOffset = (lessonIdx * 73) % 40 - 20 // Pseudo-random offset
+                  // Calculate available width based on screen size and side panels
+                  let availableWidth = 800 // Default fallback
+                  let containerPadding = 32 // Default padding
+                  
+                  if (typeof window !== 'undefined') {
+                    const screenWidth = window.innerWidth
+                    
+                    if (screenWidth >= 768 && screenWidth <= 1160) {
+                      // iPad (768px-1160px): account for left panel (~200px) + right sidebar (~160px narrow) + padding
+                      const leftPanel = Math.min(200, Math.max(180, screenWidth * 0.18))
+                      const rightSidebar = 160 // Narrow sidebar for iPad
+                      availableWidth = screenWidth - leftPanel - rightSidebar - containerPadding - 32
+                      containerPadding = 32
+                    } else if (screenWidth > 1160) {
+                      // Desktop (>1160px): account for left panel (~240px) + right sidebar (~280px) + padding
+                      const leftPanel = Math.min(240, Math.max(180, screenWidth * 0.2))
+                      const rightSidebar = 280 // Full width sidebar for desktop
+                      availableWidth = screenWidth - leftPanel - rightSidebar - containerPadding - 48
+                      containerPadding = 48
+                    } else {
+                      // Mobile: only account for padding (no sidebars visible)
+                      availableWidth = screenWidth - containerPadding - 32
+                      containerPadding = 32
+                    }
+                    
+                    // Clamp to reasonable bounds
+                    availableWidth = Math.max(300, Math.min(availableWidth, 800))
+                  }
+                  
+                  // More conservative amplitude to ensure islands fit within usable space
+                  // Use max 15% of available width, but cap at 100px
+                  const islandSize = 80 // Approximate island size (reduced from 120)
+                  const safeAmplitude = Math.min(100, Math.max(30, (availableWidth - islandSize) * 0.12))
+                  const baseAmplitude = typeof window !== 'undefined' ? safeAmplitude : 80
+                  
+                  const randomOffset = (lessonIdx * 73) % 20 - 10 // Reduced random offset
                   const waveOffset = Math.sin(lessonIdx * 0.7) * baseAmplitude
-                  const offsetX = waveOffset + randomOffset
+                  
+                  // Calculate safe bounds: leave space for island size + padding on each side
+                  const leftBound = -(availableWidth / 2) + (islandSize / 2) + 20
+                  const rightBound = (availableWidth / 2) - (islandSize / 2) - 20
+                  const offsetX = Math.max(leftBound, Math.min(rightBound, waveOffset + randomOffset))
                   
                   // Determine if this is the next lesson to complete
                   const isNext = !lesson.isLocked && !lesson.isCompleted && 
@@ -1232,7 +1738,9 @@ export default function CoursesPage() {
                               boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08)",
                               zIndex: 100,
                               border: "2px solid rgba(147, 197, 253, 0.5)",
-                              backdropFilter: "blur(12px)"
+                              backdropFilter: "blur(12px)",
+                              overflow: "visible",
+                              boxSizing: "border-box"
                             }}
                           >
                             {/* Tail/Pointer - points left if on right, points right if on left */}
@@ -1358,103 +1866,462 @@ export default function CoursesPage() {
           100% { transform: rotateY(360deg); }
         }
         
-        @media (max-width: 768px) {
-          /* Move left navigation panel to bottom on mobile */
-          .courses-left-nav-panel {
-            position: fixed !important;
-            top: auto !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            height: auto !important;
-            max-height: 60vh !important;
-            overflow-y: auto !important;
-            border-right: none !important;
-            border-top: 2px solid rgba(147, 197, 253, 0.3) !important;
+        /* CRITICAL OVERRIDE: Must override globals.css [data-fixed-sidebar] { display: none !important; } */
+        /* Using very specific selector with class + attribute */
+        @media (max-width: 767px) {
+          div.courses-left-nav-panel[data-fixed-sidebar] {
+            display: flex !important; /* OVERRIDE globals.css display: none */
+          }
+          
+          /* Hide text labels on mobile, show only emojis */
+          .nav-item-label {
+            display: none !important;
+          }
+          
+          /* Center emojis on mobile and remove blue background cards */
+          .courses-left-nav-panel[data-fixed-sidebar] button,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button {
+            justify-content: center !important;
             padding: 16px !important;
-            z-index: 9999 !important;
-            background: rgba(255, 255, 255, 0.98) !important;
+            background: transparent !important;
+            background-color: transparent !important;
+            border: none !important;
+          }
+          
+          /* Remove hover/active background on mobile - use !important to override inline styles */
+          .courses-left-nav-panel[data-fixed-sidebar] button:hover,
+          .courses-left-nav-panel[data-fixed-sidebar] button:active,
+          .courses-left-nav-panel[data-fixed-sidebar] button:focus,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button:hover,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button:active,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button:focus {
+            background: transparent !important;
+            background-color: transparent !important;
+          }
+          
+          /* Override any inline background styles on mobile - VERY SPECIFIC */
+          .courses-left-nav-panel[data-fixed-sidebar] button[style],
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button[style],
+          div.courses-left-nav-panel[data-fixed-sidebar] button[style],
+          div.courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button[style] {
+            background: transparent !important;
+            background-color: transparent !important;
+          }
+          
+          /* Force override for all button children and spans */
+          .courses-left-nav-panel[data-fixed-sidebar] button *,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button * {
+            background: transparent !important;
+            background-color: transparent !important;
+          }
+        }
+        
+        /* Show labels on tablet and desktop (iPad and up) */
+        @media (min-width: 768px) {
+          .nav-item-label {
+            display: inline !important;
+          }
+          
+          .courses-left-nav-panel[data-fixed-sidebar] button {
+            justify-content: flex-start !important;
+          }
+        }
+        
+        /* Adjust main content padding for tablet (768px to 1160px) - with left panel, narrow right sidebar */
+        @media (min-width: 768px) and (max-width: 1160px) {
+          main[style*="paddingLeft"],
+          main[style*="padding-left"] {
+            padding-left: clamp(180px, 18vw, 200px) !important;
+            padding-right: 160px !important; /* Narrow sidebar for iPad */
+          }
+          
+          /* Ensure island path container fits in available space on tablet (with left panel, narrow right sidebar) */
+          div[style*="maxWidth: 800px"],
+          div[style*="maxWidth: 800"] {
+            max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 32px) !important; /* Narrow sidebar 160px */
+            width: 100% !important;
+            margin: 0 auto !important;
+          }
+          
+          /* Adjust sticky course bar for tablet - centered */
+          .sticky-course-bar {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            right: auto !important;
+          }
+        }
+        
+        /* Adjust main content padding for desktop (1025px+) - with left panel */
+        @media (min-width: 1025px) {
+          main[style*="paddingLeft"],
+          main[style*="padding-left"] {
+            padding-left: clamp(180px, 20vw, 240px) !important;
+            padding-right: 320px !important;
+          }
+          
+          /* Ensure island path container fits in available space on desktop */
+          div[style*="maxWidth: 800px"],
+          div[style*="maxWidth: 800"] {
+            max-width: calc(100vw - clamp(180px, 20vw, 240px) - 320px - 48px) !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+          }
+          
+          /* Adjust sticky course bar for desktop - centered */
+          .sticky-course-bar {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            right: auto !important;
+          }
+        }
+        
+        /* Hide left panel ONLY on mobile (<768px) */
+        @media (max-width: 767px) {
+          .courses-left-panel,
+          div.courses-left-panel {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+          }
+        }
+        
+        /* Show left panel on iPad (768px+) and desktop (1025px+) */
+        @media (min-width: 768px) {
+          .courses-left-panel,
+          div.courses-left-panel {
+            display: flex !important;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          /* CRITICAL: Override globals.css rule that hides [data-fixed-sidebar] on mobile */
+          /* Must be more specific than globals.css selector [data-fixed-sidebar] */
+          div.courses-left-nav-panel[data-fixed-sidebar] {
+            display: flex !important; /* Override globals.css display: none */
+          }
+          
+          /* Hide right navigation panel by default on mobile, show via hamburger */
+          .courses-left-nav-panel[data-fixed-sidebar]:not(.mobile-sidebar-open) {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            left: auto !important;
+            bottom: auto !important;
+            width: 280px !important;
+            min-width: 280px !important;
+            max-width: 85vw !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            border-left: 2px solid rgba(147, 197, 253, 0.3) !important;
+            border-right: none !important;
+            border-top: none !important;
+            padding: 32px 16px !important;
+            padding-top: 60px !important;
+            z-index: 10000 !important;
+            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
             backdrop-filter: blur(20px) !important;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
+            box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15) !important;
             flex-direction: column !important;
-            gap: 12px !important;
+            gap: 16px !important;
+            transform: translateX(100%) !important;
+            transition: transform 0.3s ease-in-out !important;
+            display: flex !important; /* CRITICAL: Override globals.css display: none */
+            visibility: hidden !important;
+            pointer-events: none !important;
+            box-sizing: border-box !important;
+          }
+          
+          /* Show sidebar when it has the 'open' class - FORCE all dimensions */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            left: auto !important;
+            bottom: auto !important;
+            width: 280px !important;
+            min-width: 280px !important;
+            max-width: 85vw !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            border-left: 2px solid rgba(147, 197, 253, 0.3) !important;
+            border-right: none !important;
+            border-top: none !important;
+            padding: 60px 16px 32px 16px !important;
+            z-index: 10001 !important;
+            transform: translateX(0) !important;
+            transition: transform 0.3s ease-in-out !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            backdrop-filter: blur(20px) !important;
+            box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15) !important;
+            gap: 16px !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            box-sizing: border-box !important;
+          }
+          
+          /* Force content to have dimensions */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open > * {
+            min-width: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          
+          /* Ensure ALL content is visible - no opacity or visibility hiding */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open * {
+            opacity: 1 !important;
+            visibility: visible !important;
+          }
+          
+          /* Progress card - force visibility with explicit styles */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open .sidebar-progress-card {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            position: relative !important;
+            z-index: 1 !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #0F172A !important;
+            min-height: 80px !important;
+          }
+          
+          /* Progress card text */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open .sidebar-progress-card * {
+            color: inherit !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+          }
+          
+          /* Level buttons container - force visibility */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open .sidebar-level-buttons {
+            display: flex !important;
+            flex-direction: column !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            position: relative !important;
+            z-index: 1 !important;
+            gap: 16px !important;
+            width: 100% !important;
+          }
+          
+          /* All buttons - force visibility */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: relative !important;
+            z-index: 1 !important;
+            background: #3B82F6 !important;
+            color: #fff !important;
+            min-height: 60px !important;
+            width: 100% !important;
+          }
+          
+          /* Button text */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button * {
+            opacity: 1 !important;
+            visibility: visible !important;
+            color: inherit !important;
+          }
+          
+          /* All text and divs inside */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open div {
+            opacity: 1 !important;
+            visibility: visible !important;
           }
           
           /* Adjust left panel content for mobile */
-          .courses-left-nav-panel > div:first-child {
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open > div:first-child,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open .sidebar-progress-card {
+            margin-top: 20px !important;
+            margin-bottom: 24px !important;
             width: 100% !important;
             flex-shrink: 0 !important;
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
           }
           
-          .courses-left-nav-panel > div:last-child {
-            flex-direction: row !important;
-            gap: 8px !important;
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open > div:last-child,
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open .sidebar-level-buttons {
+            flex-direction: column !important;
+            gap: 16px !important;
             width: 100% !important;
-            flex-wrap: wrap !important;
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
           }
           
-          .courses-left-nav-panel button {
-            flex: 1 !important;
-            min-width: calc(33.333% - 6px) !important;
-            padding: 12px 8px !important;
-            font-size: 12px !important;
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open button {
+            flex: none !important;
+            min-width: 100% !important;
+            width: 100% !important;
+            padding: 16px 12px !important;
+            font-size: 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            opacity: 1 !important;
+            visibility: visible !important;
           }
           
-          /* Make right sidebar slide in from right on mobile */
-          [data-fixed-sidebar] {
-            transform: translateX(100%) !important;
-            transition: transform 0.3s ease-in-out !important;
-            width: 280px !important;
-            max-width: 85vw !important;
-          }
-          
-          /* Show sidebar when it has the 'open' class */
-          [data-fixed-sidebar].mobile-sidebar-open {
-            transform: translateX(0) !important;
-          }
-          
-          /* Show toggle button on mobile */
+          /* Show toggle button on mobile - always visible in top right */
           .mobile-sidebar-toggle {
             display: flex !important;
+            position: fixed !important;
+            top: 16px !important;
+            right: 16px !important;
+            z-index: 10001 !important;
+          }
+          
+          /* Ensure SVG icons are always visible */
+          .mobile-sidebar-toggle svg {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            flex-shrink: 0 !important;
+            width: 24px !important;
+            height: 24px !important;
+            pointer-events: none !important;
           }
           
           /* Show backdrop on mobile when sidebar is open */
           .mobile-sidebar-backdrop {
             display: block !important;
-          }
-          
-          /* Adjust main content padding on mobile */
-          main[style*="paddingLeft: 200px"] {
-            padding-left: 16px !important;
-            padding-right: 16px !important;
-            padding-top: 20px !important;
-            padding-bottom: 200px !important; /* Space for bottom menu */
-          }
-          
-          /* Adjust sticky course bar on mobile */
-          [style*="position: fixed"][style*="left: 200px"][style*="right: 320px"] {
-            left: 0 !important;
-            right: 0 !important;
-            top: auto !important;
-            bottom: 60px !important; /* Above the bottom menu */
             z-index: 9998 !important;
           }
           
-          /* Make preview panel full width on mobile */
+          /* Ensure sidebar is above backdrop */
+          .courses-left-nav-panel[data-fixed-sidebar].mobile-sidebar-open {
+            z-index: 10001 !important; /* Above backdrop (9998) and hamburger button */
+          }
+          
+          /* Hide left panel on mobile */
+          .courses-left-panel,
+          div.courses-left-panel {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+          }
+          
+          /* Adjust main content padding on mobile - no left padding since panel is hidden */
+          main[style*="paddingLeft"],
+          main[style*="padding-left"] {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            padding-top: 80px !important; /* Space for hamburger button */
+            padding-bottom: 40px !important;
+          }
+          
+          /* Ensure island path container fits in available space on mobile */
+          div[style*="maxWidth: 800px"],
+          div[style*="maxWidth: 800"] {
+            max-width: calc(100vw - 32px) !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+            padding: 0 16px !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important; /* Prevent horizontal overflow */
+            overflow-y: visible !important;
+          }
+          
+          /* Ensure lesson islands don't overflow on mobile - clip overflow */
+          .lesson-island-wrapper {
+            max-width: 100% !important;
+            overflow: visible !important;
+            position: relative !important;
+          }
+          
+          /* Container for lessons - prevent overflow */
+          div[style*="flexDirection: column"][style*="alignItems: center"] {
+            overflow-x: hidden !important;
+            overflow-y: visible !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          /* Limit island offset on mobile to prevent overflow */
+          div[data-lesson-id] {
+            max-width: 100% !important;
+            overflow: visible !important;
+          }
+          
+          /* Adjust sticky course bar on mobile - centered */
+          .sticky-course-bar {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            right: auto !important;
+            top: 80px !important; /* Below hamburger button */
+            bottom: auto !important;
+            z-index: 9998 !important;
+            pointer-events: auto !important;
+          }
+          
+          /* Make preview panel full width on mobile - ensure it's not cut off */
           .lesson-preview-panel {
             position: relative !important;
             top: auto !important;
             left: auto !important;
             right: auto !important;
             transform: none !important;
-            width: calc(100% - 32px) !important;
+            width: calc(100vw - 32px) !important;
+            max-width: calc(100vw - 32px) !important;
+            margin-top: 20px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-bottom: 20px !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+          }
+          
+          /* Ensure parent container doesn't clip */
+          .lesson-island-wrapper {
+            overflow: visible !important;
+            width: 100% !important;
+          }
+          
+          /* Ensure main container allows overflow and doesn't clip */
+          main {
+            overflow-x: visible !important;
+            overflow-y: auto !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+          }
+          
+          /* Ensure parent div doesn't clip content */
+          div[style*="display: flex"][style*="flexDirection: column"] {
+            overflow: visible !important;
+            width: 100% !important;
+          }
+          
+          /* Container for each lesson island */
+          div[data-lesson-id] {
+            overflow: visible !important;
+            position: relative !important;
+            width: 100% !important;
             max-width: 100% !important;
-            margin-top: 16px !important;
-            margin-left: 16px !important;
-            margin-right: 16px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          
+          /* Island path container */
+          div[style*="maxWidth: 800"] {
+            overflow: visible !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
           
           /* Hide the pointer tail on mobile */
@@ -1462,23 +2329,137 @@ export default function CoursesPage() {
             display: none !important;
           }
           
+          /* Ensure preview panels are fully visible */
+          [data-lesson-id] {
+            overflow: visible !important;
+            position: relative !important;
+            width: 100% !important;
+          }
+          
+          /* Course container */
+          div[id^="course-"] {
+            overflow: visible !important;
+            width: 100% !important;
+          }
+          
           /* Reduce lesson island size on very small screens */
           @media (max-width: 480px) {
-            [style*="width: clamp(120px"] {
-              width: clamp(100px, 22vw, 140px) !important;
-              height: clamp(100px, 22vw, 140px) !important;
+            [style*="width: clamp(80px"] {
+              width: clamp(70px, 16vw, 100px) !important;
+              height: clamp(70px, 16vw, 100px) !important;
             }
             
-            /* Smaller bottom menu on very small screens */
-            .courses-left-nav-panel {
-              max-height: 50vh !important;
-              padding: 12px !important;
+            /* Sidebar adjustments for very small screens */
+            .courses-left-nav-panel[data-fixed-sidebar] {
+              width: 260px !important;
+              max-width: 90vw !important;
+              padding: 24px 12px !important;
             }
             
             .courses-left-nav-panel button {
-              padding: 10px 6px !important;
-              font-size: 11px !important;
-              min-width: calc(50% - 4px) !important;
+              padding: 12px 8px !important;
+              font-size: 12px !important;
+            }
+            
+            /* Smaller preview panels on very small screens */
+            .lesson-preview-panel {
+              width: calc(100% - 24px) !important;
+              max-width: calc(100vw - 24px) !important;
+              margin-left: 12px !important;
+              margin-right: 12px !important;
+            }
+          }
+          
+          /* Desktop (1161px and up) - show left panel + right sidebar (full width 280px), center islands */
+          @media (min-width: 1161px) {
+            .courses-left-panel,
+            div.courses-left-panel {
+              display: flex !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              position: fixed !important;
+            }
+            
+            .mobile-sidebar-toggle {
+              display: none !important;
+            }
+            
+            .mobile-sidebar-backdrop {
+              display: none !important;
+            }
+            
+            /* Desktop: adjust main padding for left panel + right sidebar (full width 280px) */
+            main {
+              padding-left: clamp(180px, 20vw, 240px) !important;
+              padding-right: 280px !important; /* Full width sidebar for desktop */
+              display: flex !important;
+              justify-content: center !important;
+              align-items: flex-start !important;
+            }
+            
+            /* Center islands container on desktop */
+            div[style*="maxWidth: 800px"],
+            div[style*="maxWidth: 800"] {
+              max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 48px) !important; /* Full width sidebar 280px */
+              width: 100% !important;
+              margin: 0 auto !important;
+              overflow-x: hidden !important; /* Prevent horizontal overflow */
+              overflow-y: visible !important;
+            }
+            
+            /* Container for lessons - prevent overflow on desktop */
+            div[style*="flexDirection: column"][style*="alignItems: center"] {
+              overflow-x: hidden !important;
+              overflow-y: visible !important;
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+          }
+          
+          /* iPad (768px to 1160px) - show left panel + right sidebar (narrow, emojis only), center islands */
+          @media (min-width: 768px) and (max-width: 1160px) {
+            /* Show left panel on iPad */
+            .courses-left-panel,
+            div.courses-left-panel {
+              display: flex !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              position: fixed !important;
+            }
+            
+            .mobile-sidebar-toggle {
+              display: none !important;
+            }
+            
+            .mobile-sidebar-backdrop {
+              display: none !important;
+            }
+            
+            /* iPad: adjust main padding for left panel + right sidebar (narrow 160px) */
+            main {
+              padding-left: clamp(180px, 18vw, 200px) !important;
+              padding-right: 160px !important; /* Narrow sidebar for iPad */
+              display: flex !important;
+              justify-content: center !important;
+              align-items: flex-start !important;
+            }
+            
+            /* Center islands container on iPad */
+            div[style*="maxWidth: 800px"],
+            div[style*="maxWidth: 800"] {
+              max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 32px) !important; /* Narrow sidebar 160px */
+              width: 100% !important;
+              margin: 0 auto !important;
+              overflow-x: hidden !important; /* Prevent horizontal overflow */
+              overflow-y: visible !important;
+            }
+            
+            /* Container for lessons - prevent overflow on iPad */
+            div[style*="flexDirection: column"][style*="alignItems: center"] {
+              overflow-x: hidden !important;
+              overflow-y: visible !important;
+              width: 100% !important;
+              max-width: 100% !important;
             }
           }
         }

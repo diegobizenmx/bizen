@@ -135,20 +135,21 @@ export default function CashFlowGamePage() {
   const [actionInProgress, setActionInProgress] = useState(false)
   const [isRollingDice, setIsRollingDice] = useState(false)
   const [diceResult, setDiceResult] = useState<number | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
   const { playDiceRoll, playCardReveal, playReward, playDecision, playNegative, playSuccessChime } = useCashflowSounds()
 
   const modalOverlayStyle: React.CSSProperties = {
     position: "fixed",
     top: 0,
     left: 0,
-    right: "320px",
+    right: 0,
     bottom: 0,
     background: "rgba(15, 23, 42, 0.7)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 2000,
-    padding: 40
+    padding: "clamp(16px, 4vw, 40px)"
   }
 
   const modalCardStyle: React.CSSProperties = {
@@ -231,6 +232,15 @@ export default function CashFlowGamePage() {
     color: "#dc2626",
     fontStyle: "italic"
   }
+
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth <= 767)
+    }
+    updateIsMobile()
+    window.addEventListener("resize", updateIsMobile)
+    return () => window.removeEventListener("resize", updateIsMobile)
+  }, [])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -654,11 +664,11 @@ export default function CashFlowGamePage() {
     return (
       <div style={{
         minHeight: "100vh",
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#f8fafc",
-        paddingRight: "340px"
+        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
       }}>
         <div style={{ color: "#333", fontSize: 24, fontWeight: 700 }}>
           Cargando juego...
@@ -814,20 +824,51 @@ export default function CashFlowGamePage() {
     </div>
   )
   return (
-    <div style={{
-      display: "flex",
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-      fontFamily: "Montserrat, sans-serif"
-    }}>
-      <main style={{
-        flex: 1,
-        padding: "20px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start"
+    <>
+      <style>{`
+        @media (max-width: 767px) {
+          .cashflow-game-container {
+            padding: clamp(12px, 3vw, 20px) !important;
+          }
+          .cashflow-game-main {
+            padding: clamp(12px, 3vw, 20px) !important;
+            padding-bottom: 140px !important;
+          }
+          .game-board-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            padding: clamp(12px, 2vw, 20px) !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .cashflow-game-container {
+            padding-right: clamp(20px, 5vw, 360px) !important;
+          }
+        }
+      `}</style>
+      <div style={{
+        width: "100%",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        fontFamily: "Montserrat, sans-serif",
+        overflowX: "hidden"
       }}>
-      <div style={{ maxWidth: 1400, width: "100%" }}>
+        <main className="cashflow-game-main" style={{
+          width: "100%",
+          maxWidth: "100%",
+          padding: "clamp(16px, 3vw, 20px)",
+          paddingBottom: isMobile ? "140px" : "clamp(40px, 4vw, 80px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          boxSizing: "border-box"
+        }}>
+        <div className="cashflow-game-container" style={{ 
+          maxWidth: "min(1400px, 100%)", 
+          width: "100%",
+          boxSizing: "border-box"
+        }}>
         {/* Header */}
         <div style={{
           background: player.isOnFastTrack 
@@ -1414,14 +1455,23 @@ export default function CashFlowGamePage() {
         </div>
 
         {/* Game Board */}
-        <GameBoard
-          playerPosition={player.currentPosition ?? (player.currentTurn % 24)}
-          isRolling={isRollingDice}
-          onRollDice={rollDice}
-          canRoll={!actionInProgress && !showCard && !showMarketEvent && !showDoodadModal}
-          isOnFastTrack={player.isOnFastTrack}
-          diceResult={diceResult}
-        />
+        <div className="game-board-container" style={{
+          width: "100%",
+          maxWidth: "100%",
+          overflowX: "auto",
+          overflowY: "visible",
+          padding: "clamp(12px, 2vw, 20px)",
+          boxSizing: "border-box"
+        }}>
+          <GameBoard
+            playerPosition={player.currentPosition ?? (player.currentTurn % 24)}
+            isRolling={isRollingDice}
+            onRollDice={rollDice}
+            canRoll={!actionInProgress && !showCard && !showMarketEvent && !showDoodadModal}
+            isOnFastTrack={player.isOnFastTrack}
+            diceResult={diceResult}
+          />
+        </div>
 
         {/* Quick Actions */}
         <div style={{
@@ -1500,7 +1550,7 @@ export default function CashFlowGamePage() {
             Tira el dado para moverte por el tablero
           </div>
         </div>
-      </div>
+        </div>
 
       {/* Tutorial Modal */}
       {showTutorial && (
@@ -2613,13 +2663,8 @@ export default function CashFlowGamePage() {
         </div>
       )}
       </main>
-
-      {/* Sidebar Spacer */}
-      <aside style={{
-        width: "320px",
-        flexShrink: 0
-      }} />
     </div>
+    </>
   )
 }
 

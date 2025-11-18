@@ -195,34 +195,95 @@ export default function CashFlowPage() {
   }
 
   return (
-    <div style={{
-      display: "flex",
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-      fontFamily: "Montserrat, sans-serif",
-      overflowX: "hidden",
-      overflowY: "auto",
-      boxSizing: "border-box"
-    }}>
-      {/* Main Content Area */}
-      <main style={{
-        flex: 1,
-        paddingTop: "40px",
-        paddingBottom: "40px",
-        paddingLeft: "40px",
-        paddingRight: "40px",
-        overflowX: "hidden",
-        overflowY: "visible",
+    <>
+      <style>{`
+        @media (max-width: 767px) {
+          .cashflow-container {
+            padding: clamp(16px, 4vw, 24px) !important;
+          }
+          .cashflow-header h1 {
+            font-size: clamp(32px, 8vw, 56px) !important;
+          }
+          .cashflow-header p {
+            font-size: clamp(14px, 3.5vw, 19px) !important;
+          }
+          .stats-button {
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
+            margin-bottom: 16px !important;
+            width: 100% !important;
+          }
+          .cashflow-section {
+            padding: clamp(20px, 5vw, 40px) !important;
+          }
+          .profession-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .games-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .instructions-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .cashflow-container {
+            padding: clamp(24px, 3vw, 40px) !important;
+          }
+          .profession-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (min-width: 1025px) {
+          .cashflow-container {
+            padding-right: clamp(40px, 5vw, 360px) !important;
+          }
+        }
+        .delete-game-button {
+          padding: 0 !important;
+          width: 28px !important;
+          height: 28px !important;
+          min-width: 28px !important;
+          min-height: 28px !important;
+          max-width: 28px !important;
+          max-height: 28px !important;
+          font-size: 14px !important;
+        }
+        .continue-game-button {
+          flex: 1 !important;
+          min-width: 0 !important;
+        }
+      `}</style>
+      <div style={{
         width: "100%",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        fontFamily: "Montserrat, sans-serif",
+        overflowX: "hidden",
+        overflowY: "auto",
         boxSizing: "border-box"
       }}>
+        {/* Main Content Area */}
+        <main className="cashflow-container" style={{
+          width: "100%",
+          maxWidth: "100%",
+          paddingTop: "clamp(24px, 4vw, 40px)",
+          paddingBottom: "clamp(24px, 4vw, 40px)",
+          paddingLeft: "clamp(16px, 4vw, 40px)",
+          paddingRight: "clamp(16px, 4vw, 40px)",
+          overflowX: "hidden",
+          overflowY: "visible",
+          boxSizing: "border-box",
+          margin: "0 auto"
+        }}>
         {/* Header */}
-        <div style={{
+        <div className="cashflow-section" style={{
           width: "100%",
           background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
-          borderRadius: 24,
-          padding: "40px",
-          marginBottom: 32,
+          borderRadius: "clamp(16px, 3vw, 24px)",
+          padding: "clamp(24px, 5vw, 40px)",
+          marginBottom: "clamp(24px, 4vw, 32px)",
           boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
           textAlign: "center",
           position: "relative",
@@ -230,21 +291,23 @@ export default function CashFlowPage() {
           boxSizing: "border-box"
         }}>
           <button
+            className="stats-button"
             onClick={() => router.push("/cash-flow/stats")}
             style={{
               position: "absolute",
               top: 24,
               right: 24,
-              padding: "10px 20px",
+              padding: "clamp(8px, 1.5vw, 10px) clamp(16px, 3vw, 20px)",
               background: "#eff6ff",
               color: "#2563eb",
               border: "1px solid #3b82f6",
               borderRadius: 10,
-              fontSize: 14,
+              fontSize: "clamp(12px, 2.5vw, 14px)",
               fontWeight: 700,
               cursor: "pointer",
               fontFamily: "Montserrat, sans-serif",
-              transition: "all 0.2s"
+              transition: "all 0.2s",
+              whiteSpace: "nowrap"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "#dbeafe"
@@ -258,10 +321,10 @@ export default function CashFlowPage() {
             📊 Estadísticas
           </button>
 
-          <h1 style={{
-            fontSize: 56,
+          <h1 className="cashflow-header" style={{
+            fontSize: "clamp(32px, 8vw, 56px)",
             fontWeight: 900,
-            margin: "0 0 20px",
+            margin: "0 0 clamp(16px, 3vw, 20px)",
             background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
@@ -270,12 +333,12 @@ export default function CashFlowPage() {
           }}>
             CASHFLOW
           </h1>
-          <p style={{
-            fontSize: 19,
+          <p className="cashflow-header" style={{
+            fontSize: "clamp(14px, 3.5vw, 19px)",
             color: "#64748b",
             margin: 0,
             lineHeight: 1.7,
-            maxWidth: 800,
+            maxWidth: "min(800px, 100%)",
             marginLeft: "auto",
             marginRight: "auto"
           }}>
@@ -286,24 +349,24 @@ export default function CashFlowPage() {
 
         {/* Active Games */}
         {!loadingGames && games.length > 0 && !showNewGame && (
-          <div style={{
+          <div className="cashflow-section" style={{
             width: "100%",
             background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
-            borderRadius: 24,
-            padding: "40px",
-            marginBottom: 32,
+            borderRadius: "clamp(16px, 3vw, 24px)",
+            padding: "clamp(24px, 5vw, 40px)",
+            marginBottom: "clamp(24px, 4vw, 32px)",
             boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
             border: "2px solid rgba(11, 113, 254, 0.2)",
             boxSizing: "border-box"
           }}>
             <div style={{
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              flexDirection: "column",
+              gap: "16px",
               marginBottom: 24
             }}>
               <h2 style={{
-                fontSize: 32,
+                fontSize: "clamp(24px, 5vw, 32px)",
                 fontWeight: 900,
                 margin: 0,
                 color: "#333"
@@ -313,26 +376,27 @@ export default function CashFlowPage() {
               <button
                 onClick={() => setShowNewGame(true)}
                 style={{
-                  padding: "12px 24px",
+                  padding: "clamp(10px, 2vw, 12px) clamp(20px, 4vw, 24px)",
                   background: "linear-gradient(135deg, #10b981, #059669)",
                   color: "white",
                   border: "none",
                   borderRadius: 12,
-                  fontSize: 14,
+                  fontSize: "clamp(13px, 2.5vw, 14px)",
                   fontWeight: 700,
                   cursor: "pointer",
                   boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
-                  fontFamily: "Montserrat, sans-serif"
+                  fontFamily: "Montserrat, sans-serif",
+                  alignSelf: "flex-start"
                 }}
               >
                 + Nueva Partida
               </button>
             </div>
 
-            <div style={{
+            <div className="games-grid" style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: 20,
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))",
+              gap: "clamp(16px, 3vw, 20px)",
               width: "100%"
             }}>
               {games.map((game) => {
@@ -344,9 +408,11 @@ export default function CashFlowPage() {
                     style={{
                       background: "#f8f9fa",
                       borderRadius: 16,
-                      padding: 20,
+                      padding: "clamp(16px, 3vw, 20px)",
                       border: "2px solid #e9ecef",
-                      transition: "all 0.3s ease"
+                      transition: "all 0.3s ease",
+                      width: "100%",
+                      boxSizing: "border-box"
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = "#667eea"
@@ -444,38 +510,57 @@ export default function CashFlowPage() {
                     {/* Actions */}
                     <div style={{
                       display: "flex",
-                      gap: 8
+                      gap: "clamp(8px, 1.5vw, 12px)",
+                      width: "100%",
+                      alignItems: "center"
                     }}>
                       <button
+                        className="continue-game-button"
                         onClick={() => router.push(`/cash-flow/game/${game.id}`)}
                         style={{
                           flex: 1,
-                          padding: "10px",
+                          padding: "12px 16px",
                           background: "linear-gradient(135deg, #667eea, #764ba2)",
                           color: "white",
                           border: "none",
                           borderRadius: 8,
-                          fontSize: 13,
+                          fontSize: "14px",
                           fontWeight: 700,
                           cursor: "pointer",
-                          fontFamily: "Montserrat, sans-serif"
+                          fontFamily: "Montserrat, sans-serif",
+                          whiteSpace: "nowrap",
+                          textAlign: "center",
+                          minWidth: 0,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis"
                         }}
                       >
                         Continuar
                       </button>
 
                       <button
+                        className="delete-game-button"
                         onClick={() => deleteGame(game.id)}
                         style={{
-                          padding: "10px 16px",
+                          padding: "0",
                           background: "white",
                           color: "#ef4444",
                           border: "1px solid #ef4444",
-                          borderRadius: 8,
-                          fontSize: 13,
+                          borderRadius: 6,
+                          fontSize: "14px",
                           fontWeight: 700,
                           cursor: "pointer",
-                          fontFamily: "Montserrat, sans-serif"
+                          fontFamily: "Montserrat, sans-serif",
+                          flexShrink: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "28px",
+                          height: "28px",
+                          minWidth: "28px",
+                          minHeight: "28px",
+                          maxWidth: "28px",
+                          maxHeight: "28px"
                         }}
                       >
                         🗑️
@@ -490,28 +575,28 @@ export default function CashFlowPage() {
 
         {/* Instructions */}
         {(showNewGame || games.length === 0) && (
-        <div style={{
+        <div className="cashflow-section" style={{
           width: "100%",
           background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
-          borderRadius: 24,
-          padding: "32px",
-          marginBottom: 32,
+          borderRadius: "clamp(16px, 3vw, 24px)",
+          padding: "clamp(20px, 4vw, 32px)",
+          marginBottom: "clamp(24px, 4vw, 32px)",
           boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
           border: "2px solid rgba(11, 113, 254, 0.2)",
           boxSizing: "border-box"
         }}>
           <h2 style={{
-            fontSize: 24,
+            fontSize: "clamp(20px, 4vw, 24px)",
             fontWeight: 800,
-            margin: "0 0 16px",
+            margin: "0 0 clamp(12px, 2.5vw, 16px)",
             color: "#333"
           }}>
             ❓ Cómo Jugar
           </h2>
-          <div style={{
+          <div className="instructions-grid" style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: 16
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
+            gap: "clamp(12px, 2.5vw, 16px)"
           }}>
             <div style={{ display: "flex", gap: 12, alignItems: "start" }}>
               <span style={{ fontSize: 28 }}>1️⃣</span>
@@ -546,19 +631,19 @@ export default function CashFlowPage() {
 
         {/* Profession Selection */}
         {(showNewGame || games.length === 0) && (
-        <div style={{
+        <div className="cashflow-section" style={{
           width: "100%",
           background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(239,246,255,0.95) 50%, rgba(219,234,254,0.95) 100%)",
-          borderRadius: 24,
-          padding: "48px",
+          borderRadius: "clamp(16px, 3vw, 24px)",
+          padding: "clamp(24px, 5vw, 48px)",
           boxShadow: "0 8px 32px rgba(11,113,254,0.25)",
           border: "2px solid rgba(11, 113, 254, 0.2)",
           boxSizing: "border-box"
         }}>
           <h2 style={{
-            fontSize: 36,
+            fontSize: "clamp(24px, 6vw, 36px)",
             fontWeight: 900,
-            margin: "0 0 40px",
+            margin: "0 0 clamp(24px, 5vw, 40px)",
             color: "#0f172a",
             textAlign: "center",
             letterSpacing: "-0.02em"
@@ -567,14 +652,14 @@ export default function CashFlowPage() {
           </h2>
 
           {loadingProfessions ? (
-            <div style={{ textAlign: "center", padding: 40, color: "#999" }}>
+            <div style={{ textAlign: "center", padding: "clamp(24px, 5vw, 40px)", color: "#999" }}>
               Cargando profesiones...
             </div>
           ) : (
-            <div style={{
+            <div className="profession-grid" style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 24,
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
+              gap: "clamp(16px, 3vw, 24px)",
               width: "100%"
             }}>
               {professions.map((prof) => {
@@ -738,77 +823,83 @@ export default function CashFlowPage() {
           {/* Start Button */}
           {selectedProfession && (
             <div style={{
-              marginTop: 32,
+              marginTop: "clamp(24px, 4vw, 32px)",
               textAlign: "center",
               display: "flex",
-              gap: 16,
-              justifyContent: "center"
+              flexDirection: "column",
+              gap: "clamp(12px, 2.5vw, 16px)",
+              alignItems: "center",
+              width: "100%"
             }}>
-              {games.length > 0 && (
+              <div style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: "clamp(12px, 2.5vw, 16px)",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                width: "100%"
+              }}>
+                {games.length > 0 && (
+                  <button
+                    onClick={() => setShowNewGame(false)}
+                    style={{
+                      padding: "clamp(14px, 3vw, 18px) clamp(24px, 5vw, 32px)",
+                      background: "white",
+                      color: "#667eea",
+                      border: "2px solid #667eea",
+                      borderRadius: 16,
+                      fontSize: "clamp(16px, 3.5vw, 18px)",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      fontFamily: "Montserrat, sans-serif",
+                      minWidth: "120px"
+                    }}
+                  >
+                    ← Volver
+                  </button>
+                )}
+                
                 <button
-                  onClick={() => setShowNewGame(false)}
+                  onClick={startGame}
+                  disabled={startingGame}
                   style={{
-                    padding: "18px 32px",
-                    background: "white",
-                    color: "#667eea",
-                    border: "2px solid #667eea",
+                    padding: "clamp(14px, 3vw, 18px) clamp(32px, 6vw, 48px)",
+                    background: startingGame 
+                      ? "#ccc" 
+                      : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    color: "white",
+                    border: "none",
                     borderRadius: 16,
-                    fontSize: 18,
+                    fontSize: "clamp(16px, 4vw, 20px)",
                     fontWeight: 800,
-                    cursor: "pointer",
+                    cursor: startingGame ? "not-allowed" : "pointer",
+                    boxShadow: "0 8px 24px rgba(16, 185, 129, 0.3)",
                     transition: "all 0.3s ease",
-                    fontFamily: "Montserrat, sans-serif"
+                    fontFamily: "Montserrat, sans-serif",
+                    minWidth: "180px"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!startingGame) {
+                      e.currentTarget.style.transform = "scale(1.05)"
+                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(16, 185, 129, 0.4)"
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)"
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(16, 185, 129, 0.3)"
                   }}
                 >
-                  ← Volver
+                  {startingGame ? "Iniciando..." : "🚀 Comenzar Juego"}
                 </button>
-              )}
-              
-              <button
-                onClick={startGame}
-                disabled={startingGame}
-                style={{
-                  padding: "18px 48px",
-                  background: startingGame 
-                    ? "#ccc" 
-                    : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: 16,
-                  fontSize: 20,
-                  fontWeight: 800,
-                  cursor: startingGame ? "not-allowed" : "pointer",
-                  boxShadow: "0 8px 24px rgba(16, 185, 129, 0.3)",
-                  transition: "all 0.3s ease",
-                  fontFamily: "Montserrat, sans-serif"
-                }}
-                onMouseEnter={(e) => {
-                  if (!startingGame) {
-                    e.currentTarget.style.transform = "scale(1.05)"
-                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(16, 185, 129, 0.4)"
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "scale(1)"
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(16, 185, 129, 0.3)"
-                }}
-              >
-                {startingGame ? "Iniciando..." : "🚀 Comenzar Juego"}
-              </button>
+              </div>
             </div>
           )}
         </div>
         )}
       </main>
-
-      {/* Sidebar Spacer - reserves space for the fixed sidebar */}
-      <aside style={{
-        width: "320px",
-        flexShrink: 0
-      }}>
-        {/* Empty - the actual FixedSidebar component is position:fixed */}
-      </aside>
-    </div>
+      </div>
+    </>
   )
 }
 
