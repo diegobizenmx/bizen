@@ -142,7 +142,6 @@ export default function WelcomePage() {
             }}
             className="crear-cuenta-button">Crear cuenta</Link>
         </nav>
-        </div>
       </header>
 
       <div style={{
