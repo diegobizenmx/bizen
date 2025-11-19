@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { AuthProvider } from "@/contexts/AuthContext"
 import { SettingsProvider } from "@/contexts/SettingsContext"
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper"
+import { AppLayout } from "@/components/AppLayout"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -19,24 +20,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" style={{ height: "100%", margin: 0, padding: 0 }}>
+    <html lang="es">
       <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body style={{ margin: 0, padding: 0, height: "100%", overflowX: "hidden", fontFamily: "'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif" }}>
-        <div className="app-root">
-          <div className="app-bg" />
-          <div className="app-content">
-            <SettingsProvider>
-              <AuthProvider>
-                <ClientLayoutWrapper>
-                  {children}
-                </ClientLayoutWrapper>
-              </AuthProvider>
-            </SettingsProvider>
-          </div>
-        </div>
+      <body>
+        <SettingsProvider>
+          <AuthProvider>
+            <AppLayout>
+              <ClientLayoutWrapper>
+                {children}
+              </ClientLayoutWrapper>
+            </AppLayout>
+          </AuthProvider>
+        </SettingsProvider>
       </body>
     </html>
   )
