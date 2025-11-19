@@ -80,11 +80,13 @@ export default function WelcomePage() {
         background: "linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%)",
         backgroundAttachment: "fixed",
         minHeight: "100vh",
+        height: "100%",
         width: "100vw",
         maxWidth: "100vw",
         margin: 0,
         padding: 0,
         paddingBottom: 0,
+        marginBottom: 0,
         overflowX: "hidden",
         overflowY: "auto",
         boxSizing: "border-box",
@@ -592,15 +594,30 @@ export default function WelcomePage() {
           .main-page-footer {
             padding-bottom: max(clamp(16px, 3vw, 24px), env(safe-area-inset-bottom)) !important;
             margin-bottom: 0 !important;
+            margin-top: auto !important;
           }
           
           .main-page-container {
             padding-bottom: 0 !important;
             margin-bottom: 0 !important;
+            min-height: 100vh !important;
+            height: auto !important;
           }
           
           /* Ensure no gap below footer */
           body, html {
+            margin: 0 !important;
+            padding: 0 !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            height: 100% !important;
+            overflow-x: hidden !important;
+          }
+          
+          /* Remove any bottom spacing from viewport */
+          #__next {
+            margin: 0 !important;
+            padding: 0 !important;
             margin-bottom: 0 !important;
             padding-bottom: 0 !important;
           }
