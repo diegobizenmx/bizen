@@ -210,30 +210,6 @@ function BIZENLoginContent() {
         gap: "clamp(24px, 6vw, 60px)",
         flexWrap: "wrap" as const,
       }}>
-        <div style={{ flex: "0 0 auto", width: "100%", maxWidth: "600px", order: 1, display: "flex", justifyContent: "center" }}>
-          <div style={{
-            position: "relative",
-            background: "white",
-            borderRadius: "clamp(16px, 4vw, 32px)",
-            padding: "clamp(24px, 5vw, 50px)",
-            boxShadow: "0 24px 64px rgba(15, 98, 254, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08)",
-          }}>
-            <Image
-              src="/billy looking at the left.png"
-              alt="Billy"
-              width={320}
-              height={320}
-              style={{ 
-                display: "block",
-                borderRadius: "16px",
-                width: "100%",
-                height: "auto",
-                maxWidth: "clamp(240px, 40vw, 320px)",
-              }}
-              priority
-            />
-          </div>
-        </div>
 
         <div style={{
           width: "100%",
@@ -360,14 +336,6 @@ function BIZENLoginContent() {
           main > div {
             flex-direction: column !important;
             gap: 32px !important;
-          }
-          main > div > div:first-child {
-            order: 2;
-          }
-        }
-        @media (max-width: 1159px) {
-          main > div > div:first-child {
-            display: none !important;
           }
         }
       `}</style>

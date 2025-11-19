@@ -84,10 +84,11 @@ export default function WelcomePage() {
         maxWidth: "100vw",
         margin: 0,
         padding: 0,
+        paddingBottom: 0,
         overflowX: "hidden",
         overflowY: "auto",
         boxSizing: "border-box",
-      }}>
+      }} className="main-page-container">
       {/* Header */}
       <header style={{
         position: "fixed",
@@ -528,11 +529,18 @@ export default function WelcomePage() {
           }
           
           /* Image fixes */
+          .main-content > div:first-child {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+          }
           .main-content > div:first-child > div {
             padding: clamp(12px, 3vw, 20px) !important;
-            width: 100% !important;
+            width: auto !important;
             max-width: 100% !important;
             box-sizing: border-box !important;
+            margin: 0 auto !important;
           }
           .main-content > div:first-child img:not(.billy-image) {
             width: 100% !important;
@@ -575,6 +583,23 @@ export default function WelcomePage() {
             gap: clamp(8px, 2vw, 16px) !important;
             flex-wrap: wrap !important;
             padding: 0 16px !important;
+          }
+          
+          /* Fix footer gap on mobile */
+          .main-page-footer {
+            padding-bottom: max(clamp(16px, 3vw, 24px), env(safe-area-inset-bottom)) !important;
+            margin-bottom: 0 !important;
+          }
+          
+          .main-page-container {
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+          }
+          
+          /* Ensure no gap below footer */
+          body, html {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
           }
           
           /* Hero sections - Stack vertically on mobile (text first, image second) */
@@ -640,6 +665,19 @@ export default function WelcomePage() {
           .main-content > div:last-child > div:last-child a {
             padding: 12px 16px !important;
             font-size: 14px !important;
+            min-width: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+        }
+        
+        /* Fix button width on very small screens (320px-375px) */
+        @media (max-width: 375px) {
+          .main-content > div:last-child > div:last-child a {
+            min-width: auto !important;
+            width: 100% !important;
+            max-width: calc(100% - 24px) !important;
+            padding: 12px 16px !important;
           }
         }
         @media (min-width: 769px) {
@@ -679,6 +717,9 @@ export default function WelcomePage() {
           }
         }
         @media (min-width: 769px) and (max-width: 1024px) {
+          .main-content-wrapper {
+            padding-top: clamp(140px, 22vw, 240px) !important;
+          }
           .main-content {
             gap: clamp(40px, 6vw, 60px) !important;
           }
@@ -784,10 +825,12 @@ export default function WelcomePage() {
         zIndex: 10,
         width: "100%",
         padding: "clamp(16px, 3vw, 24px)",
+        paddingBottom: "max(clamp(16px, 3vw, 24px), env(safe-area-inset-bottom))",
         background: "rgba(255, 255, 255, 0.9)",
         backdropFilter: "blur(10px)",
         borderTop: "1px solid rgba(15, 98, 254, 0.1)",
-      }}>
+        marginBottom: 0,
+      }} className="main-page-footer">
         <div style={{
           maxWidth: "1200px",
           margin: "0 auto",

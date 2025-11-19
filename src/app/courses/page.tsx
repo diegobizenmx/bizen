@@ -1010,6 +1010,7 @@ export default function CoursesPage() {
       >
         {currentCourse && (
           <div
+            className="sticky-course-bar-content"
             style={{
               background: "#3B82F6",
               boxShadow: "0 6px 20px rgba(37, 99, 235, 0.5)",
@@ -1022,7 +1023,7 @@ export default function CoursesPage() {
               minWidth: "clamp(250px, 60vw, 400px)"
             }}
           >
-                    <div style={{
+                    <div className="course-number" style={{
               fontSize: "clamp(10px, 2vw, 12px)",
               fontWeight: 700,
               color: "rgba(255, 255, 255, 0.8)",
@@ -1034,7 +1035,7 @@ export default function CoursesPage() {
             }}>
               {t.courses.course} {currentCourse.order}
                       </div>
-                      <div style={{
+                      <div className="course-title-text" style={{
               fontSize: "clamp(16px, 3vw, 18px)",
               fontWeight: 800,
               color: "#fff",
@@ -1880,6 +1881,33 @@ export default function CoursesPage() {
             z-index: 9998 !important;
             pointer-events: auto !important;
             justify-content: center !important;
+          }
+          
+          /* Fixed size for course bar on mobile to fit long names */
+          .sticky-course-bar-content {
+            min-height: 80px !important;
+            height: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 16px 24px !important;
+            width: 90% !important;
+            max-width: calc(100vw - 48px) !important;
+            min-width: auto !important;
+          }
+          
+          /* Allow text wrapping on mobile for long course names */
+          .course-title-text {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            line-height: 1.3 !important;
+            max-width: 100% !important;
+          }
+          
+          .course-number {
+            white-space: nowrap !important;
           }
           
           /* Make preview panel overlay on mobile - positioned above island within usable space */
