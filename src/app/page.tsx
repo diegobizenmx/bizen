@@ -79,7 +79,7 @@ export default function WelcomePage() {
       <div style={{
         background: "linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%)",
         backgroundAttachment: "fixed",
-        minHeight: "100vh",
+        minHeight: "100dvh",
         width: "100%",
         margin: 0,
         padding: 0,
@@ -87,7 +87,7 @@ export default function WelcomePage() {
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
-      }} className="main-page-container">
+      }} className="main-wrapper main-page-container">
       {/* Header */}
       <header style={{
         position: "fixed",
@@ -585,20 +585,23 @@ export default function WelcomePage() {
             padding: 0 16px !important;
           }
           
-          /* Fix footer gap on mobile */
+          /* Fix footer gap on mobile - use dynamic viewport */
           .main-page-footer {
             margin: 0 !important;
             margin-top: auto !important;
+            margin-bottom: 0 !important;
             padding-bottom: env(safe-area-inset-bottom, 0) !important;
           }
           
+          .main-wrapper,
           .main-page-container {
             margin: 0 !important;
             padding: 0 !important;
             padding-bottom: 0 !important;
-            min-height: 100vh !important;
+            min-height: 100dvh !important; /* Dynamic viewport height for tall iPhones */
             display: flex !important;
             flex-direction: column !important;
+            background-color: #E6F0FF !important;
           }
           
           /* Ensure no gap below footer */
@@ -607,19 +610,21 @@ export default function WelcomePage() {
             padding: 0 !important;
             overflow-x: hidden !important;
             height: 100% !important;
+            background-color: #E6F0FF !important;
           }
           
           /* Remove any bottom spacing from viewport */
           #__next {
             margin: 0 !important;
             padding: 0 !important;
-            min-height: 100vh !important;
+            min-height: 100dvh !important; /* Dynamic viewport height */
             display: flex !important;
             flex-direction: column !important;
+            background-color: #E6F0FF !important;
           }
           
           /* Remove margin-bottom from all elements */
-          * {
+          section, div, p, * {
             margin-bottom: 0 !important;
           }
           
@@ -852,6 +857,7 @@ export default function WelcomePage() {
         borderTop: "1px solid rgba(15, 98, 254, 0.1)",
         margin: 0,
         marginTop: "auto",
+        marginBottom: 0,
       }} className="main-page-footer">
         <div style={{
           maxWidth: "1200px",
