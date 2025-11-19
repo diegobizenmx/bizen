@@ -197,16 +197,16 @@ export default function AssignmentsPage() {
         }
       `}</style>
       <div className="assignments-outer" style={{
-        position: "relative",
-        minHeight: "100vh",
-        paddingTop: 40,
-        paddingBottom: 80,
-        fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      position: "relative",
+      minHeight: "100vh",
+      paddingTop: 40,
+      paddingBottom: 80,
+      fontFamily: "Montserrat, sans-serif",
+      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
         backgroundAttachment: "fixed",
         width: "100%",
         boxSizing: "border-box"
-      }}>
+    }}>
       {/* Decorative Orbs */}
       <div style={{
         position: "fixed",
@@ -246,13 +246,13 @@ export default function AssignmentsPage() {
       }} />
 
         <main className="assignments-main" style={{ 
-          position: "relative",
-          margin: 0,
-          padding: "clamp(20px, 4vw, 40px)",
-          zIndex: 1,
-          fontFamily: "Montserrat, sans-serif",
-          boxSizing: "border-box"
-        }}>
+        position: "relative",
+      margin: 0,
+      padding: "clamp(20px, 4vw, 40px)",
+        zIndex: 1,
+      fontFamily: "Montserrat, sans-serif",
+      boxSizing: "border-box"
+    }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ 
@@ -474,8 +474,8 @@ export default function AssignmentsPage() {
           </p>
           </div>
       )}
-        </main>
-      </div>
+    </main>
+    </div>
     </>
   )
 }

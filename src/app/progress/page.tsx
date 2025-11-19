@@ -194,14 +194,14 @@ export default function ProgressPage() {
         boxSizing: "border-box"
       }}>
         <div className="progress-inner" style={{
-          position: "relative",
-          minHeight: "100vh",
-          paddingTop: 40,
-          paddingBottom: 80,
-          paddingRight: 40,
-          paddingLeft: 40,
+      position: "relative",
+      minHeight: "100vh",
+      paddingTop: 40,
+      paddingBottom: 80,
+      paddingRight: 40,
+      paddingLeft: 40,
           boxSizing: "border-box"
-        }}>
+    }}>
       {/* Decorative Orbs */}
       <div style={{
         position: "fixed",
@@ -561,8 +561,8 @@ export default function ProgressPage() {
             ))}
           </div>
         </div>
-        </main>
-        </div>
+      </main>
+    </div>
       </div>
     </>
   )

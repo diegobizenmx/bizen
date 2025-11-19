@@ -148,7 +148,7 @@ export default function LabPage() {
         }
       `}</style>
       <div className="business-lab-outer" style={{
-        width: "100%",
+      width: "100%",
         minHeight: "100vh",
         background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
         fontFamily: "Montserrat, sans-serif",
@@ -157,19 +157,19 @@ export default function LabPage() {
         boxSizing: "border-box"
       }}>
         <main className="business-lab-main" style={{
-          margin: "0 auto",
-          paddingTop: "40px",
-          paddingBottom: "40px",
-          paddingLeft: "clamp(20px, 4vw, 40px)",
-          paddingRight: "clamp(20px, 4vw, 40px)",
-          overflowX: "hidden",
-          overflowY: "visible",
-          minHeight: "100vh",
-          boxSizing: "border-box" as const,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center"
-        }}>
+      margin: "0 auto",
+      paddingTop: "40px",
+      paddingBottom: "40px",
+      paddingLeft: "clamp(20px, 4vw, 40px)",
+      paddingRight: "clamp(20px, 4vw, 40px)",
+      overflowX: "hidden",
+      overflowY: "visible",
+      minHeight: "100vh",
+      boxSizing: "border-box" as const,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    }}>
         {/* Header */}
         <div style={{ marginBottom: 32, width: "100%", maxWidth: "1200px", textAlign: "center" }}>
           <h1 style={{
@@ -620,7 +620,7 @@ export default function LabPage() {
             }
           }
         `}</style>
-        </main>
+      </main>
       </div>
     </>
   )

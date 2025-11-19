@@ -93,8 +93,8 @@ export default async function SimulatorsPage() {
       `}</style>
       <div className="simulators-outer" style={{
         width: "100%",
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
         fontFamily: "Montserrat, sans-serif",
         overflowX: "hidden",
         overflowY: "auto",
@@ -103,12 +103,12 @@ export default async function SimulatorsPage() {
         <main className="simulators-main" style={{
           margin: "0 auto",
           minHeight: "100vh",
-          fontFamily: "Montserrat, sans-serif",
-          width: "100%",
-          boxSizing: "border-box" as const,
-          overflowX: "hidden",
-          overflowY: "visible"
-        }}>
+      fontFamily: "Montserrat, sans-serif",
+      width: "100%",
+      boxSizing: "border-box" as const,
+      overflowX: "hidden",
+      overflowY: "visible"
+    }}>
       <Link href="/business-lab" style={{ textDecoration: "none" }}>
         <button style={{
           padding: "8px 16px",
@@ -241,7 +241,7 @@ export default async function SimulatorsPage() {
           </div>
         </div>
       </div>
-        </main>
+    </main>
       </div>
     </>
   )

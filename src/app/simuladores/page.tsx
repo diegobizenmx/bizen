@@ -107,15 +107,15 @@ export default function SimulatorsPage() {
         boxSizing: "border-box"
       }}>
         <main className="simuladores-main" style={{
-          paddingTop: "40px",
-          paddingBottom: "40px",
-          paddingLeft: "40px",
-          paddingRight: "40px",
-          minHeight: "100vh",
-          boxSizing: "border-box" as const,
-          overflowX: "hidden",
-          overflowY: "visible"
-        }}>
+      paddingTop: "40px",
+      paddingBottom: "40px",
+      paddingLeft: "40px",
+      paddingRight: "40px",
+      minHeight: "100vh",
+      boxSizing: "border-box" as const,
+      overflowX: "hidden",
+      overflowY: "visible"
+    }}>
       {/* Header */}
       <div style={{ marginBottom: 32, textAlign: "center" }}>
         <h1 style={{
@@ -329,7 +329,7 @@ export default function SimulatorsPage() {
           para explorar rápidamente cómo funcionan. Luego, personaliza con tus propios datos.
         </p>
       </div>
-        </main>
+    </main>
       </div>
     </>
   );
