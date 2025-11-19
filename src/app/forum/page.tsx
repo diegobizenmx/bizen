@@ -224,12 +224,16 @@ function ForumContent() {
             .forum-outer {
               padding-bottom: 65px !important;
               min-height: calc(100vh - 65px) !important;
+              overflow-y: auto !important;
+              -webkit-overflow-scrolling: touch !important;
             }
             .forum-container {
               width: 100% !important;
               max-width: 100% !important;
               margin-right: 0 !important;
               padding: clamp(16px, 4vw, 24px) !important;
+              overflow-y: auto !important;
+              -webkit-overflow-scrolling: touch !important;
             }
           }
           /* Tablet/iPad - no gap, sidebar overlays */
@@ -266,7 +270,10 @@ function ForumContent() {
           backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
           backgroundAttachment: "fixed",
           width: "100%",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          overflowX: "hidden",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch"
         }}>
           <div 
             ref={containerRef}
@@ -278,8 +285,9 @@ function ForumContent() {
               paddingBottom: 80,
               touchAction: "pan-y", // Allow vertical scrolling, enable gestures
               overflowX: "hidden",
-              overflowY: "visible",
-              boxSizing: "border-box"
+              overflowY: "auto",
+              boxSizing: "border-box",
+              WebkitOverflowScrolling: "touch"
             }}
           >
         <main style={{ 
@@ -305,7 +313,7 @@ function ForumContent() {
               fontWeight: 800,
               color: "#1E40AF"
             }}>
-              Foro Emprendedor
+              Foro
             </h1>
             <p style={{ margin: "8px 0 0", color: "#374151", fontSize: "clamp(14px, 3vw, 16px)", fontWeight: 600 }}>
               Comparte ideas, haz preguntas y aprende de otros emprendedores
@@ -828,12 +836,17 @@ function ForumContent() {
       
       /* Mobile specific styles */
       @media (max-width: 767px) {
+        .forum-outer {
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
         /* Ensure container allows scroll */
         .forum-container {
           position: relative !important;
           height: auto !important;
           min-height: 100vh !important;
-          overflow-y: visible !important;
+          overflow-y: auto !important;
           overflow-x: hidden !important;
           margin-right: 0 !important;
           padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;

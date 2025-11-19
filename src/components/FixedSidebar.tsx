@@ -622,7 +622,7 @@ export default function FixedSidebar() {
               >
                 <Image 
                   src="/rightmenuforo.png" 
-                  alt="Foro Emprendedor" 
+                  alt="Foro" 
                   width={40} 
                   height={40}
                   style={{
@@ -633,7 +633,7 @@ export default function FixedSidebar() {
                   }}
                 />
                 {showNavLabels && (
-                  <span className="nav-item-label">Foro Emprendedor</span>
+                  <span className="nav-item-label">Foro</span>
                 )}
               </button>
               </>

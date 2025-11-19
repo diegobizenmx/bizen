@@ -88,6 +88,8 @@ export default function WelcomePage() {
         overflowX: "hidden",
         overflowY: "auto",
         boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
       }} className="main-page-container">
       {/* Header */}
       <header style={{
@@ -156,6 +158,7 @@ export default function WelcomePage() {
         </nav>
       </header>
 
+      <main style={{ flex: 1, width: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{
         paddingTop: "clamp(64px, 12vw, 80px)", // Add padding to account for fixed header
         minHeight: "100vh",
@@ -818,6 +821,7 @@ export default function WelcomePage() {
 
       {/* Landing Page Content */}
       <LandingContent />
+      </main>
 
       {/* Footer */}
       <footer style={{
@@ -830,6 +834,7 @@ export default function WelcomePage() {
         backdropFilter: "blur(10px)",
         borderTop: "1px solid rgba(15, 98, 254, 0.1)",
         marginBottom: 0,
+        marginTop: "auto",
       }} className="main-page-footer">
         <div style={{
           maxWidth: "1200px",
