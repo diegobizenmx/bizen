@@ -34,6 +34,46 @@ body {
   }
 }
 
+/* Fix for mobile footer - ensure no gap on all iPhones including iPhone 15 Pro Max */
+@media (max-width: 767px) {
+  .mobile-footer-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+  
+  body:has(.mobile-footer-container) {
+    padding-bottom: calc(65px + max(env(safe-area-inset-bottom), 0px)) !important;
+  }
+  
+  /* Fallback for browsers that don't support :has() */
+  @supports not selector(:has(*)) {
+    body {
+      padding-bottom: calc(65px + max(env(safe-area-inset-bottom), 0px)) !important;
+    }
+  }
+}
+
+/* Ensure viewport respects safe areas on all iPhone models */
+@supports (padding: max(0px)) {
+  @media (max-width: 767px) {
+    body:has(.mobile-footer-container) {
+      padding-bottom: max(65px, calc(65px + env(safe-area-inset-bottom))) !important;
+    }
+    
+    .mobile-footer-container {
+      height: calc(65px + max(env(safe-area-inset-bottom), 0px)) !important;
+      padding-bottom: max(env(safe-area-inset-bottom), 0px) !important;
+    }
+  }
+}
+
 @media (min-width: 768px) {
   html {
     font-size: clamp(15px, 2.5vw, 16px);

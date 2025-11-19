@@ -83,6 +83,10 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
   const boardPadding = 28
   const boardWidth = boardPadding * 2 + (columns * spaceSize) + ((columns - 1) * gap)
   const boardHeight = boardPadding * 2 + (totalRows * spaceSize) + ((totalRows - 1) * gap)
+  
+  // Mobile scale factor to fit board completely on screen
+  // Account for padding, safe areas, and mobile footer
+  const mobileScale = `min(1, calc((100vw - 48px) / ${boardWidth}))`
 
   // Calculate position on rectangular board (Monopoly-style)
   const getSpacePosition = (index: number) => {
@@ -131,21 +135,9 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
         .game-board-wrapper {
           width: 100% !important;
           max-width: 100% !important;
-          overflow-x: auto !important;
+          overflow-x: visible !important;
           overflow-y: visible !important;
           -webkit-overflow-scrolling: touch !important;
-          scrollbar-width: thin !important;
-          scrollbar-color: rgba(0, 0, 0, 0.3) transparent !important;
-        }
-        .game-board-wrapper::-webkit-scrollbar {
-          height: 8px !important;
-        }
-        .game-board-wrapper::-webkit-scrollbar-track {
-          background: transparent !important;
-        }
-        .game-board-wrapper::-webkit-scrollbar-thumb {
-          background: rgba(0, 0, 0, 0.3) !important;
-          border-radius: 4px !important;
         }
         .game-board-inner {
           width: 100% !important;
@@ -153,7 +145,7 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           overflow-x: visible !important;
           overflow-y: visible !important;
           display: flex !important;
-          justify-content: flex-start !important;
+          justify-content: center !important;
           align-items: flex-start !important;
         }
         .game-board-surface {
@@ -162,16 +154,34 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
         }
         @media (max-width: 767px) {
           .game-board-wrapper {
-            padding: clamp(12px, 2vw, 20px) !important;
+            padding: clamp(8px, 2vw, 16px) !important;
           }
           .game-board-inner {
-            justify-content: flex-start !important;
+            justify-content: center !important;
+            align-items: center !important;
           }
           .game-board-surface {
-            transform: none !important;
+            transform: scale(${mobileScale}) !important;
+            transform-origin: center top !important;
             width: ${boardWidth}px !important;
             min-width: ${boardWidth}px !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
+          }
+          .game-board-space-label {
+            font-size: clamp(8px, 1.5vw, 11px) !important;
+          }
+          .game-board-space-icon {
+            font-size: clamp(24px, 5vw, 38px) !important;
+          }
+          .game-board-corner-icon {
+            font-size: clamp(32px, 6vw, 48px) !important;
+          }
+          .game-board-controls {
+            gap: clamp(12px, 3vw, 24px) !important;
+          }
+          .game-board-roll-button {
+            padding: clamp(12px, 2.5vw, 18px) clamp(24px, 5vw, 40px) !important;
+            font-size: clamp(14px, 3vw, 20px) !important;
           }
         }
         @media (min-width: 768px) and (max-width: 1024px) {
@@ -225,7 +235,7 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
             flexShrink: 0
           }}>
         {/* Center controls */}
-        <div style={{
+        <div className="game-board-controls" style={{
           position: 'absolute',
           top: '50%',
           left: '50%',
@@ -239,6 +249,7 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           <button
             onClick={onRollDice}
             disabled={!canRoll || isRolling}
+            className="game-board-roll-button"
             style={{
               background: isOnFastTrack ? '#fbbf24' : '#2563eb',
               color: 'white',
@@ -252,7 +263,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
               transition: 'all 0.2s',
               fontFamily: "'Montserrat', sans-serif",
               boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
-              animation: isRolling ? 'shake 0.5s infinite' : 'none'
+              animation: isRolling ? 'shake 0.5s infinite' : 'none',
+              whiteSpace: 'nowrap'
             }}
             onMouseEnter={(e) => {
               if (canRoll && !isRolling) {
@@ -304,8 +316,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
                 transformOrigin: 'center'
               }}
             >
-              <div style={{ fontSize: isCorner ? 48 : 38 }}>{space.icon}</div>
-              <div style={{
+              <div className={isCorner ? 'game-board-corner-icon' : 'game-board-space-icon'} style={{ fontSize: isCorner ? 48 : 38 }}>{space.icon}</div>
+              <div className="game-board-space-label" style={{
                 fontSize: isCorner ? 12 : 11,
                 color: '#1f2937',
                 fontWeight: isCorner ? 900 : 800,
@@ -326,25 +338,25 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
       {/* Legend */}
       <div style={{
         display: 'flex',
-        gap: 20,
-        marginTop: 20,
+        gap: 'clamp(12px, 3vw, 20px)',
+        marginTop: 'clamp(12px, 3vw, 20px)',
         justifyContent: 'center',
         flexWrap: 'wrap'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600 }}>
-          <div style={{ width: 24, height: 24, background: '#bfdbfe', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#bfdbfe', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Oportunidad</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600 }}>
-          <div style={{ width: 24, height: 24, background: '#a7f3d0', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#a7f3d0', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Payday</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600 }}>
-          <div style={{ width: 24, height: 24, background: '#ddd6fe', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#ddd6fe', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Mercado</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600 }}>
-          <div style={{ width: 24, height: 24, background: '#fecaca', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#fecaca', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Lujo</span>
         </div>
       </div>

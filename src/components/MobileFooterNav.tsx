@@ -71,8 +71,8 @@ export default function MobileFooterNav() {
           left: 0 !important;
           right: 0 !important;
           width: 100vw !important;
-          height: calc(65px + env(safe-area-inset-bottom)) !important;
-          padding-bottom: env(safe-area-inset-bottom) !important;
+          height: calc(65px + max(env(safe-area-inset-bottom), 0px)) !important;
+          padding-bottom: max(env(safe-area-inset-bottom), 0px) !important;
           background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
           border-top: 2px solid rgba(15, 98, 254, 0.2) !important;
           box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
@@ -80,6 +80,9 @@ export default function MobileFooterNav() {
           font-family: Montserrat, sans-serif !important;
           display: block !important;
           margin: 0 !important;
+          transform: translateZ(0) !important;
+          -webkit-transform: translateZ(0) !important;
+          will-change: transform !important;
         }
         .mobile-footer-inner {
           display: flex !important;

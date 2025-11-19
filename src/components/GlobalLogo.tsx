@@ -7,16 +7,10 @@ export default function GlobalLogo() {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Don't show on auth pages, landing, and courses page
-  const isAuthPage = pathname === '/login' || 
-                     pathname === '/signup' || 
-                     pathname === '/reset-password' ||
-                     pathname === '/forgot-password' ||
-                     pathname === '/bizen/signup' ||
-                     pathname === '/' ||
-                     pathname === '/courses'
+  // Only show on courses page
+  const shouldShowLogo = pathname === '/courses'
 
-  if (isAuthPage) return null
+  if (!shouldShowLogo) return null
 
   const handleClick = () => {
     router.push("/courses")
@@ -32,7 +26,7 @@ export default function GlobalLogo() {
   // On other pages: standard 16px from top
   const topPosition = isCoursesPage ? 8 : 16
   const leftPosition = 16 // Always at left edge  
-  const zIndexValue = 1001
+  const zIndexValue = isCoursesPage ? 100000 : 1001 // Higher z-index on courses page to appear above all elements
 
   return (
     <div 

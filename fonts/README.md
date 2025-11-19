@@ -23,3 +23,4 @@ La fuente se cargará automáticamente usando Next.js font optimization desde `s
 
 La fuente se aplicará automáticamente a toda la aplicación una vez que los archivos estén en su lugar.
 
+

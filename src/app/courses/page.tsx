@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { useSettings } from "@/contexts/SettingsContext"
@@ -47,7 +47,6 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
       data-lesson-id={lesson.id}
       style={{
         position: "relative",
-        transform: `translateX(${offsetX}px)`,
         width: "100%",
         maxWidth: "100%",
         display: "flex",
@@ -501,36 +500,75 @@ export default function CoursesPage() {
   useEffect(() => {
     if (courses.length === 0) return
 
-    const observerOptions = {
-      root: null,
-      rootMargin: '-150px 0px -50% 0px', // Trigger when course is near top
-      threshold: 0
-    }
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const courseId = entry.target.id.replace('course-', '')
-          const course = courses.find(c => c.id === courseId)
-          if (course && course.id !== currentCourse?.id) {
-            console.log(`📍 Now viewing: Curso ${course.order} - ${course.title}`)
-            setCurrentCourse(course)
-            
-            // Only update active level automatically if user didn't manually change it
-            // Wait a bit after manual change to allow automatic updates again
-            if (!isManualLevelChange) {
-            // Update active level based on course order
-            if (course.order >= 1 && course.order <= 3) {
-              setActiveLevel(1) // Principiante
-            } else if (course.order >= 4 && course.order <= 7) {
-              setActiveLevel(2) // Intermedio
-            } else if (course.order >= 8) {
-              setActiveLevel(3) // Avanzado
-              }
+    const checkCurrentCourse = () => {
+      const triggerPoint = 120 // Position from top where we check (accounting for sticky bar)
+      let bestCourse: Course | null = null
+      let bestDistance = Infinity
+      
+      courses.forEach((course) => {
+        const element = document.getElementById(`course-${course.id}`)
+        if (!element) return
+        
+        const rect = element.getBoundingClientRect()
+        const courseTop = rect.top
+        const courseBottom = rect.bottom
+        
+        // Check if course is near the trigger point
+        // We want the course whose top is closest to the trigger point but not too far below
+        if (courseTop <= triggerPoint + 100 && courseBottom > triggerPoint - 50) {
+          // Calculate distance from trigger point
+          const distance = Math.abs(courseTop - triggerPoint)
+          
+          // Prefer courses that are at or just above the trigger point
+          if (courseTop <= triggerPoint) {
+            // Course is at or above trigger - this is ideal
+            if (distance < bestDistance) {
+              bestDistance = distance
+              bestCourse = course
+            }
+          } else if (courseTop < triggerPoint + 150) {
+            // Course is just below trigger - less ideal but acceptable
+            const adjustedDistance = distance + 100 // Penalty for being below
+            if (adjustedDistance < bestDistance) {
+              bestDistance = adjustedDistance
+              bestCourse = course
             }
           }
         }
       })
+      
+      // Only update if we found a course and it's different from current
+      if (bestCourse && bestCourse.id !== currentCourse?.id) {
+        console.log(`📍 Now viewing: Curso ${bestCourse.order} - ${bestCourse.title}`)
+        setCurrentCourse(bestCourse)
+        
+        // Only update active level automatically if user didn't manually change it
+        if (!isManualLevelChange) {
+          // Update active level based on course order
+          if (bestCourse.order >= 1 && bestCourse.order <= 3) {
+            setActiveLevel(1) // Principiante
+          } else if (bestCourse.order >= 4 && bestCourse.order <= 7) {
+            setActiveLevel(2) // Intermedio
+          } else if (bestCourse.order >= 8) {
+            setActiveLevel(3) // Avanzado
+          }
+        }
+      }
+    }
+
+    // Check immediately
+    checkCurrentCourse()
+
+    // Also use Intersection Observer for scroll events
+    const observerOptions = {
+      root: null,
+      rootMargin: '-120px 0px -50% 0px',
+      threshold: [0, 0.1, 0.2, 0.3]
+    }
+
+    const observerCallback = () => {
+      // Use a small debounce to avoid too many updates
+      setTimeout(checkCurrentCourse, 50)
     }
 
     const observer = new IntersectionObserver(observerCallback, observerOptions)
@@ -543,7 +581,17 @@ export default function CoursesPage() {
       }
     })
 
-    return () => observer.disconnect()
+    // Also listen to scroll events for more accuracy
+    const handleScroll = () => {
+      requestAnimationFrame(checkCurrentCourse)
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [courses, currentCourse, isManualLevelChange])
 
   // Track scroll direction and reveal islands on scroll up
@@ -1031,7 +1079,52 @@ export default function CoursesPage() {
           alignItems: "center"
         }}>
           {courses.map((course) => (
-            <div key={course.id} id={`course-${course.id}`} style={{ marginBottom: "clamp(40px, 8vw, 80px)", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div key={course.id} id={`course-${course.id}`} style={{ 
+              marginBottom: "clamp(40px, 8vw, 80px)", 
+              marginTop: course.order === 1 ? "clamp(100px, 15vw, 140px)" : "0",
+              width: "100%", 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center" 
+            }}>
+              {/* Course Title Separator - Outside gap container */}
+              {course.lessons.length > 0 && (
+                <div style={{
+                  width: "100%",
+                  maxWidth: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "clamp(16px, 3vw, 24px)",
+                  marginBottom: "clamp(10px, 2vw, 15px)",
+                  marginTop: "0",
+                  paddingLeft: "0",
+                  paddingRight: "0"
+                }}>
+                  <div style={{
+                    flex: 1,
+                    height: "1px",
+                    background: "#9CA3AF",
+                    maxWidth: "none"
+                  }} />
+                  <div style={{
+                    fontSize: "clamp(14px, 2.5vw, 18px)",
+                    fontWeight: 600,
+                    color: "#6B7280",
+                    whiteSpace: "nowrap",
+                    padding: "0 clamp(12px, 2vw, 16px)",
+                    flexShrink: 0
+                  }}>
+                    {course.title}
+                  </div>
+                  <div style={{
+                    flex: 1,
+                    height: "1px",
+                    background: "#9CA3AF",
+                    maxWidth: "none"
+                  }} />
+                </div>
+              )}
 
               {/* Lessons in Smooth Curve */}
               <div style={{
@@ -1039,7 +1132,7 @@ export default function CoursesPage() {
                     flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "clamp(40px, 8vw, 80px)",
+                gap: "clamp(30px, 6vw, 60px)",
                 width: "100%",
                 maxWidth: "100%",
                 overflow: "visible",
@@ -1106,6 +1199,7 @@ export default function CoursesPage() {
             const isIslandVisible = wasRevealedOnScrollUp
             
             return (
+              <React.Fragment key={`${lesson.id}-fragment`}>
               <div
                       key={lesson.id}
                       id={`lesson-${lesson.id}`}
@@ -1117,9 +1211,16 @@ export default function CoursesPage() {
                         position: "relative"
                       }}
                     >
+                      <div style={{
+                        position: "relative",
+                        transform: `translateX(${offsetX}px)`,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                      }}>
                       <LessonIsland 
                         lesson={lesson}
-                        offsetX={offsetX}
+                        offsetX={0}
                         isNext={isNext}
                         isVisible={isIslandVisible}
                         onClick={() => {
@@ -1131,57 +1232,56 @@ export default function CoursesPage() {
                         }}
                       />
                       
-                      {/* Preview Panel - Alternates between right and left */}
+                      {/* Preview Panel - Positioned within usable space */}
                       <AnimatePresence>
                         {isSelected && (
                           <motion.div
                             className="lesson-preview-panel"
-                            initial={{ opacity: 0, x: showOnRight ? -10 : 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: showOnRight ? -10 : 10 }}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
                             style={{
                     position: "absolute",
-                              top: "0",
-                              [showOnRight ? 'left' : 'right']: showOnRight 
-                                ? `calc(50% + ${offsetX}px + clamp(60px, 12.5vw, 90px) + clamp(25px, 5vw, 35px))`
-                                : `calc(50% - ${offsetX}px + clamp(60px, 12.5vw, 90px) + clamp(25px, 5vw, 35px))`,
-                              transform: "translateY(0)",
-                              width: "clamp(200px, 45vw, 260px)",
-                              maxWidth: "calc(100vw - 40px)",
+                              top: "clamp(-150px, -20vw, -170px)",
+                              left: "50%",
+                              transform: "translateX(-50%)",
+                              width: "clamp(180px, 40vw, 240px)",
+                              maxWidth: "calc(100vw - 48px)",
                               background: "rgba(224, 242, 254, 0.95)",
                               borderRadius: "clamp(10px, 1.5vw, 12px)",
                               boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08)",
-                              zIndex: 100,
+                              zIndex: 10002,
                               border: "2px solid rgba(147, 197, 253, 0.5)",
                               backdropFilter: "blur(12px)",
                               overflow: "visible",
-                              boxSizing: "border-box"
+                              boxSizing: "border-box",
+                              pointerEvents: "auto"
                             }}
                           >
-                            {/* Tail/Pointer - points left if on right, points right if on left */}
+                            {/* Tail/Pointer - points to the island */}
                     <div className="lesson-preview-tail" style={{
                       position: "absolute",
-                              top: "50%",
-                      [showOnRight ? 'left' : 'right']: "-20px",
-                              transform: "translateY(-50%)",
+                              bottom: "-20px",
+                              left: "50%",
+                              transform: "translateX(-50%)",
                               width: 0,
                               height: 0,
-                              borderTop: "20px solid transparent",
-                              borderBottom: "20px solid transparent",
-                              [showOnRight ? 'borderRight' : 'borderLeft']: "20px solid #E5E7EB",
-                              zIndex: 101
+                              borderLeft: "20px solid transparent",
+                              borderRight: "20px solid transparent",
+                              borderTop: "20px solid #E5E7EB",
+                              zIndex: 10003
                             }} />
                       <div className="lesson-preview-tail" style={{
                 position: "absolute",
-                              top: "50%",
-                        [showOnRight ? 'left' : 'right']: "-17px",
-                        transform: "translateY(-50%)",
+                              bottom: "-17px",
+                              left: "50%",
+                        transform: "translateX(-50%)",
                         width: 0,
                         height: 0,
-                              borderTop: "18px solid transparent",
-                              borderBottom: "18px solid transparent",
-                              [showOnRight ? 'borderRight' : 'borderLeft']: "18px solid #F3F4F6",
-                              zIndex: 102
+                              borderLeft: "18px solid transparent",
+                              borderRight: "18px solid transparent",
+                              borderTop: "18px solid rgba(224, 242, 254, 0.95)",
+                              zIndex: 10004
                             }} />
                             
                             {/* Preview Content */}
@@ -1222,9 +1322,16 @@ export default function CoursesPage() {
                                         router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}`)
                                       }
                                     }}
-                                    style={{ width: "100%", fontSize: "clamp(11px, 2vw, 12px)", padding: "clamp(8px, 1.5vw, 10px) clamp(10px, 2vw, 12px)" }}
+                                    style={{ 
+                                      width: "auto", 
+                                      fontSize: "clamp(10px, 1.8vw, 11px)", 
+                                      padding: "clamp(6px, 1.2vw, 8px) clamp(16px, 3vw, 20px)",
+                                      background: "#3B82F6",
+                                      color: "white",
+                                      minWidth: "auto"
+                                    }}
                                   >
-                                    {lesson.isCompleted ? t.courses.review : t.courses.begin}
+                                    Go!
                                   </Button>
                                 </motion.div>
                               )}
@@ -1250,7 +1357,9 @@ export default function CoursesPage() {
                           </motion.div>
                         )}
                       </AnimatePresence>
+                      </div>
               </div>
+              </React.Fragment>
             )
           })}
         </div>
@@ -1261,6 +1370,36 @@ export default function CoursesPage() {
 
 
       <style>{`
+        /* Ensure GlobalLogo is visible on courses page */
+        .global-logo-container {
+          z-index: 100000 !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          display: inline-flex !important;
+        }
+        
+        /* Course title separator - use full usable width */
+        div[style*="gap: clamp(16px, 3vw, 24px)"][style*="marginBottom: clamp(10px"] {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        
+        /* On tablet/iPad - account for sidebars */
+        @media (min-width: 768px) and (max-width: 1160px) {
+          div[style*="gap: clamp(16px, 3vw, 24px)"][style*="marginBottom: clamp(10px"] {
+            width: calc(100vw - clamp(180px, 18vw, 200px) - 160px) !important;
+            max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px) !important;
+          }
+        }
+        
+        /* On desktop - account for sidebars */
+        @media (min-width: 1161px) {
+          div[style*="gap: clamp(16px, 3vw, 24px)"][style*="marginBottom: clamp(10px"] {
+            width: calc(100vw - clamp(180px, 20vw, 240px) - 280px) !important;
+            max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px) !important;
+          }
+        }
+        
         @keyframes shimmer {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
@@ -1369,6 +1508,11 @@ export default function CoursesPage() {
             right: 160px !important;
             justify-content: center !important;
           }
+          
+          /* Constrain preview panel to usable space on tablet */
+          .lesson-preview-panel {
+            max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 48px) !important;
+          }
         }
         
         /* Adjust main content padding for desktop (1025px+) - with left panel */
@@ -1376,7 +1520,7 @@ export default function CoursesPage() {
           main[style*="paddingLeft"],
           main[style*="padding-left"] {
             padding-left: clamp(180px, 20vw, 240px) !important;
-            padding-right: 320px !important;
+            padding-right: 280px !important;
             display: flex !important;
             justify-content: center !important;
           }
@@ -1384,7 +1528,7 @@ export default function CoursesPage() {
           /* Ensure island path container fits in available space on desktop */
           div[style*="maxWidth: 800px"],
           div[style*="maxWidth: 800"] {
-            max-width: calc(100vw - clamp(180px, 20vw, 240px) - 320px - 48px) !important;
+            max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 48px) !important;
             width: 100% !important;
             margin: 0 auto !important;
             display: flex !important;
@@ -1395,8 +1539,13 @@ export default function CoursesPage() {
           /* Adjust sticky course bar for desktop - centered in usable space */
           .sticky-course-bar {
             left: clamp(180px, 20vw, 240px) !important;
-            right: 320px !important;
+            right: 280px !important;
             justify-content: center !important;
+          }
+          
+          /* Constrain preview panel to usable space on desktop */
+          .lesson-preview-panel {
+            max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 64px) !important;
           }
         }
         
@@ -1733,21 +1882,10 @@ export default function CoursesPage() {
             justify-content: center !important;
           }
           
-          /* Make preview panel full width on mobile - ensure it's not cut off */
+          /* Make preview panel overlay on mobile - positioned above island within usable space */
           .lesson-preview-panel {
-            position: relative !important;
-            top: auto !important;
-            left: auto !important;
-            right: auto !important;
-            transform: none !important;
-            width: calc(100vw - 32px) !important;
-            max-width: calc(100vw - 32px) !important;
-            margin-top: 20px !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            margin-bottom: 20px !important;
-            overflow: visible !important;
-            box-sizing: border-box !important;
+            width: clamp(160px, 38vw, 220px) !important;
+            max-width: calc(100vw - 48px) !important;
           }
           
           /* Ensure parent container doesn't clip */
@@ -1863,7 +2001,7 @@ export default function CoursesPage() {
             /* Center islands container on desktop - centered in usable space */
             div[style*="maxWidth: 800px"],
             div[style*="maxWidth: 800"] {
-              max-width: calc(100vw - clamp(180px, 20vw, 240px) - 320px - 48px) !important; /* Full width sidebar 320px */
+              max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 48px) !important; /* Full width sidebar 280px */
               width: 100% !important;
               margin: 0 auto !important;
               overflow-x: hidden !important; /* Prevent horizontal overflow */
@@ -1871,6 +2009,18 @@ export default function CoursesPage() {
               display: flex !important;
               flex-direction: column !important;
               align-items: center !important;
+            }
+            
+            /* Adjust sticky course bar for desktop - centered in usable space */
+            .sticky-course-bar {
+              left: clamp(180px, 20vw, 240px) !important;
+              right: 280px !important;
+              justify-content: center !important;
+            }
+            
+            /* Constrain preview panel to usable space on desktop */
+            .lesson-preview-panel {
+              max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 64px) !important;
             }
             
             /* Container for lessons - prevent overflow on desktop */
@@ -1921,6 +2071,11 @@ export default function CoursesPage() {
               display: flex !important;
               flex-direction: column !important;
               align-items: center !important;
+            }
+            
+            /* Constrain preview panel to usable space on iPad */
+            .lesson-preview-panel {
+              max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 48px) !important;
             }
             
             /* Container for lessons - prevent overflow on iPad */

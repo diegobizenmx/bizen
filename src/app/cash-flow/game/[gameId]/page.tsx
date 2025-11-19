@@ -828,17 +828,28 @@ export default function CashFlowGamePage() {
       <style>{`
         @media (max-width: 767px) {
           .cashflow-game-container {
-            padding: clamp(12px, 3vw, 20px) !important;
+            padding: clamp(8px, 2vw, 16px) !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
           .cashflow-game-main {
-            padding: clamp(12px, 3vw, 20px) !important;
-            padding-bottom: 140px !important;
+            padding: clamp(8px, 2vw, 16px) !important;
+            padding-bottom: calc(140px + max(env(safe-area-inset-bottom), 0px)) !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
           }
           .game-board-container {
             width: 100% !important;
             max-width: 100% !important;
-            overflow-x: auto !important;
-            padding: clamp(12px, 2vw, 20px) !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            padding: clamp(4px, 1vw, 12px) !important;
+            margin: 0 auto !important;
+          }
+          .game-board-wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
           }
         }
         @media (min-width: 768px) {
@@ -874,29 +885,34 @@ export default function CashFlowGamePage() {
           background: player.isOnFastTrack 
             ? "linear-gradient(135deg, #fbbf24, #f59e0b)"
             : "white",
-          borderRadius: 16,
-          padding: "20px 24px",
-          marginBottom: 20,
+          borderRadius: "clamp(12px, 2vw, 16px)",
+          padding: "clamp(12px, 2.5vw, 20px) clamp(16px, 3vw, 24px)",
+          marginBottom: "clamp(12px, 2vw, 20px)",
           boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          border: player.isOnFastTrack ? "3px solid #f59e0b" : "none"
+          border: player.isOnFastTrack ? "3px solid #f59e0b" : "none",
+          flexWrap: "wrap",
+          gap: "clamp(8px, 2vw, 12px)"
         }}>
-          <div>
+          <div style={{ flex: "1 1 auto", minWidth: 0 }}>
             <h1 style={{
-              fontSize: 28,
+              fontSize: "clamp(20px, 4vw, 28px)",
               fontWeight: 900,
               margin: 0,
-              color: player.isOnFastTrack ? "#f59e0b" : "#2563eb"
+              color: player.isOnFastTrack ? "#f59e0b" : "#2563eb",
+              lineHeight: 1.2
             }}>
               {player.isOnFastTrack ? "⚡ FAST TRACK" : "CASHFLOW"}
             </h1>
             <div style={{ 
-              fontSize: 14, 
+              fontSize: "clamp(11px, 2.5vw, 14px)", 
               color: player.isOnFastTrack ? "#78350f" : "#666", 
               marginTop: 4,
-              fontWeight: player.isOnFastTrack ? 700 : 400
+              fontWeight: player.isOnFastTrack ? 700 : 400,
+              lineHeight: 1.4,
+              wordBreak: "break-word"
             }}>
               {player.profession.name} • Turno {player.currentTurn}
               {player.isOnFastTrack && ` • Meta: $50K ingreso pasivo`}
@@ -905,22 +921,24 @@ export default function CashFlowGamePage() {
           
           <div style={{
             display: "flex",
-            gap: 16,
-            alignItems: "center"
+            gap: "clamp(8px, 2vw, 16px)",
+            alignItems: "center",
+            flexShrink: 0
           }}>
             <button
               onClick={openHelp}
               style={{
-                padding: "8px 16px",
+                padding: "clamp(6px, 1.5vw, 8px) clamp(12px, 2.5vw, 16px)",
                 background: "#eff6ff",
                 color: "#2563eb",
                 border: "1px solid #3b82f6",
-                borderRadius: 12,
-                fontSize: 14,
+                borderRadius: "clamp(8px, 1.5vw, 12px)",
+                fontSize: "clamp(11px, 2.5vw, 14px)",
                 fontWeight: 700,
                 cursor: "pointer",
                 fontFamily: "'Montserrat', sans-serif",
-                transition: "all 0.2s"
+                transition: "all 0.2s",
+                whiteSpace: "nowrap"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#dbeafe"
@@ -938,11 +956,12 @@ export default function CashFlowGamePage() {
                 : player.hasEscapedRatRace 
                   ? "linear-gradient(135deg, #10b981, #059669)" 
                   : "#f3f4f6",
-              padding: "8px 16px",
-              borderRadius: 12,
+              padding: "clamp(6px, 1.5vw, 8px) clamp(12px, 2.5vw, 16px)",
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
               fontWeight: 700,
-              fontSize: 14,
-              color: (player.hasEscapedRatRace || player.isOnFastTrack) ? "white" : "#666"
+              fontSize: "clamp(11px, 2.5vw, 14px)",
+              color: (player.hasEscapedRatRace || player.isOnFastTrack) ? "white" : "#666",
+              whiteSpace: "nowrap"
             }}>
               {player.isOnFastTrack 
                 ? "⚡ Fast Track" 
@@ -955,21 +974,21 @@ export default function CashFlowGamePage() {
 
         <div style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 20,
-          marginBottom: 20
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gap: "clamp(12px, 2.5vw, 20px)",
+          marginBottom: "clamp(12px, 2.5vw, 20px)"
         }}>
           {/* Financial Statement */}
           <div style={{
             background: "white",
-            borderRadius: 16,
-            padding: 24,
+            borderRadius: "clamp(12px, 2vw, 16px)",
+            padding: "clamp(16px, 3vw, 24px)",
             boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
           }}>
             <h2 style={{
-              fontSize: 20,
+              fontSize: "clamp(16px, 3vw, 20px)",
               fontWeight: 800,
-              margin: "0 0 16px",
+              margin: "0 0 clamp(12px, 2vw, 16px)",
               color: "#333"
             }}>
               Estado Financiero
@@ -978,23 +997,23 @@ export default function CashFlowGamePage() {
             {/* Income */}
             <div style={{
               background: "#ecfdf5",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 16
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
+              padding: "clamp(12px, 2vw, 16px)",
+              marginBottom: "clamp(12px, 2vw, 16px)"
             }}>
               <div style={{
-                fontSize: 14,
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 fontWeight: 700,
                 color: "#059669",
-                marginBottom: 12
+                marginBottom: "clamp(8px, 1.5vw, 12px)"
               }}>
                 INGRESOS
               </div>
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 8,
-                fontSize: 14
+                marginBottom: "clamp(6px, 1vw, 8px)",
+                fontSize: "clamp(12px, 2.5vw, 14px)"
               }}>
                 <span>Salario:</span>
                 <span style={{ fontWeight: 700 }}>
@@ -1004,8 +1023,8 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 8,
-                fontSize: 14
+                marginBottom: "clamp(6px, 1vw, 8px)",
+                fontSize: "clamp(12px, 2.5vw, 14px)"
               }}>
                 <span>Ingreso Pasivo:</span>
                 <span style={{ fontWeight: 700, color: "#10b981" }}>
@@ -1015,9 +1034,9 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                paddingTop: 12,
+                paddingTop: "clamp(8px, 1.5vw, 12px)",
                 borderTop: "2px solid #059669",
-                fontSize: 16,
+                fontSize: "clamp(14px, 2.5vw, 16px)",
                 fontWeight: 800
               }}>
                 <span>Total:</span>
@@ -1028,23 +1047,23 @@ export default function CashFlowGamePage() {
             {/* Expenses */}
             <div style={{
               background: "#fef2f2",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 16
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
+              padding: "clamp(12px, 2vw, 16px)",
+              marginBottom: "clamp(12px, 2vw, 16px)"
             }}>
               <div style={{
-                fontSize: 14,
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 fontWeight: 700,
                 color: "#dc2626",
-                marginBottom: 12
+                marginBottom: "clamp(8px, 1.5vw, 12px)"
               }}>
                 GASTOS
               </div>
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 6,
-                fontSize: 13
+                marginBottom: "clamp(4px, 1vw, 6px)",
+                fontSize: "clamp(11px, 2.3vw, 13px)"
               }}>
                 <span>Impuestos:</span>
                 <span>${player.profession.taxes.toLocaleString()}</span>
@@ -1052,8 +1071,8 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 6,
-                fontSize: 13
+                marginBottom: "clamp(4px, 1vw, 6px)",
+                fontSize: "clamp(11px, 2.3vw, 13px)"
               }}>
                 <span>Hipoteca:</span>
                 <span>${player.profession.homeMortgagePayment.toLocaleString()}</span>
@@ -1061,8 +1080,8 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 6,
-                fontSize: 13
+                marginBottom: "clamp(4px, 1vw, 6px)",
+                fontSize: "clamp(11px, 2.3vw, 13px)"
               }}>
                 <span>Préstamos escolares:</span>
                 <span>${player.profession.schoolLoanPayment.toLocaleString()}</span>
@@ -1070,8 +1089,8 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 6,
-                fontSize: 13
+                marginBottom: "clamp(4px, 1vw, 6px)",
+                fontSize: "clamp(11px, 2.3vw, 13px)"
               }}>
                 <span>Préstamo auto:</span>
                 <span>${player.profession.carLoanPayment.toLocaleString()}</span>
@@ -1079,8 +1098,8 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 6,
-                fontSize: 13
+                marginBottom: "clamp(4px, 1vw, 6px)",
+                fontSize: "clamp(11px, 2.3vw, 13px)"
               }}>
                 <span>Tarjetas crédito:</span>
                 <span>${player.profession.creditCardPayment.toLocaleString()}</span>
@@ -1088,8 +1107,8 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginBottom: 6,
-                fontSize: 13
+                marginBottom: "clamp(4px, 1vw, 6px)",
+                fontSize: "clamp(11px, 2.3vw, 13px)"
               }}>
                 <span>Otros gastos:</span>
                 <span>${player.profession.otherExpenses.toLocaleString()}</span>
@@ -1098,8 +1117,8 @@ export default function CashFlowGamePage() {
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  marginBottom: 6,
-                  fontSize: 13
+                  marginBottom: "clamp(4px, 1vw, 6px)",
+                  fontSize: "clamp(11px, 2.3vw, 13px)"
                 }}>
                   <span>Hijos ({player.numChildren}):</span>
                   <span>${(player.profession.childExpense * player.numChildren).toLocaleString()}</span>
@@ -1109,8 +1128,8 @@ export default function CashFlowGamePage() {
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  marginBottom: 6,
-                  fontSize: 13
+                  marginBottom: "clamp(4px, 1vw, 6px)",
+                  fontSize: "clamp(11px, 2.3vw, 13px)"
                 }}>
                   <span>Préstamos bancarios ({player.liabilities.length}):</span>
                   <span>${loanPayments.toLocaleString()}</span>
@@ -1119,9 +1138,9 @@ export default function CashFlowGamePage() {
               <div style={{
                 display: "flex",
                 justifyContent: "space-between",
-                paddingTop: 12,
+                paddingTop: "clamp(8px, 1.5vw, 12px)",
                 borderTop: "2px solid #dc2626",
-                fontSize: 16,
+                fontSize: "clamp(14px, 2.5vw, 16px)",
                 fontWeight: 800
               }}>
                 <span>Total:</span>
@@ -1134,20 +1153,20 @@ export default function CashFlowGamePage() {
               background: cashFlow > 0 
                 ? "linear-gradient(135deg, #10b981, #059669)" 
                 : "linear-gradient(135deg, #ef4444, #dc2626)",
-              borderRadius: 12,
-              padding: 16,
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
+              padding: "clamp(12px, 2vw, 16px)",
               color: "white"
             }}>
               <div style={{
-                fontSize: 14,
+                fontSize: "clamp(11px, 2.5vw, 14px)",
                 fontWeight: 700,
-                marginBottom: 8,
+                marginBottom: "clamp(6px, 1vw, 8px)",
                 opacity: 0.9
               }}>
                 FLUJO DE EFECTIVO MENSUAL
               </div>
               <div style={{
-                fontSize: 32,
+                fontSize: "clamp(24px, 5vw, 32px)",
                 fontWeight: 900
               }}>
                 ${cashFlow.toLocaleString()}
@@ -1157,12 +1176,12 @@ export default function CashFlowGamePage() {
             {/* Active Loans */}
             {player.liabilities && player.liabilities.length > 0 && (
               <div style={{
-                marginTop: 16
+                marginTop: "clamp(12px, 2vw, 16px)"
               }}>
                 <h3 style={{
-                  fontSize: 16,
+                  fontSize: "clamp(14px, 2.5vw, 16px)",
                   fontWeight: 800,
-                  margin: "0 0 12px",
+                  margin: "0 0 clamp(8px, 1.5vw, 12px)",
                   color: "#333"
                 }}>
                   💳 Préstamos Activos
@@ -1218,14 +1237,14 @@ export default function CashFlowGamePage() {
           {/* Assets & Cash */}
           <div style={{
             background: "white",
-            borderRadius: 16,
-            padding: 24,
+            borderRadius: "clamp(12px, 2vw, 16px)",
+            padding: "clamp(16px, 3vw, 24px)",
             boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
           }}>
             <h2 style={{
-              fontSize: 20,
+              fontSize: "clamp(16px, 3vw, 20px)",
               fontWeight: 800,
-              margin: "0 0 16px",
+              margin: "0 0 clamp(12px, 2vw, 16px)",
               color: "#333"
             }}>
               Activos
@@ -1233,21 +1252,21 @@ export default function CashFlowGamePage() {
 
             <div style={{
               background: "#f0fdf4",
-              borderRadius: 12,
-              padding: 20,
-              marginBottom: 16,
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
+              padding: "clamp(16px, 2.5vw, 20px)",
+              marginBottom: "clamp(12px, 2vw, 16px)",
               textAlign: "center"
             }}>
               <div style={{
-                fontSize: 14,
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 color: "#059669",
                 fontWeight: 700,
-                marginBottom: 8
+                marginBottom: "clamp(6px, 1vw, 8px)"
               }}>
                 EFECTIVO
               </div>
               <div style={{
-                fontSize: 36,
+                fontSize: "clamp(28px, 6vw, 36px)",
                 fontWeight: 900,
                 color: "#10b981"
               }}>
@@ -1257,21 +1276,21 @@ export default function CashFlowGamePage() {
 
             <div style={{
               background: "#fefce8",
-              borderRadius: 12,
-              padding: 20,
-              marginBottom: 16,
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
+              padding: "clamp(16px, 2.5vw, 20px)",
+              marginBottom: "clamp(12px, 2vw, 16px)",
               textAlign: "center"
             }}>
               <div style={{
-                fontSize: 14,
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 color: "#ca8a04",
                 fontWeight: 700,
-                marginBottom: 8
+                marginBottom: "clamp(6px, 1vw, 8px)"
               }}>
                 AHORROS
               </div>
               <div style={{
-                fontSize: 28,
+                fontSize: "clamp(22px, 5vw, 28px)",
                 fontWeight: 900,
                 color: "#eab308"
               }}>
@@ -1281,16 +1300,16 @@ export default function CashFlowGamePage() {
 
             <div style={{
               background: "#eff6ff",
-              borderRadius: 12,
-              padding: 16,
-              maxHeight: 300,
+              borderRadius: "clamp(8px, 1.5vw, 12px)",
+              padding: "clamp(12px, 2vw, 16px)",
+              maxHeight: "clamp(250px, 50vh, 300px)",
               overflowY: "auto"
             }}>
               <div style={{
-                fontSize: 14,
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 fontWeight: 700,
                 color: "#2563eb",
-                marginBottom: 12
+                marginBottom: "clamp(8px, 1.5vw, 12px)"
               }}>
                 INVERSIONES ({player.investments?.length || 0})
               </div>
