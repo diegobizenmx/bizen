@@ -826,25 +826,87 @@ export default function CashFlowGamePage() {
   return (
     <>
       <style>{`
+        * {
+          box-sizing: border-box;
+        }
         .cashflow-game-container {
           width: 100% !important;
           max-width: 100% !important;
+          overflow-x: visible !important;
+          overflow-y: visible !important;
         }
         .cashflow-game-main {
           width: 100% !important;
           max-width: 100% !important;
+          overflow-x: visible !important;
+          overflow-y: visible !important;
+        }
+        @media (min-width: 1161px) {
+          .cashflow-game-main {
+            padding-right: 304px !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1160px) {
+          .cashflow-game-main {
+            padding-right: 120px !important;
+          }
+        }
+        .cashflow-game-container > div[style*="display: grid"] {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .cashflow-game-container > div[style*="display: grid"] > div:nth-child(1) {
+          grid-column: 1 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+        }
+        .cashflow-game-container > div[style*="display: grid"] > div:nth-child(2) {
+          grid-column: 2 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          display: block !important;
+        }
+        .cashflow-game-container > div[style*="grid"] {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .cashflow-game-container > div[style*="grid"] > div:first-child {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          grid-column: 1 !important;
+        }
+        .cashflow-game-container > div[style*="grid"] > div:last-child {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 0 !important;
+          grid-column: 2 !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+        @media (max-width: 767px) {
+          .cashflow-game-container > div[style*="grid"] > div:last-child {
+            grid-column: 1 !important;
+          }
         }
         @media (max-width: 767px) {
           .cashflow-game-container {
             width: 100% !important;
             max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
           }
           .cashflow-game-main {
             padding: clamp(8px, 2vw, 16px) !important;
             padding-bottom: calc(140px + max(env(safe-area-inset-bottom), 0px)) !important;
             width: 100% !important;
             max-width: 100% !important;
-            overflow-x: hidden !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
           }
           .game-board-container {
             width: 100% !important;
@@ -853,6 +915,7 @@ export default function CashFlowGamePage() {
             overflow-y: visible !important;
             padding: clamp(4px, 1vw, 12px) !important;
             margin: 0 auto !important;
+            box-sizing: border-box !important;
           }
           .game-board-wrapper {
             width: 100% !important;
@@ -863,10 +926,23 @@ export default function CashFlowGamePage() {
           .cashflow-game-container {
             width: 100% !important;
             max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
           }
           .cashflow-game-main {
             width: 100% !important;
             max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+          }
+          .game-board-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            padding: clamp(8px, 1.5vw, 16px) !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
           }
         }
       `}</style>
@@ -881,16 +957,23 @@ export default function CashFlowGamePage() {
           width: "100%",
           maxWidth: "100%",
           padding: "clamp(16px, 3vw, 24px)",
+          paddingRight: isMobile ? "clamp(16px, 3vw, 24px)" : "clamp(296px, calc(3vw + 280px), 304px)",
           paddingBottom: isMobile ? "140px" : "clamp(40px, 4vw, 80px)",
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          overflowX: "visible",
+          overflowY: "visible"
         }}>
         <div className="cashflow-game-container" style={{ 
           width: "100%",
           maxWidth: "100%",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          overflowX: "visible",
+          overflowY: "visible",
+          display: "flex",
+          flexDirection: "column"
         }}>
         {/* Header */}
         <div style={{
@@ -906,7 +989,10 @@ export default function CashFlowGamePage() {
           alignItems: "center",
           border: player.isOnFastTrack ? "3px solid #f59e0b" : "none",
           flexWrap: "wrap",
-          gap: "clamp(8px, 2vw, 12px)"
+          gap: "clamp(8px, 2vw, 12px)",
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box"
         }}>
           <div style={{ flex: "1 1 auto", minWidth: 0 }}>
             <h1 style={{
@@ -988,14 +1074,26 @@ export default function CashFlowGamePage() {
           display: "grid",
           gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
           gap: "clamp(12px, 2.5vw, 20px)",
-          marginBottom: "clamp(12px, 2.5vw, 20px)"
+          marginBottom: "clamp(12px, 2.5vw, 20px)",
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box"
         }}>
           {/* Financial Statement */}
           <div style={{
             background: "white",
             borderRadius: "clamp(12px, 2vw, 16px)",
             padding: "clamp(16px, 3vw, 24px)",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+            boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+            width: "100%",
+            maxWidth: "100%",
+            boxSizing: "border-box",
+            overflow: "hidden",
+            minWidth: 0,
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            position: "relative",
+            zIndex: 1
           }}>
             <h2 style={{
               fontSize: "clamp(16px, 3vw, 20px)",
@@ -1251,7 +1349,16 @@ export default function CashFlowGamePage() {
             background: "white",
             borderRadius: "clamp(12px, 2vw, 16px)",
             padding: "clamp(16px, 3vw, 24px)",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+            boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+            width: "100%",
+            maxWidth: "100%",
+            boxSizing: "border-box",
+            overflow: "hidden",
+            minWidth: 0,
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            position: "relative",
+            zIndex: 1
           }}>
             <h2 style={{
               fontSize: "clamp(16px, 3vw, 20px)",
@@ -1315,7 +1422,10 @@ export default function CashFlowGamePage() {
               borderRadius: "clamp(8px, 1.5vw, 12px)",
               padding: "clamp(12px, 2vw, 16px)",
               maxHeight: "clamp(250px, 50vh, 300px)",
-              overflowY: "auto"
+              overflowY: "auto",
+              width: "100%",
+              maxWidth: "100%",
+              boxSizing: "border-box"
             }}>
               <div style={{
                 fontSize: "clamp(12px, 2.5vw, 14px)",
@@ -1337,7 +1447,7 @@ export default function CashFlowGamePage() {
                   ¡Saca una carta para comenzar!
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
                   {player.investments.map((inv) => {
                     const profit = (inv.opportunityCard.minSalePrice || 0) - inv.purchasePrice
                     const profitPercent = ((profit / inv.purchasePrice) * 100).toFixed(1)
@@ -1352,7 +1462,11 @@ export default function CashFlowGamePage() {
                           padding: 12,
                           cursor: "pointer",
                           transition: "all 0.2s",
-                          border: "1px solid #e5e7eb"
+                          border: "1px solid #e5e7eb",
+                          width: "100%",
+                          maxWidth: "100%",
+                          boxSizing: "border-box",
+                          minWidth: 0
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = "#f9fafb"
@@ -1370,13 +1484,16 @@ export default function CashFlowGamePage() {
                           marginBottom: 4,
                           display: "flex",
                           alignItems: "center",
-                          gap: 4
+                          gap: 4,
+                          width: "100%",
+                          maxWidth: "100%",
+                          minWidth: 0
                         }}>
                           {inv.opportunityCard.type === "real_estate" && "🏠"}
                           {inv.opportunityCard.type === "stock" && "📈"}
                           {inv.opportunityCard.type === "business" && "💼"}
                           {inv.opportunityCard.type === "limited_partnership" && "🤝"}
-                          <span>{inv.opportunityCard.name}</span>
+                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0, flex: 1 }}>{inv.opportunityCard.name}</span>
                         </div>
                         
                         <div style={{
@@ -1489,10 +1606,14 @@ export default function CashFlowGamePage() {
         <div className="game-board-container" style={{
           width: "100%",
           maxWidth: "100%",
-          overflowX: "auto",
+          overflowX: "visible",
           overflowY: "visible",
           padding: "clamp(8px, 1.5vw, 16px)",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
         }}>
           <GameBoard
             playerPosition={player.currentPosition ?? (player.currentTurn % 24)}
@@ -1510,7 +1631,10 @@ export default function CashFlowGamePage() {
           borderRadius: 16,
           padding: 24,
           boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-          textAlign: "center"
+          textAlign: "center",
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box"
         }}>
           <h2 style={{
             fontSize: 18,

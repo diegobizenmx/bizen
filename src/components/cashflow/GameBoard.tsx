@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Dice from "@/components/cashflow/Dice"
 
 type SpaceType = 'opportunity' | 'payday' | 'market' | 'doodad' | 'charity' | 'baby'
@@ -73,20 +74,27 @@ const FAST_TRACK_SPACES: BoardSpace[] = [
 
 export default function GameBoard({ playerPosition, isRolling, onRollDice, canRoll, isOnFastTrack, diceResult }: GameBoardProps) {
   const spaces = isOnFastTrack ? FAST_TRACK_SPACES : RAT_RACE_SPACES
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 767)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   // Fixed board dimensions (will be scaled with CSS)
-  const spaceSize = 118
-  const gap = 14
+  const spaceSize = 60
+  const gap = 8
   const columns = 9 // includes both corners on each row
   const interiorRows = 3 // rows between top and bottom corners
   const totalRows = interiorRows + 2
-  const boardPadding = 28
+  const boardPadding = 16
   const boardWidth = boardPadding * 2 + (columns * spaceSize) + ((columns - 1) * gap)
   const boardHeight = boardPadding * 2 + (totalRows * spaceSize) + ((totalRows - 1) * gap)
   
-  // Mobile scale factor to fit board completely on screen
-  // Account for padding, safe areas, and mobile footer
-  const mobileScale = `min(1, calc((100vw - 48px) / ${boardWidth}))`
 
   // Calculate position on rectangular board (Monopoly-style)
   const getSpacePosition = (index: number) => {
@@ -135,99 +143,221 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
         .game-board-wrapper {
           width: 100% !important;
           max-width: 100% !important;
-          overflow-x: visible !important;
-          overflow-y: visible !important;
-          -webkit-overflow-scrolling: touch !important;
+          box-sizing: border-box !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          overflow: visible !important;
         }
         .game-board-inner {
           width: 100% !important;
           max-width: 100% !important;
-          overflow-x: visible !important;
-          overflow-y: visible !important;
+          box-sizing: border-box !important;
           display: flex !important;
           justify-content: center !important;
-          align-items: flex-start !important;
+          align-items: center !important;
+          position: relative !important;
+          overflow: visible !important;
         }
         .game-board-surface {
           flex-shrink: 0 !important;
-          transform-origin: center top !important;
+          transform-origin: center center !important;
+          box-sizing: border-box !important;
+          display: block !important;
+          margin: 0 auto !important;
+        }
+        @media (max-width: 374px) {
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 20px) / ${boardWidth}), calc((100dvh - 350px) / ${boardHeight}))) !important;
+          }
+          .game-board-controls {
+            gap: 8px !important;
+          }
+          .game-board-roll-button {
+            padding: 8px 16px !important;
+            font-size: 11px !important;
+          }
+        }
+        @media (min-width: 375px) and (max-width: 480px) {
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 24px) / ${boardWidth}), calc((100dvh - 320px) / ${boardHeight}))) !important;
+          }
+          .game-board-controls {
+            gap: 10px !important;
+          }
+          .game-board-roll-button {
+            padding: 10px 18px !important;
+            font-size: 12px !important;
+          }
+        }
+        @media (min-width: 481px) and (max-width: 767px) {
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 32px) / ${boardWidth}), calc((100dvh - 300px) / ${boardHeight}))) !important;
+          }
+          .game-board-controls {
+            gap: 12px !important;
+          }
+          .game-board-roll-button {
+            padding: 10px 20px !important;
+            font-size: 13px !important;
+          }
         }
         @media (max-width: 767px) {
           .game-board-wrapper {
-            padding: clamp(8px, 2vw, 16px) !important;
+            padding: clamp(4px, 1vw, 8px) !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
           .game-board-inner {
             justify-content: center !important;
             align-items: center !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            height: 100% !important;
+            display: flex !important;
           }
           .game-board-surface {
-            transform: scale(${mobileScale}) !important;
-            transform-origin: center top !important;
             width: ${boardWidth}px !important;
-            min-width: ${boardWidth}px !important;
+            height: ${boardHeight}px !important;
             margin: 0 auto !important;
+            display: block !important;
+            transform-origin: center center !important;
           }
           .game-board-space-label {
-            font-size: clamp(8px, 1.5vw, 11px) !important;
+            font-size: clamp(7px, 1.2vw, 9px) !important;
           }
           .game-board-space-icon {
-            font-size: clamp(24px, 5vw, 38px) !important;
+            font-size: clamp(18px, 3.5vw, 28px) !important;
           }
           .game-board-corner-icon {
-            font-size: clamp(32px, 6vw, 48px) !important;
+            font-size: clamp(24px, 4.5vw, 36px) !important;
           }
           .game-board-controls {
-            gap: clamp(12px, 3vw, 24px) !important;
+            gap: clamp(8px, 2vw, 16px) !important;
           }
           .game-board-roll-button {
-            padding: clamp(12px, 2.5vw, 18px) clamp(24px, 5vw, 40px) !important;
-            font-size: clamp(14px, 3vw, 20px) !important;
+            padding: clamp(8px, 1.5vw, 12px) clamp(16px, 3vw, 24px) !important;
+            font-size: clamp(11px, 2vw, 14px) !important;
           }
         }
-        @media (min-width: 768px) and (max-width: 1024px) {
+        @media (min-width: 768px) and (max-width: 960px) {
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 240px) / ${boardWidth}), calc((100vh - 120px) / ${boardHeight}))) !important;
+          }
+        }
+        @media (min-width: 961px) and (max-width: 1160px) {
+          .game-board-surface {
+            transform: scale(min(1, calc((100vw - 240px) / ${boardWidth}), calc((100vh - 120px) / ${boardHeight}))) !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1160px) {
+          .game-board-wrapper {
+            padding: clamp(8px, 1.5vw, 16px) !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+          .game-board-inner {
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            height: 100% !important;
+            display: flex !important;
+          }
+          .game-board-surface {
+            width: ${boardWidth}px !important;
+            height: ${boardHeight}px !important;
+            margin: 0 auto !important;
+            display: block !important;
+            transform-origin: center center !important;
+          }
+          .game-board-space-label {
+            font-size: clamp(9px, 1.5vw, 12px) !important;
+          }
+          .game-board-space-icon {
+            font-size: clamp(28px, 4vw, 40px) !important;
+          }
+          .game-board-corner-icon {
+            font-size: clamp(36px, 5vw, 50px) !important;
+          }
+          .game-board-roll-button {
+            padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 28px) !important;
+            font-size: clamp(12px, 2.5vw, 16px) !important;
+          }
+        }
+        @media (min-width: 1161px) {
+          .game-board-wrapper {
+            padding: clamp(16px, 2vw, 24px) !important;
+          }
           .game-board-inner {
             justify-content: center !important;
           }
           .game-board-surface {
-            transform: scale(min(1, calc((100vw - 200px) / ${boardWidth}))) !important;
+            width: ${boardWidth}px !important;
+            height: ${boardHeight}px !important;
+            transform: scale(min(calc((100vw - 320px) / ${boardWidth}), calc((100vh - 120px) / ${boardHeight}))) !important;
+            transform-origin: center center !important;
           }
         }
-        @media (min-width: 1025px) {
-          .game-board-inner {
-            justify-content: center !important;
-          }
+        @media (min-width: 1400px) and (max-width: 1599px) {
           .game-board-surface {
-            transform: scale(min(1, calc((100vw - 400px) / ${boardWidth}))) !important;
+            transform: scale(min(calc((100vw - 320px) / ${boardWidth}), calc((100vh - 120px) / ${boardHeight}))) !important;
+          }
+        }
+        @media (min-width: 1600px) and (max-width: 1919px) {
+          .game-board-surface {
+            transform: scale(min(calc((100vw - 320px) / ${boardWidth}), calc((100vh - 120px) / ${boardHeight}))) !important;
+          }
+        }
+        @media (min-width: 1920px) {
+          .game-board-surface {
+            transform: scale(min(calc((100vw - 320px) / ${boardWidth}), calc((100vh - 120px) / ${boardHeight}))) !important;
           }
         }
       `}</style>
       <div className="game-board-wrapper" style={{
         background: 'white',
         borderRadius: 'clamp(16px, 3vw, 20px)',
-        padding: 'clamp(12px, 2vw, 20px)',
+        padding: 'clamp(8px, 1.5vw, 16px)',
         boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
         position: 'relative',
         width: '100%',
         maxWidth: '100%',
         boxSizing: 'border-box',
-        overflow: 'visible'
+        overflow: 'visible',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
       }}>
         {/* Board Container */}
         <div className="game-board-inner" style={{
           width: '100%',
           maxWidth: '100%',
-          overflowX: 'auto',
+          overflowX: 'visible',
           overflowY: 'visible',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'flex-start',
-          boxSizing: 'border-box'
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          position: 'relative'
         }}>
           <div className="game-board-surface" style={{
             position: 'relative',
             width: boardWidth,
             height: boardHeight,
-            minWidth: boardWidth,
             margin: '0 auto',
             background: 'linear-gradient(135deg, #fafafa, #f5f5f5)',
             borderRadius: 28,
@@ -243,7 +373,7 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 24,
+          gap: 16,
           zIndex: 20
         }}>
           <button
@@ -255,8 +385,8 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
               color: 'white',
               border: 'none',
               borderRadius: 999,
-              padding: '18px 40px',
-              fontSize: 20,
+              padding: '12px 24px',
+              fontSize: 14,
               fontWeight: 800,
               cursor: canRoll && !isRolling ? 'pointer' : 'not-allowed',
               opacity: canRoll && !isRolling ? 1 : 0.6,
@@ -277,7 +407,7 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
           >
             {isRolling ? '🎲 Tirando...' : '🎲 Tirar Dado'}
           </button>
-          <Dice isRolling={isRolling} result={diceResult} />
+          <Dice isRolling={isRolling} result={diceResult} size={isMobile ? 50 : 70} />
         </div>
 
         {/* Board Spaces */}
@@ -316,18 +446,7 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
                 transformOrigin: 'center'
               }}
             >
-              <div className={isCorner ? 'game-board-corner-icon' : 'game-board-space-icon'} style={{ fontSize: isCorner ? 48 : 38 }}>{space.icon}</div>
-              <div className="game-board-space-label" style={{
-                fontSize: isCorner ? 12 : 11,
-                color: '#1f2937',
-                fontWeight: isCorner ? 900 : 800,
-                marginTop: 8,
-                textAlign: 'center',
-                lineHeight: 1.1,
-                letterSpacing: '0.5px'
-              }}>
-                {space.label}
-              </div>
+              <div className={isCorner ? 'game-board-corner-icon' : 'game-board-space-icon'} style={{ fontSize: isCorner ? 36 : 28 }}>{space.icon}</div>
             </div>
           )
         })}
@@ -338,25 +457,26 @@ export default function GameBoard({ playerPosition, isRolling, onRollDice, canRo
       {/* Legend */}
       <div style={{
         display: 'flex',
-        gap: 'clamp(12px, 3vw, 20px)',
-        marginTop: 'clamp(12px, 3vw, 20px)',
+        gap: 'clamp(8px, 2vw, 16px)',
+        marginTop: 'clamp(8px, 2vw, 16px)',
+        padding: '0 clamp(8px, 2vw, 12px)',
         justifyContent: 'center',
         flexWrap: 'wrap'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
-          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#bfdbfe', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(3px, 0.8vw, 5px)', fontSize: 'clamp(8px, 1.5vw, 10px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(12px, 2.5vw, 18px)', height: 'clamp(12px, 2.5vw, 18px)', background: '#bfdbfe', borderRadius: 4, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Oportunidad</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
-          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#a7f3d0', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(3px, 0.8vw, 5px)', fontSize: 'clamp(8px, 1.5vw, 10px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(12px, 2.5vw, 18px)', height: 'clamp(12px, 2.5vw, 18px)', background: '#a7f3d0', borderRadius: 4, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Payday</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
-          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#ddd6fe', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(3px, 0.8vw, 5px)', fontSize: 'clamp(8px, 1.5vw, 10px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(12px, 2.5vw, 18px)', height: 'clamp(12px, 2.5vw, 18px)', background: '#ddd6fe', borderRadius: 4, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Mercado</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 600 }}>
-          <div style={{ width: 'clamp(20px, 4vw, 24px)', height: 'clamp(20px, 4vw, 24px)', background: '#fecaca', borderRadius: 6, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(3px, 0.8vw, 5px)', fontSize: 'clamp(8px, 1.5vw, 10px)', fontWeight: 600 }}>
+          <div style={{ width: 'clamp(12px, 2.5vw, 18px)', height: 'clamp(12px, 2.5vw, 18px)', background: '#fecaca', borderRadius: 4, border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <span style={{ color: '#334155' }}>Lujo</span>
         </div>
       </div>

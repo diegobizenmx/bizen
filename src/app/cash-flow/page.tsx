@@ -55,6 +55,16 @@ export default function CashFlowPage() {
   const [loadingGames, setLoadingGames] = useState(true)
   const [startingGame, setStartingGame] = useState(false)
   const [showNewGame, setShowNewGame] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const updateIsMobile = () => {
+      setIsMobile(window.innerWidth <= 767)
+    }
+    updateIsMobile()
+    window.addEventListener("resize", updateIsMobile)
+    return () => window.removeEventListener("resize", updateIsMobile)
+  }, [])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -313,6 +323,71 @@ export default function CashFlowPage() {
           boxSizing: "border-box",
           margin: "0"
         }}>
+        {isMobile ? (
+          <div style={{
+            width: "100%",
+            maxWidth: "600px",
+            margin: "0 auto",
+            background: "white",
+            borderRadius: "20px",
+            padding: "clamp(32px, 6vw, 48px)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "24px"
+          }}>
+            <div style={{
+              fontSize: "clamp(48px, 10vw, 64px)",
+              marginBottom: "8px"
+            }}>
+              💻
+            </div>
+            <h1 style={{
+              fontSize: "clamp(24px, 5vw, 32px)",
+              fontWeight: 800,
+              color: "#1f2937",
+              margin: "0 0 12px",
+              lineHeight: 1.2
+            }}>
+              Mejor experiencia en laptop
+            </h1>
+            <p style={{
+              fontSize: "clamp(16px, 3.5vw, 18px)",
+              color: "#6b7280",
+              margin: "0 0 8px",
+              lineHeight: 1.6
+            }}>
+              Para tener una mejor experiencia de juego, te recomendamos abrir Cash Flow en tu laptop o computadora de escritorio.
+            </p>
+            <p style={{
+              fontSize: "clamp(14px, 3vw, 16px)",
+              color: "#9ca3af",
+              margin: 0,
+              lineHeight: 1.5
+            }}>
+              El tablero y las interacciones están optimizados para pantallas más grandes.
+            </p>
+            <div style={{
+              marginTop: "8px",
+              padding: "16px",
+              background: "#f3f4f6",
+              borderRadius: "12px",
+              width: "100%"
+            }}>
+              <p style={{
+                fontSize: "clamp(13px, 2.8vw, 15px)",
+                color: "#4b5563",
+                margin: 0,
+                fontWeight: 600
+              }}>
+                📱 En móvil puedes revisar tu progreso y estadísticas
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* Header */}
         <div className="cashflow-section" style={{
           width: "100%",
@@ -932,6 +1007,8 @@ export default function CashFlowPage() {
             </div>
           )}
         </div>
+        )}
+          </>
         )}
       </main>
       </div>

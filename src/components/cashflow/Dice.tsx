@@ -50,7 +50,7 @@ const DOT_POSITIONS: Record<number, Array<{ top: string; left: string }>> = {
   ]
 }
 
-export default function Dice({ isRolling, result, size = 110 }: DiceProps) {
+export default function Dice({ isRolling, result, size = 70 }: DiceProps) {
   const controls = useAnimationControls()
   const finalResult = result ?? 1
 
@@ -120,8 +120,8 @@ export default function Dice({ isRolling, result, size = 110 }: DiceProps) {
                     key={index}
                     style={{
                       position: "absolute",
-                      width: 12,
-                      height: 12,
+                      width: 8,
+                      height: 8,
                       borderRadius: "50%",
                       background: "#0f172a",
                       top: dot.top,
@@ -136,7 +136,7 @@ export default function Dice({ isRolling, result, size = 110 }: DiceProps) {
           ))}
         </motion.div>
       </div>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: "#1f2937" }}>
         {isRolling ? "Tirando..." : `Resultado: ${finalResult}`}
       </div>
     </div>
