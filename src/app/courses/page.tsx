@@ -544,16 +544,16 @@ export default function CoursesPage() {
         
         // Only update active level automatically if user didn't manually change it
         if (!isManualLevelChange) {
-          // Update active level based on course order
+            // Update active level based on course order
           if (bestCourse.order >= 1 && bestCourse.order <= 3) {
-            setActiveLevel(1) // Principiante
+              setActiveLevel(1) // Principiante
           } else if (bestCourse.order >= 4 && bestCourse.order <= 7) {
-            setActiveLevel(2) // Intermedio
+              setActiveLevel(2) // Intermedio
           } else if (bestCourse.order >= 8) {
-            setActiveLevel(3) // Avanzado
+              setActiveLevel(3) // Avanzado
+            }
           }
         }
-      }
     }
 
     // Check immediately
@@ -1081,7 +1081,7 @@ export default function CoursesPage() {
         }}>
           {courses.map((course) => (
             <div key={course.id} id={`course-${course.id}`} style={{ 
-              marginBottom: "clamp(40px, 8vw, 80px)", 
+                marginBottom: "clamp(40px, 8vw, 80px)",
               marginTop: course.order === 1 ? "clamp(100px, 15vw, 140px)" : "0",
               width: "100%", 
               display: "flex", 
@@ -1090,7 +1090,7 @@ export default function CoursesPage() {
             }}>
               {/* Course Title Separator - Outside gap container */}
               {course.lessons.length > 0 && (
-                <div style={{
+              <div style={{
                   width: "100%",
                   maxWidth: "100%",
                   display: "flex",
@@ -1115,8 +1115,8 @@ export default function CoursesPage() {
                     whiteSpace: "nowrap",
                     padding: "0 clamp(12px, 2vw, 16px)",
                     flexShrink: 0
-                  }}>
-                    {course.title}
+              }}>
+                {course.title}
                   </div>
                   <div style={{
                     flex: 1,
@@ -1124,7 +1124,7 @@ export default function CoursesPage() {
                     background: "#9CA3AF",
                     maxWidth: "none"
                   }} />
-                </div>
+                  </div>
               )}
 
               {/* Lessons in Smooth Curve */}
@@ -1243,14 +1243,14 @@ export default function CoursesPage() {
                             exit={{ opacity: 0, y: -10 }}
                             style={{
                     position: "absolute",
-                              top: "clamp(-150px, -20vw, -170px)",
+                              top: "clamp(-120px, -18vw, -150px)",
                               left: "50%",
                               transform: "translateX(-50%)",
-                              width: "clamp(180px, 40vw, 240px)",
+                              width: "clamp(150px, 35vw, 200px)",
                               maxWidth: "calc(100vw - 48px)",
                               background: "rgba(224, 242, 254, 0.95)",
-                              borderRadius: "clamp(10px, 1.5vw, 12px)",
-                              boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08)",
+                              borderRadius: "clamp(8px, 1.2vw, 10px)",
+                              boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25), 0 3px 10px rgba(0, 0, 0, 0.08)",
                               zIndex: 10002,
                               border: "2px solid rgba(147, 197, 253, 0.5)",
                               backdropFilter: "blur(12px)",
@@ -1286,28 +1286,31 @@ export default function CoursesPage() {
                             }} />
                             
                             {/* Preview Content */}
-                            <div style={{ padding: "clamp(12px, 2vw, 14px)" }}>
+                            <div style={{ padding: "clamp(8px, 1.5vw, 12px)" }} className="preview-content">
                     <div style={{
-                                fontSize: "clamp(9px, 1.5vw, 10px)",
+                                fontSize: "clamp(8px, 1.2vw, 9px)",
                 fontWeight: 700,
                                 color: "#6B7280",
-                                marginBottom: 4,
-                                textTransform: "uppercase"
+                                marginBottom: 2,
+                                textTransform: "uppercase",
+                                lineHeight: 1.2
                               }}>
                                 {t.courses.lesson} {lesson.order}
                       </div>
               <h3 style={{ 
-                                margin: "0 0 4px",
-                                fontSize: "clamp(12px, 2vw, 14px)",
+                                margin: "0 0 2px",
+                                fontSize: "clamp(11px, 1.8vw, 13px)",
                       fontWeight: 800,
-                                color: "#111"
+                                color: "#111",
+                                lineHeight: 1.3
               }}>
                                 {lesson.title}
               </h3>
                       <div style={{
-                                fontSize: "clamp(10px, 1.5vw, 11px)",
+                                fontSize: "clamp(9px, 1.3vw, 10px)",
                                 color: "#6B7280",
-                                marginBottom: 12
+                                marginBottom: 8,
+                                lineHeight: 1.2
                               }}>
                                 {lesson.unitTitle}
                   </div>
@@ -1325,12 +1328,13 @@ export default function CoursesPage() {
                                     }}
                                     style={{ 
                                       width: "auto", 
-                                      fontSize: "clamp(10px, 1.8vw, 11px)", 
-                                      padding: "clamp(6px, 1.2vw, 8px) clamp(16px, 3vw, 20px)",
+                                      fontSize: "clamp(9px, 1.5vw, 10px)", 
+                                      padding: "clamp(5px, 1vw, 6px) clamp(12px, 2.5vw, 16px)",
                                       background: "#3B82F6",
                                       color: "white",
                                       minWidth: "auto"
                                     }}
+                                    className="preview-button"
                                   >
                                     Go!
                                   </Button>
@@ -1358,7 +1362,7 @@ export default function CoursesPage() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                      </div>
+              </div>
               </div>
               </React.Fragment>
             )
@@ -1912,8 +1916,31 @@ export default function CoursesPage() {
           
           /* Make preview panel overlay on mobile - positioned above island within usable space */
           .lesson-preview-panel {
-            width: clamp(160px, 38vw, 220px) !important;
+            width: clamp(140px, 32vw, 180px) !important;
             max-width: calc(100vw - 48px) !important;
+            top: clamp(-100px, -15vw, -120px) !important;
+          }
+          
+          /* More compact preview content on mobile */
+          .preview-content {
+            padding: 6px !important;
+          }
+          
+          .preview-content h3 {
+            font-size: 10px !important;
+            margin: 0 0 2px !important;
+            line-height: 1.2 !important;
+          }
+          
+          .preview-content div {
+            font-size: 8px !important;
+            margin-bottom: 6px !important;
+            line-height: 1.1 !important;
+          }
+          
+          .preview-button {
+            font-size: 8px !important;
+            padding: 4px 10px !important;
           }
           
           /* Ensure parent container doesn't clip */
