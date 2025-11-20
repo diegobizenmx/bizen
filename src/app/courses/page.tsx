@@ -775,8 +775,8 @@ export default function CoursesPage() {
         position: "relative",
         top: 0,
         left: 0,
-        width: "100vw",
-        maxWidth: "100vw",
+        width: "100%",
+        maxWidth: "100%",
         flex: 1,
         background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
         overflowX: "hidden",
@@ -1087,7 +1087,7 @@ export default function CoursesPage() {
           margin: "0 auto",
           position: "relative",
           zIndex: 1,
-          padding: "0 clamp(16px, 4vw, 24px)",
+          padding: "0",
           boxSizing: "border-box",
                     display: "flex",
           flexDirection: "column",
@@ -1592,6 +1592,27 @@ export default function CoursesPage() {
         }
         
         @media (max-width: 768px) {
+          /* Ensure app-shell and app-scroll use full width on mobile */
+          .app-shell,
+          .app-scroll,
+          .app-main {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+          }
+          
+          /* Ensure root container uses full width */
+          div[style*="position: relative"][style*="width: 100%"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+          }
+          
           /* CRITICAL: Override globals.css rule that hides [data-fixed-sidebar] on mobile */
           /* Must be more specific than globals.css selector [data-fixed-sidebar] */
           div.courses-left-nav-panel[data-fixed-sidebar] {
@@ -1824,10 +1845,11 @@ export default function CoursesPage() {
           main[style*="paddingLeft"],
           main[style*="padding-left"],
           .courses-main-content {
-            padding-left: 16px !important;
-            padding-right: 16px !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
             padding-top: 80px !important; /* Space for hamburger button */
             padding-bottom: calc(65px + env(safe-area-inset-bottom)) !important; /* Space for mobile footer + safe area */
+            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
           }
           
           /* Remove extra margin from last course section on mobile */
@@ -1843,24 +1865,41 @@ export default function CoursesPage() {
             position: relative !important;
             height: auto !important;
             min-height: 100vh !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background-attachment: fixed !important;
           }
           
           /* Ensure html can scroll on mobile */
           html {
-            overflow-y: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
             overflow-x: hidden !important;
+            overflow-y: auto !important;
             -webkit-overflow-scrolling: touch !important;
             height: auto !important;
             min-height: 100vh !important;
+            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background-attachment: fixed !important;
+          }
+          
+          /* Ensure main container doesn't cause horizontal scroll */
+          div[style*="width: 100%"],
+          div[style*="width: 100vw"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
           }
           
           /* Ensure island path container fits in available space on mobile - centered */
           div[style*="maxWidth: 800px"],
           div[style*="maxWidth: 800"] {
-            max-width: calc(100vw - 32px) !important;
+            max-width: 100% !important;
             width: 100% !important;
             margin: 0 auto !important;
-            padding: 0 16px !important;
+            padding: 0 !important;
             box-sizing: border-box !important;
             overflow-x: hidden !important; /* Prevent horizontal overflow */
             overflow-y: visible !important;
@@ -1931,8 +1970,15 @@ export default function CoursesPage() {
           /* Make preview panel overlay on mobile - positioned above island within usable space */
           .lesson-preview-panel {
             width: clamp(140px, 32vw, 180px) !important;
-            max-width: calc(100vw - 48px) !important;
+            max-width: calc(100vw - 32px) !important;
+            min-width: 140px !important;
             top: clamp(-100px, -15vw, -120px) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            position: absolute !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
           }
           
           /* More compact preview content on mobile */

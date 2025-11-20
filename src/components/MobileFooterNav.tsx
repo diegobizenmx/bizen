@@ -9,10 +9,11 @@ import Image from "next/image"
 export default function MobileFooterNav() {
   const router = useRouter()
   const pathname = usePathname()
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const [showExitDialog, setShowExitDialog] = useState(false)
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null)
+  const [showProfilePanel, setShowProfilePanel] = useState(false)
 
   const isOnLessonPage = pathname?.includes('/learn/')
   const protectedRoutes = ['/assignments', '/progress', '/forum', '/profile', '/cuenta', '/configuracion']
@@ -58,8 +59,7 @@ export default function MobileFooterNav() {
     { path: "/simuladores", icon: "/rightmenusimulators.png", active: isActivePath("/simuladores") },
     { path: "/progress", icon: "/rightmenuprogress.png", active: isActivePath("/progress") },
     { path: "/forum", icon: "/rightmenuforo.png", active: isActivePath("/forum") },
-    { path: "/profile", icon: "avatar", active: isActivePath("/profile") },
-    { path: "/configuracion", icon: "/rightmenusettings.png", active: isActivePath("/configuracion") },
+    { path: "/profile", icon: "avatar", active: isActivePath("/profile") || isActivePath("/configuracion"), isProfileButton: true },
   ]
 
   return (
@@ -120,6 +120,14 @@ export default function MobileFooterNav() {
         .mobile-footer-btn:not(.active) {
           background: transparent !important;
         }
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
       `}</style>
 
       <div className="mobile-footer-container" data-bizen-tour="navigation">
@@ -127,7 +135,13 @@ export default function MobileFooterNav() {
           {navItems.map((item, index) => (
             <button
               key={index}
-              onClick={() => navigateTo(item.path)}
+              onClick={() => {
+                if (item.isProfileButton) {
+                  setShowProfilePanel(true)
+                } else {
+                  navigateTo(item.path)
+                }
+              }}
               className={`mobile-footer-btn ${item.active ? 'active' : ''}`}
             >
               {item.icon === "avatar" && user ? (
@@ -193,6 +207,127 @@ export default function MobileFooterNav() {
             <div style={{ display: "flex", gap: 12 }}>
               <button onClick={() => setShowAuthDialog(false)} style={{ flex: 1, padding: "12px 16px", background: "#f1f5f9", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Cancelar</button>
               <button onClick={() => router.push("/login")} style={{ flex: 1, padding: "12px 16px", background: "#0F62FE", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 14, fontWeight: 600, color: "white" }}>Iniciar sesión</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showProfilePanel && (
+        <div 
+          style={{ 
+            position: "fixed", 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            background: "rgba(0, 0, 0, 0.5)", 
+            zIndex: 10001, 
+            display: "flex", 
+            alignItems: "flex-end", 
+            justifyContent: "center", 
+            padding: "0" 
+          }} 
+          onClick={() => setShowProfilePanel(false)}
+        >
+          <div 
+            style={{ 
+              background: "linear-gradient(180deg, rgba(224, 242, 254, 0.95) 0%, rgba(219, 234, 254, 0.95) 50%, rgba(191, 219, 254, 0.95) 100%)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              borderRadius: "20px 20px 0 0", 
+              padding: "24px", 
+              width: "100%", 
+              maxWidth: "100%",
+              boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.2)",
+              animation: "slideUp 0.3s ease-out",
+              border: "1px solid rgba(255, 255, 255, 0.3)"
+            }} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ 
+              width: "40px", 
+              height: "4px", 
+              background: "#d1d5db", 
+              borderRadius: "2px", 
+              margin: "0 auto 20px auto" 
+            }} />
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <button
+                onClick={() => {
+                  setShowProfilePanel(false)
+                  navigateTo("/configuracion")
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "16px",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: "#0f172a",
+                  width: "100%",
+                  textAlign: "left"
+                }}
+              >
+                <span>Configuración</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setShowProfilePanel(false)
+                  navigateTo("/profile")
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "16px",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: "#0f172a",
+                  width: "100%",
+                  textAlign: "left"
+                }}
+              >
+                <span>Perfil</span>
+              </button>
+              
+              {user && (
+                <button
+                  onClick={async () => {
+                    setShowProfilePanel(false)
+                    try {
+                      await signOut()
+                      router.push("/")
+                    } catch (error) {
+                      console.error("Error signing out:", error)
+                    }
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "16px",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: "#0f172a",
+                    width: "100%",
+                    textAlign: "left"
+                  }}
+                >
+                  <span>Cerrar sesión</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

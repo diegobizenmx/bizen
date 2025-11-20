@@ -84,6 +84,7 @@ export default function WelcomePage() {
         background: "#ffffff",
         flex: 1,
         width: "100%",
+        maxWidth: "100%",
         margin: 0,
         padding: 0,
         overflowX: "hidden",
@@ -158,7 +159,7 @@ export default function WelcomePage() {
         </nav>
       </header>
 
-      <main style={{ flex: 1, width: "100%", display: "flex", flexDirection: "column" }}>
+      <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{
         paddingTop: "clamp(64px, 12vw, 80px)", // Add padding to account for fixed header
         position: "relative",
@@ -168,6 +169,7 @@ export default function WelcomePage() {
         display: "flex",
         flexDirection: "column",
         width: "100%",
+        maxWidth: "100%",
         boxSizing: "border-box",
         minHeight: "100vh",
       }}>
@@ -211,6 +213,8 @@ export default function WelcomePage() {
           gap: "clamp(32px, 6vw, 80px)",
           alignItems: "center",
           width: "100%",
+          maxWidth: "100%",
+          margin: "0 auto",
           boxSizing: "border-box",
         }}>
           
@@ -277,12 +281,12 @@ export default function WelcomePage() {
                 overflowWrap: "break-word",
               }}>
                 ¿Aprender finanzas mientras juegas? ¡Sí! <span style={{
-                  background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                  backgroundSize: "200% auto",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  animation: "shimmer 3s ease-in-out infinite",
+                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: "shimmer 3s ease-in-out infinite",
                 }}>BIZEN</span> es eso y más
               </h1>
             </div>
@@ -320,80 +324,80 @@ export default function WelcomePage() {
                 </button>
               ) : (
                 <>
-                  <Link
-                    href="/signup"
-                    style={{
-                      padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                      fontSize: "clamp(14px, 1.8vw, 16px)",
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                      backgroundSize: "200% auto",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "clamp(8px, 1.2vw, 10px)",
-                      textDecoration: "none",
-                      cursor: "pointer",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 8px 24px rgba(15, 98, 254, 0.25)",
-                      textAlign: "center",
-                      letterSpacing: "0.3px",
-                      animation: "shimmerButton 3s ease-in-out infinite",
-                      minHeight: "48px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "clamp(240px, 35vw, 320px)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.35)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0) scale(1)"
-                      e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.25)"
-                    }}
-                  >
-                    Empieza Ahora
-                  </Link>
-                  <Link
-                    href="/login"
-                    style={{
-                      padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                      fontSize: "clamp(14px, 1.8vw, 16px)",
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      background: "white",
-                      color: "#0F62FE",
-                      border: "2px solid #0F62FE",
-                      borderRadius: "clamp(8px, 1.2vw, 10px)",
-                      textDecoration: "none",
-                      cursor: "pointer",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 4px 16px rgba(15, 98, 254, 0.1)",
-                      textAlign: "center",
-                      letterSpacing: "0.3px",
-                      minHeight: "48px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "clamp(240px, 35vw, 320px)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                      e.currentTarget.style.background = "#0F62FE"
-                      e.currentTarget.style.color = "white"
-                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.25)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0) scale(1)"
-                      e.currentTarget.style.background = "white"
-                      e.currentTarget.style.color = "#0F62FE"
-                      e.currentTarget.style.boxShadow = "0 4px 16px rgba(15, 98, 254, 0.1)"
-                    }}
-                  >
-                    Ya tengo una cuenta
-                  </Link>
+              <Link
+                href="/signup"
+                style={{
+                  padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
+                  fontSize: "clamp(14px, 1.8vw, 16px)",
+                  fontWeight: 700,
+                  fontFamily: "'Montserrat', sans-serif",
+                  background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
+                  backgroundSize: "200% auto",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "clamp(8px, 1.2vw, 10px)",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 8px 24px rgba(15, 98, 254, 0.25)",
+                  textAlign: "center",
+                  letterSpacing: "0.3px",
+                  animation: "shimmerButton 3s ease-in-out infinite",
+                  minHeight: "48px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "clamp(240px, 35vw, 320px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
+                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.35)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0) scale(1)"
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.25)"
+                }}
+              >
+                Empieza Ahora
+              </Link>
+              <Link
+                href="/login"
+                style={{
+                  padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
+                  fontSize: "clamp(14px, 1.8vw, 16px)",
+                  fontWeight: 700,
+                  fontFamily: "'Montserrat', sans-serif",
+                  background: "white",
+                  color: "#0F62FE",
+                  border: "2px solid #0F62FE",
+                  borderRadius: "clamp(8px, 1.2vw, 10px)",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 4px 16px rgba(15, 98, 254, 0.1)",
+                  textAlign: "center",
+                  letterSpacing: "0.3px",
+                  minHeight: "48px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "clamp(240px, 35vw, 320px)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
+                  e.currentTarget.style.background = "#0F62FE"
+                  e.currentTarget.style.color = "white"
+                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.25)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0) scale(1)"
+                  e.currentTarget.style.background = "white"
+                  e.currentTarget.style.color = "#0F62FE"
+                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(15, 98, 254, 0.1)"
+                }}
+              >
+                Ya tengo una cuenta
+              </Link>
                 </>
               )}
             </div>
@@ -536,6 +540,19 @@ export default function WelcomePage() {
           z-index: 2;
         }
         
+        /* Ensure footer is not sticky/fixed on landing page */
+        .main-page-footer {
+          position: static !important;
+        }
+        
+        /* Ensure app layout containers use full width on landing page */
+        .app-shell,
+        .app-scroll,
+        .app-main {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        
         @media (max-width: 768px) {
           /* Header fixes for mobile */
           .main-header {
@@ -558,6 +575,7 @@ export default function WelcomePage() {
             grid-template-columns: 1fr !important;
             gap: clamp(20px, 4vw, 32px) !important;
             width: 100% !important;
+            max-width: 100% !important;
           }
           .main-content > div:first-child {
             order: 2;
@@ -566,6 +584,17 @@ export default function WelcomePage() {
           .main-content > div:last-child {
             order: 1;
             width: 100% !important;
+          }
+          
+          /* Buttons - shorter on mobile for landing page */
+          .main-content a[href="/signup"],
+          .main-content a[href="/login"],
+          .main-content button[disabled] {
+            min-width: auto !important;
+            width: auto !important;
+            max-width: 70% !important;
+            padding-left: clamp(16px, 4vw, 24px) !important;
+            padding-right: clamp(16px, 4vw, 24px) !important;
           }
           
           /* Image fixes */
@@ -678,7 +707,7 @@ export default function WelcomePage() {
           
           /* Fun text responsive */
           h1[style*="Ahorro, invierto"] {
-            font-size: clamp(20px, 6vw, 48px) !important;
+            font-size: clamp(24px, 5vw, 40px) !important;
             white-space: normal !important;
             word-wrap: break-word !important;
             overflow-wrap: break-word !important;
@@ -761,6 +790,14 @@ export default function WelcomePage() {
             font-size: clamp(24px, 4vw, 40px) !important;
           }
         }
+        @media (min-width: 1025px) {
+          /* Desktop - Full width */
+          .main-content {
+            max-width: 100% !important;
+            margin: 0 auto !important;
+          }
+        }
+        
         @media (min-width: 769px) and (max-width: 1024px) {
           .main-content-wrapper {
             padding-top: clamp(140px, 22vw, 240px) !important;
@@ -769,7 +806,7 @@ export default function WelcomePage() {
             gap: clamp(40px, 6vw, 60px) !important;
           }
           h1 {
-            font-size: clamp(80px, 14vw, 140px) !important;
+            font-size: clamp(32px, 5vw, 48px) !important;
           }
         }
         
@@ -806,8 +843,8 @@ export default function WelcomePage() {
           .billy-image,
           .billy-container .billy-image,
           .main-content > div:first-child .billy-image {
-            max-width: clamp(80px, 25vw, 160px) !important;
-            width: clamp(80px, 25vw, 160px) !important;
+            max-width: clamp(180px, 40vw, 280px) !important;
+            width: clamp(180px, 40vw, 280px) !important;
             height: auto !important;
           }
         }
@@ -859,7 +896,7 @@ export default function WelcomePage() {
           }} />
           
           <h1 style={{
-            fontSize: "clamp(32px, 6vw, 56px)",
+            fontSize: "clamp(28px, 5vw, 44px)",
             fontWeight: 900,
             fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
             background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
@@ -892,7 +929,7 @@ export default function WelcomePage() {
 
       {/* Footer */}
       <footer style={{
-        position: "relative",
+        position: "static",
         zIndex: 10,
         width: "100%",
         padding: "clamp(16px, 3vw, 24px)",
@@ -1633,7 +1670,7 @@ function LandingContent() {
         position: "relative", 
         overflow: "visible",
         paddingTop: "clamp(48px, 8vw, 96px)",
-        paddingBottom: "clamp(48px, 8vw, 96px)",
+        paddingBottom: "clamp(8px, 1.5vw, 16px)",
         width: "100%",
         boxSizing: "border-box",
         zIndex: 1,
@@ -1693,10 +1730,10 @@ function LandingContent() {
             gridTemplateColumns: "1fr",
             alignItems: "start"
           }}>
-            <form
+          <form
               className="contact-form"
               onSubmit={async (e) => {
-                e.preventDefault()
+              e.preventDefault()
                 const form = e.currentTarget
                 const formData = new FormData(form)
                 const name = formData.get('name') as string
@@ -1782,7 +1819,7 @@ function LandingContent() {
                     e.currentTarget.style.boxShadow = "none"
                   }}
                 />
-              </div>
+            </div>
               
               <div className="contact-field" style={{ marginBottom: "24px" }}>
                 <label htmlFor="contact-email" style={{
@@ -1797,12 +1834,12 @@ function LandingContent() {
                   <span style={{ fontSize: "20px" }}>📧</span>
                   Email
                 </label>
-                <input
+              <input
                   id="contact-email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="tucorreo@ejemplo.com"
+                name="email"
+                type="email"
+                required
+                placeholder="tucorreo@ejemplo.com"
                   style={{
                     width: "100%",
                     border: "2px solid rgba(15, 98, 254, 0.2)",
@@ -1821,8 +1858,8 @@ function LandingContent() {
                     e.currentTarget.style.borderColor = "rgba(15, 98, 254, 0.2)"
                     e.currentTarget.style.boxShadow = "none"
                   }}
-                />
-              </div>
+              />
+            </div>
               
               <div className="contact-field" style={{ marginBottom: "24px" }}>
                 <label htmlFor="contact-message" style={{
@@ -1837,12 +1874,12 @@ function LandingContent() {
                   <span style={{ fontSize: "20px" }}>💬</span>
                   Mensaje
                 </label>
-                <textarea
+              <textarea
                   id="contact-message"
-                  name="message"
+                name="message"
                   rows={5}
-                  required
-                  placeholder="Cuéntanos en qué podemos ayudarte…"
+                required
+                placeholder="Cuéntanos en qué podemos ayudarte…"
                   style={{
                     width: "100%",
                     border: "2px solid rgba(15, 98, 254, 0.2)",
@@ -1863,21 +1900,21 @@ function LandingContent() {
                     e.currentTarget.style.borderColor = "rgba(15, 98, 254, 0.2)"
                     e.currentTarget.style.boxShadow = "none"
                   }}
-                />
-              </div>
+              />
+            </div>
               
               <button 
                 type="submit" 
                 style={{
                   width: "100%",
-                  background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                  backgroundSize: "200% auto",
+                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
+                backgroundSize: "200% auto",
                   color: "white",
                   border: "none",
                   borderRadius: "12px",
                   padding: "16px 24px",
-                  fontSize: "clamp(16px, 2vw, 18px)",
-                  fontWeight: 700,
+                fontSize: "clamp(16px, 2vw, 18px)",
+                fontWeight: 700,
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   boxShadow: "0 8px 24px rgba(15, 98, 254, 0.35)",
@@ -1892,9 +1929,9 @@ function LandingContent() {
                   e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.35)"
                 }}
               >
-                Enviar mensaje
-              </button>
-            </form>
+              Enviar mensaje
+            </button>
+          </form>
 
             <aside style={{
               background: "rgba(255, 255, 255, 0.8)",
@@ -1996,7 +2033,7 @@ function LandingContent() {
                     }}>Lun–Vie · 9:00–18:00</span>
                   </div>
                 </li>
-              </ul>
+            </ul>
               
               <div style={{ marginTop: "24px" }}>
                 <h4 style={{ 
@@ -2094,8 +2131,8 @@ function LandingContent() {
                     LinkedIn
                   </a>
                 </div>
-              </div>
-            </aside>
+            </div>
+          </aside>
           </div>
         </div>
       </section>
@@ -2144,6 +2181,10 @@ html {
 }
 
 .section{padding: clamp(48px, 7vw, 96px) 0; background: transparent !important;}
+        .section.contact,
+        #contacto {
+          padding-bottom: clamp(8px, 1.5vw, 16px) !important;
+        }
 .section-head{max-width:900px; margin:0 auto 28px auto; text-align:center}
 .section-head h2{margin:0 0 8px 0; font-size:clamp(28px, 4.2vw, 40px); line-height:1.15;}
 .section-head p{margin:0; color:var(--c-muted)}
@@ -2278,10 +2319,10 @@ html {
   
   /* Hero images - responsive sizing for mobile */
   .hero-image-small {
-    width: 100% !important;
+            width: 100% !important;
     max-width: clamp(150px, 50vw, 220px) !important;
-    height: auto !important;
-  }
+            height: auto !important;
+          }
   
   /* Hero text sections */
   .hero-text {
@@ -2485,6 +2526,15 @@ html {
   
   .main-page-container {
     background: linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Ensure full width background for all devices */
+  body,
+  html {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
 
