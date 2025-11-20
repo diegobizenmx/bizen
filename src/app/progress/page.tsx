@@ -58,50 +58,89 @@ export default function ProgressPage() {
       return
     }
 
-    // TODO: Fetch real data from API
+    // Fetch real data from API
     const fetchData = async () => {
       try {
         setLoadingData(true)
-        // Placeholder data
-        setCertificates([
-          {
-            id: "cert-1",
-            courseTitle: "Fundamentos de Finanzas Personales",
-            issuedAt: "2025-10-15T10:30:00",
-            url: "/certificates/cert-1.pdf"
-          }
-        ])
+        
+        // Fetch real progress data
+        const response = await fetch('/api/progress/user-progress')
+        if (!response.ok) {
+          throw new Error('Failed to fetch progress')
+        }
+        
+        const data = await response.json()
+        if (!data.success) {
+          throw new Error('Failed to fetch progress')
+        }
 
-        setCourses([
-          {
-            id: "course-1",
-            title: "Fundamentos de Finanzas Personales",
-            progress: 45,
-            lessonsCompleted: 12,
-            totalLessons: 24,
-            quizzesPassed: 3,
-            totalQuizzes: 6
-          },
-          {
-            id: "course-2",
-            title: "Inversión para Principiantes",
-            progress: 10,
-            lessonsCompleted: 2,
-            totalLessons: 18,
-            quizzesPassed: 0,
-            totalQuizzes: 4
-          }
-        ])
+        const { sectionCompletions, quizAttempts, overallProgress, completedSections, totalSections } = data
 
-        // Fetch user stats
+        // Calculate real stats
+        const uniqueModules = new Set(sectionCompletions.map((sc: any) => sc.moduleId))
+        const coursesEnrolled = uniqueModules.size
+        
+        // Count total pages visited across all sections
+        const lessonsCompleted = sectionCompletions.reduce((sum: number, sc: any) => sum + (sc.pagesVisited || 0), 0)
+        
+        // Count passed quizzes
+        const quizzesPassed = quizAttempts.filter((qa: any) => qa.passed).length
+        
+        // Calculate course progress from section completions
+        const courseProgressMap = new Map<number, { pagesVisited: number, totalPages: number, quizzesCompleted: number, quizzesTotal: number }>()
+        
+        sectionCompletions.forEach((sc: any) => {
+          const moduleId = sc.moduleId
+          if (!courseProgressMap.has(moduleId)) {
+            courseProgressMap.set(moduleId, { pagesVisited: 0, totalPages: 0, quizzesCompleted: 0, quizzesTotal: 0 })
+          }
+          const course = courseProgressMap.get(moduleId)!
+          course.pagesVisited += sc.pagesVisited || 0
+          course.totalPages += sc.totalPages || 0
+          course.quizzesCompleted += sc.quizzesCompleted || 0
+          course.quizzesTotal += sc.quizzesTotal || 0
+        })
+        
+        // Convert to course progress array
+        const coursesArray: CourseProgress[] = Array.from(courseProgressMap.entries()).map(([moduleId, data]) => {
+          const progress = data.totalPages > 0 
+            ? Math.round((data.pagesVisited / data.totalPages) * 50 + (data.quizzesTotal > 0 ? (data.quizzesCompleted / data.quizzesTotal) * 50 : 0))
+            : 0
+          
+          return {
+            id: `module-${moduleId}`,
+            title: `Módulo ${moduleId}`,
+            progress: Math.min(progress, 100),
+            lessonsCompleted: data.pagesVisited,
+            totalLessons: data.totalPages,
+            quizzesPassed: data.quizzesCompleted,
+            totalQuizzes: data.quizzesTotal
+          }
+        })
+
+        setCourses(coursesArray)
+        
+        // No certificates API yet, so set empty array
+        setCertificates([])
+
+        // Set real stats
         setStats({
-          coursesEnrolled: 2,
-          lessonsCompleted: 15,
-          currentStreak: 7,
-          totalPoints: 450
+          coursesEnrolled: coursesEnrolled,
+          lessonsCompleted: lessonsCompleted,
+          currentStreak: 0, // Not available in current API
+          totalPoints: 0 // Not available in current API
         })
       } catch (error) {
         console.error("Error fetching progress:", error)
+        // Set empty data on error
+        setCertificates([])
+        setCourses([])
+        setStats({
+          coursesEnrolled: 0,
+          lessonsCompleted: 0,
+          currentStreak: 0,
+          totalPoints: 0
+        })
       } finally {
         setLoadingData(false)
       }
@@ -263,66 +302,44 @@ export default function ProgressPage() {
           </p>
         </div>
 
-        {/* Stats Section */}
-        {stats && (
+        {/* Stats Section - Only show real stats */}
+        {stats && (stats.coursesEnrolled > 0 || stats.lessonsCompleted > 0) && (
           <div style={{ marginBottom: 32 }}>
             <div style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
               gap: 16
             }}>
-              <div style={{ 
-                textAlign: "center", 
-                padding: "24px 16px", 
-                background: "rgba(255, 255, 255, 0.4)", 
-                backdropFilter: "blur(20px)", 
-                borderRadius: 20, 
-                border: "2px solid rgba(255, 255, 255, 0.6)",
-                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
-                transition: "all 0.3s ease"
-              }}>
-                <div style={{ fontSize: 36, fontWeight: 800, color: "#0F62FE", marginBottom: 8 }}>{stats.coursesEnrolled}</div>
-                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Cursos</div>
-              </div>
-              <div style={{ 
-                textAlign: "center", 
-                padding: "24px 16px", 
-                background: "rgba(255, 255, 255, 0.4)", 
-                backdropFilter: "blur(20px)", 
-                borderRadius: 20, 
-                border: "2px solid rgba(255, 255, 255, 0.6)",
-                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
-                transition: "all 0.3s ease"
-              }}>
-                <div style={{ fontSize: 36, fontWeight: 800, color: "#10B981", marginBottom: 8 }}>{stats.lessonsCompleted}</div>
-                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Lecciones</div>
-              </div>
-              <div style={{ 
-                textAlign: "center", 
-                padding: "24px 16px", 
-                background: "rgba(255, 255, 255, 0.4)", 
-                backdropFilter: "blur(20px)", 
-                borderRadius: 20, 
-                border: "2px solid rgba(255, 255, 255, 0.6)",
-                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
-                transition: "all 0.3s ease"
-              }}>
-                <div style={{ fontSize: 36, fontWeight: 800, color: "#F59E0B", marginBottom: 8 }}>🔥 {stats.currentStreak}</div>
-                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Racha</div>
-              </div>
-              <div style={{ 
-                textAlign: "center", 
-                padding: "24px 16px", 
-                background: "rgba(255, 255, 255, 0.4)", 
-                backdropFilter: "blur(20px)", 
-                borderRadius: 20, 
-                border: "2px solid rgba(255, 255, 255, 0.6)",
-                boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
-                transition: "all 0.3s ease"
-              }}>
-                <div style={{ fontSize: 36, fontWeight: 800, color: "#8B5CF6", marginBottom: 8 }}>{stats.totalPoints}</div>
-                <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Puntos</div>
-              </div>
+              {stats.coursesEnrolled > 0 && (
+                <div style={{ 
+                  textAlign: "center", 
+                  padding: "24px 16px", 
+                  background: "rgba(255, 255, 255, 0.4)", 
+                  backdropFilter: "blur(20px)", 
+                  borderRadius: 20, 
+                  border: "2px solid rgba(255, 255, 255, 0.6)",
+                  boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+                  transition: "all 0.3s ease"
+                }}>
+                  <div style={{ fontSize: 36, fontWeight: 800, color: "#0F62FE", marginBottom: 8 }}>{stats.coursesEnrolled}</div>
+                  <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Cursos</div>
+                </div>
+              )}
+              {stats.lessonsCompleted > 0 && (
+                <div style={{ 
+                  textAlign: "center", 
+                  padding: "24px 16px", 
+                  background: "rgba(255, 255, 255, 0.4)", 
+                  backdropFilter: "blur(20px)", 
+                  borderRadius: 20, 
+                  border: "2px solid rgba(255, 255, 255, 0.6)",
+                  boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
+                  transition: "all 0.3s ease"
+                }}>
+                  <div style={{ fontSize: 36, fontWeight: 800, color: "#10B981", marginBottom: 8 }}>{stats.lessonsCompleted}</div>
+                  <div style={{ fontSize: 14, color: "#374151", fontWeight: 600 }}>Lecciones</div>
+                </div>
+              )}
             </div>
           </div>
         )}

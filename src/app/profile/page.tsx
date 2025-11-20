@@ -273,19 +273,25 @@ export default function ProfilePage() {
       }} />
 
       {/* Main Content */}
-      <main style={{ 
+      <main className="profile-main-content" style={{ 
         minHeight: "100vh",
-        paddingTop: "40px",
-        paddingBottom: "80px",
-        paddingLeft: "40px",
-        paddingRight: "380px",
+        padding: "40px",
         fontFamily: "Montserrat, sans-serif",
-        maxWidth: "100%"
+        width: "100%",
+        maxWidth: "100%",
+        boxSizing: "border-box" as const,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        overflowX: "hidden" as const,
+        position: "relative" as const,
+        zIndex: 1
       }}>
         {/* Page Title */}
         <div style={{
           textAlign: "center",
-          marginBottom: 48
+          marginBottom: 48,
+          width: "100%"
         }}>
           <h1 style={{
             fontSize: "clamp(28px, 5vw, 42px)",
@@ -305,8 +311,7 @@ export default function ProfilePage() {
 
         {/* Profile Card */}
         <div style={{
-          maxWidth: "800px",
-          margin: "0 auto",
+          width: "100%",
           background: "rgba(255, 255, 255, 0.5)",
           backdropFilter: "blur(10px)",
           borderRadius: 24,
@@ -665,8 +670,8 @@ export default function ProfilePage() {
         {/* Level & Progress Section */}
         {userStats && !loadingStats && (
         <div style={{
-          maxWidth: "800px",
-          margin: "32px auto 0",
+          width: "100%",
+          margin: "32px 0 0",
           background: "rgba(255, 255, 255, 0.5)",
           backdropFilter: "blur(10px)",
           borderRadius: 20,
@@ -748,8 +753,8 @@ export default function ProfilePage() {
 
         {loadingStats && (
           <div style={{
-            maxWidth: "800px",
-            margin: "32px auto 0",
+            width: "100%",
+            margin: "32px 0 0",
             background: "rgba(255, 255, 255, 0.5)",
             backdropFilter: "blur(10px)",
             borderRadius: 20,
@@ -763,8 +768,8 @@ export default function ProfilePage() {
 
         {/* Badges Section */}
         <div style={{
-          maxWidth: "800px",
-          margin: "24px auto 0",
+          width: "100%",
+          margin: "24px 0 0",
           background: "rgba(255, 255, 255, 0.5)",
           backdropFilter: "blur(10px)",
           borderRadius: 20,
@@ -893,6 +898,41 @@ export default function ProfilePage() {
       <style>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        
+        /* Mobile (≤767px): No sidebars */
+        @media (max-width: 767px) {
+          .profile-main-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 20px 16px !important;
+            padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+          }
+        }
+        
+        /* Tablet/iPad (768px-1024px): Account for right sidebar */
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .profile-main-content {
+            width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+            max-width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+            padding: clamp(24px, 3vw, 40px) !important;
+          }
+        }
+        
+        /* Desktop (≥1025px): Account for right sidebar */
+        @media (min-width: 1025px) {
+          .profile-main-content {
+            width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+            max-width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+            padding: clamp(24px, 4vw, 40px) !important;
+          }
+        }
+        
+        /* Ensure all cards inside use full width */
+        .profile-main-content > div {
+          width: 100% !important;
+          max-width: 100% !important;
+          box-sizing: border-box !important;
         }
       `}</style>
     </div>

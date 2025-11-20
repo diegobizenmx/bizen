@@ -113,65 +113,36 @@ export default function LabPage() {
             padding-bottom: 65px !important;
             min-height: calc(100vh - 65px) !important;
           }
-          .business-lab-main {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin-right: 0 !important;
-            padding: clamp(16px, 4vw, 24px) !important;
-          }
-        }
-        /* Tablet/iPad - no gap, sidebar overlays */
-        @media (min-width: 768px) and (max-width: 1024px) {
-          .business-lab-outer {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          .business-lab-main {
-            width: calc(100% - clamp(240px, 25vw, 320px)) !important;
-            max-width: calc(100% - clamp(240px, 25vw, 320px)) !important;
-            margin-right: 0 !important;
-            padding: clamp(24px, 3vw, 40px) !important;
-          }
-        }
-        /* Desktop - no gap, sidebar overlays */
-        @media (min-width: 1025px) {
-          .business-lab-outer {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          .business-lab-main {
-            width: calc(100% - clamp(240px, 25vw, 320px)) !important;
-            max-width: calc(100% - clamp(240px, 25vw, 320px)) !important;
-            margin-right: 0 !important;
-            padding: clamp(24px, 4vw, 40px) !important;
-          }
         }
       `}</style>
       <div className="business-lab-outer" style={{
-      width: "100%",
+        width: "100%",
+        maxWidth: "none",
         flex: 1,
         background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
         fontFamily: "Montserrat, sans-serif",
         overflowX: "hidden",
         overflowY: "auto",
-        boxSizing: "border-box"
+        boxSizing: "border-box" as const,
+        display: "flex",
+        flexDirection: "column"
       }}>
         <main className="business-lab-main" style={{
-      margin: "0 auto",
-      paddingTop: "40px",
-      paddingBottom: "40px",
-      paddingLeft: "clamp(20px, 4vw, 40px)",
-      paddingRight: "clamp(20px, 4vw, 40px)",
+      padding: "40px",
       overflowX: "hidden",
       overflowY: "visible",
       flex: 1,
       boxSizing: "border-box" as const,
       display: "flex",
       flexDirection: "column",
-      alignItems: "center"
+      alignItems: "stretch",
+      width: "100%",
+      maxWidth: "100%",
+      position: "relative" as const,
+      zIndex: 1
     }}>
         {/* Header */}
-        <div style={{ marginBottom: 32, width: "100%", maxWidth: "1200px", textAlign: "center" }}>
+        <div style={{ marginBottom: 32, width: "100%", maxWidth: "none", textAlign: "center" }}>
           <h1 style={{
             fontSize: 42,
             fontWeight: 900,
@@ -198,7 +169,6 @@ export default function LabPage() {
           marginBottom: 24,
           border: "1px solid rgba(255, 255, 255, 0.4)",
           width: "100%",
-          maxWidth: "1200px",
           boxSizing: "border-box" as const,
           color: "#1E40AF"
         }}>
@@ -252,7 +222,6 @@ export default function LabPage() {
             marginBottom: 24,
             border: "1px solid rgba(255, 255, 255, 0.4)",
             width: "100%",
-            maxWidth: "1200px",
             boxSizing: "border-box" as const,
             color: "#1E40AF"
           }}>
@@ -315,8 +284,7 @@ export default function LabPage() {
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
           gap: 16,
           marginBottom: 32,
-          width: "100%",
-          maxWidth: "1200px"
+          width: "100%"
         }}>
           <Link href="/business-lab/templates" style={{ textDecoration: "none" }}>
             <div style={{
@@ -431,7 +399,7 @@ export default function LabPage() {
         </div>
 
         {/* Tracks Section */}
-        <div style={{ marginBottom: 32, width: "100%", maxWidth: "1200px" }}>
+        <div style={{ marginBottom: 32, width: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, justifyContent: "center" }}>
             <span style={{ fontSize: 28 }}>🎯</span>
             <h2 style={{ fontSize: 28, fontWeight: 700, color: "#1E40AF" }}>
@@ -554,7 +522,6 @@ export default function LabPage() {
           border: "1px solid rgba(255, 255, 255, 0.4)",
           boxShadow: "0 8px 32px rgba(31, 38, 135, 0.15)",
           width: "100%",
-          maxWidth: "1200px",
           boxSizing: "border-box" as const,
           color: "#0f172a"
         }}>
@@ -577,47 +544,39 @@ export default function LabPage() {
           </ul>
         </div>
         <style>{`
-          /* Business Lab - Centered content in usable space for all devices */
+          /* Mobile (≤767px): No sidebars */
           @media (max-width: 767px) {
-            main {
-              padding-left: 16px !important;
-              padding-right: 16px !important;
-              width: 100vw !important;
-              max-width: 100vw !important;
-              margin-left: 0 !important;
-              margin-right: 0 !important;
-              display: flex !important;
-              flex-direction: column !important;
-              align-items: center !important;
+            .business-lab-main {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 20px 16px !important;
+              padding-bottom: calc(40px + env(safe-area-inset-bottom)) !important;
             }
           }
           
-          @media (min-width: 768px) and (max-width: 1160px) {
-            main {
-              padding-left: clamp(20px, 4vw, 40px) !important;
-              padding-right: 160px !important;
-              width: calc(100vw - 160px) !important;
-              max-width: calc(100vw - 160px) !important;
-              margin-left: 0 !important;
-              margin-right: 0 !important;
-              display: flex !important;
-              flex-direction: column !important;
-              align-items: center !important;
+          /* Tablet/iPad (768px-1024px): Account for right sidebar */
+          @media (min-width: 768px) and (max-width: 1024px) {
+            .business-lab-main {
+              width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+              max-width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+              padding: clamp(24px, 3vw, 40px) !important;
             }
           }
           
-          @media (min-width: 1161px) {
-            main {
-              padding-left: clamp(20px, 4vw, 40px) !important;
-              padding-right: 320px !important;
-              width: calc(100vw - 320px) !important;
-              max-width: calc(100vw - 320px) !important;
-              margin-left: 0 !important;
-              margin-right: 0 !important;
-              display: flex !important;
-              flex-direction: column !important;
-              align-items: center !important;
+          /* Desktop (≥1025px): Account for right sidebar */
+          @media (min-width: 1025px) {
+            .business-lab-main {
+              width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+              max-width: calc(100% - clamp(240px, 25vw, 320px)) !important;
+              padding: clamp(24px, 4vw, 40px) !important;
             }
+          }
+          
+          /* Ensure all cards inside use full width */
+          .business-lab-main > div {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
           }
         `}</style>
       </main>

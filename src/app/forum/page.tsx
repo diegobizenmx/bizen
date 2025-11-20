@@ -225,15 +225,21 @@ function ForumContent() {
               padding-bottom: 65px !important;
               flex: 1 !important;
               overflow-y: auto !important;
+              overflow-x: hidden !important;
               -webkit-overflow-scrolling: touch !important;
+              height: 100% !important;
+              position: relative !important;
             }
             .forum-container {
               width: 100% !important;
               max-width: 100% !important;
               margin-right: 0 !important;
               padding: clamp(16px, 4vw, 24px) !important;
-              overflow-y: auto !important;
+              overflow-y: visible !important;
+              overflow-x: hidden !important;
               -webkit-overflow-scrolling: touch !important;
+              height: auto !important;
+              min-height: 100% !important;
             }
           }
           /* Tablet/iPad - no gap, sidebar overlays */
@@ -272,7 +278,7 @@ function ForumContent() {
           width: "100%",
           boxSizing: "border-box",
           overflowX: "hidden",
-          overflowY: "visible",
+          overflowY: "auto",
           WebkitOverflowScrolling: "touch"
         }}>
           <div 
@@ -837,15 +843,18 @@ function ForumContent() {
       /* Mobile specific styles */
       @media (max-width: 767px) {
         .forum-outer {
-          overflow-y: visible !important;
+          overflow-y: auto !important;
           overflow-x: hidden !important;
           -webkit-overflow-scrolling: touch !important;
           flex: 1 !important;
+          height: 100vh !important;
+          height: 100dvh !important;
         }
         /* Ensure container allows scroll */
         .forum-container {
           position: relative !important;
           height: auto !important;
+          min-height: 100% !important;
           flex: 1 !important;
           overflow-y: visible !important;
           overflow-x: hidden !important;
@@ -854,21 +863,17 @@ function ForumContent() {
           -webkit-overflow-scrolling: touch !important;
         }
         
-        /* Ensure body can scroll on mobile */
-        body {
+        /* Ensure app-scroll allows scrolling */
+        .app-scroll {
           overflow-y: auto !important;
           overflow-x: hidden !important;
           -webkit-overflow-scrolling: touch !important;
-          position: relative !important;
-          height: 100% !important;
         }
         
-        /* Ensure html can scroll on mobile */
-        html {
-          overflow-y: auto !important;
+        /* Ensure app-main allows scrolling */
+        .app-main {
+          overflow-y: visible !important;
           overflow-x: hidden !important;
-          -webkit-overflow-scrolling: touch !important;
-          height: 100% !important;
         }
         
         /* Adjust main content padding on mobile */

@@ -34,11 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SettingsProvider>
           <AuthProvider>
             <BillyTourProvider>
-              <AppLayout>
-                <ClientLayoutWrapper>
-                  {children}
-                </ClientLayoutWrapper>
-              </AppLayout>
+            <AppLayout>
+              <ClientLayoutWrapper>
+                {children}
+              </ClientLayoutWrapper>
+            </AppLayout>
             </BillyTourProvider>
           </AuthProvider>
         </SettingsProvider>
