@@ -193,7 +193,7 @@ export default function FixedSidebar() {
       )}
 
       {/* Fixed Sidebar Panel */}
-      <div data-fixed-sidebar className={isMobile ? (isSidebarOpen ? "mobile-sidebar-open" : "") : ""} style={isMobile ? {
+      <div data-fixed-sidebar data-bizen-tour="navigation" className={isMobile ? (isSidebarOpen ? "mobile-sidebar-open" : "") : ""} style={isMobile ? {
         // Mobile styles - CSS will control visibility and position, but set width here too
         // Width will be overridden by CSS, but this ensures base width is correct
       } : {

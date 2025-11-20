@@ -4,6 +4,7 @@ import { AuthProvider } from "@/contexts/AuthContext"
 import { SettingsProvider } from "@/contexts/SettingsContext"
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper"
 import { AppLayout } from "@/components/AppLayout"
+import { BillyTourProvider } from "@/components/billy-tour/BillyTourProvider"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -32,11 +33,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <SettingsProvider>
           <AuthProvider>
-            <AppLayout>
-              <ClientLayoutWrapper>
-                {children}
-              </ClientLayoutWrapper>
-            </AppLayout>
+            <BillyTourProvider>
+              <AppLayout>
+                <ClientLayoutWrapper>
+                  {children}
+                </ClientLayoutWrapper>
+              </AppLayout>
+            </BillyTourProvider>
           </AuthProvider>
         </SettingsProvider>
       </body>

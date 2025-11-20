@@ -182,8 +182,17 @@ export default function CoursesPage() {
   const [visibleIslands, setVisibleIslands] = useState<Set<string>>(new Set())
   const [lastScrollY, setLastScrollY] = useState(0)
 
+  // Redirect unauthenticated users
   useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login")
+    }
+  }, [loading, user, router])
+
+  useEffect(() => {
+    // Only fetch data if user is authenticated
     if (loading) return
+    if (!user) return
 
     const fetchCoursesData = async () => {
       try {
@@ -697,7 +706,8 @@ export default function CoursesPage() {
   }, [])
 
 
-  if (loading || loadingData) {
+  // Show loading or redirect if not authenticated
+  if (loading || loadingData || !user) {
     return (
       <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "'Montserrat', sans-serif" }}>
         <div style={{ textAlign: "center" }}>
@@ -841,7 +851,9 @@ export default function CoursesPage() {
             sum + course.lessons.filter(lesson => lesson.isCompleted).length, 0
           )
           return (
-      <div style={{ 
+      <div 
+        data-bizen-tour="progress"
+        style={{ 
               background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
           backdropFilter: "blur(10px)",
           borderRadius: 12,
@@ -1050,7 +1062,9 @@ export default function CoursesPage() {
       </div>
 
 
-    <main style={{ 
+    <main 
+      data-bizen-tour="courses"
+      style={{ 
         flex: 1,
         paddingTop: "80px",
         paddingBottom: "clamp(40px, 8vw, 80px)",

@@ -81,7 +81,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     }
   }, [pathname]);
 
-  // Don't show sidebar on auth pages, landing, and payment pages
+  // Don't show sidebar on auth pages, landing, payment pages, and legal pages
   const isAuthPage = pathname === '/login' || 
                      pathname === '/signup' || 
                      pathname === '/reset-password' ||
@@ -89,7 +89,9 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                      pathname === '/bizen/signup' ||
                      pathname === '/' || // Landing page
                      pathname === '/payment' ||
-                     pathname.startsWith('/payment/') // Payment pages
+                     pathname.startsWith('/payment/') || // Payment pages
+                     pathname === '/bizen/privacidad' || // Privacy page
+                     pathname === '/bizen/terminos' // Terms page
 
   // Detect mobile screen size (≤767px)
   useEffect(() => {

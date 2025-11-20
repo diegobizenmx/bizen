@@ -122,7 +122,7 @@ export default function MobileFooterNav() {
         }
       `}</style>
 
-      <div className="mobile-footer-container">
+      <div className="mobile-footer-container" data-bizen-tour="navigation">
         <div className="mobile-footer-inner">
           {navItems.map((item, index) => (
             <button

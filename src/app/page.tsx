@@ -265,54 +265,26 @@ export default function WelcomePage() {
           }}>
             {/* Text Content */}
             <div style={{ width: "100%", boxSizing: "border-box" }}>
-              {user ? (
-                <>
-                  <h1 style={{
-                    fontSize: "clamp(24px, 4.5vw, 44px)",
-                    color: "#6B7280",
-                    margin: "0 0 16px 0",
-                    fontWeight: 800,
-                    lineHeight: 1.3,
-                    fontFamily: "'Montserrat', sans-serif",
-                    textAlign: "center",
-                  }}>
-                    Bienvenido de nuevo, {user.user_metadata?.full_name || user.email?.split('@')[0] || 'Estudiante'}! 👋
-                  </h1>
-                  <p style={{
-                    fontSize: "clamp(16px, 2.5vw, 20px)",
-                    color: "#718096",
-                    margin: 0,
-                    fontWeight: 500,
-                    lineHeight: 1.6,
-                    fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                  }}>
-                    Continúa tu aprendizaje donde lo dejaste. Tienes nuevos módulos esperándote.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <h1 style={{
-                    fontSize: "clamp(24px, 4.5vw, 44px)",
-                    color: "#6B7280",
-                    margin: "0 0 16px 0",
-                    fontWeight: 800,
-                    lineHeight: 1.3,
-                    fontFamily: "'Montserrat', sans-serif",
-                    textAlign: "center",
-                    wordWrap: "break-word",
-                    overflowWrap: "break-word",
-                  }}>
-                    ¿Aprender finanzas mientras juegas? ¡Sí! <span style={{
-                      background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                      backgroundSize: "200% auto",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                      animation: "shimmer 3s ease-in-out infinite",
-                    }}>BIZEN</span> es eso y más
-                  </h1>
-                </>
-              )}
+              <h1 style={{
+                fontSize: "clamp(24px, 4.5vw, 44px)",
+                color: "#6B7280",
+                margin: "0 0 16px 0",
+                fontWeight: 800,
+                lineHeight: 1.3,
+                fontFamily: "'Montserrat', sans-serif",
+                textAlign: "center",
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
+              }}>
+                ¿Aprender finanzas mientras juegas? ¡Sí! <span style={{
+                  background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
+                  backgroundSize: "200% auto",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  animation: "shimmer 3s ease-in-out infinite",
+                }}>BIZEN</span> es eso y más
+              </h1>
             </div>
 
             {/* Buttons */}
@@ -346,82 +318,6 @@ export default function WelcomePage() {
                 >
                   Cargando...
                 </button>
-              ) : user ? (
-                <>
-                  <button
-                    onClick={() => router.push("/billy-welcome")}
-                    style={{
-                      padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                      fontSize: "clamp(14px, 1.8vw, 16px)",
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                      backgroundSize: "200% auto",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "clamp(8px, 1.2vw, 10px)",
-                      cursor: "pointer",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 8px 24px rgba(15, 98, 254, 0.25)",
-                      textAlign: "center",
-                      letterSpacing: "0.3px",
-                      animation: "shimmerButton 3s ease-in-out infinite",
-                      minHeight: "48px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "clamp(240px, 35vw, 320px)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.35)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0) scale(1)"
-                      e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.25)"
-                    }}
-                  >
-                    Ir a Microcredencial Mondragón
-                  </button>
-                  <Link
-                    href="#cursos"
-                    style={{
-                      padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                      fontSize: "clamp(14px, 1.8vw, 16px)",
-                      fontWeight: 700,
-                      fontFamily: "'Montserrat', sans-serif",
-                      background: "white",
-                      color: "#0F62FE",
-                      border: "2px solid #0F62FE",
-                      borderRadius: "clamp(8px, 1.2vw, 10px)",
-                      textDecoration: "none",
-                      cursor: "pointer",
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      boxShadow: "0 4px 16px rgba(15, 98, 254, 0.1)",
-                      textAlign: "center",
-                      letterSpacing: "0.3px",
-                      minHeight: "48px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "clamp(240px, 35vw, 320px)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                      e.currentTarget.style.background = "#0F62FE"
-                      e.currentTarget.style.color = "white"
-                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.25)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0) scale(1)"
-                      e.currentTarget.style.background = "white"
-                      e.currentTarget.style.color = "#0F62FE"
-                      e.currentTarget.style.boxShadow = "0 4px 16px rgba(15, 98, 254, 0.1)"
-                    }}
-                  >
-                    Ver cursos
-                  </Link>
-                </>
               ) : (
                 <>
                   <Link
