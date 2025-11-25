@@ -59,6 +59,10 @@ model Profile {
   postsCreated      Int      @default(0) @map("posts_created")
   commentsCreated   Int      @default(0) @map("comments_created")
   acceptedAnswers   Int      @default(0) @map("accepted_answers")
+  birthDate         DateTime? @map("birth_date") // For age verification
+  isMinor           Boolean  @default(false) @map("is_minor") // Cached: true if < 18
+  parentalOverride  Boolean  @default(false) @map("parental_override") // Parent/tutor can request full access
+  ageVerifiedAt     DateTime? @map("age_verified_at") // When age was first verified
   createdAt         DateTime @default(now()) @map("created_at")
 
   school               School?              @relation(fields: [schoolId], references: [id])

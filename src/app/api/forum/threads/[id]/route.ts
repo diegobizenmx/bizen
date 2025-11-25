@@ -36,15 +36,16 @@ export async function GET(
         createdAt: true,
         authorId: true,
         topicId: true,
-        author: {
-          select: {
-            userId: true,
-            nickname: true,
-            fullName: true,
-            reputation: true,
-            level: true
-          }
-        },
+            author: {
+              select: {
+                userId: true,
+                nickname: true,
+                fullName: true,
+                reputation: true,
+                level: true,
+                isMinor: true
+              }
+            },
         topic: {
           select: {
             id: true,
@@ -96,15 +97,16 @@ export async function GET(
             }
           }
         },
-        author: {
-          select: {
-            userId: true,
-            nickname: true,
-            fullName: true,
-            reputation: true,
-            level: true
-          }
-        },
+            author: {
+              select: {
+                userId: true,
+                nickname: true,
+                fullName: true,
+                reputation: true,
+                level: true,
+                isMinor: true
+              }
+            },
         // Only include replies if explicitly requested and limit to 10 per comment
         ...(includeReplies ? {
           replies: {

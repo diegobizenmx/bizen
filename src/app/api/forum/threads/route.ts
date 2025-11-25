@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { filterContent } from "@/lib/forum/contentFilter"
 import { checkRateLimit } from "@/lib/forum/rateLimiter"
 
-const prisma = process.env.DATABASE_URL ? new PrismaClient() : null
-
 // GET list threads
 export async function GET(request: NextRequest) {
-  if (!prisma) {
-    console.warn("⚠️ DATABASE_URL not configured. Returning empty forum threads list.")
-    return NextResponse.json([])
-  }
-
   try {
     console.log("📡 GET /api/forum/threads called")
     const supabase = await createSupabaseServer()
@@ -55,13 +48,25 @@ export async function GET(request: NextRequest) {
     }
 
     console.log("🔍 Fetching threads with where:", where)
+    
+    // Optimize: Only select necessary fields and limit results
     const threads = await prisma.forumThread.findMany({
       where,
       orderBy: [
         { isPinned: 'desc' },
         orderBy
       ],
-      include: {
+      select: {
+        id: true,
+        title: true,
+        body: true,
+        status: true,
+        score: true,
+        viewCount: true,
+        commentCount: true,
+        isPinned: true,
+        createdAt: true,
+        acceptedCommentId: true,
         author: {
           select: {
             userId: true,
@@ -70,12 +75,27 @@ export async function GET(request: NextRequest) {
             fullName: true
           }
         },
-        topic: true,
+        topic: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            icon: true
+          }
+        },
         tags: {
-          include: { tag: true }
+          include: { 
+            tag: {
+              select: {
+                id: true,
+                name: true,
+                slug: true
+              }
+            }
+          }
         }
       },
-      take: 50
+      take: 30 // Reduced from 50 to improve initial load time
     })
 
     console.log(`✅ Found ${threads.length} threads`)
@@ -84,7 +104,8 @@ export async function GET(request: NextRequest) {
       ...t,
       author: {
         ...t.author,
-        nickname: t.author.nickname || t.author.fullName?.split(' ')[0] || 'Usuario'
+        nickname: t.author.nickname || t.author.fullName?.split(' ')[0] || 'Usuario',
+        isMinor: false // Default to false, will be populated if field exists in DB
       },
       tags: t.tags.map(tt => tt.tag),
       hasAcceptedAnswer: !!t.acceptedCommentId
@@ -100,23 +121,11 @@ export async function GET(request: NextRequest) {
       error: "Failed to fetch threads",
       details: error instanceof Error ? error.message : String(error)
     }, { status: 500 })
-  } finally {
-    if (prisma) {
-      await prisma.$disconnect().catch(() => {})
-    }
   }
 }
 
 // POST create thread
 export async function POST(request: NextRequest) {
-  if (!prisma) {
-    console.error("❌ Cannot create thread: DATABASE_URL not configured")
-    return NextResponse.json(
-      { error: "Forum storage is temporarily unavailable" },
-      { status: 503 }
-    )
-  }
-
   try {
     const supabase = await createSupabaseServer()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -141,9 +150,35 @@ export async function POST(request: NextRequest) {
     // Get or create user profile
     let profile
     try {
-      profile = await prisma.profile.findUnique({
-        where: { userId: user.id }
-      })
+      // Try to get profile with new fields, but handle if they don't exist yet
+      try {
+        profile = await prisma.profile.findUnique({
+          where: { userId: user.id },
+          select: {
+            userId: true,
+            nickname: true,
+            reputation: true,
+            postsCreated: true,
+            commentsCreated: true,
+            acceptedAnswers: true,
+            isMinor: true,
+            parentalOverride: true
+          }
+        })
+      } catch (fieldError: any) {
+        // If isMinor field doesn't exist, try without it
+        if (fieldError?.message?.includes('isMinor') || fieldError?.message?.includes('is_minor')) {
+          profile = await prisma.profile.findUnique({
+            where: { userId: user.id }
+          })
+          // Add default values if fields don't exist
+          if (profile) {
+            profile = { ...profile, isMinor: false, parentalOverride: false } as any
+          }
+        } else {
+          throw fieldError
+        }
+      }
     } catch (profileError: any) {
       console.error("❌ Error fetching profile:", profileError)
       // If profile table doesn't exist, create a minimal profile object
@@ -154,7 +189,9 @@ export async function POST(request: NextRequest) {
           reputation: 0,
           postsCreated: 0,
           commentsCreated: 0,
-          acceptedAnswers: 0
+          acceptedAnswers: 0,
+          isMinor: false,
+          parentalOverride: false
         } as any
       } else {
         throw profileError
@@ -197,9 +234,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: bodyFilter.reason }, { status: 400 })
     }
 
-    // Check moderation status (first 3 posts need approval)
-
-    const moderationStatus = (profile?.postsCreated || 0) < 3 ? 'pending' : 'approved'
+    // Check moderation status
+    // Minors (< 18) always need approval, regardless of postsCreated
+    // Adults: first 3 posts need approval
+    const isMinor = profile?.isMinor ?? false
+    const hasParentalOverride = profile?.parentalOverride ?? false
+    const requiresModeration = isMinor && !hasParentalOverride
+    const moderationStatus = requiresModeration || (profile?.postsCreated || 0) < 3 ? 'pending' : 'approved'
 
     // Get or create tags
     const tagIds: string[] = []
@@ -312,10 +353,6 @@ export async function POST(request: NextRequest) {
       code: errorCode,
       hint: "Check server logs for more details"
     }, { status: 500 })
-  } finally {
-    if (prisma) {
-      await prisma.$disconnect().catch(() => {})
-    }
   }
 }
 

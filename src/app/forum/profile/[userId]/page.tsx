@@ -45,6 +45,12 @@ export default function ForumProfilePage() {
     followersCount: number
     followingCount: number
   } | null>(null)
+  const [showFollowers, setShowFollowers] = useState(false)
+  const [showFollowing, setShowFollowing] = useState(false)
+  const [followers, setFollowers] = useState<any[]>([])
+  const [following, setFollowing] = useState<any[]>([])
+  const [loadingFollowers, setLoadingFollowers] = useState(false)
+  const [loadingFollowing, setLoadingFollowing] = useState(false)
 
   useEffect(() => {
     const bodyEl = document.body
@@ -113,6 +119,38 @@ export default function ForumProfilePage() {
       }
     } catch (error) {
       console.error("Error fetching follow stats:", error)
+    }
+  }
+
+  const fetchFollowers = async () => {
+    if (!userId || loadingFollowers) return
+    setLoadingFollowers(true)
+    try {
+      const response = await fetch(`/api/forum/profile/${userId}/followers`)
+      if (response.ok) {
+        const data = await response.json()
+        setFollowers(data.followers || [])
+      }
+    } catch (error) {
+      console.error("Error fetching followers:", error)
+    } finally {
+      setLoadingFollowers(false)
+    }
+  }
+
+  const fetchFollowing = async () => {
+    if (!userId || loadingFollowing) return
+    setLoadingFollowing(true)
+    try {
+      const response = await fetch(`/api/forum/profile/${userId}/following`)
+      if (response.ok) {
+        const data = await response.json()
+        setFollowing(data.following || [])
+      }
+    } catch (error) {
+      console.error("Error fetching following:", error)
+    } finally {
+      setLoadingFollowing(false)
     }
   }
 
@@ -249,18 +287,18 @@ export default function ForumProfilePage() {
         }
       `}</style>
       <div className="forum-profile-outer" style={{
-        position: "relative",
-        minHeight: "100vh",
+      position: "relative",
+      minHeight: "100vh",
         paddingTop: "clamp(20px, 4vw, 40px)",
         paddingBottom: "clamp(80px, 12vw, 120px)",
-        fontFamily: "Montserrat, sans-serif",
-        backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-        backgroundAttachment: "fixed",
-        backgroundSize: "cover",
+      fontFamily: "Montserrat, sans-serif",
+      backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      backgroundAttachment: "fixed",
+      backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         width: "100%",
         boxSizing: "border-box"
-      }}>
+    }}>
       <main className="forum-profile-container" style={{ 
         position: "relative",
         width: "100%",
@@ -313,12 +351,54 @@ export default function ForumProfilePage() {
               {/* Follow Stats */}
               {followStats && (
                 <div style={{ display: "flex", gap: 20, fontSize: 14, opacity: 0.9 }}>
-                  <div>
+                  <button
+                    onClick={() => {
+                      setShowFollowers(true)
+                      fetchFollowers()
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "rgba(255, 255, 255, 0.9)",
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      borderRadius: 6,
+                      transition: "all 0.2s ease",
+                      fontWeight: 600
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent"
+                    }}
+                  >
                     <strong>{followStats.followersCount}</strong> seguidores
-                  </div>
-                  <div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowFollowing(true)
+                      fetchFollowing()
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "rgba(255, 255, 255, 0.9)",
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      borderRadius: 6,
+                      transition: "all 0.2s ease",
+                      fontWeight: 600
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent"
+                    }}
+                  >
                     <strong>{followStats.followingCount}</strong> siguiendo
-                  </div>
+                  </button>
                 </div>
               )}
             </div>
@@ -472,6 +552,216 @@ export default function ForumProfilePage() {
           </div>
         </div>
       </main>
+
+      {/* Followers Modal */}
+      {showFollowers && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          zIndex: 1000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 20
+        }} onClick={() => setShowFollowers(false)}>
+          <div style={{
+            background: "white",
+            borderRadius: 20,
+            padding: 24,
+            maxWidth: 500,
+            width: "100%",
+            maxHeight: "80vh",
+            overflow: "auto",
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "#1E40AF" }}>
+                Seguidores ({followStats?.followersCount || 0})
+              </h2>
+              <button
+                onClick={() => setShowFollowers(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  fontSize: 24,
+                  cursor: "pointer",
+                  color: "#9CA3AF",
+                  padding: 4
+                }}
+              >
+                ×
+              </button>
+            </div>
+            {loadingFollowers ? (
+              <div style={{ textAlign: "center", padding: 40 }}>
+                <div style={{ fontSize: 14, color: "#9CA3AF" }}>Cargando...</div>
+              </div>
+            ) : followers.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#9CA3AF" }}>
+                No hay seguidores aún
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {followers.map((follower: any) => (
+                  <Link
+                    key={follower.userId}
+                    href={`/forum/profile/${follower.userId}`}
+                    onClick={() => setShowFollowers(false)}
+                    style={{
+                      padding: 16,
+                      background: "#F9FAFB",
+                      borderRadius: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      textDecoration: "none",
+                      transition: "all 0.2s ease"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#F3F4F6"
+                      e.currentTarget.style.transform = "translateX(4px)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "#F9FAFB"
+                      e.currentTarget.style.transform = "translateX(0)"
+                    }}
+                  >
+                    <div style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: "white"
+                    }}>
+                      {follower.nickname[0].toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#1E40AF", marginBottom: 4 }}>
+                        {follower.nickname}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+                        Nivel {follower.level} • {follower.reputation} pts
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Following Modal */}
+      {showFollowing && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(4px)",
+          zIndex: 1000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 20
+        }} onClick={() => setShowFollowing(false)}>
+          <div style={{
+            background: "white",
+            borderRadius: 20,
+            padding: 24,
+            maxWidth: 500,
+            width: "100%",
+            maxHeight: "80vh",
+            overflow: "auto",
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "#1E40AF" }}>
+                Siguiendo ({followStats?.followingCount || 0})
+              </h2>
+              <button
+                onClick={() => setShowFollowing(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  fontSize: 24,
+                  cursor: "pointer",
+                  color: "#9CA3AF",
+                  padding: 4
+                }}
+              >
+                ×
+              </button>
+            </div>
+            {loadingFollowing ? (
+              <div style={{ textAlign: "center", padding: 40 }}>
+                <div style={{ fontSize: 14, color: "#9CA3AF" }}>Cargando...</div>
+              </div>
+            ) : following.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#9CA3AF" }}>
+                No está siguiendo a nadie aún
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {following.map((followed: any) => (
+                  <Link
+                    key={followed.userId}
+                    href={`/forum/profile/${followed.userId}`}
+                    onClick={() => setShowFollowing(false)}
+                    style={{
+                      padding: 16,
+                      background: "#F9FAFB",
+                      borderRadius: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      textDecoration: "none",
+                      transition: "all 0.2s ease"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#F3F4F6"
+                      e.currentTarget.style.transform = "translateX(4px)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "#F9FAFB"
+                      e.currentTarget.style.transform = "translateX(0)"
+                    }}
+                  >
+                    <div style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: "white"
+                    }}>
+                      {followed.nickname[0].toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#1E40AF", marginBottom: 4 }}>
+                        {followed.nickname}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+                        Nivel {followed.level} • {followed.reputation} pts
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
     </>
   )

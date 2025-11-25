@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { filterContent } from "@/lib/forum/contentFilter"
 import { checkRateLimit } from "@/lib/forum/rateLimiter"
-
-const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,7 +35,16 @@ export async function POST(request: NextRequest) {
 
     // Get or create user profile
     let profile = await prisma.profile.findUnique({
-      where: { userId: user.id }
+      where: { userId: user.id },
+      select: {
+        userId: true,
+        nickname: true,
+        fullName: true,
+        reputation: true,
+        commentsCreated: true,
+        isMinor: true,
+        parentalOverride: true
+      }
     })
 
     if (!profile) {
@@ -51,7 +58,18 @@ export async function POST(request: NextRequest) {
           reputation: 0,
           postsCreated: 0,
           commentsCreated: 0,
-          acceptedAnswers: 0
+          acceptedAnswers: 0,
+          isMinor: false,
+          parentalOverride: false
+        },
+        select: {
+          userId: true,
+          nickname: true,
+          fullName: true,
+          reputation: true,
+          commentsCreated: true,
+          isMinor: true,
+          parentalOverride: true
         }
       })
       console.log(`✅ Auto-created profile for user ${user.id}`)
@@ -71,9 +89,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: contentFilter.reason }, { status: 400 })
     }
 
-    // Check moderation status (first 3 comments need approval)
-
-    const moderationStatus = (profile?.commentsCreated || 0) < 3 ? 'pending' : 'approved'
+    // Check moderation status
+    // Minors (< 18) always need approval, regardless of commentsCreated
+    // Adults: first 3 comments need approval
+    const isMinor = profile?.isMinor ?? false
+    const hasParentalOverride = profile?.parentalOverride ?? false
+    const requiresModeration = isMinor && !hasParentalOverride
+    const moderationStatus = requiresModeration || (profile?.commentsCreated || 0) < 3 ? 'pending' : 'approved'
 
     // Create comment
     const comment = await prisma.forumComment.create({
@@ -132,8 +154,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating comment:", error)
     return NextResponse.json({ error: "Failed to create comment" }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

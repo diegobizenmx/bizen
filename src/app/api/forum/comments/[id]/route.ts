@@ -37,7 +37,8 @@ export async function GET(
             nickname: true,
             fullName: true,
             reputation: true,
-            level: true
+            level: true,
+            isMinor: true
           }
         }
       },

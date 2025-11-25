@@ -28,12 +28,15 @@ export function usePullToRefresh(options: PullToRefreshOptions) {
     if (!element || disabled || isRefreshing) return
 
     const scrollTop = element.scrollTop || window.scrollY
-    // Only allow pull-to-refresh when at the top of the page
-    if (scrollTop <= 0) {
+    // Only allow pull-to-refresh when at the very top of the page (within 5px)
+    if (scrollTop <= 5) {
       touchStart.current = {
         y: e.touches[0].clientY,
         scrollTop: scrollTop
       }
+    } else {
+      // If not at top, don't track touch
+      touchStart.current = null
     }
   }, [disabled, isRefreshing])
 
@@ -43,14 +46,25 @@ export function usePullToRefresh(options: PullToRefreshOptions) {
     const currentY = e.touches[0].clientY
     const deltaY = currentY - touchStart.current.y
 
-    // Only allow downward pull
-    if (deltaY > 0) {
-      const element = elementRef.current
-      const scrollTop = element?.scrollTop || window.scrollY
+    const element = elementRef.current
+    const scrollTop = element?.scrollTop || window.scrollY
 
-      // Only if we're at the top
-      if (scrollTop <= 0) {
-        e.preventDefault()
+    // If scrolling up (deltaY < 0) or not at top, cancel pull-to-refresh
+    if (deltaY < 0 || scrollTop > 5) {
+      touchStart.current = null
+      setPullDistance(0)
+      setIsPulling(false)
+      if (element) {
+        element.style.transform = ''
+      }
+      return
+    }
+
+    // Only allow downward pull when at the very top
+    if (deltaY > 0 && scrollTop <= 5) {
+      // Don't prevent default here - let touchMoveHandler decide
+      // Only update state if pulling down significantly
+      if (deltaY > 20) {
         const distance = deltaY * resistance
         setPullDistance(distance)
         setIsPulling(distance > 10)
@@ -106,13 +120,37 @@ export function usePullToRefresh(options: PullToRefreshOptions) {
     if (!element) return
 
     elementRef.current = element
+    
+    // Use passive listeners for better scroll performance
+    // Only make touchmove non-passive if we're actually at the top
+    const touchMoveHandler = (e: TouchEvent) => {
+      const scrollTop = element.scrollTop || window.scrollY
+      
+      // If not at top or no touch start, don't prevent default (allow normal scroll)
+      if (scrollTop > 5 || !touchStart.current) {
+        handleTouchMove(e)
+        return
+      }
+      
+      // Only prevent default if we're at top and pulling down significantly
+      const currentY = e.touches[0].clientY
+      const deltaY = currentY - touchStart.current.y
+      
+      // Only prevent default if pulling down more than 25px (allows normal scroll to work)
+      if (deltaY > 25) {
+        e.preventDefault()
+      }
+      
+      handleTouchMove(e)
+    }
+    
     element.addEventListener('touchstart', handleTouchStart, { passive: true })
-    element.addEventListener('touchmove', handleTouchMove, { passive: false })
+    element.addEventListener('touchmove', touchMoveHandler, { passive: false })
     element.addEventListener('touchend', handleTouchEnd, { passive: true })
 
     return () => {
       element.removeEventListener('touchstart', handleTouchStart)
-      element.removeEventListener('touchmove', handleTouchMove)
+      element.removeEventListener('touchmove', touchMoveHandler)
       element.removeEventListener('touchend', handleTouchEnd)
       const el = elementRef.current
       if (el) {

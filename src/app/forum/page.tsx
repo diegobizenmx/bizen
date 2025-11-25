@@ -10,6 +10,7 @@ import { usePullToRefresh } from "@/hooks/usePullToRefresh"
 import { useSwipeGesture } from "@/hooks/useSwipeGesture"
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator"
 import { haptic } from "@/utils/hapticFeedback"
+import AgeVerificationModal from "@/components/forum/AgeVerificationModal"
 
 // Force dynamic rendering to avoid prerendering issues
 export const dynamic = 'force-dynamic'
@@ -28,6 +29,7 @@ interface ForumThread {
     userId: string
     nickname: string
     reputation: number
+    isMinor?: boolean
   }
   topic: {
     id: string
@@ -64,6 +66,8 @@ function ForumContent() {
   const [loadingData, setLoadingData] = useState(true)
   const [showTopicFilter, setShowTopicFilter] = useState(false)
   const topicFilterRef = useRef<HTMLDivElement>(null)
+  const [showAgeModal, setShowAgeModal] = useState(false)
+  const [ageVerified, setAgeVerified] = useState(false)
 
   useEffect(() => {
     const bodyEl = document.body
@@ -87,8 +91,39 @@ function ForumContent() {
       return
     }
 
+    // Check if age is verified
+    checkAgeVerification()
+  }, [user, loading, router])
+
+  const checkAgeVerification = async () => {
+    try {
+      const response = await fetch("/api/forum/verify-age")
+      const data = await response.json()
+      
+      if (!data.ageVerified) {
+        setShowAgeModal(true)
+      } else {
+        setAgeVerified(true)
+        fetchData()
+      }
+    } catch (error) {
+      console.error("Error checking age verification:", error)
+      // If error, allow access but show modal
+      setShowAgeModal(true)
+    }
+  }
+
+  const handleAgeVerified = () => {
+    setShowAgeModal(false)
+    setAgeVerified(true)
     fetchData()
-  }, [user, loading, router, selectedTopic, sortBy])
+  }
+
+  useEffect(() => {
+    if (ageVerified) {
+      fetchData()
+    }
+  }, [selectedTopic, sortBy, ageVerified])
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -231,17 +266,28 @@ function ForumContent() {
               -webkit-overflow-scrolling: touch !important;
               height: 100% !important;
               position: relative !important;
+              width: 100% !important;
+              max-width: 100vw !important;
+              left: 0 !important;
+              right: 0 !important;
             }
             .forum-container {
               width: 100% !important;
               max-width: 100% !important;
-              margin-right: 0 !important;
-              padding: clamp(16px, 4vw, 24px) !important;
+              margin: 0 !important;
+              padding: 0 !important;
               overflow-y: visible !important;
               overflow-x: hidden !important;
               -webkit-overflow-scrolling: touch !important;
               height: auto !important;
               min-height: 100% !important;
+            }
+            .forum-container main {
+              width: 100% !important;
+              max-width: 100% !important;
+              margin: 0 !important;
+              padding: clamp(16px, 4vw, 24px) !important;
+              box-sizing: border-box !important;
             }
           }
           /* Tablet/iPad - no gap, sidebar overlays */
@@ -301,8 +347,12 @@ function ForumContent() {
         <main style={{ 
         position: "relative",
         margin: "0", 
-        padding: "40px",
-        paddingRight: "40px",
+        padding: "clamp(16px, 4vw, 40px)",
+        paddingRight: "clamp(16px, 4vw, 40px)",
+        paddingLeft: "clamp(16px, 4vw, 40px)",
+        width: "100%",
+        maxWidth: "100%",
+        boxSizing: "border-box",
         zIndex: 1
       }}>
         {/* Header */}
@@ -652,7 +702,7 @@ function ForumContent() {
               key={thread.id}
               href={`/forum/thread/${thread.id}`}
               style={{
-                padding: 24,
+                padding: "clamp(16px, 4vw, 24px)",
                 background: "rgba(255, 255, 255, 0.4)",
                 backdropFilter: "blur(20px)",
                 borderRadius: 16,
@@ -662,7 +712,10 @@ function ForumContent() {
                 transition: "all 0.3s ease",
                 display: "block",
                 borderLeft: thread.isPinned ? "4px solid #F59E0B" : undefined,
-                animation: `fadeInUp 0.5s ease ${index * 0.05}s both`
+                animation: `fadeInUp 0.5s ease ${index * 0.05}s both`,
+                width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateX(4px)"
@@ -768,7 +821,36 @@ function ForumContent() {
                     flexWrap: "wrap"
                   }}>
                     <span>{thread.topic.name}</span>
-                    <span>por <Link href={`/forum/profile/${thread.author.userId}`} style={{ color: "#0F62FE", textDecoration: "none", fontWeight: 700 }} onMouseEnter={(e) => { e.currentTarget.style.textDecoration = "underline" }} onMouseLeave={(e) => { e.currentTarget.style.textDecoration = "none" }}>{thread.author.nickname}</Link> ({thread.author.reputation} pts)</span>
+                    <span>por <span 
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        router.push(`/forum/profile/${thread.author.userId}`)
+                      }}
+                      style={{ 
+                        color: "#0F62FE", 
+                        textDecoration: "none", 
+                        fontWeight: 700,
+                        cursor: "pointer"
+                      }} 
+                      onMouseEnter={(e) => { e.currentTarget.style.textDecoration = "underline" }} 
+                      onMouseLeave={(e) => { e.currentTarget.style.textDecoration = "none" }}
+                    >{thread.author.nickname}</span> ({thread.author.reputation} pts)
+                    {thread.author.isMinor && (
+                      <span style={{
+                        marginLeft: 8,
+                        padding: "2px 8px",
+                        background: "#FEF3C7",
+                        color: "#92400E",
+                        borderRadius: 4,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        border: "1px solid #FCD34D"
+                      }}>
+                        Menor de 18
+                      </span>
+                    )}
+                    </span>
                     <span>{formatDate(thread.createdAt)}</span>
                     <span>{thread.commentCount} respuestas</span>
                     <span>{thread.viewCount} vistas</span>
@@ -842,30 +924,30 @@ function ForumContent() {
         display: flex !important;
       }
       
-          /* Mobile specific styles */
-          @media (max-width: 767px) {
-            .forum-outer {
+      /* Mobile specific styles */
+      @media (max-width: 767px) {
+        .forum-outer {
               overflow-y: auto !important;
-              overflow-x: hidden !important;
-              -webkit-overflow-scrolling: touch !important;
-              flex: 1 !important;
+          overflow-x: hidden !important;
+          -webkit-overflow-scrolling: touch !important;
+          flex: 1 !important;
               min-height: 100vh !important;
               min-height: 100dvh !important;
               height: auto !important;
               background-attachment: scroll !important;
-            }
-            /* Ensure container allows scroll */
-            .forum-container {
-              position: relative !important;
-              height: auto !important;
+        }
+        /* Ensure container allows scroll */
+        .forum-container {
+          position: relative !important;
+          height: auto !important;
               min-height: 100% !important;
-              flex: 1 !important;
+          flex: 1 !important;
               overflow-y: auto !important;
-              overflow-x: hidden !important;
-              margin-right: 0 !important;
-              padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
-              -webkit-overflow-scrolling: touch !important;
-            }
+          overflow-x: hidden !important;
+          margin-right: 0 !important;
+          padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
         
         /* Ensure app-scroll allows scrolling */
         .app-scroll {
@@ -888,6 +970,10 @@ function ForumContent() {
         }
       }
     `}</style>
+    <AgeVerificationModal 
+      isOpen={showAgeModal} 
+      onVerified={handleAgeVerified}
+    />
     </>
   )
 }
