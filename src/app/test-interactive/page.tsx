@@ -19,7 +19,7 @@ export default function TestInteractivePage() {
       justifyContent: "center",
       minHeight: "100vh",
       fontFamily: "Montserrat, sans-serif",
-      background: "linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)",
+      background: "#ffffff",
       padding: 40
     }}>
       <div style={{

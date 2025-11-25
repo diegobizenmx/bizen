@@ -36,7 +36,7 @@ export default function NewThreadPage() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -139,7 +139,7 @@ export default function NewThreadPage() {
         placeItems: "center", 
         minHeight: "60vh", 
         fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         marginRight: "340px"
       }}>
         <div style={{ textAlign: "center" }}>
@@ -173,7 +173,7 @@ export default function NewThreadPage() {
       paddingTop: 40,
       paddingBottom: 80,
       fontFamily: "Montserrat, sans-serif",
-      backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       backgroundAttachment: "fixed",
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat",

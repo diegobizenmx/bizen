@@ -35,7 +35,7 @@ export default function ModerationPage() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -155,7 +155,7 @@ export default function ModerationPage() {
       paddingTop: 40,
       paddingBottom: 80,
       fontFamily: "Montserrat, sans-serif",
-      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       backgroundAttachment: "fixed"
     }}>
       <main style={{ 

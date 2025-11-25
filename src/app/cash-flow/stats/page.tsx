@@ -97,7 +97,7 @@ export default function CashFlowStatsPage() {
     <div style={{
       display: "flex",
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       fontFamily: "Montserrat, sans-serif"
     }}>
       <main style={{

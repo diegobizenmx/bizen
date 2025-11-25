@@ -44,7 +44,7 @@ function ForumSearchContent() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -93,7 +93,7 @@ function ForumSearchContent() {
         placeItems: "center", 
         minHeight: "60vh", 
         fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+        background: "#ffffff"
       }}>
         <div style={{ textAlign: "center" }}>
           <div style={{
@@ -126,7 +126,7 @@ function ForumSearchContent() {
       paddingTop: 40,
       paddingBottom: 80,
       fontFamily: "Montserrat, sans-serif",
-      backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       backgroundAttachment: "fixed",
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat"
@@ -286,7 +286,7 @@ function ForumSearchContent() {
 
 export default function ForumSearchPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)" }}>Buscando...</div>}>
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#ffffff" }}>Buscando...</div>}>
       <ForumSearchContent />
     </Suspense>
   )

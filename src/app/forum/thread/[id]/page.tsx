@@ -81,7 +81,7 @@ export default function ThreadDetailPage() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -557,6 +557,21 @@ export default function ThreadDetailPage() {
   return (
     <>
       <style>{`
+        /* Fix app-shell and app-scroll on mobile for forum thread */
+        @media (max-width: 767px) {
+          .app-shell,
+          .app-scroll,
+          .app-main {
+            width: 100% !important;
+            max-width: 100vw !important;
+            left: 0 !important;
+            right: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            transform: none !important;
+          }
+        }
+        
         /* Mobile (≤767px): Full width */
         @media (max-width: 767px) {
           .forum-thread-outer {
@@ -612,7 +627,7 @@ export default function ThreadDetailPage() {
         paddingTop: "clamp(20px, 4vw, 40px)",
         paddingBottom: "clamp(80px, 12vw, 120px)",
         fontFamily: "Montserrat, sans-serif",
-        backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         backgroundAttachment: "fixed",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

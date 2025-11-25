@@ -34,7 +34,7 @@ function SettingsContent() {
     // Set blue gradient background for this page
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -376,7 +376,7 @@ function SettingsContent() {
     <div className="configuracion-outer" style={{
       width: "100%",
       flex: 1,
-      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       backgroundAttachment: "fixed",
       fontFamily: "'Montserrat', sans-serif",
       overflowX: "hidden",
@@ -2116,7 +2116,7 @@ function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)", padding: "40px", maxWidth: "100%", overflowX: "hidden" }}>Cargando configuración...</div>}>
+    <Suspense fallback={<div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#ffffff", padding: "40px", maxWidth: "100%", overflowX: "hidden" }}>Cargando configuración...</div>}>
       <SettingsContent />
     </Suspense>
   )

@@ -668,7 +668,7 @@ export default function CashFlowGamePage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+        background: "#ffffff"
       }}>
         <div style={{ color: "#333", fontSize: 24, fontWeight: 700 }}>
           Cargando juego...
@@ -949,7 +949,7 @@ export default function CashFlowGamePage() {
       <div style={{
         width: "100%",
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         fontFamily: "'Montserrat', sans-serif",
         overflowX: "hidden"
       }}>

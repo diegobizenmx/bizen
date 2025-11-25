@@ -96,6 +96,9 @@ export function usePullToRefresh(options: PullToRefreshOptions) {
         setPullDistance(0)
         if (element) {
           element.style.transform = ''
+          element.style.transition = ''
+          // Force reflow to ensure transform is cleared
+          void element.offsetHeight
         }
       }
     } else {
@@ -108,6 +111,8 @@ export function usePullToRefresh(options: PullToRefreshOptions) {
         setTimeout(() => {
           if (element) {
             element.style.transition = ''
+            // Force reflow to ensure transform is cleared
+            void element.offsetHeight
           }
         }, 300)
       }

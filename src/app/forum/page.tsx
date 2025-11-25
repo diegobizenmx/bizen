@@ -74,7 +74,7 @@ function ForumContent() {
     if (bodyEl) {
       // Don't use fixed background on mobile - it causes scrolling issues
       const isMobile = window.innerWidth <= 767
-      bodyEl.style.backgroundImage = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = isMobile ? "scroll" : "fixed"
     }
     return () => {
@@ -98,32 +98,44 @@ function ForumContent() {
   const checkAgeVerification = async () => {
     try {
       const response = await fetch("/api/forum/verify-age")
+      
+      if (!response.ok) {
+        // If API error, allow access but show modal
+        console.error("Error checking age verification:", response.status)
+        setShowAgeModal(true)
+        // Allow threads to load even if there's an error
+        setAgeVerified(true)
+        return
+      }
+      
       const data = await response.json()
       
       if (!data.ageVerified) {
         setShowAgeModal(true)
+        // Allow threads to load even if modal is shown (user can verify later)
+        setAgeVerified(true)
       } else {
         setAgeVerified(true)
-        fetchData()
       }
     } catch (error) {
       console.error("Error checking age verification:", error)
-      // If error, allow access but show modal
+      // If error, allow access and load threads
       setShowAgeModal(true)
+      setAgeVerified(true)
     }
   }
 
   const handleAgeVerified = () => {
     setShowAgeModal(false)
     setAgeVerified(true)
-    fetchData()
+    // fetchData will be called by the useEffect
   }
 
   useEffect(() => {
-    if (ageVerified) {
+    if (ageVerified && user && !loading) {
       fetchData()
     }
-  }, [selectedTopic, sortBy, ageVerified])
+  }, [selectedTopic, sortBy, ageVerified, user, loading])
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -256,20 +268,45 @@ function ForumContent() {
       />
       <>
         <style>{`
+          /* Fix app-shell and app-scroll on mobile for forum */
+          @media (max-width: 767px) {
+            .app-shell,
+            .app-scroll,
+            .app-main {
+              width: 100% !important;
+              max-width: 100vw !important;
+              left: 0 !important;
+              right: 0 !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              transform: none !important;
+            }
+          }
+          
           /* Mobile - account for footer */
           @media (max-width: 767px) {
-            .forum-outer {
-              padding-bottom: 65px !important;
-              flex: 1 !important;
+            /* Let app-scroll handle scrolling, not forum-outer */
+            .app-scroll {
               overflow-y: auto !important;
               overflow-x: hidden !important;
               -webkit-overflow-scrolling: touch !important;
-              height: 100% !important;
+              touch-action: pan-y !important;
+            }
+            
+            .forum-outer {
+              padding-bottom: 65px !important;
+              flex: 1 !important;
+              overflow-y: visible !important;
+              overflow-x: hidden !important;
+              height: auto !important;
+              min-height: 100% !important;
               position: relative !important;
               width: 100% !important;
               max-width: 100vw !important;
               left: 0 !important;
               right: 0 !important;
+              touch-action: pan-y !important;
+              pointer-events: auto !important;
             }
             .forum-container {
               width: 100% !important;
@@ -278,9 +315,10 @@ function ForumContent() {
               padding: 0 !important;
               overflow-y: visible !important;
               overflow-x: hidden !important;
-              -webkit-overflow-scrolling: touch !important;
               height: auto !important;
               min-height: 100% !important;
+              touch-action: pan-y !important;
+              pointer-events: auto !important;
             }
             .forum-container main {
               width: 100% !important;
@@ -288,6 +326,9 @@ function ForumContent() {
               margin: 0 !important;
               padding: clamp(16px, 4vw, 24px) !important;
               box-sizing: border-box !important;
+              left: 0 !important;
+              right: 0 !important;
+              transform: none !important;
             }
           }
           /* Tablet/iPad - no gap, sidebar overlays */
@@ -321,13 +362,20 @@ function ForumContent() {
           position: "relative",
           flex: 1,
           fontFamily: "'Montserrat', sans-serif",
-          backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+          background: "#ffffff",
           backgroundAttachment: typeof window !== "undefined" && window.innerWidth <= 767 ? "scroll" : "fixed",
           width: "100%",
+          maxWidth: "100vw",
           boxSizing: "border-box",
           overflowX: "hidden",
-          overflowY: "auto",
-          WebkitOverflowScrolling: "touch"
+          overflowY: typeof window !== "undefined" && window.innerWidth <= 767 ? "visible" : "auto",
+          WebkitOverflowScrolling: "touch",
+          left: 0,
+          right: 0,
+          margin: 0,
+          padding: 0,
+          touchAction: "pan-y",
+          pointerEvents: "auto"
         }}>
           <div 
             ref={containerRef}
@@ -339,9 +387,15 @@ function ForumContent() {
               paddingBottom: 80,
               touchAction: "pan-y", // Allow vertical scrolling, enable gestures
               overflowX: "hidden",
-              overflowY: typeof window !== "undefined" && window.innerWidth <= 767 ? "auto" : "visible",
+              overflowY: "visible", // Don't make this scrollable, let parent handle it
               boxSizing: "border-box",
-              WebkitOverflowScrolling: "touch"
+              WebkitOverflowScrolling: "touch",
+              width: "100%",
+              maxWidth: "100%",
+              left: 0,
+              right: 0,
+              margin: 0,
+              pointerEvents: "auto"
             }}
           >
         <main style={{ 
@@ -353,7 +407,10 @@ function ForumContent() {
         width: "100%",
         maxWidth: "100%",
         boxSizing: "border-box",
-        zIndex: 1
+        zIndex: 1,
+        left: 0,
+        right: 0,
+        transform: "none"
       }}>
         {/* Header */}
         <div style={{ 

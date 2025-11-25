@@ -133,10 +133,10 @@ export default function ProfilePage() {
     const htmlEl = document.documentElement
     const bodyEl = document.body
     
-    htmlEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
-    htmlEl.style.backgroundAttachment = "fixed"
-    bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
-    bodyEl.style.backgroundAttachment = "fixed"
+    htmlEl.style.background = "#ffffff"
+    htmlEl.style.backgroundAttachment = "scroll"
+    bodyEl.style.background = "#ffffff"
+    bodyEl.style.backgroundAttachment = "scroll"
     
     return () => {
       htmlEl.style.background = ""
@@ -256,7 +256,7 @@ export default function ProfilePage() {
       left: 0,
       width: "100%",
       height: "100%",
-      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       overflowY: "auto",
       overflowX: "hidden"
     }}>

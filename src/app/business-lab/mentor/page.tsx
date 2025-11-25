@@ -24,7 +24,7 @@ export default async function MentorPage() {
     <main style={{
       marginRight: "320px",
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       padding: "40px",
       paddingRight: "360px",
       fontFamily: "Montserrat, sans-serif",

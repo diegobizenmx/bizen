@@ -143,7 +143,7 @@ export default function StepDetailPage() {
         display: "flex", 
         alignItems: "center", 
         justifyContent: "center",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         marginRight: "320px"
       }}>
         <div style={{ textAlign: "center" }}>
@@ -177,7 +177,7 @@ export default function StepDetailPage() {
         display: "flex", 
         alignItems: "center", 
         justifyContent: "center",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         marginRight: "320px",
         fontFamily: "Montserrat, sans-serif"
       }}>
@@ -210,7 +210,7 @@ export default function StepDetailPage() {
       <main style={{
         marginRight: "320px",
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         padding: "40px",
         paddingRight: "360px",
         fontFamily: "Montserrat, sans-serif",

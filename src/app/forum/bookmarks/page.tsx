@@ -48,7 +48,7 @@ export default function BookmarksPage() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.backgroundImage = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
       bodyEl.style.backgroundSize = "cover"
       bodyEl.style.backgroundRepeat = "no-repeat"
@@ -128,8 +128,7 @@ export default function BookmarksPage() {
         paddingTop: 40,
         paddingBottom: 80,
         fontFamily: "Montserrat, sans-serif",
-        backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
-        backgroundAttachment: "fixed",
+        background: "#ffffff",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         marginRight: "340px"

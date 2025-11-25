@@ -692,10 +692,10 @@ export default function CoursesPage() {
     const htmlEl = document.documentElement
     const bodyEl = document.body
     
-    htmlEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
-    htmlEl.style.backgroundAttachment = "fixed"
-    bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
-    bodyEl.style.backgroundAttachment = "fixed"
+    htmlEl.style.background = "#ffffff"
+    htmlEl.style.backgroundAttachment = "scroll"
+    bodyEl.style.background = "#ffffff"
+    bodyEl.style.backgroundAttachment = "scroll"
     
     return () => {
       htmlEl.style.background = ""
@@ -778,7 +778,7 @@ export default function CoursesPage() {
         width: "100%",
         maxWidth: "100%",
         flex: 1,
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         overflowX: "hidden",
         boxSizing: "border-box",
         paddingBottom: 0,
@@ -830,7 +830,7 @@ export default function CoursesPage() {
           left: 0,
           width: "clamp(180px, 20vw, 240px)",
         height: "100vh",
-          background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+          background: "#ffffff",
           backdropFilter: "blur(20px)",
           zIndex: 9998,
           padding: "80px 16px 24px 16px",
@@ -1640,7 +1640,7 @@ export default function CoursesPage() {
             padding: 32px 16px !important;
             padding-top: 60px !important;
             z-index: 10000 !important;
-            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background: #ffffff !important;
             backdrop-filter: blur(20px) !important;
             box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15) !important;
             flex-direction: column !important;
@@ -1677,7 +1677,7 @@ export default function CoursesPage() {
             transition: transform 0.3s ease-in-out !important;
             display: flex !important;
             flex-direction: column !important;
-            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background: #ffffff !important;
             backdrop-filter: blur(20px) !important;
             box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15) !important;
             gap: 16px !important;
@@ -1849,7 +1849,7 @@ export default function CoursesPage() {
             padding-right: 0 !important;
             padding-top: 80px !important; /* Space for hamburger button */
             padding-bottom: calc(65px + env(safe-area-inset-bottom)) !important; /* Space for mobile footer + safe area */
-            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background: #ffffff !important;
           }
           
           /* Remove extra margin from last course section on mobile */
@@ -1867,7 +1867,7 @@ export default function CoursesPage() {
             min-height: 100vh !important;
             width: 100% !important;
             max-width: 100% !important;
-            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background: #ffffff !important;
             background-attachment: fixed !important;
           }
           
@@ -1880,7 +1880,7 @@ export default function CoursesPage() {
             -webkit-overflow-scrolling: touch !important;
             height: auto !important;
             min-height: 100vh !important;
-            background: linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+            background: #ffffff !important;
             background-attachment: fixed !important;
           }
           

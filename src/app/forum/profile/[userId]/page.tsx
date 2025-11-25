@@ -55,7 +55,7 @@ export default function ForumProfilePage() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -213,7 +213,7 @@ export default function ForumProfilePage() {
         placeItems: "center", 
         minHeight: "60vh", 
         fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+        background: "#ffffff"
       }}>
         <div style={{ textAlign: "center" }}>
           <div style={{
@@ -292,7 +292,7 @@ export default function ForumProfilePage() {
         paddingTop: "clamp(20px, 4vw, 40px)",
         paddingBottom: "clamp(80px, 12vw, 120px)",
       fontFamily: "Montserrat, sans-serif",
-      backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       backgroundAttachment: "fixed",
       backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

@@ -46,7 +46,7 @@ export default function TopicFeedPage() {
   useEffect(() => {
     const bodyEl = document.body
     if (bodyEl) {
-      bodyEl.style.background = "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+      bodyEl.style.background = "#ffffff"
       bodyEl.style.backgroundAttachment = "fixed"
     }
     return () => {
@@ -91,7 +91,7 @@ export default function TopicFeedPage() {
         placeItems: "center", 
         minHeight: "60vh", 
         fontFamily: "Montserrat, sans-serif",
-        background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+        background: "#ffffff"
       }}>
         <div style={{ textAlign: "center" }}>
           <div style={{
@@ -124,7 +124,7 @@ export default function TopicFeedPage() {
       paddingTop: 40,
       paddingBottom: 80,
       fontFamily: "Montserrat, sans-serif",
-      backgroundImage: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       backgroundAttachment: "fixed",
       backgroundSize: "cover",
       backgroundRepeat: "no-repeat"

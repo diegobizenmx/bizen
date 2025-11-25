@@ -306,7 +306,7 @@ export default function CashFlowPage() {
       <div className="cashflow-outer" data-bizen-tour="cashflow" style={{
         width: "100%",
         flex: 1,
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         fontFamily: "'Montserrat', sans-serif",
         overflowX: "hidden",
         overflowY: "auto",

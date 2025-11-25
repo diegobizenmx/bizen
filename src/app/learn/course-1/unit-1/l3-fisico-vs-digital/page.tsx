@@ -2196,7 +2196,7 @@ export default function L3FisicoVsDigitalPage() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(180deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
       fontFamily: "Montserrat, sans-serif",
       paddingRight: "320px" // Space for sidebar
     }}>

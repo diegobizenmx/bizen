@@ -94,7 +94,7 @@ export default async function SimulatorsPage() {
       <div className="simulators-outer" style={{
         width: "100%",
       flex: 1,
-      background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+      background: "#ffffff",
         fontFamily: "Montserrat, sans-serif",
         overflowX: "hidden",
         overflowY: "auto",

@@ -73,7 +73,7 @@ export default function LabPage() {
         display: "flex", 
         alignItems: "center", 
         justifyContent: "center",
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)"
+        background: "#ffffff"
       }}>
         <div style={{ textAlign: "center" }}>
           <div style={{
@@ -119,7 +119,7 @@ export default function LabPage() {
         width: "100%",
         maxWidth: "none",
         flex: 1,
-        background: "linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 50%, #BFDBFE 100%)",
+        background: "#ffffff",
         fontFamily: "Montserrat, sans-serif",
         overflowX: "hidden",
         overflowY: "auto",
