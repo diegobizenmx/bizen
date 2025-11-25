@@ -351,20 +351,48 @@ body > * {
   }
 }
 
-/* App Shell and Scroll Containers - White Background */
+/* App Shell and Scroll Containers - Layout + White Background */
 .app-shell {
   background-color: #ffffff !important;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .app-scroll {
   background-color: #ffffff !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 .app-main {
   background-color: #ffffff !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 html, body {
   background-color: #ffffff !important;
+}
+
+@media (max-width: 767px) {
+  body[data-mobile-footer="true"] .app-scroll {
+    padding-bottom: calc(65px + env(safe-area-inset-bottom)) !important;
+  }
 }
 

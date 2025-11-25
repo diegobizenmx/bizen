@@ -103,6 +103,21 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // Flag body when the fixed mobile footer is visible so pages can add safe padding
+  useEffect(() => {
+    if (typeof document === "undefined") return
+
+    if (!isAuthPage && isMobile) {
+      document.body.setAttribute("data-mobile-footer", "true")
+    } else {
+      document.body.removeAttribute("data-mobile-footer")
+    }
+
+    return () => {
+      document.body.removeAttribute("data-mobile-footer")
+    }
+  }, [isAuthPage, isMobile])
+
   return (
     <>
       {/* Show FixedSidebar only on larger screens (>767px) */}

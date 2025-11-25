@@ -330,8 +330,8 @@ export default function CashFlowPage() {
         {isMobile ? (
           <div style={{
             width: "100%",
-            maxWidth: "600px",
-            margin: "0 auto",
+            maxWidth: "100%",
+            margin: "0",
             background: "white",
             borderRadius: "20px",
             padding: "clamp(32px, 6vw, 48px)",
@@ -340,7 +340,8 @@ export default function CashFlowPage() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "24px"
+            gap: "24px",
+            boxSizing: "border-box"
           }}>
             <div style={{
               fontSize: "clamp(48px, 10vw, 64px)",
