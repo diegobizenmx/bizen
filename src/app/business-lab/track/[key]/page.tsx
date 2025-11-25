@@ -132,7 +132,7 @@ export default async function TrackPage({ params }: Props) {
         padding: 24,
         boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
         marginBottom: 32,
-        border: "2px solid #DBEAFE",
+        border: "2px solid #e5e7eb",
         width: "100%"
       }}>
         <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1E40AF", marginBottom: 8 }}>
@@ -142,7 +142,7 @@ export default async function TrackPage({ params }: Props) {
           Has completado {completedCount} de {track.steps.length} pasos
         </p>
         <div style={{
-          background: "#E0F2FE",
+          background: "#ffffff",
           borderRadius: 12,
           height: 24,
           overflow: "hidden",

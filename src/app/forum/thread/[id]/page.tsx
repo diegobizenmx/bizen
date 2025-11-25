@@ -569,6 +569,7 @@ export default function ThreadDetailPage() {
             margin: 0 !important;
             padding: 0 !important;
             transform: none !important;
+            background-color: #ffffff !important;
           }
         }
         

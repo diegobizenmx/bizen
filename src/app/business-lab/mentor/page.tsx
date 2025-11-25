@@ -116,7 +116,7 @@ export default async function MentorPage() {
                     <span key={i} style={{
                       fontSize: 12,
                       padding: "4px 10px",
-                      background: "#E0F2FE",
+                      background: "#ffffff",
                       color: "#0B71FE",
                       borderRadius: 6,
                       fontWeight: 600

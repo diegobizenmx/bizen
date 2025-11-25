@@ -275,7 +275,7 @@ export default function PaymentPage() {
               <div
                 style={{
                   padding: 16,
-                  background: "linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)",
+                  background: "#ffffff",
                   borderRadius: 12,
                   marginBottom: 16,
                 }}
@@ -392,7 +392,7 @@ export default function PaymentPage() {
                 <div
                   style={{
                     padding: 16,
-                    background: "linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)",
+                    background: "#ffffff",
                     borderRadius: 12,
                     border: "1px solid rgba(15, 98, 254, 0.1)",
                   }}

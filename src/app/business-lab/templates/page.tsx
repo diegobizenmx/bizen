@@ -241,10 +241,10 @@ export default async function TemplatesPage() {
 
       {/* Tip Card */}
       <div style={{
-        background: "#DBEAFE",
+        background: "#ffffff",
         borderRadius: 16,
         padding: 20,
-        border: "2px solid #BFDBFE",
+        border: "2px solid #e5e7eb",
         width: "100%"
       }}>
         <div style={{ display: "flex", alignItems: "start", gap: 12 }}>

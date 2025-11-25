@@ -609,6 +609,7 @@ export default function WelcomePage() {
         .app-main {
           width: 100% !important;
           max-width: 100% !important;
+          background-color: #ffffff !important;
         }
         
         @media (max-width: 768px) {

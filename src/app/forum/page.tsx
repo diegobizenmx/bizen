@@ -192,18 +192,18 @@ function ForumContent() {
     velocity: 0.3
   })
 
-  // Attach pull-to-refresh and swipe listeners
-  useEffect(() => {
-    if (containerRef.current) {
-      const cleanupPull = attachPullListeners(containerRef.current)
-      const cleanupSwipe = attachSwipeListeners(containerRef.current)
-      
-      return () => {
-        cleanupPull?.()
-        cleanupSwipe?.()
-      }
-    }
-  }, [attachPullListeners, attachSwipeListeners])
+  // Don't attach pull-to-refresh or swipe listeners to allow browser native refresh
+  // useEffect(() => {
+  //   if (containerRef.current) {
+  //     const cleanupPull = attachPullListeners(containerRef.current)
+  //     const cleanupSwipe = attachSwipeListeners(containerRef.current)
+  //     
+  //     return () => {
+  //       cleanupPull?.()
+  //       cleanupSwipe?.()
+  //     }
+  //   }
+  // }, [attachPullListeners, attachSwipeListeners])
 
   // Close topic filter dropdown when clicking outside
   useEffect(() => {
@@ -280,6 +280,7 @@ function ForumContent() {
               margin: 0 !important;
               padding: 0 !important;
               transform: none !important;
+              background-color: #ffffff !important;
             }
           }
           

@@ -263,7 +263,7 @@ export default function StepDetailPage() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              background: "#DBEAFE",
+              background: "#ffffff",
               color: "#1E40AF",
               padding: "10px 20px",
               borderRadius: 24,
@@ -564,7 +564,7 @@ export default function StepDetailPage() {
               borderRadius: 16,
               padding: 20,
               boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-              border: "2px solid #BFDBFE"
+              border: "2px solid #e5e7eb"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <span style={{ fontSize: 20 }}>💬</span>

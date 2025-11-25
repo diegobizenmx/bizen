@@ -182,10 +182,10 @@ export default async function ScorePage() {
 
       {/* Action Card */}
       <div style={{
-        background: "#DBEAFE",
+        background: "#ffffff",
         borderRadius: 16,
         padding: 24,
-        border: "2px solid #BFDBFE",
+        border: "2px solid #e5e7eb",
         width: "100%"
       }}>
         <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1E40AF", marginBottom: 12 }}>

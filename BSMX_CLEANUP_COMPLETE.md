@@ -21,3 +21,4 @@ The code now references `/bizen-logo.png`. Make sure this file exists in your `p
 All BSMX references have been removed from the codebase. The landing page is now BIZEN-branded.
 
 
+

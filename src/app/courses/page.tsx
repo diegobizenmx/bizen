@@ -1601,6 +1601,7 @@ export default function CoursesPage() {
             margin: 0 !important;
             padding: 0 !important;
             overflow-x: hidden !important;
+            background-color: #ffffff !important;
           }
           
           /* Ensure root container uses full width */

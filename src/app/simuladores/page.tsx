@@ -255,7 +255,7 @@ export default function SimulatorsPage() {
                       fontSize: 11,
                       fontWeight: 600,
                       padding: "4px 10px",
-                      background: "#E0F2FE",
+                      background: "#ffffff",
                       color: "#1E40AF",
                       borderRadius: 8
                     }}>
