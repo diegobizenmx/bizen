@@ -37,9 +37,31 @@ interface Course {
 }
 
 // 3D Star component using star.png
-function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson: Lesson; offsetX: number; isNext: boolean; onClick: () => void; isVisible: boolean }) {
+function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible, isSelected }: { lesson: Lesson; offsetX: number; isNext: boolean; onClick: () => void; isVisible: boolean; isSelected: boolean }) {
   // Show "START" label and rotation only for the next lesson to complete
-  const showStartLabel = isNext
+  // Hide START when preview panel is open (isSelected)
+  const showStartLabel = isNext && !isSelected
+  
+  // Debug log
+  if (showStartLabel) {
+    console.log('🎯 START should be visible for lesson:', lesson.id, { isNext, showStartLabel })
+  }
+  
+  React.useEffect(() => {
+    if (showStartLabel) {
+      console.log('✅ START label rendered for lesson:', lesson.id)
+      // Check if element exists in DOM
+      setTimeout(() => {
+        const startElement = document.querySelector(`[data-start-label="${lesson.id}"]`)
+        console.log('🔍 START element in DOM:', startElement, {
+          exists: !!startElement,
+          visible: startElement ? window.getComputedStyle(startElement as Element).visibility : 'N/A',
+          display: startElement ? window.getComputedStyle(startElement as Element).display : 'N/A',
+          opacity: startElement ? window.getComputedStyle(startElement as Element).opacity : 'N/A'
+        })
+      }, 100)
+    }
+  }, [showStartLabel, lesson.id])
   
   return (
     <div 
@@ -52,7 +74,9 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        overflow: "visible"
+        overflow: "visible",
+        zIndex: 100000,
+        pointerEvents: "auto"
       }}
     >
       <motion.div
@@ -73,19 +97,48 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
           width: "clamp(80px, 18vw, 120px)",
           height: "clamp(80px, 18vw, 120px)",
         position: "relative",
-          cursor: "pointer"
+          cursor: "pointer",
+          zIndex: 11,
+          pointerEvents: "auto"
       }}
     >
-      {/* "START" Label above star - animated */}
+       {/* Star Image */}
+       <Image
+         src="/star.png"
+         alt="Lesson star"
+         width={120}
+         height={120}
+         style={{
+           width: "100%",
+           height: "100%",
+           objectFit: "contain",
+           filter: lesson.isLocked ? "grayscale(1) brightness(0.7)" : "none"
+         }}
+         priority
+       />
+
+      {/* Status Badges */}
+    </motion.div>
+      {/* "START" Label above star - animated - after motion.div so it doesn't block clicks */}
       {showStartLabel && (
-      <div style={{
+      <div 
+        data-start-label={lesson.id}
+        style={{
         position: "absolute",
-          top: "-30px",
+          // Position it just above the star, close to it
+          top: "-35px",
         left: "50%",
         transform: "translateX(-50%)",
-          zIndex: 20,
-          animation: "bounce 1.5s ease-in-out infinite"
-        }}>
+          zIndex: 100001,
+          animation: "bounce 1.5s ease-in-out infinite",
+          opacity: 1,
+          pointerEvents: "none",
+          visibility: "visible",
+          display: "block",
+          willChange: "transform"
+        }}
+        className="start-label-visible"
+        >
           {/* Speech bubble */}
           <div style={{
             background: "white",
@@ -93,14 +146,19 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
             borderRadius: "12px",
             border: "2px solid #3B82F6",
             boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)",
-            position: "relative"
+            position: "relative",
+            backgroundColor: "#ffffff",
+            opacity: 1,
+            visibility: "visible"
           }}>
             <div style={{
               fontSize: "clamp(14px, 2.5vw, 16px)",
               fontWeight: 900,
               color: "#3B82F6",
               textTransform: "uppercase",
-              letterSpacing: "0.5px"
+              letterSpacing: "0.5px",
+              opacity: 1,
+              visibility: "visible"
             }}>
               START
             </div>
@@ -133,24 +191,6 @@ function LessonIsland({ lesson, offsetX, isNext, onClick, isVisible }: { lesson:
       </div>
         </div>
       )}
-      
-       {/* Star Image */}
-       <Image
-         src="/star.png"
-         alt="Lesson star"
-         width={120}
-         height={120}
-         style={{
-           width: "100%",
-           height: "100%",
-           objectFit: "contain",
-           filter: lesson.isLocked ? "grayscale(1) brightness(0.7)" : "none"
-         }}
-         priority
-       />
-
-      {/* Status Badges */}
-    </motion.div>
     </div>
   )
 }
@@ -779,7 +819,7 @@ export default function CoursesPage() {
         maxWidth: "100%",
         flex: 1,
         background: "#ffffff",
-        overflowX: "hidden",
+        overflow: "visible",
         boxSizing: "border-box",
         paddingBottom: 0,
         marginBottom: 0,
@@ -1025,30 +1065,30 @@ export default function CoursesPage() {
             className="sticky-course-bar-content"
             style={{
               background: "#3B82F6",
-              boxShadow: "0 6px 20px rgba(37, 99, 235, 0.5)",
-              padding: "clamp(14px, 2.5vw, 18px) clamp(32px, 5vw, 48px)",
-              borderRadius: 20,
-              border: "3px solid #fff",
+              boxShadow: "0 4px 12px rgba(37, 99, 235, 0.4)",
+              padding: "clamp(6px, 1.2vw, 8px) clamp(20px, 4.5vw, 32px)",
+              borderRadius: 12,
+              border: "2px solid #fff",
               pointerEvents: "auto",
               display: "inline-block",
-              maxWidth: "clamp(300px, 70vw, 500px)",
-              minWidth: "clamp(250px, 60vw, 400px)"
+              maxWidth: "clamp(450px, 80vw, 700px)",
+              minWidth: "clamp(400px, 75vw, 600px)"
             }}
           >
                     <div className="course-number" style={{
-              fontSize: "clamp(10px, 2vw, 12px)",
+              fontSize: "clamp(12px, 2.2vw, 14px)",
               fontWeight: 700,
               color: "rgba(255, 255, 255, 0.8)",
               textTransform: "uppercase",
               letterSpacing: "0.5px",
-              marginBottom: 4,
+              marginBottom: 2,
               textAlign: "center",
               whiteSpace: "nowrap"
             }}>
               {t.courses.course} {currentCourse.order}
                       </div>
                       <div className="course-title-text" style={{
-              fontSize: "clamp(16px, 3vw, 18px)",
+              fontSize: "clamp(16px, 3.5vw, 20px)",
               fontWeight: 800,
               color: "#fff",
               lineHeight: 1.2,
@@ -1066,7 +1106,7 @@ export default function CoursesPage() {
       data-bizen-tour="courses"
       style={{ 
         flex: 1,
-        paddingTop: "80px",
+        paddingTop: "100px",
         paddingBottom: "clamp(40px, 8vw, 80px)",
         paddingLeft: "16px",
         paddingRight: "16px",
@@ -1096,14 +1136,15 @@ export default function CoursesPage() {
           {courses.map((course) => (
             <div key={course.id} id={`course-${course.id}`} style={{ 
                 marginBottom: "clamp(40px, 8vw, 80px)",
-              marginTop: course.order === 1 ? "clamp(100px, 15vw, 140px)" : "0",
+              marginTop: course.order === 1 ? "clamp(80px, 12vw, 120px)" : "0",
               width: "100%", 
               display: "flex", 
               flexDirection: "column", 
-              alignItems: "center" 
+              alignItems: "center",
+              overflow: "visible"
             }}>
               {/* Course Title Separator - Outside gap container */}
-              {course.lessons.length > 0 && (
+              {course.lessons.length > 0 && course.order !== 1 && (
               <div style={{
                   width: "100%",
                   maxWidth: "100%",
@@ -1114,7 +1155,9 @@ export default function CoursesPage() {
                   marginBottom: "clamp(10px, 2vw, 15px)",
                   marginTop: "0",
                   paddingLeft: "0",
-                  paddingRight: "0"
+                  paddingRight: "0",
+                  position: "relative",
+                  zIndex: 1
                 }}>
                   <div style={{
                     flex: 1,
@@ -1151,7 +1194,8 @@ export default function CoursesPage() {
                 width: "100%",
                 maxWidth: "100%",
                 overflow: "visible",
-                position: "relative"
+                position: "relative",
+                zIndex: 100000
               }}>
                 {course.lessons.map((lesson, lessonIdx) => {
                   // Irregular positioning - more organic, less perfect
@@ -1200,8 +1244,27 @@ export default function CoursesPage() {
                   const offsetX = Math.max(leftBound, Math.min(rightBound, waveOffset + randomOffset))
                   
                   // Determine if this is the next lesson to complete
-                  const isNext = !lesson.isLocked && !lesson.isCompleted && 
-                    (lessonIdx === 0 || course.lessons[lessonIdx - 1]?.isCompleted)
+                  // Find the first available (unlocked and not completed) lesson in the course
+                  const firstAvailableLessonIndex = course.lessons.findIndex(
+                    (l) => !l.isLocked && !l.isCompleted
+                  )
+                  
+                  // Show START on the first available lesson
+                  // If no available lesson found, show on first lesson if it's not locked
+                  const isNext = firstAvailableLessonIndex >= 0 
+                    ? (firstAvailableLessonIndex === lessonIdx && !lesson.isLocked && !lesson.isCompleted)
+                    : (lessonIdx === 0 && !lesson.isLocked)
+                  
+                  // Debug log for first course, first lesson
+                  if (course.order === 1 && lessonIdx === 0) {
+                    console.log('🔍 START Debug:', {
+                      lessonId: lesson.id,
+                      isLocked: lesson.isLocked,
+                      isCompleted: lesson.isCompleted,
+                      firstAvailableLessonIndex,
+                      isNext
+                    })
+                  }
                   
                   const isSelected = selectedLesson?.id === lesson.id
                   
@@ -1210,8 +1273,9 @@ export default function CoursesPage() {
             
             // Island is visible if it's been revealed OR if it's in the initial viewport
             // For scroll-up effect: only show animation if it was revealed while scrolling up
+            // Always show the first lesson of the first course immediately
             const wasRevealedOnScrollUp = visibleIslands.has(lesson.id)
-            const isIslandVisible = wasRevealedOnScrollUp
+            const isIslandVisible = wasRevealedOnScrollUp || (course.order === 1 && lessonIdx === 0)
             
             return (
               <React.Fragment key={`${lesson.id}-fragment`}>
@@ -1223,7 +1287,10 @@ export default function CoursesPage() {
                         width: "100%",
                   display: "flex",
                         justifyContent: "center",
-                        position: "relative"
+                        position: "relative",
+                        overflow: "visible",
+                        paddingTop: (lessonIdx === 0 && course.order === 1) ? "60px" : "0",
+                        marginTop: "0"
                       }}
                     >
                       <div style={{
@@ -1231,18 +1298,22 @@ export default function CoursesPage() {
                         transform: `translateX(${offsetX}px)`,
                         display: "flex",
                         flexDirection: "column",
-                        alignItems: "center"
+                        alignItems: "center",
+                        overflow: "visible"
                       }}>
                       <LessonIsland 
                         lesson={lesson}
                         offsetX={0}
                         isNext={isNext}
                         isVisible={isIslandVisible}
+                        isSelected={isSelected}
                         onClick={() => {
+                          console.log('🎯 Island clicked:', lesson.id, { isLocked: lesson.isLocked, isSelected: isSelected })
                           if (lesson.isLocked && !user) {
                             router.push("/signup")
                           } else {
                             setSelectedLesson(selectedLesson?.id === lesson.id ? null : lesson)
+                            console.log('✅ setSelectedLesson called:', selectedLesson?.id === lesson.id ? null : lesson)
                           }
                         }}
                       />
@@ -1265,7 +1336,7 @@ export default function CoursesPage() {
                               background: "rgba(224, 242, 254, 0.95)",
                               borderRadius: "clamp(8px, 1.2vw, 10px)",
                               boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25), 0 3px 10px rgba(0, 0, 0, 0.08)",
-                              zIndex: 10002,
+                              zIndex: 100002,
                               border: "2px solid rgba(147, 197, 253, 0.5)",
                               backdropFilter: "blur(12px)",
                               overflow: "visible",
@@ -1528,6 +1599,12 @@ export default function CoursesPage() {
             justify-content: center !important;
           }
           
+          /* Constrain course bar content width to match learning path on tablet */
+          .sticky-course-bar-content {
+            max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 64px) !important;
+            width: auto !important;
+          }
+          
           /* Constrain preview panel to usable space on tablet */
           .lesson-preview-panel {
             max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 48px) !important;
@@ -1562,10 +1639,37 @@ export default function CoursesPage() {
             justify-content: center !important;
           }
           
+          /* Constrain course bar content width to match learning path on desktop */
+          .sticky-course-bar-content {
+            max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 64px) !important;
+            width: auto !important;
+          }
+          
           /* Constrain preview panel to usable space on desktop */
           .lesson-preview-panel {
             max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 64px) !important;
           }
+        }
+        
+        /* Force START label to be visible */
+        .start-label-visible,
+        [data-start-label] {
+          opacity: 1 !important;
+          visibility: visible !important;
+          display: block !important;
+        }
+        
+        .start-label-visible > div,
+        [data-start-label] > div {
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+        
+        .start-label-visible > div > div,
+        [data-start-label] > div > div {
+          opacity: 1 !important;
+          visibility: visible !important;
+          color: #3B82F6 !important;
         }
         
         /* Hide left panel ONLY on mobile (<768px) */
@@ -1848,7 +1952,7 @@ export default function CoursesPage() {
           .courses-main-content {
             padding-left: 0 !important;
             padding-right: 0 !important;
-            padding-top: 80px !important; /* Space for hamburger button */
+            padding-top: 80px !important; /* Space for hamburger button + course bar */
             padding-bottom: calc(65px + env(safe-area-inset-bottom)) !important; /* Space for mobile footer + safe area */
             background: #ffffff !important;
           }
@@ -1862,6 +1966,7 @@ export default function CoursesPage() {
           body,
           html {
             background: #ffffff !important;
+            overflow-x: clip !important; /* Use clip instead of hidden to allow child overflow */
           }
           
           /* Ensure main container doesn't cause horizontal scroll */
@@ -1869,7 +1974,7 @@ export default function CoursesPage() {
           div[style*="width: 100vw"] {
             width: 100% !important;
             max-width: 100% !important;
-            overflow-x: hidden !important;
+            overflow-x: clip !important; /* Use clip instead of hidden */
             box-sizing: border-box !important;
           }
           
@@ -1881,8 +1986,7 @@ export default function CoursesPage() {
             margin: 0 auto !important;
             padding: 0 !important;
             box-sizing: border-box !important;
-            overflow-x: hidden !important; /* Prevent horizontal overflow */
-            overflow-y: visible !important;
+            overflow: visible !important; /* Allow START label and preview panels to show */
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
@@ -1895,10 +1999,9 @@ export default function CoursesPage() {
             position: relative !important;
           }
           
-          /* Container for lessons - prevent overflow */
+          /* Container for lessons - allow overflow for START label and preview panels */
           div[style*="flexDirection: column"][style*="alignItems: center"] {
-            overflow-x: hidden !important;
-            overflow-y: visible !important;
+            overflow: visible !important;
             width: 100% !important;
             max-width: 100% !important;
           }
@@ -1922,16 +2025,16 @@ export default function CoursesPage() {
           
           /* Fixed size for course bar on mobile to fit long names */
           .sticky-course-bar-content {
-            min-height: 80px !important;
+            min-height: 50px !important;
             height: auto !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
             align-items: center !important;
-            padding: 16px 24px !important;
-            width: 90% !important;
+            padding: 8px 12px !important;
+            width: auto !important;
             max-width: calc(100vw - 48px) !important;
-            min-width: auto !important;
+            min-width: 120px !important;
           }
           
           /* Allow text wrapping on mobile for long course names */
@@ -1991,8 +2094,7 @@ export default function CoursesPage() {
           
           /* Ensure main container allows overflow and doesn't clip */
           main {
-            overflow-x: visible !important;
-            overflow-y: auto !important;
+            overflow: visible !important;
             padding-left: 16px !important;
             padding-right: 16px !important;
           }
@@ -2009,20 +2111,44 @@ export default function CoursesPage() {
             position: relative !important;
             width: 100% !important;
             max-width: 100% !important;
-            padding: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-bottom: 0 !important;
+            /* Note: paddingTop is preserved for first lesson START label */
             margin: 0 !important;
           }
           
-          /* Island path container */
+          /* Island path container - CRITICAL: must allow overflow for START label */
           div[style*="maxWidth: 800"] {
             overflow: visible !important;
             width: 100% !important;
             max-width: 100% !important;
           }
           
+          /* Course containers must allow overflow */
+          div[id^="course-"] {
+            overflow: visible !important;
+          }
+          
           /* Hide the pointer tail on mobile */
           .lesson-preview-tail {
             display: none !important;
+          }
+          
+          /* Ensure START label is visible on mobile */
+          .start-label-visible,
+          [data-start-label] {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 100001 !important;
+            position: absolute !important;
+            top: -35px !important;
+          }
+          
+          /* First lesson needs extra top space for START label on mobile */
+          div[data-lesson-id="l1-1"] {
+            padding-top: 60px !important;
           }
           
           /* Ensure preview panels are fully visible */
@@ -2032,11 +2158,6 @@ export default function CoursesPage() {
             width: 100% !important;
           }
           
-          /* Course container */
-          div[id^="course-"] {
-            overflow: visible !important;
-            width: 100% !important;
-          }
           
           /* Reduce lesson island size on very small screens */
           @media (max-width: 480px) {
@@ -2113,6 +2234,12 @@ export default function CoursesPage() {
               justify-content: center !important;
             }
             
+            /* Constrain course bar content width to match learning path on desktop */
+            .sticky-course-bar-content {
+              max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 64px) !important;
+              width: auto !important;
+            }
+            
             /* Constrain preview panel to usable space on desktop */
             .lesson-preview-panel {
               max-width: calc(100vw - clamp(180px, 20vw, 240px) - 280px - 64px) !important;
@@ -2166,6 +2293,19 @@ export default function CoursesPage() {
               display: flex !important;
               flex-direction: column !important;
               align-items: center !important;
+            }
+            
+            /* Adjust sticky course bar for iPad - centered in usable space */
+            .sticky-course-bar {
+              left: clamp(180px, 18vw, 200px) !important;
+              right: 160px !important;
+              justify-content: center !important;
+            }
+            
+            /* Constrain course bar content width to match learning path on iPad */
+            .sticky-course-bar-content {
+              max-width: calc(100vw - clamp(180px, 18vw, 200px) - 160px - 64px) !important;
+              width: auto !important;
             }
             
             /* Constrain preview panel to usable space on iPad */

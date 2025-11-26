@@ -255,7 +255,7 @@ export default function FixedSidebar() {
                   background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)",
                   animation: "shine 3s ease-in-out infinite"
                 }} />
-                <span style={{ position: "relative", zIndex: 1 }}>Crear Cuenta</span>
+                <span style={{ position: "relative", zIndex: 1, textTransform: "uppercase" }}>Crear Cuenta</span>
               </button>
               <style>{`
                 @keyframes pulse-glow {
@@ -986,6 +986,15 @@ export default function FixedSidebar() {
 
       {/* Mobile Styles */}
       <style>{`
+        /* Make all text in right panel uppercase and bold */
+        [data-fixed-sidebar] .nav-item-label,
+        [data-fixed-sidebar] button span,
+        [data-fixed-sidebar] button {
+          text-transform: uppercase !important;
+          letter-spacing: 0.5px;
+          font-weight: 700 !important;
+        }
+        
         /* CRITICAL: Hide hamburger menu button on ALL devices globally */
         .global-mobile-sidebar-toggle,
         button.global-mobile-sidebar-toggle,
