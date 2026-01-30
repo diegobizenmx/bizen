@@ -13,8 +13,13 @@ function SettingsContent() {
   const router = useRouter()
   const { user } = useAuth()
   const { settings, updateSettings, resetSettings } = useSettings()
-  const supabase = createClientMicrocred()
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClientMicrocred> | null>(null)
   const [activeSection, setActiveSection] = useState<string>("general")
+
+  // Create Supabase client only on the client (avoid "window is not defined" during prerender)
+  useEffect(() => {
+    setSupabase(createClientMicrocred())
+  }, [])
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   
   // Account page state
@@ -51,8 +56,14 @@ function SettingsContent() {
     }
   }, [user])
 
+  // Redirect to login when not authenticated (client-only to avoid "window is not defined")
+  useEffect(() => {
+    if (typeof window !== "undefined" && !user) {
+      router.push("/login")
+    }
+  }, [user, router])
+
   if (!user) {
-    window.open("/login", "_blank")
     return null
   }
 
@@ -260,6 +271,7 @@ function SettingsContent() {
 
   // Account page functions
   const handlePasswordChange = async () => {
+    if (!supabase) return
     if (!passwords.new || !passwords.confirm) {
       setSaveError("Por favor completa todos los campos")
       return
@@ -300,6 +312,7 @@ function SettingsContent() {
   }
 
   const handlePhoneUpdate = async () => {
+    if (!supabase) return
     setSaving(true)
     setSaveError(null)
     setSaveSuccess(null)
@@ -325,6 +338,7 @@ function SettingsContent() {
   }
 
   const handlePlanUpdate = async (plan: "gratuito" | "estudiante" | "premium") => {
+    if (!supabase) return
     setSaving(true)
     setSaveError(null)
     setSaveSuccess(null)
@@ -1212,10 +1226,11 @@ function SettingsContent() {
 
                   <button
                     onClick={async () => {
+                      if (!supabase) return
                       setSaving(true)
                       try {
                         await supabase.auth.signOut()
-                        window.open("/login", "_blank")
+                        router.push("/login")
                       } catch (error) {
                         console.error("Error signing out:", error)
                         setSaveError("Error al cerrar sesión")
