@@ -2148,7 +2148,7 @@ export default function L3FisicoVsDigitalPage() {
   useEffect(() => {
     if (loading) return
     if (!user) {
-      router.replace("/login")
+      window.open("/login", "_blank")
     }
   }, [user, loading, router])
 

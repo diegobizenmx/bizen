@@ -546,7 +546,7 @@ export default function MobileBottomNav() {
               <button
                 onClick={() => {
                   setShowAuthDialog(false)
-                  router.push("/signup")
+                  window.open("/signup", "_blank")
                 }}
                 style={{
                   padding: "16px 24px",
@@ -576,7 +576,7 @@ export default function MobileBottomNav() {
               <button
                 onClick={() => {
                   setShowAuthDialog(false)
-                  router.push("/login")
+                  window.open("/login", "_blank")
                 }}
                 style={{
                   padding: "16px 24px",

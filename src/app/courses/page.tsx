@@ -225,7 +225,7 @@ export default function CoursesPage() {
   // Redirect unauthenticated users
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login")
+      window.open("/login", "_blank")
     }
   }, [loading, user, router])
 
@@ -1310,7 +1310,7 @@ export default function CoursesPage() {
                         onClick={() => {
                           console.log('🎯 Island clicked:', lesson.id, { isLocked: lesson.isLocked, isSelected: isSelected })
                           if (lesson.isLocked && !user) {
-                            router.push("/signup")
+                            window.open("/signup", "_blank")
                           } else {
                             setSelectedLesson(selectedLesson?.id === lesson.id ? null : lesson)
                             console.log('✅ setSelectedLesson called:', selectedLesson?.id === lesson.id ? null : lesson)
@@ -1429,7 +1429,7 @@ export default function CoursesPage() {
                                 <motion.div whileTap={{ scale: 0.95 }}>
                                   <Button
                                     onClick={() => {
-                                      router.push("/signup")
+                                      window.open("/signup", "_blank")
                                     }}
                                     style={{ 
                                       width: "100%", 

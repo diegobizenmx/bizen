@@ -36,7 +36,7 @@ export default function LabPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login")
+      window.open("/login", "_blank")
     } else if (user) {
       fetchData()
     }

@@ -82,7 +82,7 @@ function ForumContent() {
   useEffect(() => {
     if (loading) return
     if (!user) {
-      router.replace("/login")
+      window.open("/login", "_blank")
       return
     }
     fetchData()

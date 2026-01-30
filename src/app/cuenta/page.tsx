@@ -25,7 +25,7 @@ export default function CuentaPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login")
+      window.open("/login", "_blank")
     } else if (user) {
       // Load phone number and plan from user metadata
       setPhoneNumber(user.user_metadata?.phone || "")
@@ -831,7 +831,7 @@ export default function CuentaPage() {
               setSaving(true)
               try {
                 await supabase.auth.signOut()
-                router.push("/login")
+                window.open("/login", "_blank")
               } catch (error) {
                 console.error("Error signing out:", error)
                 setSaveError("Error al cerrar sesión")

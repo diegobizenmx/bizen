@@ -42,16 +42,6 @@ model License {
   @@map("licenses")
 }
 
-model ContactMessage {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  message   String   @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("contact_messages")
-}
-
 // ========================================
 // USERS & PROFILES
 // ========================================

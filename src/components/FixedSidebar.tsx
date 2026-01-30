@@ -215,7 +215,7 @@ export default function FixedSidebar() {
           {!user && (
             <div style={{ marginBottom: 24 }}>
               <button
-                onClick={() => router.push("/signup")}
+                onClick={() => window.open("/signup", "_blank")}
                 style={{
                   width: "100%",
                   padding: "14px 20px",
@@ -905,7 +905,7 @@ export default function FixedSidebar() {
               <button
                 onClick={() => {
                   setShowAuthDialog(false)
-                  router.push("/signup")
+                  window.open("/signup", "_blank")
                 }}
                 style={{
                   padding: "16px 24px",
@@ -935,7 +935,7 @@ export default function FixedSidebar() {
               <button
                 onClick={() => {
                   setShowAuthDialog(false)
-                  router.push("/login")
+                  window.open("/login", "_blank")
                 }}
                 style={{
                   padding: "16px 24px",
@@ -1386,9 +1386,15 @@ export default function FixedSidebar() {
             overflow-y: auto !important;
           }
           
-          /* Show text labels on desktop */
+          /* Show text labels on desktop - wrap so full text is visible */
           [data-fixed-sidebar] .nav-item-label {
             display: inline !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            min-width: 0 !important;
+            flex: 1 !important;
+            text-align: left !important;
           }
           
           /* Restore button backgrounds on desktop */

@@ -65,7 +65,7 @@ export function StepCard({
               )}
             </div>
             {description && (
-              <CardDescription className="mt-1 line-clamp-2">
+              <CardDescription className="mt-1 break-words whitespace-normal overflow-visible">
                 {description}
               </CardDescription>
             )}

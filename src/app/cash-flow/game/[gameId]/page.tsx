@@ -244,7 +244,7 @@ export default function CashFlowGamePage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login")
+      window.open("/login", "_blank")
     }
   }, [user, loading, router])
 

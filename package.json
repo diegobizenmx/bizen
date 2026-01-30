@@ -10,7 +10,8 @@
     "seed": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} seed/seed.ts",
     "seed:clear": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} seed/clear-content.ts",
     "seed:demo": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed-demo.ts",
-    "seed:forum": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} prisma/seed-forum.ts"
+    "seed:forum": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} prisma/seed-forum.ts",
+    "seed:sample": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/sample-seed.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",

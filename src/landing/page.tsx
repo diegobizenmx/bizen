@@ -438,10 +438,10 @@ export default function LandingPage(p: LandingPageProps) {
             ) : (
               // Not authenticated - show login/signup
               <>
-                <a className="btn ghost" href={loginUrl}>
+                <a className="btn ghost" href={loginUrl} target="_blank" rel="noopener noreferrer">
                   {loginLabel}
                 </a>
-                <a className="btn primary" href={signupUrl}>
+                <a className="btn primary" href={signupUrl} target="_blank" rel="noopener noreferrer">
                   {signupLabel}
                 </a>
               </>
@@ -486,7 +486,7 @@ export default function LandingPage(p: LandingPageProps) {
                 ) : (
                   // Not authenticated
                   <>
-                    <a className="btn primary large" href="/signup">
+                    <a className="btn primary large" href="/signup" target="_blank" rel="noopener noreferrer">
                       Crear cuenta
                     </a>
                     <a className="btn ghost large" href={heroSecondaryUrl}>
@@ -975,19 +975,19 @@ img{max-width:100%; display:block; border-radius:12px}
 .tag{position:absolute; top:10px; right:10px; background:var(--c-primary); color:#fff; border-radius:999px; font-weight:800; padding:6px 10px; font-size:12px;}
 .plan-name{font-size:20px; margin:0 0 6px}
 .plan-note{margin:0 0 10px; color:var(--c-muted)}
-.plan-list{list-style:none; margin:0 0 14px 0; padding:0; display:grid; gap:8px}
-.plan-list li{display:flex; gap:8px; align-items:flex-start}
+.plan-list{list-style:none; margin:0 0 14px 0; padding:0; display:grid; gap:8px; overflow:visible;}
+.plan-list li{display:flex; gap:8px; align-items:flex-start; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;}
 .check{color:var(--c-accent); font-weight:900}
 
 /* FAQ */
 .accordion{display:grid; gap:12px}
 .accordion-item{border:1px solid var(--c-border); border-radius:12px; background:#fff}
-.accordion-trigger{width:100%; border:0; background:transparent; text-align:left; padding:14px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:800; transition:transform 60ms ease; transform-origin:center;}
+.accordion-trigger{width:100%; border:0; background:transparent; text-align:left; padding:14px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:800; transition:transform 60ms ease; transform-origin:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;}
 .accordion-trigger:hover, .accordion-trigger:active, .accordion-trigger:focus-visible{transform:scale(.9)}
 .accordion-trigger:focus-visible{outline:2px solid rgba(14,165,233,.6); border-radius:12px}
 .chev{transition:transform var(--transition)}
 .accordion-item.open .chev{transform:rotate(180deg)}
-.accordion-panel{padding:0 16px 14px 16px; color:var(--c-muted); display:none}
+.accordion-panel{padding:0 16px 14px 16px; color:var(--c-muted); display:none; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; overflow:visible;}
 .accordion-item.open .accordion-panel{display:block}
 
 /* Contact */

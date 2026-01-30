@@ -1,7 +1,6 @@
 "use client"
 
 import { useAuth } from "@/contexts/AuthContext"
-import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 interface ProtectedRouteProps {
@@ -14,13 +13,12 @@ export default function ProtectedRoute({
   redirectTo = "/login" 
 }: ProtectedRouteProps) {
   const { user, loading } = useAuth()
-  const router = useRouter()
 
   useEffect(() => {
     if (!loading && !user) {
-      router.replace(redirectTo)
+      window.open(redirectTo, "_blank")
     }
-  }, [user, loading, router, redirectTo])
+  }, [user, loading, redirectTo])
 
   if (loading) {
     return (

@@ -74,7 +74,7 @@ export function ArtifactCard({
       {(content || url) && (
         <CardContent>
           {content && (
-            <p className="text-sm text-gray-600 line-clamp-3">{content}</p>
+            <p className="text-sm text-gray-600 break-words whitespace-normal overflow-visible">{content}</p>
           )}
           {url && (
             <a

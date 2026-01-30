@@ -206,7 +206,7 @@ export default function MobileFooterNav() {
             <p style={{ margin: "0 0 20px 0", fontSize: 14, color: "#64748b", lineHeight: 1.5 }}>Necesitas iniciar sesión para acceder a esta sección.</p>
             <div style={{ display: "flex", gap: 12 }}>
               <button onClick={() => setShowAuthDialog(false)} style={{ flex: 1, padding: "12px 16px", background: "#f1f5f9", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Cancelar</button>
-              <button onClick={() => router.push("/login")} style={{ flex: 1, padding: "12px 16px", background: "#0F62FE", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 14, fontWeight: 600, color: "white" }}>Iniciar sesión</button>
+              <button onClick={() => window.open("/login", "_blank")} style={{ flex: 1, padding: "12px 16px", background: "#0F62FE", border: "none", borderRadius: 10, cursor: "pointer", fontSize: 14, fontWeight: 600, color: "white" }}>Iniciar sesión</button>
             </div>
           </div>
         </div>

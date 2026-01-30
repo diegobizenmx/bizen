@@ -39,7 +39,7 @@ export default function OverallResultsAdmin() {
       const response = await fetch("/api/admin/overall-results")
       
       if (response.status === 401) {
-        router.push("/login")
+        window.open("/login", "_blank")
         return
       }
 

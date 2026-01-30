@@ -32,7 +32,7 @@ export default function FinalTestResultsPage() {
       const response = await fetch('/api/admin/final-test-results');
       
       if (response.status === 401) {
-        router.push('/login');
+        window.open('/login', '_blank');
         return;
       }
 

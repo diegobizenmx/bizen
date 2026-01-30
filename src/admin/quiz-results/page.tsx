@@ -32,7 +32,7 @@ export default function QuizResultsAdmin() {
       const response = await fetch("/api/admin/quiz-results")
       
       if (response.status === 401) {
-        router.push("/login")
+        window.open("/login", "_blank")
         return
       }
 

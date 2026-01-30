@@ -58,7 +58,7 @@ export default function StepDetailPage() {
       const response = await fetch(`/api/lab/steps/${stepId}`)
       if (!response.ok) {
         if (response.status === 401) {
-          router.push("/login")
+          window.open("/login", "_blank")
           return
         }
         throw new Error("Failed to fetch step")

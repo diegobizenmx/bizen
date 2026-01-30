@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createSupabaseServer } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,32 +29,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create Supabase client
-    const supabase = await createSupabaseServer()
-
-    // Insert message into database
-    const { data, error } = await supabase
-      .from('contact_messages')
-      .insert([
-        {
-          name: name.trim(),
-          email: email.trim().toLowerCase(),
-          message: message.trim(),
-        },
-      ])
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error saving contact message:', error)
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Error al enviar el mensaje. Por favor intenta de nuevo más tarde.',
-        },
-        { status: 500 }
-      )
-    }
+    // Insert message into database using Prisma
+    const newMessage = await prisma.contactMessage.create({
+      data: {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        message: message.trim(),
+      },
+    })
 
     // Success response
     return NextResponse.json(
@@ -62,20 +44,22 @@ export async function POST(request: NextRequest) {
         success: true,
         message: '¡Gracias por contactarnos! Te responderemos pronto.',
         data: {
-          id: data.id,
+          id: newMessage.id,
         },
       },
       { status: 201 }
     )
-  } catch (error) {
-    console.error('Unexpected error in contact API:', error)
+
+  } catch (error: any) {
+    console.error('Error saving contact message:', error)
     return NextResponse.json(
       {
         success: false,
-        message: 'Error inesperado. Por favor intenta de nuevo más tarde.',
+        message: 'Error al enviar el mensaje. Por favor intenta de nuevo más tarde.',
       },
       { status: 500 }
     )
   }
 }
+
 

@@ -207,7 +207,7 @@ export default function ForgotPasswordPage() {
             )}
 
             <div style={{ marginTop: 20, textAlign: "center" }}>
-              <Link href="/login" style={{ fontSize: 14, color: linkColor, textDecoration: "none", fontWeight: 600 }}>
+              <Link href="/login" target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: linkColor, textDecoration: "none", fontWeight: 600 }}>
                 ← Volver al login
               </Link>
             </div>
@@ -238,7 +238,7 @@ export default function ForgotPasswordPage() {
               >
                 Enviar de nuevo
               </Button>
-              <Link href="/login" style={{ display: "block" as const, textAlign: "center", fontSize: 14, color: linkColor, textDecoration: "none", fontWeight: 600 }}>
+              <Link href="/login" target="_blank" rel="noopener noreferrer" style={{ display: "block" as const, textAlign: "center", fontSize: 14, color: linkColor, textDecoration: "none", fontWeight: 600 }}>
                 ← Volver al login
               </Link>
             </div>

@@ -5,10 +5,13 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import { LandingWaitlistFooter } from "@/components/LandingWaitlistFooter"
 import * as React from "react"
 
 // Force dynamic rendering to avoid prerendering issues
 export const dynamic = 'force-dynamic'
+
+const PHONE_BREAKPOINT = 767
 
 export default function WelcomePage() {
   const { user, loading } = useAuth()
@@ -18,6 +21,15 @@ export default function WelcomePage() {
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [showFunText, setShowFunText] = useState(true)
+  const [isPhone, setIsPhone] = useState(false)
+
+  // Lock: show "use desktop/tablet" message on phones
+  useEffect(() => {
+    const check = () => setIsPhone(typeof window !== "undefined" && window.innerWidth < PHONE_BREAKPOINT)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
+  }, [])
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100)
@@ -34,7 +46,7 @@ export default function WelcomePage() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       const direction = currentScrollY < lastScrollY ? 'up' : 'down'
-      
+
       setScrollDirection(direction)
       setLastScrollY(currentScrollY)
 
@@ -80,341 +92,239 @@ export default function WelcomePage() {
   }, [])
 
   return (
-      <div style={{
-        background: "#ffffff",
-        flex: 1,
-        width: "100%",
-        maxWidth: "100%",
-        margin: 0,
-        padding: 0,
-        overflowX: "hidden",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-      }} className="main-page-container">
-      {/* Header */}
-      <header style={{
-        position: "fixed",
-        top: 0,
-        zIndex: 1000,
-        width: "100%",
-        padding: "clamp(12px, 2vw, 20px) clamp(16px, 3vw, 32px)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "clamp(32px, 8vw, 80px)",
-        background: "#ffffff",
-        borderBottom: "1px solid rgba(15, 98, 254, 0.1)",
-        boxSizing: "border-box",
-      }} className="main-header">
-        {/* Logo */}
-        <Link href="/" style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          textDecoration: "none",
-          flexShrink: 0,
-        }}>
-          <Image 
-            src="/bizen-logo.png" 
-            alt="BIZEN logo" 
-            width={40} 
-            height={40} 
-            priority 
-            style={{ width: "clamp(28px, 4vw, 40px)", height: "auto", flexShrink: 0 }}
-          />
-          <span style={{
-            fontSize: "clamp(16px, 2.5vw, 20px)",
-            fontWeight: 700,
-            color: "#0F62FE",
-            fontFamily: "'Montserrat', sans-serif",
-            letterSpacing: "0.3px"
-          }}>
-            BIZEN
-          </span>
-        </Link>
-
-          <nav style={{ display: "flex", gap: "clamp(8px, 2vw, 16px)", alignItems: "center", flexShrink: 0 }} className="header-nav">
-            <Link href="/signup" style={{
-              padding: "clamp(8px, 1.5vw, 12px) clamp(16px, 3vw, 24px)",
-              fontSize: "clamp(12px, 1.8vw, 16px)",
-              fontWeight: 700,
-              fontFamily: "'Montserrat', sans-serif",
-              background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-              backgroundSize: "200% auto",
-              color: "white",
-              border: "none",
-              borderRadius: "clamp(6px, 1.2vw, 10px)",
-            textDecoration: "none",
-              cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(15, 98, 254, 0.25)",
-              textAlign: "center",
-              letterSpacing: "0.3px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              whiteSpace: "nowrap",
-            }}
-            className="crear-cuenta-button">Crear cuenta</Link>
-        </nav>
-      </header>
-
-      <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{
-        paddingTop: "clamp(64px, 12vw, 80px)", // Add padding to account for fixed header
-        position: "relative",
-        overflowX: "hidden",
-        overflowY: "visible",
-        fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        maxWidth: "100%",
-        boxSizing: "border-box",
-        minHeight: "100vh",
-      }}>
-
-      {/* Decorative blue accents - hidden on mobile */}
-      <div style={{
-        position: "absolute",
-        top: "clamp(-100px, -15vw, -200px)",
-        right: "clamp(-100px, -15vw, -200px)",
-        width: "clamp(300px, 50vw, 800px)",
-        height: "clamp(300px, 50vw, 800px)",
-        background: "radial-gradient(circle, rgba(15, 98, 254, 0.06) 0%, transparent 70%)",
-        borderRadius: "50%",
-        overflow: "hidden",
-        pointerEvents: "none",
-        display: "none",
-      }} className="decorative-blue-accent" />
-
-      {/* Main Content */}
-      <div style={{
-        position: "relative",
-        zIndex: 1,
-        maxWidth: "100%",
-        margin: "0 auto",
-        flex: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "clamp(16px, 3vw, 40px)",
-        paddingTop: "clamp(64px, 8vw, 80px)",
-        paddingBottom: "clamp(64px, 8vw, 80px)",
-        width: "100%",
-        minHeight: "calc(100vh - clamp(64px, 12vw, 80px))",
-        height: "calc(100vh - clamp(64px, 12vw, 80px))",
-        boxSizing: "border-box",
-        overflow: "visible",
-      }} className="main-content-wrapper">
-        
-        <div className="main-content" style={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gap: "clamp(32px, 6vw, 80px)",
-          alignItems: "center",
-          width: "100%",
-          maxWidth: "100%",
-          margin: "0 auto",
-          boxSizing: "border-box",
-        }}>
-          
-          {/* Left Side - Billy */}
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "translateX(0)" : "translateX(-50px)",
-            transition: "opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s",
-            position: "relative",
-            zIndex: 100,
-            overflow: "visible",
-          }}>
-            <div style={{
-              position: "relative",
-              background: "white",
-              borderRadius: "clamp(16px, 4vw, 32px)",
-              padding: "clamp(12px, 3vw, 50px)",
-              paddingRight: "clamp(4px, 1vw, 12px)",
-              boxShadow: "0 24px 64px rgba(15, 98, 254, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08)",
-              overflow: "visible",
-              zIndex: 100,
-            }} className="billy-container">
-              <Image
-                src={isMouthOpen ? "/3.png" : "/2.png"}
-                alt="Billy"
-                width={320}
-                height={320}
-                style={{ 
-                  display: "block",
-                  borderRadius: "16px",
-                  height: "auto",
-                  maxWidth: "100%",
-                  width: "100%",
-                  objectFit: "contain",
-                }}
-                className="billy-image"
-                priority
-              />
-            </div>
-          </div>
-
-          {/* Right Side - Text and CTAs */}
-          <div style={{
+    <div style={{
+      background: "#ffffff",
+      flex: 1,
+      width: "100%",
+      maxWidth: "100%",
+      margin: 0,
+      padding: 0,
+      overflowX: "hidden",
+      boxSizing: "border-box",
+      display: "flex",
+      flexDirection: "column",
+    }} className="main-page-container">
+      {/* Phone lock: ask to open on desktop/tablet */}
+      {isPhone && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 99999,
+            background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 100%)",
             display: "flex",
             flexDirection: "column",
-            gap: "clamp(24px, 4vw, 40px)",
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "translateX(0)" : "translateX(50px)",
-            transition: "opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s",
-            textAlign: "center",
             alignItems: "center",
             justifyContent: "center",
-            maxWidth: "100%",
-            boxSizing: "border-box",
-            width: "100%",
-            paddingLeft: "clamp(0px, 0.5vw, 8px)",
-            marginLeft: "clamp(-20px, -2vw, -8px)",
-          }} className="text-and-buttons-container">
-            {/* Text Content */}
-            <div style={{ width: "100%", boxSizing: "border-box" }}>
-              <h1 style={{
-                fontSize: "clamp(24px, 4.5vw, 44px)",
-                color: "#6B7280",
-                margin: "0 0 16px 0",
-                fontWeight: 800,
-                lineHeight: 1.3,
-                fontFamily: "'Montserrat', sans-serif",
-                textAlign: "center",
-                wordWrap: "break-word",
-                overflowWrap: "break-word",
-              }} className="hero-main-title">
-                ¿Aprender finanzas mientras juegas? ¡Sí! <span style={{
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s ease-in-out infinite",
-                }}>BIZEN</span> es eso y más
-              </h1>
-            </div>
-
-            {/* Buttons */}
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "clamp(12px, 2vw, 16px)",
-              marginTop: "clamp(16px, 2.5vw, 20px)",
-            }} className="buttons-container">
-              {loading ? (
-                <button 
-                  disabled
-                  style={{
-                    padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                    fontSize: "clamp(14px, 1.8vw, 16px)",
-                    fontWeight: 700,
-                    fontFamily: "'Montserrat', sans-serif",
-                    background: "#ccc",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "clamp(8px, 1.2vw, 10px)",
-                    cursor: "not-allowed",
-                    opacity: 0.6,
-                    minHeight: "48px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "clamp(240px, 35vw, 320px)",
-                  }}
-                >
-                  Cargando...
-                </button>
-              ) : (
-                <>
-              <Link
-                href="/signup"
-                style={{
-                  padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                  fontSize: "clamp(14px, 1.8vw, 16px)",
-                  fontWeight: 700,
-                  fontFamily: "'Montserrat', sans-serif",
-                  background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                  backgroundSize: "200% auto",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "clamp(8px, 1.2vw, 10px)",
-                  textDecoration: "none",
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: "0 8px 24px rgba(15, 98, 254, 0.25)",
-                  textAlign: "center",
-                  letterSpacing: "0.3px",
-                  animation: "shimmerButton 3s ease-in-out infinite",
-                  minHeight: "48px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: "clamp(240px, 35vw, 320px)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.35)"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0) scale(1)"
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.25)"
-                }}
-              >
-                Empieza Ahora
-              </Link>
-              <Link
-                href="/login"
-                style={{
-                  padding: "clamp(14px, 2.5vw, 18px) clamp(20px, 3.5vw, 32px)",
-                  fontSize: "clamp(14px, 1.8vw, 16px)",
-                  fontWeight: 700,
-                  fontFamily: "'Montserrat', sans-serif",
-                  background: "white",
-                  color: "#0F62FE",
-                  border: "2px solid #0F62FE",
-                  borderRadius: "clamp(8px, 1.2vw, 10px)",
-                  textDecoration: "none",
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: "0 4px 16px rgba(15, 98, 254, 0.1)",
-                  textAlign: "center",
-                  letterSpacing: "0.3px",
-                  minHeight: "48px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: "clamp(240px, 35vw, 320px)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                  e.currentTarget.style.background = "#0F62FE"
-                  e.currentTarget.style.color = "white"
-                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.25)"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0) scale(1)"
-                  e.currentTarget.style.background = "white"
-                  e.currentTarget.style.color = "#0F62FE"
-                  e.currentTarget.style.boxShadow = "0 4px 16px rgba(15, 98, 254, 0.1)"
-                }}
-              >
-                Ya tengo una cuenta
-              </Link>
-                </>
-              )}
-            </div>
-          </div>
+            padding: 32,
+            textAlign: "center",
+            color: "#fff",
+          }}
+        >
+          <Image
+            src="/2.png"
+            alt="Billy"
+            width={200}
+            height={200}
+            style={{
+              width: 160,
+              height: "auto",
+              maxWidth: "60vw",
+              objectFit: "contain",
+              marginBottom: 16,
+            }}
+          />
+          <span style={{ fontSize: 28, fontWeight: 800, color: "#fff", letterSpacing: "0.05em" }}>
+            BIZEN
+          </span>
+          <p style={{ fontSize: 22, fontWeight: 700, margin: "24px 0 0", maxWidth: 320, lineHeight: 1.4 }}>
+            Para una mejor experiencia, ábrelo en tu computadora o tablet.
+          </p>
         </div>
+      )}
+      {/* Top of page: logo, nav links, Crear cuenta - bigger elements, button always in view */}
+      <div className="main-header" style={{
+        width: "100%",
+        maxWidth: "100%",
+        boxSizing: "border-box",
+        padding: "18px 24px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "24px",
+        flexWrap: "wrap",
+      }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
+          <Image src="/bizen-logo.png" alt="BIZEN logo" width={48} height={48} priority style={{ width: 48, height: "auto", flexShrink: 0 }} />
+          <span style={{ fontSize: 22, fontWeight: 700, color: "#0F62FE", fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
+        </Link>
+        <nav style={{ display: "flex", gap: "24px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "14px 32px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
+          <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
+          <Link href="#beneficios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Beneficios</Link>
+          <Link href="#casos-de-exito" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Casos de Éxito</Link>
+          <Link href="#recursos" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Recursos</Link>
+        </nav>
+        <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Montserrat', sans-serif", background: "#0F62FE", color: "white", borderRadius: 10, textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0 }} className="crear-cuenta-button">Crear cuenta</Link>
       </div>
 
-      <style>{`
+      <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
+        <div style={{
+          paddingTop: "clamp(16px, 3vw, 24px)",
+          position: "relative",
+          fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box",
+          minHeight: "100vh",
+          overflowX: "clip", // Protects horizontal scroll but less aggressive than hidden
+          overflowY: "visible",
+        }}>
+
+          {/* Decorative blue accents - hidden on mobile */}
+          <div style={{
+            position: "absolute",
+            top: "clamp(-100px, -15vw, -200px)",
+            right: "clamp(-100px, -15vw, -200px)",
+            width: "clamp(300px, 50vw, 800px)",
+            height: "clamp(300px, 50vw, 800px)",
+            background: "radial-gradient(circle, rgba(15, 98, 254, 0.04) 0%, transparent 70%)",
+            borderRadius: "50%",
+            overflow: "hidden",
+            pointerEvents: "none",
+            display: "none",
+          }} className="decorative-blue-accent" />
+
+          {/* Main Content */}
+          <div style={{
+            position: "relative",
+            zIndex: 1,
+            maxWidth: "100%",
+            margin: "0 auto",
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "clamp(16px, 3vw, 40px)",
+            paddingTop: "clamp(24px, 4vw, 48px)",
+            paddingBottom: "clamp(40px, 6vw, 60px)",
+            width: "100%",
+            minHeight: "100vh",
+            boxSizing: "border-box",
+            overflow: "visible",
+            position: "relative",
+          }} className="main-content-wrapper">
+
+            {/* Tagline at top of hero - fixed width on desktop so text spreads instead of shrinking */}
+            <div className="hero-top-block" style={{
+              position: "absolute",
+              left: "50%",
+              top: "clamp(40px, 6vw, 72px)",
+              transform: "translateX(-50%)",
+              textAlign: "center",
+              width: "min(90vw, 960px)",
+              maxWidth: "960px",
+              zIndex: 10,
+              opacity: isVisible ? 1 : 0,
+              transition: "opacity 0.6s ease 0.3s",
+            }}>
+              <p className="hero-tagline" style={{
+                fontSize: "clamp(36px, 5.5vw, 64px)",
+                color: "#000",
+                fontWeight: 700,
+                margin: 0,
+                lineHeight: 1.1,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                width: "100%",
+              }}>
+                &quot;La plataforma que está transformando la educación financiera en México.&quot;
+              </p>
+              <p className="hero-tagline-sub" style={{
+                fontSize: "clamp(18px, 1.2rem, 22px)",
+                color: "#374151",
+                fontWeight: 400,
+                margin: "16px 0 0",
+                lineHeight: 1.5,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                width: "100%",
+              }}>
+                Combina libros, materiales manipulativos y tecnología con IA en un sistema integral que transforma el aula con gamificación, ofreciendo un aprendizaje intuitivo y atractivo en secundaria y preparatoria.
+              </p>
+
+              {/* 3 circles in a row with labels below */}
+              <div className="hero-circles-wrap" style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "clamp(24px, 4vw, 48px)",
+                marginTop: "clamp(32px, 5vw, 56px)",
+                flexWrap: "wrap",
+              }}>
+                <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textDecoration: "none" }}>
+                  <div className="hero-circle" style={{
+                    width: "clamp(120px, 18vw, 200px)",
+                    height: "clamp(120px, 18vw, 200px)",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "2px solid #000",
+                    flexShrink: 0,
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <div style={{ position: "relative", width: "65%", height: "65%" }}>
+                      <Image src="/hero1.png" alt="Billy con lápiz y libreta" fill style={{ objectFit: "contain" }} />
+                    </div>
+                  </div>
+                  <span className="hero-circle-label" style={{ fontSize: "clamp(14px, 1.8vw, 18px)", fontWeight: 600, color: "#1f2937", textAlign: "center", lineHeight: 1.4 }}>Fundamentos<br />del dinero</span>
+                </Link>
+                <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textDecoration: "none" }}>
+                  <div className="hero-circle" style={{
+                    width: "clamp(120px, 18vw, 200px)",
+                    height: "clamp(120px, 18vw, 200px)",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "2px solid #000",
+                    flexShrink: 0,
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <div style={{ position: "relative", width: "65%", height: "65%" }}>
+                      <Image src="/hero2.png" alt="Billy con tablet y gráfica financiera" fill style={{ objectFit: "contain" }} />
+                    </div>
+                  </div>
+                  <span className="hero-circle-label" style={{ fontSize: "clamp(14px, 1.8vw, 18px)", fontWeight: 600, color: "#1f2937", textAlign: "center", lineHeight: 1.4 }}>Simuladores<br />financieros</span>
+                </Link>
+                <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textDecoration: "none" }}>
+                  <div className="hero-circle" style={{
+                    width: "clamp(120px, 18vw, 200px)",
+                    height: "clamp(120px, 18vw, 200px)",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "2px solid #000",
+                    flexShrink: 0,
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <div style={{ position: "relative", width: "65%", height: "65%" }}>
+                      <Image src="/hero3.png" alt="Billy con alcancía" fill style={{ objectFit: "contain" }} />
+                    </div>
+                  </div>
+                  <span className="hero-circle-label" style={{ fontSize: "clamp(14px, 1.8vw, 18px)", fontWeight: 600, color: "#1f2937", textAlign: "center", lineHeight: 1.4 }}>Ahorro<br />persona</span>
+                </Link>
+              </div>
+            </div>
+
+          </div>
+
+          <style>{`
         /* Override global footer styles from globals.css - ensure footer is NOT sticky */
         footer.main-page-footer,
         .main-page-container footer,
@@ -431,6 +341,160 @@ export default function WelcomePage() {
         /* Override the global footer rule that applies margin-top: auto */
         .main-page-container footer {
           margin-top: 0 !important;
+        }
+
+        /* Custom cursor: Billy mascot (32x32 for cross-browser support) */
+        .main-page-container,
+        .main-page-container * {
+          cursor: url('/billy-cursor.png') 16 16, auto;
+        }
+        .main-page-container a,
+        .main-page-container button {
+          cursor: url('/billy-cursor.png') 16 16, pointer;
+        }
+
+        /* Top bar: keep Crear cuenta button in view on all screen sizes */
+        .main-header {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        .main-header .crear-cuenta-button {
+          flex-shrink: 0 !important;
+        }
+        .main-header .header-bar-nav {
+          min-width: 0 !important;
+        }
+
+        /* Nav links: not bold, hover color change */
+        .header-nav-link:hover {
+          color: #0F62FE !important;
+          transition: color 0.2s ease;
+        }
+        .header-nav-link {
+          transition: color 0.2s ease;
+        }
+
+        /* Crear cuenta button: solid blue, no shimmer */
+        .crear-cuenta-button {
+          background: #0F62FE !important;
+          transition: background 0.2s ease, filter 0.2s ease;
+          animation: none !important;
+        }
+        .crear-cuenta-button:hover {
+          background: #1d4ed8 !important;
+          color: #fff !important;
+          filter: brightness(1.05);
+          transition: background 0.2s ease, filter 0.2s ease;
+        }
+
+        /* Screens > 1100px: scale up top elements so it doesn't look empty */
+        @media (min-width: 1100px) {
+          .main-header {
+            padding: 22px 32px !important;
+            gap: 32px !important;
+          }
+          .main-header a[href="/"] span {
+            font-size: 28px !important;
+          }
+          .main-header a[href="/"] img {
+            width: 58px !important;
+            height: auto !important;
+          }
+          .main-header .header-bar-nav {
+            padding: 16px 36px !important;
+            gap: 32px !important;
+          }
+          .main-header .header-bar-nav a,
+          .main-header .header-nav-link {
+            font-size: 21px !important;
+          }
+          .main-header .crear-cuenta-button {
+            padding: 18px 32px !important;
+            font-size: 21px !important;
+            border-radius: 12px !important;
+          }
+          /* Hero section: bigger tagline, subtext, circles and labels */
+          .hero-top-block {
+            top: clamp(48px, 6vw, 88px) !important;
+            max-width: 1040px !important;
+            width: min(92vw, 1040px) !important;
+          }
+          .hero-tagline {
+            font-size: clamp(42px, 5.5vw, 72px) !important;
+          }
+          .hero-tagline-sub {
+            font-size: clamp(19px, 1.25rem, 24px) !important;
+            margin-top: 20px !important;
+          }
+          .hero-circles-wrap {
+            gap: clamp(32px, 5vw, 64px) !important;
+            margin-top: clamp(40px, 6vw, 72px) !important;
+          }
+          .hero-circle {
+            width: clamp(160px, 20vw, 240px) !important;
+            height: clamp(160px, 20vw, 240px) !important;
+          }
+          .hero-circle-label {
+            font-size: clamp(16px, 2vw, 22px) !important;
+          }
+        }
+        @media (min-width: 1400px) {
+          .main-header {
+            padding: 26px 40px !important;
+            gap: 40px !important;
+          }
+          .main-header a[href="/"] span {
+            font-size: 30px !important;
+          }
+          .main-header a[href="/"] img {
+            width: 64px !important;
+          }
+          .main-header .header-bar-nav {
+            padding: 18px 48px !important;
+            gap: 40px !important;
+          }
+          .main-header .header-bar-nav a,
+          .main-header .header-nav-link {
+            font-size: 23px !important;
+          }
+          .main-header .crear-cuenta-button {
+            padding: 20px 36px !important;
+            font-size: 23px !important;
+          }
+          /* Hero section: even larger on very wide screens */
+          .hero-top-block {
+            top: clamp(56px, 7vw, 100px) !important;
+            max-width: 1120px !important;
+            width: min(92vw, 1120px) !important;
+          }
+          .hero-tagline {
+            font-size: clamp(48px, 6vw, 80px) !important;
+          }
+          .hero-tagline-sub {
+            font-size: clamp(20px, 1.3rem, 26px) !important;
+            margin-top: 24px !important;
+          }
+          .hero-circles-wrap {
+            gap: clamp(40px, 5vw, 80px) !important;
+            margin-top: clamp(48px, 6vw, 88px) !important;
+          }
+          .hero-circle {
+            width: clamp(200px, 22vw, 280px) !important;
+            height: clamp(200px, 22vw, 280px) !important;
+          }
+          .hero-circle-label {
+            font-size: clamp(18px, 2.2vw, 24px) !important;
+          }
+        }
+
+        /* Hero circles hover interaction */
+        .hero-circle {
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+          cursor: pointer;
+        }
+        .hero-circle:hover {
+          transform: scale(1.08);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         
         /* Scroll reveal animations */
@@ -614,13 +678,7 @@ export default function WelcomePage() {
         
         @media (max-width: 768px) {
           /* Header fixes for mobile */
-          .main-header {
-            padding: 12px 16px !important;
-            flex-wrap: nowrap !important;
-            gap: 12px !important;
-          }
           .main-header nav {
-            margin-left: 0 !important;
             flex-shrink: 1 !important;
           }
           .crear-cuenta-button {
@@ -798,9 +856,6 @@ export default function WelcomePage() {
         }
         @media (max-width: 480px) {
           /* Extra small phones */
-          .main-header {
-            padding: 10px 12px !important;
-          }
           .crear-cuenta-button {
             padding: 7px 12px !important;
             font-size: 12px !important;
@@ -840,8 +895,8 @@ export default function WelcomePage() {
           }
           .main-content {
             grid-template-columns: 1.1fr 0.9fr !important;
-            max-width: clamp(900px, 85vw, 1200px) !important;
-            margin-left: clamp(40px, 8vw, 120px) !important;
+            max-width: clamp(700px, 85vw, 1200px) !important;
+            margin-left: auto !important;
             margin-right: auto !important;
           }
           .main-content > div:last-child {
@@ -856,7 +911,7 @@ export default function WelcomePage() {
             padding-left: 0 !important;
             padding-right: clamp(4px, 1vw, 16px) !important;
             max-width: 100% !important;
-            margin-left: clamp(-16px, -2vw, -8px) !important;
+            margin-left: 0 !important;
           }
           
           .billy-container {
@@ -920,6 +975,21 @@ export default function WelcomePage() {
           h1 {
             font-size: clamp(32px, 5vw, 48px) !important;
           }
+          /* iPad: keep all text fully visible, no clip */
+          .section-head h2,
+          .section-head p,
+          .y-mucho-mas-text,
+          .cta-section-grid p,
+          .plan-name,
+          .plan-note,
+          .plan-list li,
+          .accordion-trigger,
+          .accordion-panel {
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
+            overflow: visible !important;
+          }
         }
         
         /* Billy image - smaller on mobile and iPad */
@@ -978,107 +1048,70 @@ export default function WelcomePage() {
           width: 100% !important;
         }
       `}</style>
-      </div>
-
-      {/* Fun text between main hero and hero 1 */}
-      <div className="reveal-element reveal-delay-1 fun-text-container" style={{
-        textAlign: "center",
-        padding: "clamp(8px, 1.5vw, 16px) 0 clamp(120px, 18vw, 200px) 0",
-        background: "transparent",
-        marginTop: "clamp(40px, 8vw, 120px)",
-        marginBottom: "clamp(40px, 8vw, 80px)",
-        opacity: showFunText ? 1 : 0,
-        transform: showFunText ? 'translateY(0)' : 'translateY(30px)',
-        transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-        display: "flex",
-        justifyContent: "center"
-      }}>
-        <div style={{
-          display: "inline-flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "clamp(12px, 2vw, 16px)"
-        }}>
-          {/* Top line */}
-          <div className="fun-text-line" style={{
-            width: "100%",
-            height: "2px",
-            background: "linear-gradient(90deg, transparent 0%, #0F62FE 20%, #0F62FE 80%, transparent 100%)",
-            borderRadius: "1px"
-          }} />
-          
-          <h1 style={{
-            fontSize: "clamp(28px, 5vw, 44px)",
-            fontWeight: 900,
-            fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-            background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-            backgroundSize: "200% auto",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            animation: showFunText ? "shimmer 3s ease-in-out infinite" : "none",
-            margin: 0,
-            lineHeight: 1.2,
-            letterSpacing: "0.02em",
-            whiteSpace: "normal",
-            wordWrap: "break-word",
-            overflowWrap: "break-word"
-          }}>Ahorro, invierto, emprendo, crezco.</h1>
-          
-          {/* Bottom line */}
-          <div className="fun-text-line" style={{
-            width: "100%",
-            height: "2px",
-            background: "linear-gradient(90deg, transparent 0%, #0F62FE 20%, #0F62FE 80%, transparent 100%)",
-            borderRadius: "1px"
-          }} />
         </div>
-      </div>
 
-      {/* Landing Page Content */}
-      <LandingContent />
-      </main>
+        {/* Fun text between main hero and hero 1 */}
+        <div className="reveal-element reveal-delay-1 fun-text-container" style={{
+          textAlign: "center",
+          padding: "clamp(8px, 1.5vw, 16px) clamp(16px, 4vw, 32px) clamp(120px, 18vw, 200px) clamp(16px, 4vw, 32px)",
+          background: "transparent",
+          marginTop: "clamp(40px, 8vw, 120px)",
+          marginBottom: "clamp(40px, 8vw, 80px)",
+          opacity: showFunText ? 1 : 0,
+          transform: showFunText ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+          display: "flex",
+          justifyContent: "center"
+        }}>
+          <div style={{
+            display: "inline-flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "clamp(12px, 2vw, 16px)"
+          }}>
+            {/* Top line */}
+            <div className="fun-text-line" style={{
+              width: "100%",
+              height: "2px",
+              background: "linear-gradient(90deg, transparent 0%, #0F62FE 20%, #0F62FE 80%, transparent 100%)",
+              borderRadius: "1px"
+            }} />
+
+            <h1 style={{
+              fontSize: "clamp(24px, 4vw, 38px)",
+              fontWeight: 900,
+              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+              background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: showFunText ? "shimmer 3s ease-in-out infinite" : "none",
+              margin: 0,
+              lineHeight: 1.2,
+              letterSpacing: "0.01em",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+              overflowWrap: "break-word"
+            }}>Ahorro, invierto, emprendo, crezco.</h1>
+
+            {/* Bottom line */}
+            <div className="fun-text-line" style={{
+              width: "100%",
+              height: "2px",
+              background: "linear-gradient(90deg, transparent 0%, #0F62FE 20%, #0F62FE 80%, transparent 100%)",
+              borderRadius: "1px"
+            }} />
+          </div>
+        </div>
+
+        {/* Landing Page Content */}
+        <LandingContent />
+      </main >
 
       {/* Footer */}
-      <footer style={{
-        position: "static",
-        zIndex: 10,
-        width: "100%",
-        padding: "clamp(16px, 3vw, 24px)",
-        paddingBottom: `env(safe-area-inset-bottom, clamp(16px, 3vw, 24px))`,
-        background: "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(10px)",
-        borderTop: "1px solid rgba(15, 98, 254, 0.1)",
-        margin: 0,
-        marginTop: 0,
-      }} className="main-page-footer">
-        <div style={{
-          maxWidth: "100%",
-          margin: "0 auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "clamp(12px, 2vw, 20px)",
-          fontSize: "clamp(12px, 1.8vw, 14px)",
-          color: "#718096",
-        }} className="footer-links">
-          <Link href="/signup" style={{ color: "#4A5568", textDecoration: "none", fontWeight: 500 }}>
-            Crear cuenta
-          </Link>
-          <Link href="/login" style={{ color: "#4A5568", textDecoration: "none", fontWeight: 500 }}>
-            Iniciar sesión
-          </Link>
-          <Link href="/bizen/terminos" style={{ color: "#4A5568", textDecoration: "none" }}>
-            Términos
-          </Link>
-          <Link href="/bizen/privacidad" style={{ color: "#4A5568", textDecoration: "none" }}>
-            Aviso de Privacidad
-          </Link>
-          <span>© 2025 BIZEN</span>
-        </div>
-      </footer>
-    </div>
+      < LandingWaitlistFooter />
+    </div >
   )
 }
 
@@ -1226,8 +1259,8 @@ const defaultFaqs: FAQ[] = [
 
 function AccordionItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = React.useState(false)
-  const id = React.useMemo(() => 
-    question.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-_]/g, "").slice(0, 64), 
+  const id = React.useMemo(() =>
+    question.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-_]/g, "").slice(0, 64),
     [question]
   )
 
@@ -1291,11 +1324,11 @@ function StepIcon3({ color }: { color: string }) {
 function LandingContent() {
   const primary = "#0F71FD"
   const accent = "#10B981"
-  
+
   return (
     <>
       <style>{landingCSS}</style>
-      
+
       {/* CÓMO FUNCIONA - Text Left, Image Right */}
       <section id="sobre" className="section about reveal-element" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
         <div className="container">
@@ -1306,18 +1339,18 @@ function LandingContent() {
             alignItems: "center",
             minHeight: "400px"
           }}>
-            {/* Text - Will be first on mobile */}
             <div className="hero-text" style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              order: 1
+              order: 1,
+              padding: "0 clamp(16px, 4vw, 24px)"
             }}>
               <h2 style={{
-                fontSize: "clamp(32px, 5vw, 64px)",
+                fontSize: "clamp(28px, 4vw, 48px)",
                 lineHeight: 1.15,
-                margin: "0 0 20px 0",
+                margin: "0 0 16px 0",
                 fontWeight: 800,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
@@ -1339,7 +1372,7 @@ function LandingContent() {
                 overflowWrap: "break-word"
               }}>Ordeno mi dinero en minutos. Necesidades, gustos y ahorro. Simple y útil.</p>
             </div>
-            
+
             {/* Image - Will be second on mobile */}
             <div className="hero-image" style={{
               display: "flex",
@@ -1368,14 +1401,15 @@ function LandingContent() {
       </section>
 
       {/* BENEFICIOS - Image Left, Text Right */}
-      <section className="section benefits reveal-element reveal-delay-1" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
-        <div className="container">
+      <section className="section benefits reveal-element reveal-delay-1" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)", overflow: "visible" }}>
+        <div className="container" style={{ overflow: "visible" }}>
           <div className="hero-section-grid hero-grid-alt" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "center",
-            minHeight: "400px"
+            alignItems: "flex-start",
+            minHeight: "auto",
+            overflow: "visible"
           }}>
             {/* Image - Left side on desktop, first on mobile */}
             <div className="hero-image" style={{
@@ -1400,19 +1434,21 @@ function LandingContent() {
                 }}
               />
             </div>
-            
+
             {/* Text - Right side on desktop, second on mobile */}
             <div className="hero-text" style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              order: 2
+              order: 2,
+              overflow: "visible",
+              minWidth: 0
             }}>
               <h2 style={{
-                fontSize: "clamp(32px, 5vw, 64px)",
+                fontSize: "clamp(28px, 4vw, 48px)",
                 lineHeight: 1.15,
-                margin: "0 0 20px 0",
+                margin: "0 0 16px 0",
                 fontWeight: 800,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
@@ -1422,7 +1458,8 @@ function LandingContent() {
                 backgroundClip: "text",
                 animation: "shimmer 3s ease-in-out infinite",
                 wordWrap: "break-word",
-                overflowWrap: "break-word"
+                overflowWrap: "break-word",
+                whiteSpace: "normal"
               }}>Simuladores financieros</h2>
               <p style={{
                 fontSize: "clamp(18px, 2.5vw, 28px)",
@@ -1431,7 +1468,9 @@ function LandingContent() {
                 lineHeight: 1.6,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 wordWrap: "break-word",
-                overflowWrap: "break-word"
+                overflowWrap: "break-word",
+                whiteSpace: "normal",
+                overflow: "visible"
               }}>Pruebo escenarios reales. Cambio números y veo el impacto al instante. Aprendo haciendo.</p>
             </div>
           </div>
@@ -1457,9 +1496,9 @@ function LandingContent() {
               order: 1
             }}>
               <h2 style={{
-                fontSize: "clamp(32px, 5vw, 64px)",
+                fontSize: "clamp(28px, 4vw, 48px)",
                 lineHeight: 1.15,
-                margin: "0 0 20px 0",
+                margin: "0 0 16px 0",
                 fontWeight: 800,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
@@ -1481,7 +1520,7 @@ function LandingContent() {
                 overflowWrap: "break-word"
               }}>Aprendes jugando. Simulo ingresos, gastos y decisiones para que sientas el dinero en acción, pero sin riesgo.</p>
             </div>
-            
+
             {/* Image - Right side on desktop, second on mobile */}
             <div className="hero-image" style={{
               display: "flex",
@@ -1510,14 +1549,15 @@ function LandingContent() {
       </section>
 
       {/* FORO DE EMPRENDEDORES - Image Left, Text Right */}
-      <section className="section forum reveal-element reveal-delay-3" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
-        <div className="container">
+      <section className="section forum reveal-element reveal-delay-3" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)", overflow: "visible" }}>
+        <div className="container" style={{ overflow: "visible" }}>
           <div className="hero-section-grid hero-grid-alt" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "center",
-            minHeight: "400px"
+            alignItems: "flex-start",
+            minHeight: "auto",
+            overflow: "visible"
           }}>
             {/* Image - Left side on desktop, first on mobile */}
             <div className="hero-image" style={{
@@ -1542,19 +1582,21 @@ function LandingContent() {
                 }}
               />
             </div>
-            
+
             {/* Text - Right side on desktop, second on mobile */}
             <div className="hero-text" style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              order: 2
+              order: 2,
+              overflow: "visible",
+              minWidth: 0
             }}>
               <h2 style={{
-                fontSize: "clamp(32px, 5vw, 64px)",
+                fontSize: "clamp(28px, 4vw, 48px)",
                 lineHeight: 1.15,
-                margin: "0 0 20px 0",
+                margin: "0 0 16px 0",
                 fontWeight: 800,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
@@ -1564,7 +1606,8 @@ function LandingContent() {
                 backgroundClip: "text",
                 animation: "shimmer 3s ease-in-out infinite",
                 wordWrap: "break-word",
-                overflowWrap: "break-word"
+                overflowWrap: "break-word",
+                whiteSpace: "normal"
               }}>Foro de emprendedores</h2>
               <p style={{
                 fontSize: "clamp(18px, 2.5vw, 28px)",
@@ -1573,9 +1616,11 @@ function LandingContent() {
                 lineHeight: 1.6,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 wordWrap: "break-word",
-                overflowWrap: "break-word"
+                overflowWrap: "break-word",
+                whiteSpace: "normal",
+                overflow: "visible"
               }}>Pido feedback, comparto avances y aprendo de otros. Comunidad segura y moderada.</p>
-                      </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1587,7 +1632,7 @@ function LandingContent() {
         background: "transparent"
       }}>
         <h2 className="y-mucho-mas-text" style={{
-          fontSize: "clamp(40px, 7vw, 80px) !important",
+          fontSize: "clamp(32px, 6vw, 64px) !important",
           fontWeight: 900,
           fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
           background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
@@ -1598,7 +1643,9 @@ function LandingContent() {
           animation: "shimmer 3s ease-in-out infinite",
           margin: 0,
           lineHeight: 1.2,
-          letterSpacing: "0.02em"
+          letterSpacing: "0.01em",
+          wordWrap: "break-word",
+          overflowWrap: "break-word"
         }}>Y MUCHO MÁS...</h2>
       </div>
 
@@ -1618,12 +1665,16 @@ function LandingContent() {
             <p style={{ fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif" }}>Elige el plan que mejor se adapte a tus necesidades.</p>
           </header>
 
-          <div className="grid-3">
+          <div className="grid-3" style={{ gap: "32px" }}>
             {defaultPlans.map((p, i) => (
               <article
                 key={i}
                 className={`plan ${p.highlighted ? "plan--highlight" : ""}`}
                 aria-label={`Plan ${p.name}`}
+                style={{
+                  minHeight: "520px",
+                  paddingBottom: "100px" // Ensure space for the absolute-ish button
+                }}
               >
                 {p.highlighted && <span className="tag">Recomendado</span>}
                 <h3 className="plan-name">{p.name}</h3>
@@ -1632,13 +1683,21 @@ function LandingContent() {
                 <ul className="plan-list">
                   {p.features.map((f, j) => (
                     <li key={j}>
-                      <span className="check" aria-hidden="true">✓</span> 
+                      <span className="check" aria-hidden="true">✓</span>
                       <span>{f}</span>
                     </li>
                   ))}
                 </ul>
 
-                <Link href={p.ctaUrl} className="btn primary plan-btn" style={{marginTop:"auto"}}>
+                <Link href={p.ctaUrl} className="btn primary plan-btn" style={{
+                  marginTop: "auto",
+                  width: "100%",
+                  position: "absolute",
+                  bottom: "32px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  maxWidth: "calc(100% - 48px)"
+                }}>
                   {p.cta}
                 </Link>
               </article>
@@ -1656,7 +1715,7 @@ function LandingContent() {
               lineHeight: 1.15,
               margin: "0 0 8px 0",
               fontWeight: 800,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
               background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
               backgroundSize: "200% auto",
               WebkitBackgroundClip: "text",
@@ -1701,8 +1760,8 @@ function LandingContent() {
               marginTop: "clamp(-60px, -8vw, -40px)"
             }}>
               <p style={{
-                fontSize: "clamp(48px, 8vw, 96px)",
-                fontWeight: 700,
+                fontSize: "clamp(32px, 6vw, 64px)",
+                fontWeight: 800,
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
                 background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
                 backgroundSize: "200% auto",
@@ -1711,11 +1770,13 @@ function LandingContent() {
                 backgroundClip: "text",
                 animation: "shimmer 3s ease-in-out infinite",
                 margin: 0,
-                lineHeight: 1.3
+                lineHeight: 1.2
               }}>¿Qué esperas? Crea tu cuenta ya.</p>
-              
+
               <Link
                 href="/signup"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="empieza-ya-button"
                 style={{
                   padding: "clamp(14px, 2.5vw, 18px) clamp(32px, 6vw, 48px)",
@@ -1751,7 +1812,7 @@ function LandingContent() {
                 <span style={{ position: "relative", zIndex: 1 }}>Empieza Ya</span>
               </Link>
             </div>
-            
+
             {/* Image Right */}
             <div style={{
               display: "flex",
@@ -1777,12 +1838,12 @@ function LandingContent() {
       </section>
 
       {/* CONTACTO */}
-      <section id="contacto" className="section contact reveal-element" style={{ 
-        background: "transparent", 
-        position: "relative", 
+      <section id="contacto" className="section contact reveal-element" style={{
+        background: "transparent",
+        position: "relative",
         overflow: "visible",
-        paddingTop: "clamp(48px, 8vw, 96px)",
-        paddingBottom: "clamp(8px, 1.5vw, 16px)",
+        paddingTop: "clamp(64px, 10vw, 120px)",
+        paddingBottom: "clamp(120px, 15vw, 200px)", // Greatly increased padding for footer buffer
         width: "100%",
         boxSizing: "border-box",
         zIndex: 1,
@@ -1794,7 +1855,7 @@ function LandingContent() {
           right: "-100px",
           width: "400px",
           height: "400px",
-          background: "radial-gradient(circle, rgba(15, 98, 254, 0.1) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(15, 98, 254, 0.06) 0%, transparent 70%)",
           borderRadius: "50%",
           pointerEvents: "none",
           zIndex: 0,
@@ -1806,14 +1867,22 @@ function LandingContent() {
           left: "-150px",
           width: "500px",
           height: "500px",
-          background: "radial-gradient(circle, rgba(15, 98, 254, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(15, 98, 254, 0.05) 0%, transparent 70%)",
           borderRadius: "50%",
           pointerEvents: "none",
           zIndex: 0,
           display: "none",
         }} />
-        
-        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: "100%", margin: "0 auto", padding: "0 clamp(24px, 5vw, 48px)", width: "100%" }}>
+
+        <div className="container" style={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "0 clamp(16px, 4vw, 32px)",
+          width: "100%",
+          boxSizing: "border-box"
+        }}>
           <header className="section-head" style={{ textAlign: "center", marginBottom: "clamp(32px, 5vw, 48px)" }}>
             <h2 style={{
               fontSize: "clamp(36px, 5.5vw, 56px)",
@@ -1828,8 +1897,8 @@ function LandingContent() {
               backgroundClip: "text",
               animation: "shimmer 3s ease-in-out infinite"
             }}>Contacto</h2>
-            <p style={{ 
-              fontSize: "clamp(16px, 2vw, 20px)", 
+            <p style={{
+              fontSize: "clamp(16px, 2vw, 20px)",
               color: "#475569",
               margin: 0,
               lineHeight: 1.6
@@ -1838,14 +1907,16 @@ function LandingContent() {
 
           <div style={{
             display: "grid",
-            gap: "clamp(32px, 5vw, 48px)",
-            gridTemplateColumns: "1fr",
-            alignItems: "start"
+            gap: "clamp(24px, 4vw, 40px)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            alignItems: "stretch",
+            width: "100%",
+            boxSizing: "border-box"
           }}>
-          <form
+            <form
               className="contact-form"
               onSubmit={async (e) => {
-              e.preventDefault()
+                e.preventDefault()
                 const form = e.currentTarget
                 const formData = new FormData(form)
                 const name = formData.get('name') as string
@@ -1906,11 +1977,11 @@ function LandingContent() {
                   <span style={{ fontSize: "20px" }}>👤</span>
                   Nombre
                 </label>
-                <input 
-                  id="contact-name" 
-                  name="name" 
-                  type="text" 
-                  required 
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  required
                   placeholder="Tu nombre completo"
                   style={{
                     width: "100%",
@@ -1931,8 +2002,8 @@ function LandingContent() {
                     e.currentTarget.style.boxShadow = "none"
                   }}
                 />
-            </div>
-              
+              </div>
+
               <div className="contact-field" style={{ marginBottom: "24px" }}>
                 <label htmlFor="contact-email" style={{
                   display: "flex",
@@ -1946,12 +2017,12 @@ function LandingContent() {
                   <span style={{ fontSize: "20px" }}>📧</span>
                   Email
                 </label>
-              <input
+                <input
                   id="contact-email"
-                name="email"
-                type="email"
-                required
-                placeholder="tucorreo@ejemplo.com"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="tucorreo@ejemplo.com"
                   style={{
                     width: "100%",
                     border: "2px solid rgba(15, 98, 254, 0.2)",
@@ -1970,9 +2041,9 @@ function LandingContent() {
                     e.currentTarget.style.borderColor = "rgba(15, 98, 254, 0.2)"
                     e.currentTarget.style.boxShadow = "none"
                   }}
-              />
-            </div>
-              
+                />
+              </div>
+
               <div className="contact-field" style={{ marginBottom: "24px" }}>
                 <label htmlFor="contact-message" style={{
                   display: "flex",
@@ -1986,12 +2057,12 @@ function LandingContent() {
                   <span style={{ fontSize: "20px" }}>💬</span>
                   Mensaje
                 </label>
-              <textarea
+                <textarea
                   id="contact-message"
-                name="message"
+                  name="message"
                   rows={5}
-                required
-                placeholder="Cuéntanos en qué podemos ayudarte…"
+                  required
+                  placeholder="Cuéntanos en qué podemos ayudarte…"
                   style={{
                     width: "100%",
                     border: "2px solid rgba(15, 98, 254, 0.2)",
@@ -1999,7 +2070,7 @@ function LandingContent() {
                     padding: "14px 18px",
                     fontSize: "clamp(14px, 1.8vw, 16px)",
                     background: "white",
-                    resize: "vertical",
+                    resize: "none",
                     minHeight: "120px",
                     transition: "all 0.3s ease",
                     fontFamily: "inherit"
@@ -2012,21 +2083,21 @@ function LandingContent() {
                     e.currentTarget.style.borderColor = "rgba(15, 98, 254, 0.2)"
                     e.currentTarget.style.boxShadow = "none"
                   }}
-              />
-            </div>
-              
-              <button 
-                type="submit" 
+                />
+              </div>
+
+              <button
+                type="submit"
                 style={{
                   width: "100%",
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
+                  background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
+                  backgroundSize: "200% auto",
                   color: "white",
                   border: "none",
                   borderRadius: "12px",
                   padding: "16px 24px",
-                fontSize: "clamp(16px, 2vw, 18px)",
-                fontWeight: 700,
+                  fontSize: "clamp(16px, 2vw, 18px)",
+                  fontWeight: 700,
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   boxShadow: "0 8px 24px rgba(15, 98, 254, 0.35)",
@@ -2041,9 +2112,9 @@ function LandingContent() {
                   e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.35)"
                 }}
               >
-              Enviar mensaje
-            </button>
-          </form>
+                Enviar mensaje
+              </button>
+            </form>
 
             <aside style={{
               background: "rgba(255, 255, 255, 0.8)",
@@ -2051,8 +2122,13 @@ function LandingContent() {
               WebkitBackdropFilter: "blur(20px)",
               border: "1px solid rgba(15, 98, 254, 0.2)",
               borderRadius: "24px",
-              padding: "clamp(32px, 5vw, 48px)",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)"
+              padding: "clamp(24px, 4vw, 40px)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
+              display: "flex",
+              flexDirection: "column",
+              height: "auto",
+              boxSizing: "border-box",
+              alignSelf: "stretch"
             }}>
               <h3 style={{
                 fontSize: "clamp(24px, 3vw, 32px)",
@@ -2065,7 +2141,7 @@ function LandingContent() {
                 backgroundClip: "text",
                 animation: "shimmer 3s ease-in-out infinite"
               }}>Datos de contacto</h3>
-              
+
               <ul style={{
                 listStyle: "none",
                 margin: "0 0 32px 0",
@@ -2084,16 +2160,18 @@ function LandingContent() {
                 }}>
                   <span style={{ fontSize: "28px", lineHeight: 1 }}>📧</span>
                   <div>
-                    <strong style={{ 
-                      display: "block", 
-                      fontWeight: 700, 
+                    <strong style={{
+                      display: "block",
+                      fontWeight: 700,
                       fontSize: "clamp(14px, 1.8vw, 16px)",
                       color: "#0F172A",
                       marginBottom: "4px"
                     }}>Email</strong>
-                    <span style={{ 
-                      fontSize: "clamp(13px, 1.6vw, 15px)", 
-                      color: "#475569" 
+                    <span style={{
+                      fontSize: "clamp(13px, 1.6vw, 15px)",
+                      color: "#475569",
+                      wordBreak: "break-all",
+                      overflowWrap: "anywhere"
                     }}>diego@bizen.mx</span>
                   </div>
                 </li>
@@ -2108,16 +2186,17 @@ function LandingContent() {
                 }}>
                   <span style={{ fontSize: "28px", lineHeight: 1 }}>📍</span>
                   <div>
-                    <strong style={{ 
-                      display: "block", 
-                      fontWeight: 700, 
+                    <strong style={{
+                      display: "block",
+                      fontWeight: 700,
                       fontSize: "clamp(14px, 1.8vw, 16px)",
                       color: "#0F172A",
                       marginBottom: "4px"
                     }}>Ubicación</strong>
-                    <span style={{ 
-                      fontSize: "clamp(13px, 1.6vw, 15px)", 
-                      color: "#475569" 
+                    <span style={{
+                      fontSize: "clamp(13px, 1.6vw, 15px)",
+                      color: "#475569",
+                      overflowWrap: "break-word"
                     }}>CDMX, México</span>
                   </div>
                 </li>
@@ -2132,27 +2211,27 @@ function LandingContent() {
                 }}>
                   <span style={{ fontSize: "28px", lineHeight: 1 }}>🕘</span>
                   <div>
-                    <strong style={{ 
-                      display: "block", 
-                      fontWeight: 700, 
+                    <strong style={{
+                      display: "block",
+                      fontWeight: 700,
                       fontSize: "clamp(14px, 1.8vw, 16px)",
                       color: "#0F172A",
                       marginBottom: "4px"
                     }}>Horario</strong>
-                    <span style={{ 
-                      fontSize: "clamp(13px, 1.6vw, 15px)", 
-                      color: "#475569" 
+                    <span style={{
+                      fontSize: "clamp(13px, 1.6vw, 15px)",
+                      color: "#475569"
                     }}>Lun–Vie · 9:00–18:00</span>
                   </div>
                 </li>
-            </ul>
-              
+              </ul>
+
               <div style={{ marginTop: "24px" }}>
-                <h4 style={{ 
-                  marginBottom: "16px", 
-                  fontSize: "18px", 
-                  fontWeight: 700, 
-                  color: "#0F172A" 
+                <h4 style={{
+                  marginBottom: "16px",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  color: "#0F172A"
                 }}>Síguenos</h4>
                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
                   <a href="#" aria-label="Instagram" style={{
@@ -2171,16 +2250,16 @@ function LandingContent() {
                     fontSize: "clamp(13px, 1.6vw, 15px)",
                     transition: "all 0.3s ease"
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#0F62FE"
-                    e.currentTarget.style.color = "white"
-                    e.currentTarget.style.transform = "translateY(-2px)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
-                    e.currentTarget.style.color = "#0F172A"
-                    e.currentTarget.style.transform = "translateY(0)"
-                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#0F62FE"
+                      e.currentTarget.style.color = "white"
+                      e.currentTarget.style.transform = "translateY(-2px)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
+                      e.currentTarget.style.color = "#0F172A"
+                      e.currentTarget.style.transform = "translateY(0)"
+                    }}
                   >
                     Instagram
                   </a>
@@ -2200,16 +2279,16 @@ function LandingContent() {
                     fontSize: "clamp(13px, 1.6vw, 15px)",
                     transition: "all 0.3s ease"
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#0F62FE"
-                    e.currentTarget.style.color = "white"
-                    e.currentTarget.style.transform = "translateY(-2px)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
-                    e.currentTarget.style.color = "#0F172A"
-                    e.currentTarget.style.transform = "translateY(0)"
-                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#0F62FE"
+                      e.currentTarget.style.color = "white"
+                      e.currentTarget.style.transform = "translateY(-2px)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
+                      e.currentTarget.style.color = "#0F172A"
+                      e.currentTarget.style.transform = "translateY(0)"
+                    }}
                   >
                     Twitter
                   </a>
@@ -2229,22 +2308,22 @@ function LandingContent() {
                     fontSize: "clamp(13px, 1.6vw, 15px)",
                     transition: "all 0.3s ease"
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#0F62FE"
-                    e.currentTarget.style.color = "white"
-                    e.currentTarget.style.transform = "translateY(-2px)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
-                    e.currentTarget.style.color = "#0F172A"
-                    e.currentTarget.style.transform = "translateY(0)"
-                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "#0F62FE"
+                      e.currentTarget.style.color = "white"
+                      e.currentTarget.style.transform = "translateY(-2px)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
+                      e.currentTarget.style.color = "#0F172A"
+                      e.currentTarget.style.transform = "translateY(0)"
+                    }}
                   >
                     LinkedIn
                   </a>
                 </div>
-            </div>
-          </aside>
+              </div>
+            </aside>
           </div>
         </div>
       </section>
@@ -2269,8 +2348,8 @@ const landingCSS = `
 :root{
   --c-primary:#0F71FD;
   --c-accent:#10B981;
-  --c-text:#0F172A;
-  --c-muted:#475569;
+  --c-text:#1E293B;
+  --c-muted:#334155;
   --c-bg:transparent;
   --c-card:#FFFFFF;
   --c-border:rgba(15, 23, 42, 0.12);
@@ -2292,14 +2371,15 @@ html {
   font-family: 'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif !important;
 }
 
-.section{padding: clamp(48px, 7vw, 96px) 0; background: transparent !important;}
+.section{padding: clamp(64px, 8vw, 120px) 0; scroll-margin-top: 80px; background: transparent !important;}
         .section.contact,
         #contacto {
-          padding-bottom: clamp(8px, 1.5vw, 16px) !important;
+          padding-bottom: clamp(64px, 8vw, 128px) !important;
+          overflow: visible !important;
         }
-.section-head{max-width:900px; margin:0 auto 28px auto; text-align:center}
-.section-head h2{margin:0 0 8px 0; font-size:clamp(28px, 4.2vw, 40px); line-height:1.15;}
-.section-head p{margin:0; color:var(--c-muted)}
+.section-head{max-width:900px; margin:0 auto 28px auto; text-align:center; overflow:visible; word-wrap:break-word; overflow-wrap:break-word;}
+.section-head h2{margin:0 0 8px 0; font-size:clamp(28px, 4.2vw, 40px); line-height:1.15; white-space:normal;}
+.section-head p{margin:0; color:var(--c-muted); white-space:normal;}
 
 .container{
   width:100%;
@@ -2324,6 +2404,14 @@ html {
 .grid-3{display:grid; gap:24px; grid-template-columns:1fr}
 .grid-6{display:grid; gap:16px; grid-template-columns:1fr 1fr}
 @media (min-width: 900px){ .grid-3{grid-template-columns:repeat(3, 1fr)} .grid-6{grid-template-columns:repeat(3, 1fr)} }
+/* Tablet and desktop gap adjustments */
+@media (min-width: 768px){
+  .grid-3{gap:32px;}
+}
+@media (min-width: 1025px){
+  .grid-3{gap:40px;}
+}
+
 @media (min-width: 1200px){ .grid-6{grid-template-columns:repeat(6, 1fr)} }
 
 .steps{display:grid; gap:16px; grid-template-columns:1fr; counter-reset: step}
@@ -2343,15 +2431,15 @@ html {
 .dot{opacity:.4}
 .course-actions{padding-top:6px}
 
-.plan{position:relative; padding:32px 24px; display:flex; flex-direction:column; height:100%; border:1px solid rgba(255, 255, 255, 0.3); background:rgba(255, 255, 255, 0.6); backdrop-filter:blur(20px) saturate(180%); -webkit-backdrop-filter:blur(20px) saturate(180%); border-radius:32px; box-shadow:0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+.plan{position:relative; padding:32px 24px; display:flex; flex-direction:column; height:auto; min-height:480px; border:1px solid rgba(255, 255, 255, 0.3); background:rgba(255, 255, 255, 0.6); backdrop-filter:blur(20px) saturate(180%); -webkit-backdrop-filter:blur(20px) saturate(180%); border-radius:32px; box-shadow:0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow:visible;}
 .plan:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(15, 98, 254, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6); border-color:rgba(15, 98, 254, 0.3);}
-.plan--highlight{background:rgba(240, 247, 255, 0.7); border:2px solid rgba(15, 98, 254, 0.4); box-shadow:0 12px 32px rgba(15, 98, 254, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6); position:relative; overflow:hidden;}
+.plan--highlight{background:rgba(240, 247, 255, 0.7); border:2px solid rgba(15, 98, 254, 0.4); box-shadow:0 12px 32px rgba(15, 98, 254, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6); position:relative; overflow:visible;}
 .plan--highlight::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%); background-size:200% auto; animation:shimmer 3s ease-in-out infinite;}
 .tag{position:absolute; top:16px; right:16px; background:linear-gradient(135deg, #0F62FE 0%, #4A90E2 100%); color:#fff; border-radius:999px; font-weight:800; padding:8px 14px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(15, 98, 254, 0.3); z-index:2;}
-.plan-name{font-size:clamp(24px, 3vw, 32px); margin:0 0 12px 0; font-weight:900; letter-spacing:-0.02em; background:linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s ease-in-out infinite; font-family:'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive, sans-serif;}
-.plan-note{font-size:14px; margin:0 0 24px 0; color:var(--c-muted); font-weight:500;}
-.plan-list{list-style:none; margin:0 0 32px 0; padding:0; display:grid; gap:14px; flex-grow:1;}
-.plan-list li{display:flex; gap:12px; align-items:flex-start; font-size:15px; line-height:1.6; color:var(--c-text);}
+.plan-name{font-size:clamp(24px, 3vw, 32px); margin:0 0 12px 0; font-weight:900; letter-spacing:-0.02em; background:linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s ease-in-out infinite; font-family:'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive, sans-serif; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
+.plan-note{font-size:14px; margin:0 0 24px 0; color:var(--c-muted); font-weight:500; white-space:normal;}
+.plan-list{list-style:none; margin:0 0 24px 0; padding:0; display:grid; gap:14px; flex-grow:1; overflow:visible;}
+.plan-list li{display:flex; gap:12px; align-items:flex-start; font-size:15px; line-height:1.6; color:var(--c-text); white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
 .check{color:var(--c-accent); font-weight:900; font-size:18px; min-width:20px; margin-top:2px;}
 .plan-btn:hover{transform:none !important;}
 .plan-btn:active{transform:none !important;}
@@ -2387,6 +2475,11 @@ html {
   color:#0F62FE;
   transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin:center;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  white-space:normal;
+  flex-wrap:wrap;
+  gap:8px;
 }
 .accordion-trigger:hover, .accordion-trigger:active{transform:none; color:#0F62FE}
 .accordion-trigger:focus-visible{outline:2px solid rgba(15, 98, 254, 0.6); border-radius:20px}
@@ -2399,14 +2492,25 @@ html {
   font-family:Arial, sans-serif;
   font-size:clamp(15px, 1.8vw, 18px);
   line-height:1.7;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  white-space:normal;
+  overflow:visible;
 }
 .accordion-item.open .accordion-panel{display:block}
 
 
 .hero-image-small {
   width: 100% !important;
-  max-width: clamp(250px, 35vw, 350px) !important;
+  max-width: clamp(200px, 30vw, 300px) !important;
   height: auto !important;
+}
+/* Larger screens: increase max-width for hero images */
+@media (min-width: 768px){
+  .hero-image-small{max-width: clamp(300px, 40vw, 500px) !important;}
+}
+@media (min-width: 1025px){
+  .hero-image-small{max-width: clamp(350px, 45vw, 600px) !important;}
 }
 
 /* ==========================================

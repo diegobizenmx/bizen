@@ -58,7 +58,7 @@ export default function TopicFeedPage() {
   useEffect(() => {
     if (loading) return
     if (!user) {
-      router.replace("/login")
+      window.open("/login", "_blank")
       return
     }
     if (topicSlug) {

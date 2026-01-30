@@ -118,8 +118,8 @@ export default function Header({
           ) : (
             // Not authenticated - show login/signup
             <>
-              <a className="btn ghost" href={loginUrl}>{loginLabel}</a>
-              <a className="btn primary" href={signupUrl}>{signupLabel}</a>
+              <a className="btn ghost" href={loginUrl} target="_blank" rel="noopener noreferrer">{loginLabel}</a>
+              <a className="btn primary" href={signupUrl} target="_blank" rel="noopener noreferrer">{signupLabel}</a>
             </>
           )}
         </div>
@@ -176,8 +176,8 @@ export default function Header({
             ) : (
               // Not authenticated - show login/signup
               <>
-                <a className="btn ghost" href={loginUrl} onClick={() => setOpen(false)}>{loginLabel}</a>
-                <a className="btn primary" href={signupUrl} onClick={() => setOpen(false)}>{signupLabel}</a>
+                <a className="btn ghost" href={loginUrl} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>{loginLabel}</a>
+                <a className="btn primary" href={signupUrl} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>{signupLabel}</a>
               </>
             )}
           </div>

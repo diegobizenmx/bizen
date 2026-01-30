@@ -52,7 +52,7 @@ function SettingsContent() {
   }, [user])
 
   if (!user) {
-    router.push("/login")
+    window.open("/login", "_blank")
     return null
   }
 
@@ -1215,7 +1215,7 @@ function SettingsContent() {
                       setSaving(true)
                       try {
                         await supabase.auth.signOut()
-                        router.push("/login")
+                        window.open("/login", "_blank")
                       } catch (error) {
                         console.error("Error signing out:", error)
                         setSaveError("Error al cerrar sesión")

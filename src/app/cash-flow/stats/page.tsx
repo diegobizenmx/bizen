@@ -45,7 +45,7 @@ export default function CashFlowStatsPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login")
+      window.open("/login", "_blank")
     }
   }, [user, loading, router])
 

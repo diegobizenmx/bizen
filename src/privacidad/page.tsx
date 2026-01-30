@@ -36,6 +36,8 @@ export default function PrivacidadPage() {
         }}>
           <Link 
             href="/signup"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               padding: "8px 16px",
               borderRadius: 8,
@@ -291,8 +293,8 @@ export default function PrivacidadPage() {
           }}>
             <p>© {new Date().getFullYear()} {brandName}. Todos los derechos reservados.</p>
             <p style={{ marginTop: 12 }}>
-              <Link href="/signup" style={{ color: linkColor, marginRight: 16 }}>Crear cuenta</Link>
-              <Link href="/login" style={{ color: linkColor }}>Iniciar sesión</Link>
+              <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ color: linkColor, marginRight: 16 }}>Crear cuenta</Link>
+              <Link href="/login" target="_blank" rel="noopener noreferrer" style={{ color: linkColor }}>Iniciar sesión</Link>
             </p>
           </div>
         </article>
