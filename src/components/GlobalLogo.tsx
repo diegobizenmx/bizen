@@ -7,8 +7,8 @@ export default function GlobalLogo() {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Only show on courses page
-  const shouldShowLogo = pathname === '/courses'
+  // Do not show logo on courses page (removed from left corner per request)
+  const shouldShowLogo = false
 
   if (!shouldShowLogo) return null
 

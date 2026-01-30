@@ -389,23 +389,23 @@ export default function SectionLayout({
         </div>
       </footer>
       
-      {/* CSS for responsive layout accounting for fixed right sidebar */}
+      {/* CSS for responsive layout accounting for fixed left sidebar */}
       <style>{`
-        /* iPad/Tablet (768px-1160px): Account for 104px right sidebar - NO GAP */
+        /* iPad/Tablet (768px-1160px): Account for 220px left sidebar - NO GAP */
         @media (min-width: 768px) and (max-width: 1160px) {
           main {
             margin: 0 !important;
-            margin-right: 0 !important;
+            margin-left: 0 !important;
             max-width: 100vw !important;
             width: 100% !important;
-            padding-left: max(16px, calc((100vw - 104px - ${contentMaxWidth}px) / 2)) !important;
-            padding-right: calc(104px + 16px) !important;
+            padding-right: max(16px, calc((100vw - 220px - ${contentMaxWidth}px) / 2)) !important;
+            padding-left: calc(220px + 16px) !important;
             box-sizing: border-box !important;
           }
           
           footer {
-            right: 104px !important;
-            width: calc(100vw - 104px) !important;
+            left: 220px !important;
+            width: calc(100vw - 220px) !important;
           }
           
           footer > div {
@@ -416,20 +416,20 @@ export default function SectionLayout({
           }
         }
 
-        /* Desktop (1161px+): Account for 280px right sidebar - NO GAP */
+        /* Desktop (1161px+): Account for 280px left sidebar - NO GAP */
         @media (min-width: 1161px) {
           main {
             margin: 0 !important;
-            margin-right: 0 !important;
+            margin-left: 0 !important;
             max-width: 100vw !important;
             width: 100% !important;
-            padding-left: max(16px, calc((100vw - 280px - ${contentMaxWidth}px) / 2)) !important;
-            padding-right: calc(280px + 16px) !important;
+            padding-right: max(16px, calc((100vw - 280px - ${contentMaxWidth}px) / 2)) !important;
+            padding-left: calc(280px + 16px) !important;
             box-sizing: border-box !important;
           }
           
           footer {
-            right: 280px !important;
+            left: 280px !important;
             width: calc(100vw - 280px) !important;
           }
           

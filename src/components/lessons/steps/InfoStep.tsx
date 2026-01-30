@@ -11,9 +11,11 @@ interface InfoStepProps {
 
 export function InfoStep({ step, onAnswered }: InfoStepProps) {
   useEffect(() => {
-    // Info steps are always completed immediately (no interaction needed)
+    // Info steps are always completed immediately (no interaction needed). Run once on mount
+    // so we don't re-trigger when parent recreates onAnswered and cause an infinite loop.
     onAnswered({ isCompleted: true })
-  }, [onAnswered])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: call once on mount only
+  }, [])
 
   return (
     <div className={sharedStyles.container}>

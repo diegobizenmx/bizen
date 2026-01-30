@@ -343,16 +343,6 @@ export default function WelcomePage() {
           margin-top: 0 !important;
         }
 
-        /* Custom cursor: Billy mascot (32x32 for cross-browser support) */
-        .main-page-container,
-        .main-page-container * {
-          cursor: url('/billy-cursor.png') 16 16, auto;
-        }
-        .main-page-container a,
-        .main-page-container button {
-          cursor: url('/billy-cursor.png') 16 16, pointer;
-        }
-
         /* Top bar: keep Crear cuenta button in view on all screen sizes */
         .main-header {
           max-width: 100% !important;

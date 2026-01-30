@@ -243,21 +243,21 @@ function ForumContent() {
             }
           }
           
-          /* Tablet/iPad (768px-1160px) - sidebar overlays (narrow 160px) */
+          /* Tablet/iPad (768px-1160px) - left sidebar (220px text-only) */
           @media (min-width: 768px) and (max-width: 1160px) {
             .forum-container {
-              width: calc(100% - 160px) !important;
-              max-width: calc(100% - 160px) !important;
-              margin-right: 0 !important;
+              width: calc(100% - 220px) !important;
+              max-width: calc(100% - 220px) !important;
+              margin-left: 220px !important;
               padding: clamp(24px, 3vw, 40px) !important;
             }
           }
-          /* Desktop (1161px+) - sidebar overlays (full width 280px) */
+          /* Desktop (1161px+) - left sidebar (full width 280px) */
           @media (min-width: 1161px) {
             .forum-container {
               width: calc(100% - 280px) !important;
               max-width: calc(100% - 280px) !important;
-              margin-right: 0 !important;
+              margin-left: 280px !important;
               padding: clamp(24px, 4vw, 40px) !important;
             }
           }

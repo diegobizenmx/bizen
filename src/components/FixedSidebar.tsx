@@ -1,12 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { useSettings } from "@/contexts/SettingsContext"
 import { useTranslation } from "@/lib/translations"
-import { AvatarDisplay } from "@/components/AvatarDisplay"
-import Image from "next/image"
 
 export default function FixedSidebar() {
   const router = useRouter()
@@ -20,7 +19,13 @@ export default function FixedSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isCompactSidebar, setIsCompactSidebar] = useState(false)
-  
+  const [mounted, setMounted] = useState(false)
+
+  // Only render auth-dependent UI after mount to avoid hydration mismatch (server has no session)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   // Detect mobile screen size (only phones, not tablets)
   useEffect(() => {
     const handleResize = () => {
@@ -44,8 +49,8 @@ export default function FixedSidebar() {
         sidebar.style.setProperty('display', 'flex', 'important')
         sidebar.style.setProperty('position', 'fixed', 'important')
         sidebar.style.setProperty('top', '0', 'important')
-        sidebar.style.setProperty('right', '0', 'important')
-        sidebar.style.setProperty('left', 'auto', 'important')
+        sidebar.style.setProperty('left', '0', 'important')
+        sidebar.style.setProperty('right', 'auto', 'important')
         sidebar.style.setProperty('width', '200px', 'important') // Much narrower sidebar
         sidebar.style.setProperty('min-width', '200px', 'important')
         sidebar.style.setProperty('max-width', '200px', 'important') // Force exact width, no scaling
@@ -59,17 +64,17 @@ export default function FixedSidebar() {
         sidebar.style.setProperty('z-index', '10001', 'important') // Lower than hamburger button (10002)
         sidebar.style.setProperty('padding-top', '70px', 'important') // Extra padding to avoid hamburger button
         sidebar.style.setProperty('flex-direction', 'column', 'important')
-        sidebar.style.setProperty('background', '#ffffff', 'important')
+        sidebar.style.setProperty('background', '#1e4976', 'important')
         sidebar.style.setProperty('padding', '70px 16px 32px 16px', 'important') // Extra padding at top (70px) to avoid hamburger button
         sidebar.style.setProperty('overflow-y', 'auto', 'important')
         sidebar.style.setProperty('overflow-x', 'hidden', 'important')
-        sidebar.style.setProperty('box-shadow', '-2px 0 20px rgba(0, 0, 0, 0.15)', 'important')
-        sidebar.style.setProperty('border-left', '2px solid rgba(147, 197, 253, 0.3)', 'important')
-        sidebar.style.setProperty('border-right', 'none', 'important')
+        sidebar.style.setProperty('box-shadow', '2px 0 20px rgba(0, 0, 0, 0.15)', 'important')
+        sidebar.style.setProperty('border-right', '2px solid rgba(147, 197, 253, 0.3)', 'important')
+        sidebar.style.setProperty('border-left', 'none', 'important')
         sidebar.style.setProperty('box-sizing', 'border-box', 'important')
       } else {
         sidebar.classList.remove('mobile-sidebar-open')
-        sidebar.style.setProperty('transform', 'translateX(100%)', 'important')
+        sidebar.style.setProperty('transform', 'translateX(-100%)', 'important')
         sidebar.style.setProperty('visibility', 'hidden', 'important')
         sidebar.style.setProperty('pointer-events', 'none', 'important')
       }
@@ -85,7 +90,7 @@ export default function FixedSidebar() {
         setIsSidebarOpen(false)
         sidebar.classList.remove('mobile-sidebar-open')
         const sidebarEl = sidebar as HTMLElement
-        sidebarEl.style.setProperty('transform', 'translateX(100%)', 'important')
+        sidebarEl.style.setProperty('transform', 'translateX(-100%)', 'important')
         sidebarEl.style.setProperty('visibility', 'hidden', 'important')
         sidebarEl.style.setProperty('pointer-events', 'none', 'important')
       }
@@ -155,7 +160,7 @@ export default function FixedSidebar() {
           width: "100%",
           textAlign: "center" as const,
           background: "transparent",
-          color: isActive ? "#0F62FE" : "#000"
+          color: isActive ? "#93C5FD" : "#fff"
         }
       : {}
 
@@ -198,21 +203,57 @@ export default function FixedSidebar() {
       } : {
         position: "fixed",
         top: 0,
-        right: 0,
+        left: 0,
         width: "clamp(240px, 25vw, 320px)",
         height: "100vh",
-        background: "#ffffff",
-        boxShadow: "-4px 0 20px rgba(0, 0, 0, 0.1)",
+        background: "#1e4976",
+        boxShadow: "4px 0 20px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
         overflowY: "auto",
         overflowX: "hidden",
         fontFamily: "'Montserrat', sans-serif",
-        borderLeft: "2px solid rgba(15, 98, 254, 0.2)",
+        borderRight: "2px solid rgba(255, 255, 255, 0.1)",
         boxSizing: "border-box"
       }}>
-        <div style={{ padding: "24px 20px", overflowX: "hidden", maxWidth: "100%", boxSizing: "border-box" }} className="sidebar-inner-container">
-          {/* Create Account Button (only shown when user is not authenticated) */}
-          {!user && (
+        <div style={{ padding: "24px 20px 24px 20px", overflowX: "hidden", maxWidth: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", minHeight: "100%" }} className="sidebar-inner-container">
+          {/* Bizen logo and brand name */}
+          <button
+            type="button"
+            onClick={() => router.push("/")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              marginBottom: 32,
+              padding: "8px 0",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              textAlign: "left",
+              width: "100%"
+            }}
+            className="sidebar-brand"
+          >
+            <Image
+              src="/bizen-logo.png"
+              alt="Bizen"
+              width={40}
+              height={40}
+              style={{ flexShrink: 0, objectFit: "contain" }}
+            />
+            <span style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: 22,
+              fontWeight: 800,
+              color: "#fff",
+              letterSpacing: "0.5px"
+            }}>
+              BIZEN
+            </span>
+          </button>
+
+          {/* Create Account Button (only after mount + auth resolved, when user is not authenticated) */}
+          {mounted && !loading && !user && (
             <div style={{ marginBottom: 24 }}>
               <button
                 onClick={() => window.open("/signup", "_blank")}
@@ -279,7 +320,7 @@ export default function FixedSidebar() {
           )}
 
           {/* Quick Actions */}
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 24, flex: "1 1 auto" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: stackAlignment }}>
               <button
                 data-bizen-tour-menu-item="courses"
@@ -289,7 +330,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (coursesActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (coursesActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -298,39 +339,25 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: coursesActive ? 700 : 600,
                   textAlign: "left",
-                  color: coursesActive ? "#0F62FE" : "#000",
+                  color: coursesActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(coursesActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = coursesActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = coursesActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = coursesActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = coursesActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenucourses.png" 
-                  alt="Courses" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">{t.nav.exploreCourses}</span>
-                )}
+                <span className="nav-item-label">{t.nav.exploreCourses}</span>
               </button>
 
               <button
@@ -341,7 +368,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (businessLabActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (businessLabActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -350,39 +377,25 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: businessLabActive ? 700 : 600,
                   textAlign: "left",
-                  color: businessLabActive ? "#0F62FE" : "#000",
+                  color: businessLabActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(businessLabActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = businessLabActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = businessLabActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = businessLabActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = businessLabActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenubusinesslab.png" 
-                  alt="Business Lab" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">Business Lab</span>
-                )}
+                <span className="nav-item-label">Business Lab</span>
               </button>
 
               <button
@@ -393,7 +406,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (cashFlowActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (cashFlowActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -402,39 +415,25 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: cashFlowActive ? 700 : 600,
                   textAlign: "left",
-                  color: cashFlowActive ? "#0F62FE" : "#000",
+                  color: cashFlowActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(cashFlowActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = cashFlowActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = cashFlowActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = cashFlowActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = cashFlowActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenucashflow.png" 
-                  alt="Cash flow" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">Cash flow</span>
-                )}
+                <span className="nav-item-label">Cash flow</span>
               </button>
 
               <button
@@ -445,7 +444,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (simulatorsActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (simulatorsActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -454,43 +453,29 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: simulatorsActive ? 700 : 600,
                   textAlign: "left",
-                  color: simulatorsActive ? "#0F62FE" : "#000",
+                  color: simulatorsActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(simulatorsActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = simulatorsActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = simulatorsActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = simulatorsActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = simulatorsActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenusimulators.png" 
-                  alt="Simuladores" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">Simuladores</span>
-                )}
+                <span className="nav-item-label">Simuladores</span>
               </button>
 
-              {/* Only show these navigation items when user is authenticated */}
-              {user && (
+              {/* Only show these navigation items when mounted and user is authenticated */}
+              {mounted && user && (
               <>
               <button
                 data-bizen-tour-menu-item="progreso"
@@ -500,7 +485,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (progressActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (progressActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -509,39 +494,25 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: progressActive ? 700 : 600,
                   textAlign: "left",
-                  color: progressActive ? "#0F62FE" : "#000",
+                  color: progressActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(progressActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = progressActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = progressActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = progressActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = progressActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenuprogress.png" 
-                  alt="Mi progreso" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">{t.nav.myProgress}</span>
-                )}
+                <span className="nav-item-label">{t.nav.myProgress}</span>
               </button>
 
               <button
@@ -552,7 +523,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (forumActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (forumActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -561,48 +532,34 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: forumActive ? 700 : 600,
                   textAlign: "left",
-                  color: forumActive ? "#0F62FE" : "#000",
+                  color: forumActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(forumActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = forumActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = forumActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = forumActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = forumActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenuforo.png" 
-                  alt="Foro" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">Foro</span>
-                )}
+                <span className="nav-item-label">Foro</span>
               </button>
               </>
               )}
             </div>
           </div>
 
-          {/* Navigation Links - Only show for authenticated users */}
-          {user && (
-          <div>
+          {/* Bottom nav: Perfil & Configuración - only when mounted and authenticated */}
+          {mounted && user && (
+          <div style={{ marginTop: "auto", paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: stackAlignment }}>
               <button
                 data-bizen-tour-menu-item="profile"
@@ -612,7 +569,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (profileActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (profileActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -621,51 +578,25 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: profileActive ? 700 : 600,
                   textAlign: "left",
-                  color: profileActive ? "#0F62FE" : "#000",
+                  color: profileActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(profileActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = profileActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = profileActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = profileActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = profileActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <div style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background: user?.user_metadata?.avatar?.gradient || user?.user_metadata?.avatar?.bgColor 
-                    ? "transparent" 
-                    : "linear-gradient(135deg, #0F62FE 0%, #10B981 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 12,
-                  fontWeight: 800,
-                  color: "#fff",
-                  boxShadow: "0 2px 8px rgba(59, 130, 246, 0.3)",
-                  flexShrink: 0,
-                  overflow: "hidden",
-                  minWidth: 40,
-                  minHeight: 40
-                }}>
-                  <AvatarDisplay 
-                    avatar={user?.user_metadata?.avatar || { type: "emoji", value: (user?.user_metadata?.full_name || user?.email || "U")[0].toUpperCase() }} 
-                    size={40} 
-                  />
-                </div>
-                {showNavLabels && (
-                  <span className="nav-item-label">{t.nav.profile}</span>
-                )}
+                <span className="nav-item-label">{t.nav.profile}</span>
               </button>
 
               <button
@@ -676,7 +607,7 @@ export default function FixedSidebar() {
                   alignItems: "center",
                   gap: 10,
                   padding: "12px",
-                  background: isCompactSidebar ? "transparent" : (settingsActive ? "#EFF6FF" : "transparent"),
+                  background: isCompactSidebar ? "transparent" : (settingsActive ? "rgba(255,255,255,0.15)" : "transparent"),
                   border: "none",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -685,39 +616,25 @@ export default function FixedSidebar() {
                   fontSize: 14,
                   fontWeight: settingsActive ? 700 : 600,
                   textAlign: "left",
-                  color: settingsActive ? "#0F62FE" : "#000",
+                  color: settingsActive ? "#93C5FD" : "#fff",
                   ...compactButtonOverrides(settingsActive)
                 }}
                 onMouseEnter={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = "#EFF6FF"
-                    e.currentTarget.style.color = "#0F62FE"
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
                     e.currentTarget.style.transform = "translateX(-4px)"
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isCompactSidebar) {
-                    e.currentTarget.style.background = settingsActive ? "#EFF6FF" : "transparent"
-                    e.currentTarget.style.color = settingsActive ? "#0F62FE" : "#000"
+                    e.currentTarget.style.background = settingsActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = settingsActive ? "#93C5FD" : "#fff"
                     e.currentTarget.style.transform = "translateX(0)"
                   }
                 }}
               >
-                <Image 
-                  src="/rightmenusettings.png" 
-                  alt="Configuración" 
-                  width={40} 
-                  height={40}
-                  style={{
-                    objectFit: "contain",
-                    flexShrink: 0,
-                    width: 40,
-                    height: 40
-                  }}
-                />
-                {showNavLabels && (
-                  <span className="nav-item-label">Configuración</span>
-                )}
+                <span className="nav-item-label">Configuración</span>
               </button>
             </div>
           </div>
@@ -986,7 +903,10 @@ export default function FixedSidebar() {
 
       {/* Mobile Styles */}
       <style>{`
-        /* Make all text in right panel uppercase and bold */
+        /* Softer navy sidebar: white text, uppercase, bold */
+        [data-fixed-sidebar] {
+          background: #1e4976 !important;
+        }
         [data-fixed-sidebar] .nav-item-label,
         [data-fixed-sidebar] button span,
         [data-fixed-sidebar] button {
@@ -1012,8 +932,8 @@ export default function FixedSidebar() {
           div[data-fixed-sidebar] {
             position: fixed !important;
             top: 0 !important;
-            right: 0 !important;
-            left: auto !important;
+            left: 0 !important;
+            right: auto !important;
             width: 104px !important; /* Wide enough for 40px icons with padding */
             min-width: 104px !important;
             max-width: 104px !important; /* FORCE exact width, no responsive scaling */
@@ -1023,15 +943,15 @@ export default function FixedSidebar() {
             max-height: 100vh !important;
             overflow-y: auto !important;
             overflow-x: hidden !important;
-            border-left: 2px solid rgba(147, 197, 253, 0.3) !important;
-            border-right: none !important;
+            border-right: 2px solid rgba(255, 255, 255, 0.1) !important;
+            border-left: none !important;
             padding: 70px 12px 32px 12px !important; /* Horizontal padding for icon spacing */
             z-index: 10000 !important;
-            background: #ffffff !important;
+            background: #1e4976 !important;
             backdrop-filter: blur(20px) !important;
-            box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15) !important;
             flex-direction: column !important;
-            transform: translateX(100%) !important;
+            transform: translateX(-100%) !important;
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out !important;
             display: flex !important;
             visibility: hidden !important;
@@ -1042,7 +962,7 @@ export default function FixedSidebar() {
           
           /* Ensure sidebar is hidden when NOT open */
           [data-fixed-sidebar]:not(.mobile-sidebar-open) {
-            transform: translateX(100%) !important;
+            transform: translateX(-100%) !important;
             visibility: hidden !important;
             opacity: 0 !important;
             pointer-events: none !important;
@@ -1053,8 +973,8 @@ export default function FixedSidebar() {
           [data-fixed-sidebar].mobile-sidebar-open {
             position: fixed !important;
             top: 0 !important;
-            right: 0 !important;
-            left: auto !important;
+            left: 0 !important;
+            right: auto !important;
             width: 104px !important; /* Wide enough for 40px icons with padding */
             min-width: 104px !important;
             max-width: 104px !important; /* FORCE exact width, no responsive scaling */
@@ -1063,8 +983,8 @@ export default function FixedSidebar() {
             max-height: 100vh !important;
             overflow-y: auto !important;
             overflow-x: hidden !important;
-            border-left: 2px solid rgba(147, 197, 253, 0.3) !important;
-            border-right: none !important;
+            border-right: 2px solid rgba(255, 255, 255, 0.1) !important;
+            border-left: none !important;
             padding: 70px 12px 32px 12px !important; /* Horizontal padding for icon spacing */
             z-index: 10001 !important; /* Lower than hamburger button (10003) - CRITICAL */
           }
@@ -1102,9 +1022,9 @@ export default function FixedSidebar() {
             transition: transform 0.3s ease-in-out !important;
             display: flex !important;
             flex-direction: column !important;
-            background: #ffffff !important;
+            background: #1e4976 !important;
             backdrop-filter: blur(20px) !important;
-            box-shadow: -2px 0 20px rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15) !important;
             visibility: visible !important;
             opacity: 1 !important;
             pointer-events: auto !important;
@@ -1257,62 +1177,45 @@ export default function FixedSidebar() {
             position: fixed !important;
             display: flex !important;
             top: 0 !important;
-            right: 0 !important;
-            width: 104px !important; /* Wide enough for 40px icons with generous padding */
-            min-width: 104px !important;
-            max-width: 104px !important;
+            left: 0 !important;
+            width: 220px !important; /* Text-only sidebar on tablet */
+            min-width: 220px !important;
+            max-width: 220px !important;
             height: 100vh !important;
             overflow-x: hidden !important;
             overflow-y: auto !important;
+            background: #1e4976 !important;
           }
           
-          /* Hide text labels on iPad - show only emojis */
+          /* Show text labels on iPad - text only, no images */
           [data-fixed-sidebar] .nav-item-label {
-            display: none !important;
+            display: inline !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            min-width: 0 !important;
+            flex: 1 !important;
+            text-align: left !important;
           }
           
-          /* Reduce inner container padding on iPad */
+          [data-fixed-sidebar] {
+            width: 220px !important;
+            min-width: 220px !important;
+            max-width: 220px !important;
+          }
+          
           [data-fixed-sidebar] .sidebar-inner-container {
-            padding: 24px 12px !important;
+            padding: 24px 16px !important;
           }
           
-          /* Ensure images fit properly on iPad */
-          [data-fixed-sidebar] img {
-            max-width: 40px !important;
-            width: 40px !important;
-            height: 40px !important;
-            min-width: 40px !important;
-            min-height: 40px !important;
-            flex-shrink: 0 !important;
-            display: block !important;
-            margin: 0 auto !important;
-            align-self: center !important;
-          }
-          
-          /* Ensure icons/avatars/emojis are perfectly centered */
-          [data-fixed-sidebar] button > img,
-          [data-fixed-sidebar] button > div:first-child,
-          [data-fixed-sidebar] button > span:first-child {
-            margin-left: auto !important;
-            margin-right: auto !important;
-            text-align: center !important;
-          }
-          
-          /* Center emojis on iPad and remove backgrounds */
           [data-fixed-sidebar] button {
             display: flex !important;
-            flex-direction: column !important;
+            flex-direction: row !important;
             align-items: center !important;
-            justify-content: center !important;
-            padding: 12px 0 !important;
-            background: transparent !important;
-            background-color: transparent !important;
-            border: none !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-            gap: 4px !important;
+            justify-content: flex-start !important;
+            padding: 12px !important;
+            text-align: left !important;
             width: 100% !important;
-            text-align: center !important;
           }
         }
         
@@ -1379,11 +1282,12 @@ export default function FixedSidebar() {
             position: fixed !important;
             display: flex !important;
             top: 0 !important;
-            right: 0 !important;
+            left: 0 !important;
             width: 280px !important;
             height: 100vh !important;
             overflow-x: hidden !important;
             overflow-y: auto !important;
+            background: #1e4976 !important;
           }
           
           /* Show text labels on desktop - wrap so full text is visible */

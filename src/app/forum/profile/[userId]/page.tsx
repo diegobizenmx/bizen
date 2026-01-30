@@ -258,30 +258,32 @@ export default function ForumProfilePage() {
           }
         }
         
-        /* Tablet/iPad (768px-1160px): Account for right sidebar (narrow 160px) */
+        /* Tablet/iPad (768px-1160px): Account for left sidebar (220px text-only) */
         @media (min-width: 768px) and (max-width: 1160px) {
           .forum-profile-outer {
-            width: calc(100% - 160px) !important;
-            max-width: calc(100% - 160px) !important;
+            width: calc(100% - 220px) !important;
+            max-width: calc(100% - 220px) !important;
+            margin-left: 220px !important;
           }
           .forum-profile-container {
             width: 100% !important;
             max-width: 100% !important;
-            margin-right: 0 !important;
+            margin-left: 0 !important;
             padding: clamp(24px, 3vw, 40px) !important;
           }
         }
         
-        /* Desktop (≥1161px): Account for right sidebar (full width 280px) */
+        /* Desktop (≥1161px): Account for left sidebar (full width 280px) */
         @media (min-width: 1161px) {
           .forum-profile-outer {
             width: calc(100% - 280px) !important;
             max-width: calc(100% - 280px) !important;
+            margin-left: 280px !important;
           }
           .forum-profile-container {
             width: 100% !important;
             max-width: 100% !important;
-            margin-right: 0 !important;
+            margin-left: 0 !important;
             padding: clamp(24px, 4vw, 40px) !important;
           }
         }

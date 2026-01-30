@@ -271,7 +271,7 @@ export default function WelcomePage() {
           <Link href="/#cursos" style={{ color: "#4A5568", textDecoration: "none" }}>
             Cursos
           </Link>
-          <Link href="/login" target="_blank" rel="noopener noreferrer" style={{ color: "#4A5568", textDecoration: "none" }}>
+          <Link href="/login" style={{ color: "#4A5568", textDecoration: "none" }}>
             Microcredenciales
           </Link>
           <span>© 2025 BIZEN</span>

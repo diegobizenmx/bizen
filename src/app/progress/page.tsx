@@ -196,21 +196,21 @@ export default function ProgressPage() {
             padding: clamp(16px, 4vw, 24px) !important;
           }
         }
-        /* Tablet/iPad - no gap, sidebar overlays */
-        /* Tablet/iPad (768px-1160px) - sidebar overlays (narrow 160px) */
+        /* Tablet/iPad (768px-1160px) - account for left sidebar (220px) */
         @media (min-width: 768px) and (max-width: 1160px) {
           .progress-outer {
             width: 100% !important;
             max-width: 100% !important;
           }
           .progress-inner {
-            width: calc(100% - 160px) !important;
-            max-width: calc(100% - 160px) !important;
+            width: calc(100% - 220px) !important;
+            max-width: calc(100% - 220px) !important;
+            margin-left: 220px !important;
             margin-right: 0 !important;
             padding: clamp(24px, 3vw, 40px) !important;
           }
         }
-        /* Desktop (1161px+) - sidebar overlays (full width 280px) */
+        /* Desktop (1161px+) - account for left sidebar (280px) */
         @media (min-width: 1161px) {
           .progress-outer {
             width: 100% !important;
@@ -219,6 +219,7 @@ export default function ProgressPage() {
           .progress-inner {
             width: calc(100% - 280px) !important;
             max-width: calc(100% - 280px) !important;
+            margin-left: 280px !important;
             margin-right: 0 !important;
             padding: clamp(24px, 4vw, 40px) !important;
           }

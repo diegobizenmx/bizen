@@ -249,12 +249,12 @@ export default function CashFlowPage() {
             grid-template-columns: 1fr !important;
           }
         }
-        /* Tablet/iPad (768px-1160px) - respect fixed right sidebar (narrow 160px) */
+        /* Tablet/iPad (768px-1160px) - respect fixed left sidebar (220px text-only) */
         @media (min-width: 768px) and (max-width: 1160px) {
           .cashflow-outer {
-            width: calc(100% - 160px) !important;
-            max-width: calc(100% - 160px) !important;
-            margin-right: 160px !important;
+            width: calc(100% - 220px) !important;
+            max-width: calc(100% - 220px) !important;
+            margin-left: 220px !important;
             padding: 0 !important;
           }
           .cashflow-container {
@@ -272,12 +272,12 @@ export default function CashFlowPage() {
             grid-template-columns: repeat(2, 1fr) !important;
           }
         }
-        /* Desktop (1161px+) - keep content in usable space (exclude fixed right sidebar, full width 280px) */
+        /* Desktop (1161px+) - keep content in usable space (exclude fixed left sidebar, full width 280px) */
         @media (min-width: 1161px) {
           .cashflow-outer {
             width: calc(100% - 280px) !important;
             max-width: calc(100% - 280px) !important;
-            margin-right: 280px !important;
+            margin-left: 280px !important;
             padding: 0 !important;
           }
           .cashflow-container {
