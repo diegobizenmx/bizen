@@ -87,13 +87,13 @@ export default function WelcomePage() {
       {isPhone && (
         <div
           style={{
-            position: "fixed",
+        position: "fixed",
             inset: 0,
             zIndex: 99999,
             background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 100%)",
-            display: "flex",
+        display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+        alignItems: "center",
             justifyContent: "center",
             padding: 32,
             textAlign: "center",
@@ -129,7 +129,7 @@ export default function WelcomePage() {
         padding: "18px 24px",
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "center",
+            alignItems: "center",
         gap: "24px",
         flexWrap: "wrap",
       }}>
@@ -205,7 +205,7 @@ export default function WelcomePage() {
               width: "min(98vw, 1320px)",
               maxWidth: "1320px",
               zIndex: 10,
-              opacity: isVisible ? 1 : 0,
+                opacity: isVisible ? 1 : 0,
               transition: "opacity 0.6s ease 0.3s",
             }}>
               <p className="hero-tagline" style={{
@@ -215,7 +215,7 @@ export default function WelcomePage() {
                 margin: 0,
                 lineHeight: 1.1,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                width: "100%",
+                  width: "100%",
               }}>
                 &quot;La plataforma que está transformando la educación financiera en México.&quot;
               </p>
@@ -226,11 +226,11 @@ export default function WelcomePage() {
                 margin: "16px 0 0",
                 lineHeight: 1.5,
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                width: "100%",
+                      width: "100%",
               }}>
                 BIZEN es la plataforma educativa que combina <span style={{ color: "#0F71FD", fontWeight: 600 }}>gamificación e inteligencia artificial</span> para enseñar <span style={{ color: "#0F71FD", fontWeight: 600 }}>finanzas personales</span> de forma práctica, clara y relevante para estudiantes de preparatoria y universidad.
               </p>
-            </div>
+              </div>
 
             {/* Rectangles - separate full-width block, outside absolute container to avoid clipping */}
             <div className="hero-rectangles-wrapper">
@@ -239,10 +239,10 @@ export default function WelcomePage() {
                   <div className="hero-rect-card">
                     <div className="hero-rect-inner">
                       <Image src="/hero1.png" alt="Billy con lápiz y libreta" fill style={{ objectFit: "contain" }} />
-                    </div>
+                </div>
                   </div>
                   <span className="hero-circle-label">Finanzas<br />Personales</span>
-                </Link>
+                      </Link>
                 <Link href="/signup" target="_blank" rel="noopener noreferrer" className="hero-card-link">
                   <div className="hero-rect-card">
                     <div className="hero-rect-inner">
@@ -250,16 +250,16 @@ export default function WelcomePage() {
                     </div>
                   </div>
                   <span className="hero-circle-label">Simuladores<br />financieros</span>
-                </Link>
+                      </Link>
                 <Link href="/signup" target="_blank" rel="noopener noreferrer" className="hero-card-link">
                   <div className="hero-rect-card">
                     <div className="hero-rect-inner">
                       <Image src="/hero3.png" alt="Billy con alcancía" fill style={{ objectFit: "contain" }} />
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <span className="hero-circle-label">Plan de<br />ahorro</span>
                 </Link>
-              </div>
+            </div>
             </div>
 
           </div>
@@ -1260,14 +1260,14 @@ function LandingContent() {
       {/* Logo carousel above Planes */}
       <section className="logos-carousel-section" style={{ background: "transparent", padding: "clamp(32px, 5vw, 48px) 0", overflow: "hidden" }}>
         <p style={{
-          textAlign: "center",
+              textAlign: "center",
           margin: "0 0 clamp(20px, 3vw, 28px)",
           fontSize: "clamp(18px, 2vw, 24px)",
           fontWeight: 600,
           color: "#1f2937",
           fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
         }}>
-          Ellos ya confían en <span style={{ color: "#111" }}>BIZEN</span>
+          Estas instituciones ya confían en <span style={{ color: "#111" }}>BIZEN</span>
         </p>
         <div className="logos-carousel">
           <div className="logos-carousel-track">
@@ -1280,26 +1280,37 @@ function LandingContent() {
         </div>
       </section>
 
-      {/* Qué es BIZEN - solution intro */}
-      <section id="que-es-bizen" className="section solution-intro reveal-element" style={{ background: "transparent", padding: "clamp(48px, 8vw, 72px) 0" }}>
-        <div className="container">
-          <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
+      {/* ¿Qué es BIZEN? - solution intro */}
+      <section id="que-es-bizen" className="section solution-intro reveal-element" style={{ background: "linear-gradient(180deg, rgba(248, 251, 255, 0.5) 0%, transparent 50%)", padding: "clamp(56px, 10vw, 88px) clamp(16px, 4vw, 24px)" }}>
+        <div className="container" style={{ maxWidth: "720px", margin: "0 auto" }}>
+          <div style={{
+            textAlign: "center",
+            padding: "clamp(40px, 6vw, 56px) clamp(24px, 4vw, 40px)",
+            borderRadius: "20px",
+            background: "rgba(255, 255, 255, 0.85)",
+            border: "1px solid rgba(15, 98, 254, 0.12)",
+            boxShadow: "0 4px 24px rgba(15, 98, 254, 0.06)",
+          }}>
             <h2 style={{
-              margin: "0 0 clamp(20px, 3vw, 28px)",
-              fontSize: "clamp(28px, 4vw, 40px)",
+              margin: "0 0 clamp(24px, 3vw, 32px)",
+              fontSize: "clamp(28px, 4vw, 42px)",
               fontWeight: 800,
               color: "#111",
               fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
               lineHeight: 1.2,
+              letterSpacing: "-0.02em",
             }}>
-              Qué es BIZEN
+              ¿Qué es BIZEN?
             </h2>
             <p style={{
-              margin: "0 0 24px",
-              fontSize: "clamp(16px, 1.1rem, 18px)",
+              margin: "0 0 28px",
+              fontSize: "clamp(17px, 1.15rem, 19px)",
               color: "#374151",
               fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
-              lineHeight: 1.6,
+              lineHeight: 1.65,
+              maxWidth: "560px",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}>
               BIZEN es la plataforma de educación financiera que combina gamificación e inteligencia artificial para que aprendas de forma práctica. Pensada para escuelas y para ti: cursos claros, simuladores reales y un progreso que puedes ver y medir.
             </p>
@@ -1317,16 +1328,17 @@ function LandingContent() {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  padding: "10px 18px",
+                  padding: "12px 20px",
                   borderRadius: "999px",
                   background: "rgba(15, 98, 254, 0.1)",
-                  border: "1px solid rgba(15, 98, 254, 0.25)",
+                  border: "1px solid rgba(15, 98, 254, 0.22)",
                   fontSize: "clamp(14px, 1rem, 16px)",
                   fontWeight: 600,
                   color: "#0F62FE",
                   fontFamily: "'Inter', sans-serif",
-                }}>
-                  <span style={{ color: "#0F62FE" }}>✓</span> {item}
+                  transition: "background 0.2s ease, border-color 0.2s ease, transform 0.2s ease",
+                }} className="que-es-bizen-pill">
+                  <span style={{ color: "#0F62FE", fontWeight: 700 }}>✓</span> {item}
                 </li>
               ))}
             </ul>
@@ -1335,16 +1347,18 @@ function LandingContent() {
       </section>
 
       {/* Audience Switcher (Tabs) - Escuelas / Particulares */}
-      <section id="audiencia" className="section audience-switcher reveal-element" style={{ background: "transparent", padding: "clamp(40px, 6vw, 64px) 0" }}>
-        <div className="container">
-          <div style={{ maxWidth: "560px", margin: "0 auto" }}>
+      <section id="audiencia" className="section audience-switcher reveal-element" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.4) 50%, transparent 100%)", padding: "clamp(56px, 10vw, 88px) clamp(16px, 4vw, 24px)" }}>
+        <div className="container" style={{ maxWidth: "820px", margin: "0 auto" }}>
+          <div style={{ width: "100%" }}>
             <div role="tablist" className="audience-tabs" style={{
               display: "flex",
               gap: "0",
-              borderRadius: "12px",
+              borderRadius: "14px",
               background: "rgba(15, 98, 254, 0.08)",
-              padding: "6px",
-              marginBottom: "28px",
+              padding: "8px",
+              marginBottom: "32px",
+              border: "1px solid rgba(15, 98, 254, 0.12)",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
             }}>
               <button
                 type="button"
@@ -1353,17 +1367,18 @@ function LandingContent() {
                 onClick={() => setAudienceTab("Escuelas")}
                 style={{
                   flex: 1,
-                  padding: "14px 20px",
-                  fontSize: "clamp(16px, 1.1rem, 18px)",
+                  padding: "16px 24px",
+                  fontSize: "clamp(17px, 1.15rem, 19px)",
                   fontWeight: 600,
                   fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
                   color: audienceTab === "Escuelas" ? "#fff" : "#475569",
                   background: audienceTab === "Escuelas" ? "#0F62FE" : "transparent",
                   border: "none",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "pointer",
                   transition: "background 0.2s ease, color 0.2s ease",
                 }}
+                className="audience-tab-btn"
               >
                 Escuelas
               </button>
@@ -1374,41 +1389,51 @@ function LandingContent() {
                 onClick={() => setAudienceTab("Particulares")}
                 style={{
                   flex: 1,
-                  padding: "14px 20px",
-                  fontSize: "clamp(16px, 1.1rem, 18px)",
+                  padding: "16px 24px",
+                  fontSize: "clamp(17px, 1.15rem, 19px)",
                   fontWeight: 600,
                   fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
                   color: audienceTab === "Particulares" ? "#fff" : "#475569",
                   background: audienceTab === "Particulares" ? "#0F62FE" : "transparent",
                   border: "none",
-                  borderRadius: "10px",
+                  borderRadius: "12px",
                   cursor: "pointer",
                   transition: "background 0.2s ease, color 0.2s ease",
                 }}
+                className="audience-tab-btn"
               >
                 Particulares
               </button>
             </div>
-            <div role="tabpanel" style={{ textAlign: "center" }}>
+            <div role="tabpanel" style={{
+              textAlign: "center",
+              padding: "clamp(36px, 5vw, 52px) clamp(28px, 4vw, 48px)",
+              borderRadius: "20px",
+              background: "rgba(255, 255, 255, 0.95)",
+              border: "1px solid rgba(15, 98, 254, 0.12)",
+              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(15, 98, 254, 0.06)",
+            }}>
               <span style={{
                 display: "inline-block",
-                padding: "8px 16px",
+                padding: "10px 20px",
                 borderRadius: "999px",
-                fontSize: "13px",
+                fontSize: "clamp(13px, 0.9rem, 14px)",
                 fontWeight: 700,
                 color: "#0F62FE",
                 background: "rgba(15, 98, 254, 0.12)",
-                marginBottom: "20px",
+                marginBottom: "28px",
                 fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.02em",
+                textTransform: "uppercase",
               }}>
                 {audienceContent.badge}
               </span>
               <ul style={{
                 listStyle: "none",
-                margin: "0 0 24px",
+                margin: "0 0 32px",
                 padding: 0,
                 textAlign: "left",
-                maxWidth: "320px",
+                maxWidth: "420px",
                 marginLeft: "auto",
                 marginRight: "auto",
               }}>
@@ -1416,14 +1441,14 @@ function LandingContent() {
                   <li key={i} style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
-                    marginBottom: "12px",
-                    fontSize: "clamp(15px, 1rem, 17px)",
+                    gap: "14px",
+                    marginBottom: "16px",
+                    fontSize: "clamp(16px, 1.05rem, 18px)",
                     color: "#374151",
                     fontFamily: "'Inter', sans-serif",
-                    lineHeight: 1.4,
+                    lineHeight: 1.45,
                   }}>
-                    <span style={{ color: "#0F62FE", flexShrink: 0 }}>✓</span>
+                    <span style={{ color: "#0F62FE", flexShrink: 0, fontWeight: 700, fontSize: "18px" }}>✓</span>
                     {bullet}
                   </li>
                 ))}
@@ -1432,100 +1457,139 @@ function LandingContent() {
                 href={audienceContent.ctaHref}
                 style={{
                   display: "inline-block",
-                  padding: "14px 28px",
-                  fontSize: "clamp(16px, 1rem, 18px)",
+                  padding: "16px 36px",
+                  fontSize: "clamp(17px, 1.05rem, 18px)",
                   fontWeight: 600,
                   color: "#fff",
                   background: "#0F62FE",
                   borderRadius: "12px",
                   textDecoration: "none",
                   fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
-                  transition: "background 0.2s ease, filter 0.2s ease",
-                  boxShadow: "0 4px 14px rgba(15, 98, 254, 0.35)",
+                  transition: "background 0.2s ease, box-shadow 0.2s ease",
+                  boxShadow: "0 4px 16px rgba(15, 98, 254, 0.35)",
                 }}
-                className="cta-button"
+                className="audience-cta-link"
               >
                 {audienceContent.cta}
               </Link>
             </div>
           </div>
+          <style>{`
+            .audience-tab-btn:focus-visible {
+              outline: 2px solid #0F62FE;
+              outline-offset: 2px;
+            }
+            .audience-cta-link:hover {
+              background: #0a4fc4 !important;
+              box-shadow: 0 6px 20px rgba(15, 98, 254, 0.4) !important;
+            }
+            .audience-cta-link:focus-visible {
+              outline: 2px solid #0F62FE;
+              outline-offset: 2px;
+            }
+          `}</style>
         </div>
       </section>
 
       {/* El problema - pain points, two columns */}
-      <section id="problema" className="section problem-section reveal-element reveal-delay-1" style={{ background: "transparent", padding: "clamp(48px, 8vw, 80px) 0" }}>
-        <div className="container">
-          <h2 style={{
-            margin: "0 0 clamp(32px, 5vw, 48px)",
-            fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 800,
-            color: "#111",
-            fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-            textAlign: "center",
-            lineHeight: 1.2,
-          }}>
-            El problema
-          </h2>
+      <section id="problema" className="section problem-section reveal-element reveal-delay-1" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.4) 30%, rgba(241, 245, 249, 0.35) 70%, transparent 100%)", padding: "clamp(56px, 10vw, 96px) clamp(16px, 4vw, 24px)" }}>
+        <div className="container" style={{ maxWidth: "960px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "clamp(40px, 6vw, 56px)" }}>
+            <h2 style={{
+              margin: "0 0 12px",
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              color: "#111",
+              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+              lineHeight: 1.2,
+              letterSpacing: "-0.02em",
+            }}>
+              El problema
+            </h2>
+            <p style={{ margin: 0, fontSize: "clamp(16px, 1.05rem, 18px)", color: "#64748b", fontFamily: "'Inter', sans-serif", maxWidth: "520px", marginLeft: "auto", marginRight: "auto" }}>
+              En escuelas y en lo individual, la educación financiera tropieza con lo mismo.
+            </p>
+          </div>
           <div className="problem-columns" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(32px, 5vw, 56px)",
-            maxWidth: "900px",
-            margin: "0 auto",
+            gap: "clamp(28px, 4vw, 48px)",
             alignItems: "stretch",
           }}>
-            <div className="problem-column">
+            <div className="problem-column" style={{
+              padding: "clamp(24px, 3vw, 32px)",
+              borderRadius: "20px",
+              background: "rgba(255, 255, 255, 0.92)",
+              border: "1px solid rgba(15, 98, 254, 0.12)",
+              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(15, 98, 254, 0.06)",
+            }}>
               <h3 style={{
-                margin: "0 0 20px",
+                margin: "0 0 24px",
                 fontSize: "clamp(18px, 2vw, 22px)",
                 fontWeight: 700,
                 color: "#0F62FE",
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
               }}>
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0F62FE" }} aria-hidden />
                 En escuelas
               </h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {problemSchools.map((card, i) => (
                   <div key={i} className="problem-card" style={{
-                    padding: "20px 24px",
+                    padding: "20px 22px",
                     borderRadius: "16px",
-                    background: "rgba(255, 255, 255, 0.9)",
-                    border: "1px solid rgba(15, 98, 254, 0.2)",
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+                    background: "#fff",
+                    border: "1px solid rgba(15, 98, 254, 0.15)",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                    transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                   }}>
-                    <h4 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 700, color: "#1f2937", fontFamily: "'Inter', sans-serif" }}>
+                    <h4 style={{ margin: "0 0 8px", fontSize: "clamp(15px, 1rem, 17px)", fontWeight: 700, color: "#1f2937", fontFamily: "'Inter', sans-serif" }}>
                       {card.title}
                     </h4>
-                    <p style={{ margin: 0, fontSize: "14px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                    <p style={{ margin: 0, fontSize: "14px", color: "#64748b", lineHeight: 1.55, fontFamily: "'Inter', sans-serif" }}>
                       {card.description}
                     </p>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="problem-column">
+            <div className="problem-column" style={{
+              padding: "clamp(24px, 3vw, 32px)",
+              borderRadius: "20px",
+              background: "rgba(255, 255, 255, 0.92)",
+              border: "1px solid rgba(15, 98, 254, 0.12)",
+              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(15, 98, 254, 0.06)",
+            }}>
               <h3 style={{
-                margin: "0 0 20px",
+                margin: "0 0 24px",
                 fontSize: "clamp(18px, 2vw, 22px)",
                 fontWeight: 700,
                 color: "#0F62FE",
                 fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
               }}>
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0F62FE" }} aria-hidden />
                 En particulares
               </h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {problemIndividual.map((card, i) => (
                   <div key={i} className="problem-card" style={{
-                    padding: "20px 24px",
+                    padding: "20px 22px",
                     borderRadius: "16px",
-                    background: "rgba(255, 255, 255, 0.9)",
-                    border: "1px solid rgba(15, 98, 254, 0.2)",
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+                    background: "#fff",
+                    border: "1px solid rgba(15, 98, 254, 0.15)",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                    transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                   }}>
-                    <h4 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 700, color: "#1f2937", fontFamily: "'Inter', sans-serif" }}>
+                    <h4 style={{ margin: "0 0 8px", fontSize: "clamp(15px, 1rem, 17px)", fontWeight: 700, color: "#1f2937", fontFamily: "'Inter', sans-serif" }}>
                       {card.title}
                     </h4>
-                    <p style={{ margin: 0, fontSize: "14px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                    <p style={{ margin: 0, fontSize: "14px", color: "#64748b", lineHeight: 1.55, fontFamily: "'Inter', sans-serif" }}>
                       {card.description}
                     </p>
                   </div>
@@ -1533,56 +1597,87 @@ function LandingContent() {
               </div>
             </div>
           </div>
+          <style>{`
+            .problem-card:hover {
+              border-color: rgba(15, 98, 254, 0.3) !important;
+              box-shadow: 0 4px 16px rgba(15, 98, 254, 0.1) !important;
+            }
+            @media (max-width: 768px) {
+              .problem-columns {
+                grid-template-columns: 1fr !important;
+              }
+            }
+          `}</style>
         </div>
       </section>
 
       {/* Cómo funciona - 3 steps */}
-      <section id="como-funciona" className="section how-it-works reveal-element reveal-delay-2" style={{ background: "transparent", padding: "clamp(48px, 8vw, 80px) 0" }}>
-        <div className="container">
-          <h2 style={{
-            margin: "0 0 clamp(32px, 5vw, 48px)",
-            fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 800,
-            color: "#111",
-            fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-            textAlign: "center",
-            lineHeight: 1.2,
-          }}>
-            Cómo funciona
-          </h2>
+      <section id="como-funciona" className="section how-it-works reveal-element reveal-delay-2" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.35) 20%, rgba(241, 245, 249, 0.3) 80%, transparent 100%)", padding: "clamp(56px, 10vw, 96px) clamp(16px, 4vw, 24px)" }}>
+        <div className="container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "clamp(40px, 6vw, 56px)" }}>
+            <h2 style={{
+              margin: "0 0 12px",
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 800,
+              color: "#111",
+              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+              lineHeight: 1.2,
+              letterSpacing: "-0.02em",
+            }}>
+              Cómo funciona
+            </h2>
+            <p style={{ margin: 0, fontSize: "clamp(16px, 1.05rem, 18px)", color: "#64748b", fontFamily: "'Inter', sans-serif", maxWidth: "480px", marginLeft: "auto", marginRight: "auto" }}>
+              Tres pasos: empiezas, practicas y mides tu avance.
+            </p>
+          </div>
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "clamp(24px, 4vw, 40px)",
-            maxWidth: "960px",
-            margin: "0 auto",
+            gap: "clamp(24px, 4vw, 36px)",
             alignItems: "stretch",
+            position: "relative",
           }} className="how-it-works-steps">
             {howItWorksSteps.map((step, i) => (
               <div key={i} className="step-card" style={{
-                padding: "clamp(24px, 3vw, 32px)",
+                padding: "clamp(28px, 3vw, 36px) clamp(20px, 2.5vw, 28px)",
                 borderRadius: "20px",
-                background: "rgba(255, 255, 255, 0.9)",
-                border: "1px solid rgba(15, 98, 254, 0.2)",
-                boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+                background: "rgba(255, 255, 255, 0.95)",
+                border: "1px solid rgba(15, 98, 254, 0.14)",
+                boxShadow: "0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(15, 98, 254, 0.06)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 textAlign: "center",
+                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
               }}>
-                <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "rgba(15, 98, 254, 0.12)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px", flexShrink: 0 }}>
+                <div style={{
+                  width: "64px",
+                  height: "64px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, rgba(15, 98, 254, 0.15) 0%, rgba(15, 98, 254, 0.08) 100%)",
+                  border: "1px solid rgba(15, 98, 254, 0.2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "20px",
+                  flexShrink: 0,
+                  position: "relative",
+                }}>
+                  <span style={{ position: "absolute", top: "-4px", right: "-4px", width: "24px", height: "24px", borderRadius: "50%", background: "#0F62FE", color: "#fff", fontSize: "12px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
+                    {i + 1}
+                  </span>
                   {i === 0 && (
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><polygon points="5 3 19 12 5 21 5 3" /></svg>
                   )}
                   {i === 1 && (
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg>
                   )}
                   {i === 2 && (
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
                   )}
                 </div>
                 <h3 style={{
-                  margin: "0 0 16px",
+                  margin: "0 0 20px",
                   fontSize: "clamp(18px, 2vw, 22px)",
                   fontWeight: 700,
                   color: "#111",
@@ -1590,15 +1685,32 @@ function LandingContent() {
                 }}>
                   {step.title}
                 </h3>
-                <p style={{ margin: "0 0 8px", fontSize: "13px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
-                  <span style={{ fontWeight: 600, color: "#475569" }}>En escuelas:</span> {step.schoolsText}
-                </p>
-                <p style={{ margin: 0, fontSize: "13px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
-                  <span style={{ fontWeight: 600, color: "#475569" }}>En individual:</span> {step.individualsText}
-                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", flex: 1 }}>
+                  <p style={{ margin: 0, fontSize: "clamp(14px, 0.95rem, 15px)", color: "#475569", lineHeight: 1.55, fontFamily: "'Inter', sans-serif" }}>
+                    <span style={{ fontWeight: 600, color: "#0F62FE", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.04em" }}>En escuelas</span>
+                    <br />
+                    <span style={{ color: "#64748b" }}>{step.schoolsText}</span>
+                  </p>
+                  <p style={{ margin: 0, fontSize: "clamp(14px, 0.95rem, 15px)", color: "#475569", lineHeight: 1.55, fontFamily: "'Inter', sans-serif" }}>
+                    <span style={{ fontWeight: 600, color: "#0F62FE", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.04em" }}>En individual</span>
+                    <br />
+                    <span style={{ color: "#64748b" }}>{step.individualsText}</span>
+                  </p>
+                </div>
               </div>
             ))}
           </div>
+          <style>{`
+            .step-card:hover {
+              border-color: rgba(15, 98, 254, 0.28) !important;
+              box-shadow: 0 8px 32px rgba(15, 98, 254, 0.1) !important;
+            }
+            @media (max-width: 768px) {
+              .how-it-works-steps {
+                grid-template-columns: 1fr !important;
+              }
+            }
+          `}</style>
         </div>
       </section>
 
@@ -1650,7 +1762,7 @@ function LandingContent() {
 
             {/* Plan squares below CTA - nudge left for visual center */}
             <div className="plans-two-squares" style={{
-              display: "grid",
+            display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
               gap: "clamp(32px, 5vw, 56px)",
               width: "100%",
@@ -1666,9 +1778,9 @@ function LandingContent() {
                   border: "2px solid rgba(15, 98, 254, 0.3)",
                   background: "rgba(255, 255, 255, 0.9)",
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
                   justifyContent: "center",
                   padding: "clamp(28px, 4vw, 40px)",
                   transition: "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
@@ -1679,18 +1791,18 @@ function LandingContent() {
                   fontSize: (title === "Instituciones" || title === "Individual") ? "clamp(18px, 2.5vw, 26px)" : "clamp(22px, 3.5vw, 32px)",
                   fontWeight: 700,
                   fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
-                  textAlign: "center",
+              textAlign: "center",
                   lineHeight: 1.3,
                 }}>
                   <span style={{ color: "#0F62FE" }}>BIZEN</span>{" "}
                   <span style={{ color: "#1f2937" }}>{title}</span>
                 </h3>
-                <p style={{
+              <p style={{
                   margin: "8px 0 0",
                   fontSize: "clamp(13px, 1.1vw, 15px)",
                   color: "#64748b",
                   fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
-                  textAlign: "center",
+        textAlign: "center",
                   lineHeight: 1.45,
                   maxWidth: "260px",
                 }}>
@@ -1704,7 +1816,7 @@ function LandingContent() {
                       fill
                       style={{ objectFit: "contain" }}
                     />
-                  </div>
+      </div>
                 )}
                 {title === "Individual" && (
                   <div style={{ flexShrink: 0, marginTop: "16px", position: "relative", width: "clamp(160px, 36vw, 240px)", height: "clamp(160px, 36vw, 240px)" }}>

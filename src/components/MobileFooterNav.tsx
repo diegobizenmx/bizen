@@ -52,9 +52,10 @@ export default function MobileFooterNav() {
     return pathname === path || pathname.startsWith(path + '/')
   }
 
+  // Business Lab hidden for now — add back { path: "/business-lab", ... } to show again
   const navItems = [
     { path: "/courses", icon: "/rightmenucourses.png", active: isActivePath("/courses") },
-    { path: "/business-lab", icon: "/rightmenubusinesslab.png", active: isActivePath("/business-lab") },
+    // { path: "/business-lab", icon: "/rightmenubusinesslab.png", active: isActivePath("/business-lab") },
     { path: "/cash-flow", icon: "/rightmenucashflow.png", active: isActivePath("/cash-flow") },
     { path: "/simuladores", icon: "/rightmenusimulators.png", active: isActivePath("/simuladores") },
     { path: "/progress", icon: "/rightmenuprogress.png", active: isActivePath("/progress") },

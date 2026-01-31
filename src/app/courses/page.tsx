@@ -517,7 +517,7 @@ export default function CoursesPage() {
               id={`course-${course.id}`}
               style={{
                 marginBottom: "clamp(32px, 6vw, 48px)",
-                marginTop: course.order === 1 ? "clamp(40px, 8vw, 80px)" : "0",
+                marginTop: 0,
                 width: "100%",
                 display: "flex",
                 flexDirection: "column",

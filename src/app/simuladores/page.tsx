@@ -98,6 +98,38 @@ export default function SimulatorsPage() {
             padding: clamp(24px, 4vw, 40px) !important;
           }
         }
+        /* Simulator cards - no overlap, clean separation */
+        .simuladores-grid {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 36px !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          align-items: stretch !important;
+        }
+        @media (min-width: 640px) {
+          .simuladores-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 40px 36px !important;
+          }
+        }
+        @media (min-width: 1000px) {
+          .simuladores-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 44px 40px !important;
+          }
+        }
+        .simuladores-grid > a {
+          display: block !important;
+          min-width: 0 !important;
+        }
+        .simuladores-grid .simulator-card {
+          position: relative !important;
+          z-index: 1 !important;
+          margin: 0 !important;
+          height: 280px !important;
+          min-height: 280px !important;
+        }
       `}</style>
       <div className="simuladores-outer" data-bizen-tour="simuladores" style={{
         width: "100%",
@@ -130,7 +162,7 @@ export default function SimulatorsPage() {
           backgroundClip: "text",
           letterSpacing: "-0.02em"
         }}>
-          💰 Simuladores Financieros
+          Simuladores Financieros
         </h1>
         <p style={{
           fontSize: 19,
@@ -157,7 +189,7 @@ export default function SimulatorsPage() {
         boxShadow: "0 4px 20px rgba(59, 130, 246, 0.15)"
       }}>
         <p style={{ fontSize: 14, color: "#1e40af", lineHeight: 1.6, margin: 0 }}>
-          <strong>⚠️ Propósito Educativo:</strong> Estos simuladores son herramientas de aprendizaje.
+          <strong>Propósito educativo:</strong> Estos simuladores son herramientas de aprendizaje.
           Los resultados son aproximaciones y no constituyen asesoría financiera profesional.
           Siempre consulta con un experto para decisiones financieras importantes.
         </p>
@@ -202,19 +234,16 @@ export default function SimulatorsPage() {
           Error al cargar los simuladores. Por favor, intenta más tarde.
         </div>
       ) : (
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: 20,
-          marginBottom: 32
+        <div className="simuladores-grid" style={{
+          marginBottom: 48,
         }}>
           {simulatorsList.map((simulator) => (
             <Link
               key={simulator.id}
               href={`/simuladores/${simulator.slug}`}
-              style={{ textDecoration: "none" }}
+              style={{ textDecoration: "none", display: "block" }}
             >
-              <div style={{
+              <div className="simulator-card" style={{
                 background: "rgba(255, 255, 255, 0.4)",
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
@@ -222,37 +251,28 @@ export default function SimulatorsPage() {
                 padding: 24,
                 boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                 border: "2px solid rgba(255, 255, 255, 0.5)",
-                transition: "all 0.2s ease",
+                transition: "box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease",
                 cursor: "pointer",
-                height: "100%",
+                height: 280,
                 position: "relative" as const,
-                overflow: "hidden"
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                boxSizing: "border-box"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)"
-                e.currentTarget.style.boxShadow = "0 8px 32px rgba(11,113,254,0.25)"
-                e.currentTarget.style.borderColor = "rgba(11, 113, 254, 0.6)"
-                e.currentTarget.style.background = "rgba(255, 255, 255, 0.5)"
+                e.currentTarget.style.boxShadow = "0 8px 28px rgba(11,113,254,0.2)"
+                e.currentTarget.style.borderColor = "rgba(11, 113, 254, 0.5)"
+                e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)"
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)"
                 e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)"
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.5)"
                 e.currentTarget.style.background = "rgba(255, 255, 255, 0.4)"
               }}>
-                {/* Color accent bar */}
-                <div style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 4,
-                  background: "linear-gradient(90deg, #0B71FE, #4A9EFF)"
-                }} />
-                
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
-                    <div style={{ fontSize: 40 }}>{simulator.icon}</div>
+                <div style={{ marginBottom: 16, flex: 1, minHeight: 0, overflow: "hidden" }}>
+                  <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "start", marginBottom: 12 }}>
                     <span style={{
                       fontSize: 11,
                       fontWeight: 600,
@@ -272,13 +292,14 @@ export default function SimulatorsPage() {
                   }}>
                     {simulator.name}
                   </h3>
-                  <p style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.6 }}>
+                  <p style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.6, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" }}>
                     {simulator.description}
                   </p>
                 </div>
 
                 <button style={{
                   width: "100%",
+                  flexShrink: 0,
                   padding: "12px",
                   background: "linear-gradient(135deg, #0B71FE, #4A9EFF)",
                   color: "white",
@@ -307,30 +328,6 @@ export default function SimulatorsPage() {
         </div>
       )}
       
-      {/* Footer Note */}
-      <div style={{
-        marginTop: 40,
-        padding: 24,
-        background: "rgba(254, 243, 199, 0.3)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        borderRadius: 16,
-        border: "2px solid rgba(251, 191, 36, 0.4)",
-        maxWidth: 800,
-        margin: "40px auto 0",
-        boxShadow: "0 4px 20px rgba(251, 191, 36, 0.15)"
-      }}>
-        <p style={{
-          fontSize: 14,
-          color: "#78350F",
-          lineHeight: 1.7,
-          margin: 0,
-          textAlign: "center"
-        }}>
-          💡 <strong>Tip:</strong> Usa los botones de "Valores de Prueba" en cada simulador
-          para explorar rápidamente cómo funcionan. Luego, personaliza con tus propios datos.
-        </p>
-      </div>
     </main>
       </div>
     </>

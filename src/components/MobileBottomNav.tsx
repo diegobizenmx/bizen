@@ -37,7 +37,7 @@ export default function MobileBottomNav() {
     router.push(path)
   }
 
-  // Main navigation items (always visible)
+  // Main navigation items (always visible). Business Lab hidden for now — uncomment to show again.
   const navItems = [
     {
       id: 'courses',
@@ -46,13 +46,7 @@ export default function MobileBottomNav() {
       path: '/courses',
       protected: false
     },
-    {
-      id: 'business-lab',
-      label: 'Business Lab',
-      icon: '💼',
-      path: '/business-lab',
-      protected: false
-    },
+    // { id: 'business-lab', label: 'Business Lab', icon: '💼', path: '/business-lab', protected: false },
     {
       id: 'cash-flow',
       label: 'Cash Flow',

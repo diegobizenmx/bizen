@@ -167,6 +167,7 @@ export default function FixedSidebar() {
   const showNavLabels = !isCompactSidebar
   const stackAlignment = isCompactSidebar ? "center" : "stretch"
   const coursesActive = isActivePath("/courses")
+  const retoDiarioActive = isActivePath("/reto-diario")
   const businessLabActive = isActivePath("/business-lab")
   const cashFlowActive = isActivePath("/cash-flow")
   const simulatorsActive = isActivePath("/simuladores")
@@ -361,6 +362,46 @@ export default function FixedSidebar() {
               </button>
 
               <button
+                data-bizen-tour-menu-item="reto-diario"
+                onClick={() => navigateTo("/reto-diario")}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "12px",
+                  background: isCompactSidebar ? "transparent" : (retoDiarioActive ? "rgba(255,255,255,0.15)" : "transparent"),
+                  border: "none",
+                  borderRadius: 10,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: 14,
+                  fontWeight: retoDiarioActive ? 700 : 600,
+                  textAlign: "left",
+                  color: retoDiarioActive ? "#93C5FD" : "#fff",
+                  ...compactButtonOverrides(retoDiarioActive)
+                }}
+                onMouseEnter={(e) => {
+                  if (!isCompactSidebar) {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)"
+                    e.currentTarget.style.color = "#93C5FD"
+                    e.currentTarget.style.transform = "translateX(-4px)"
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isCompactSidebar) {
+                    e.currentTarget.style.background = retoDiarioActive ? "rgba(255,255,255,0.15)" : "transparent"
+                    e.currentTarget.style.color = retoDiarioActive ? "#93C5FD" : "#fff"
+                    e.currentTarget.style.transform = "translateX(0)"
+                  }
+                }}
+              >
+                <span className="nav-item-label">Reto diario</span>
+              </button>
+
+              {/* Business Lab hidden for now — remove this block to show again */}
+              {false && (
+              <button
                 data-bizen-tour-menu-item="business-lab"
                 onClick={() => navigateTo("/business-lab")}
                 style={{
@@ -397,6 +438,7 @@ export default function FixedSidebar() {
               >
                 <span className="nav-item-label">Business Lab</span>
               </button>
+              )}
 
               <button
                 data-bizen-tour-menu-item="cashflow"

@@ -63,6 +63,7 @@ function ForumContent() {
   const [selectedTopic, setSelectedTopic] = useState<string>('all')
   const [sortBy, setSortBy] = useState<SortOption>('new')
   const [loadingData, setLoadingData] = useState(true)
+  const [fetchError, setFetchError] = useState<string | null>(null)
   const [showTopicFilter, setShowTopicFilter] = useState(false)
   const topicFilterRef = useRef<HTMLDivElement>(null)
 
@@ -93,24 +94,39 @@ function ForumContent() {
   const fetchData = async () => {
     try {
       setLoadingData(true)
-      
-      // Fetch topics and threads in parallel
+      setFetchError(null)
+
+      // Always send credentials so session cookie is included
+      const fetchOpts: RequestInit = { credentials: 'same-origin', cache: 'no-store' }
+
       const [topicsRes, threadsRes] = await Promise.all([
-        fetch('/api/forum/topics'),
-        fetch(`/api/forum/threads?sort=${sortBy}&topic=${selectedTopic}`)
+        fetch('/api/forum/topics', fetchOpts),
+        fetch(`/api/forum/threads?sort=${sortBy}&topic=${selectedTopic}`, fetchOpts)
       ])
 
       if (topicsRes.ok) {
-        const topicsData = await topicsRes.json()
-        setTopics(topicsData)
+        const raw = await topicsRes.json()
+        setTopics(Array.isArray(raw) ? raw : [])
+      } else {
+        setTopics([])
       }
 
       if (threadsRes.ok) {
-        const threadsData = await threadsRes.json()
-        setThreads(threadsData)
+        const raw = await threadsRes.json()
+        setThreads(Array.isArray(raw) ? raw : [])
+      } else {
+        setThreads([])
+        if (threadsRes.status === 401) {
+          setFetchError('Sesión expirada o no válida. Recarga la página o vuelve a iniciar sesión.')
+        } else if (threadsRes.status >= 500) {
+          setFetchError('Error del servidor. Intenta de nuevo en unos momentos.')
+        }
       }
     } catch (error) {
       console.error("Error fetching forum data:", error)
+      setThreads([])
+      setTopics([])
+      setFetchError('No se pudieron cargar los datos. Comprueba tu conexión e intenta de nuevo.')
     } finally {
       setLoadingData(false)
     }
@@ -402,6 +418,38 @@ function ForumContent() {
             </Link>
           </div>
         </div>
+
+        {fetchError && (
+          <div style={{
+            marginBottom: 24,
+            padding: "14px 18px",
+            background: "#FEF2F2",
+            border: "1px solid #FECACA",
+            borderRadius: 12,
+            color: "#991B1B",
+            fontSize: 14,
+            lineHeight: 1.5
+          }}>
+            {fetchError}
+            <button
+              type="button"
+              onClick={() => { setFetchError(null); fetchData(); }}
+              style={{
+                marginTop: 10,
+                padding: "8px 16px",
+                background: "#0F62FE",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer"
+              }}
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
 
         {/* Filters */}
         <div style={{
