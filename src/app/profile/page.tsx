@@ -224,27 +224,7 @@ export default function ProfilePage() {
   }, [formData, selectedAvatar])
 
   if (loading) {
-    return (
-      <div style={{ display: "grid", placeItems: "center", minHeight: "100vh", fontFamily: "Montserrat, sans-serif" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{
-            width: 40,
-            height: 40,
-            border: "4px solid #E5E7EB",
-            borderTopColor: "#0F62FE",
-            borderRadius: "50%",
-            margin: "0 auto 16px",
-            animation: "spin 1s linear infinite",
-          }} />
-          <p style={{ color: "#666", fontSize: 16 }}>Cargando perfil...</p>
-        </div>
-        <style>{`
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
-      </div>
-    )
+    return <div style={{ minHeight: "100vh", background: "#ffffff" }} />
   }
 
   if (!user) return null

@@ -18,9 +18,6 @@ export default function WelcomePage() {
   const router = useRouter()
   const [isMouthOpen, setIsMouthOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null)
-  const [lastScrollY, setLastScrollY] = useState(0)
-  const [showFunText, setShowFunText] = useState(true)
   const [isPhone, setIsPhone] = useState(false)
 
   // Lock: show "use desktop/tablet" message on phones
@@ -40,25 +37,6 @@ export default function WelcomePage() {
 
     return () => clearInterval(mouthInterval)
   }, [])
-
-  // Track scroll direction and show fun text on scroll up
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const direction = currentScrollY < lastScrollY ? 'up' : 'down'
-
-      setScrollDirection(direction)
-      setLastScrollY(currentScrollY)
-
-      // Animate fun text when scrolling up
-      if (direction === 'up' && currentScrollY > 100) {
-        setShowFunText(true)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
 
   // Scroll reveal effect using Intersection Observer
   useEffect(() => {
@@ -93,7 +71,8 @@ export default function WelcomePage() {
 
   return (
     <div style={{
-      background: "#ffffff",
+      background: "linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%)",
+      backgroundAttachment: "fixed",
       flex: 1,
       width: "100%",
       maxWidth: "100%",
@@ -160,9 +139,9 @@ export default function WelcomePage() {
         </Link>
         <nav style={{ display: "flex", gap: "24px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "14px 32px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
           <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
-          <Link href="#beneficios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Beneficios</Link>
-          <Link href="#casos-de-exito" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Casos de Éxito</Link>
-          <Link href="#recursos" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Recursos</Link>
+          <Link href="#impacto" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Impacto</Link>
+          <Link href="#precios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Planes</Link>
+          <Link href="#contacto" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Montserrat', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Contacto</Link>
         </nav>
         <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Montserrat', sans-serif", background: "#0F62FE", color: "white", borderRadius: 10, textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0 }} className="crear-cuenta-button">Crear cuenta</Link>
       </div>
@@ -178,7 +157,7 @@ export default function WelcomePage() {
           maxWidth: "100%",
           boxSizing: "border-box",
           minHeight: "100vh",
-          overflowX: "clip", // Protects horizontal scroll but less aggressive than hidden
+          overflowX: "hidden",
           overflowY: "visible",
         }}>
 
@@ -223,8 +202,8 @@ export default function WelcomePage() {
               top: "clamp(40px, 6vw, 72px)",
               transform: "translateX(-50%)",
               textAlign: "center",
-              width: "min(90vw, 960px)",
-              maxWidth: "960px",
+              width: "min(98vw, 1320px)",
+              maxWidth: "1320px",
               zIndex: 10,
               opacity: isVisible ? 1 : 0,
               transition: "opacity 0.6s ease 0.3s",
@@ -249,75 +228,36 @@ export default function WelcomePage() {
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
                 width: "100%",
               }}>
-                Combina libros, materiales manipulativos y tecnología con IA en un sistema integral que transforma el aula con gamificación, ofreciendo un aprendizaje intuitivo y atractivo en secundaria y preparatoria.
+                BIZEN es la plataforma educativa que combina <span style={{ color: "#0F71FD", fontWeight: 600 }}>gamificación e inteligencia artificial</span> para enseñar <span style={{ color: "#0F71FD", fontWeight: 600 }}>finanzas personales</span> de forma práctica, clara y relevante para estudiantes de preparatoria y universidad.
               </p>
+            </div>
 
-              {/* 3 circles in a row with labels below */}
-              <div className="hero-circles-wrap" style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "flex-start",
-                gap: "clamp(24px, 4vw, 48px)",
-                marginTop: "clamp(32px, 5vw, 56px)",
-                flexWrap: "wrap",
-              }}>
-                <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textDecoration: "none" }}>
-                  <div className="hero-circle" style={{
-                    width: "clamp(120px, 18vw, 200px)",
-                    height: "clamp(120px, 18vw, 200px)",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                    border: "2px solid #000",
-                    flexShrink: 0,
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                    <div style={{ position: "relative", width: "65%", height: "65%" }}>
+            {/* Rectangles - separate full-width block, outside absolute container to avoid clipping */}
+            <div className="hero-rectangles-wrapper">
+              <div className="hero-rect-row">
+                <Link href="/signup" target="_blank" rel="noopener noreferrer" className="hero-card-link">
+                  <div className="hero-rect-card">
+                    <div className="hero-rect-inner">
                       <Image src="/hero1.png" alt="Billy con lápiz y libreta" fill style={{ objectFit: "contain" }} />
                     </div>
                   </div>
-                  <span className="hero-circle-label" style={{ fontSize: "clamp(14px, 1.8vw, 18px)", fontWeight: 600, color: "#1f2937", textAlign: "center", lineHeight: 1.4 }}>Fundamentos<br />del dinero</span>
+                  <span className="hero-circle-label">Finanzas<br />Personales</span>
                 </Link>
-                <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textDecoration: "none" }}>
-                  <div className="hero-circle" style={{
-                    width: "clamp(120px, 18vw, 200px)",
-                    height: "clamp(120px, 18vw, 200px)",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                    border: "2px solid #000",
-                    flexShrink: 0,
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                    <div style={{ position: "relative", width: "65%", height: "65%" }}>
+                <Link href="/signup" target="_blank" rel="noopener noreferrer" className="hero-card-link">
+                  <div className="hero-rect-card">
+                    <div className="hero-rect-inner">
                       <Image src="/hero2.png" alt="Billy con tablet y gráfica financiera" fill style={{ objectFit: "contain" }} />
                     </div>
                   </div>
-                  <span className="hero-circle-label" style={{ fontSize: "clamp(14px, 1.8vw, 18px)", fontWeight: 600, color: "#1f2937", textAlign: "center", lineHeight: 1.4 }}>Simuladores<br />financieros</span>
+                  <span className="hero-circle-label">Simuladores<br />financieros</span>
                 </Link>
-                <Link href="/signup" target="_blank" rel="noopener noreferrer" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textDecoration: "none" }}>
-                  <div className="hero-circle" style={{
-                    width: "clamp(120px, 18vw, 200px)",
-                    height: "clamp(120px, 18vw, 200px)",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                    border: "2px solid #000",
-                    flexShrink: 0,
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                    <div style={{ position: "relative", width: "65%", height: "65%" }}>
+                <Link href="/signup" target="_blank" rel="noopener noreferrer" className="hero-card-link">
+                  <div className="hero-rect-card">
+                    <div className="hero-rect-inner">
                       <Image src="/hero3.png" alt="Billy con alcancía" fill style={{ objectFit: "contain" }} />
                     </div>
                   </div>
-                  <span className="hero-circle-label" style={{ fontSize: "clamp(14px, 1.8vw, 18px)", fontWeight: 600, color: "#1f2937", textAlign: "center", lineHeight: 1.4 }}>Ahorro<br />persona</span>
+                  <span className="hero-circle-label">Plan de<br />ahorro</span>
                 </Link>
               </div>
             </div>
@@ -325,6 +265,9 @@ export default function WelcomePage() {
           </div>
 
           <style>{`
+        /* Prevent horizontal scroll on landing */
+        .main-page-container { overflow-x: hidden !important; }
+        
         /* Override global footer styles from globals.css - ensure footer is NOT sticky */
         footer.main-page-footer,
         .main-page-container footer,
@@ -403,11 +346,11 @@ export default function WelcomePage() {
             font-size: 21px !important;
             border-radius: 12px !important;
           }
-          /* Hero section: bigger tagline, subtext, circles and labels */
+          /* Hero section: bigger tagline, subtext, rectangles and labels */
           .hero-top-block {
             top: clamp(48px, 6vw, 88px) !important;
-            max-width: 1040px !important;
-            width: min(92vw, 1040px) !important;
+            max-width: 1280px !important;
+            width: min(96vw, 1280px) !important;
           }
           .hero-tagline {
             font-size: clamp(42px, 5.5vw, 72px) !important;
@@ -416,13 +359,13 @@ export default function WelcomePage() {
             font-size: clamp(19px, 1.25rem, 24px) !important;
             margin-top: 20px !important;
           }
-          .hero-circles-wrap {
+          .hero-rect-row {
             gap: clamp(32px, 5vw, 64px) !important;
             margin-top: clamp(40px, 6vw, 72px) !important;
           }
-          .hero-circle {
-            width: clamp(160px, 20vw, 240px) !important;
-            height: clamp(160px, 20vw, 240px) !important;
+          .hero-rect-card {
+            width: clamp(220px, 26vw, 360px) !important;
+            height: clamp(123px, 14vw, 195px) !important;
           }
           .hero-circle-label {
             font-size: clamp(16px, 2vw, 22px) !important;
@@ -454,8 +397,8 @@ export default function WelcomePage() {
           /* Hero section: even larger on very wide screens */
           .hero-top-block {
             top: clamp(56px, 7vw, 100px) !important;
-            max-width: 1120px !important;
-            width: min(92vw, 1120px) !important;
+            max-width: 1320px !important;
+            width: min(96vw, 1320px) !important;
           }
           .hero-tagline {
             font-size: clamp(48px, 6vw, 80px) !important;
@@ -464,27 +407,94 @@ export default function WelcomePage() {
             font-size: clamp(20px, 1.3rem, 26px) !important;
             margin-top: 24px !important;
           }
-          .hero-circles-wrap {
+          .hero-rect-row {
             gap: clamp(40px, 5vw, 80px) !important;
-            margin-top: clamp(48px, 6vw, 88px) !important;
           }
-          .hero-circle {
-            width: clamp(200px, 22vw, 280px) !important;
-            height: clamp(200px, 22vw, 280px) !important;
+          .hero-rectangles-wrapper {
+            margin-top: clamp(320px, 42vw, 480px) !important;
+          }
+          .hero-rect-card {
+            width: clamp(300px, 28vw, 440px) !important;
+            height: clamp(165px, 15vw, 240px) !important;
           }
           .hero-circle-label {
             font-size: clamp(18px, 2.2vw, 24px) !important;
           }
         }
 
-        /* Hero circles hover interaction */
-        .hero-circle {
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
-          cursor: pointer;
+        /* Rectangles wrapper - 3 cards always in one row, scroll horizontally on narrow screens */
+        .hero-rectangles-wrapper {
+          width: 100%;
+          max-width: 100%;
+          margin-top: clamp(240px, 45vw, 420px);
+          padding: 0 clamp(24px, 4vw, 48px);
+          box-sizing: border-box;
+          overflow-x: auto;
+          position: relative;
+          z-index: 5;
         }
-        .hero-circle:hover {
-          transform: scale(1.08);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        @media (max-width: 768px) {
+          .hero-rectangles-wrapper {
+            margin-top: clamp(220px, 55vw, 320px);
+            padding: 0 clamp(16px, 4vw, 24px);
+          }
+        }
+        .hero-rect-row {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: center;
+          align-items: flex-start;
+          gap: clamp(24px, 4vw, 56px);
+          width: max-content;
+          max-width: 100%;
+          margin: 0 auto;
+          min-width: 100%;
+          padding: 0 clamp(16px, 3vw, 24px) 12px;
+          box-sizing: border-box;
+        }
+        .hero-card-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+          text-decoration: none;
+          flex-shrink: 0;
+        }
+        .hero-rect-card {
+          width: clamp(200px, 22vw, 320px);
+          height: clamp(112px, 12vw, 175px);
+          border-radius: 28px;
+          overflow: hidden;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          background: linear-gradient(160deg, #ffffff 0%, #f0f7ff 50%, #e8f4fd 100%);
+          border: 2px solid rgba(15, 113, 253, 0.25);
+          box-shadow: 
+            0 6px 24px rgba(0, 0, 0, 0.08),
+            0 2px 12px rgba(15, 113, 253, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+          transition: opacity 0.25s ease;
+          cursor: pointer;
+          opacity: 0.88;
+        }
+        .hero-card-link:hover .hero-rect-card {
+          opacity: 1;
+        }
+        .hero-rect-inner {
+          position: relative;
+          width: 60%;
+          height: 60%;
+        }
+        .hero-circle-label {
+          font-size: clamp(14px, 1.8vw, 18px);
+          font-weight: 600;
+          color: #1f2937;
+          text-align: center;
+          line-height: 1.4;
         }
         
         /* Scroll reveal animations */
@@ -833,16 +843,6 @@ export default function WelcomePage() {
             object-fit: contain !important;
           }
           
-          /* Fun text responsive */
-          h1[style*="Ahorro, invierto"] {
-            font-size: clamp(24px, 5vw, 40px) !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            overflow-wrap: break-word !important;
-            line-height: 1.3 !important;
-            padding: 0 16px !important;
-            box-sizing: border-box !important;
-          }
         }
         @media (max-width: 480px) {
           /* Extra small phones */
@@ -1034,65 +1034,7 @@ export default function WelcomePage() {
           }
         }
         
-        .fun-text-line {
-          width: 100% !important;
-        }
       `}</style>
-        </div>
-
-        {/* Fun text between main hero and hero 1 */}
-        <div className="reveal-element reveal-delay-1 fun-text-container" style={{
-          textAlign: "center",
-          padding: "clamp(8px, 1.5vw, 16px) clamp(16px, 4vw, 32px) clamp(120px, 18vw, 200px) clamp(16px, 4vw, 32px)",
-          background: "transparent",
-          marginTop: "clamp(40px, 8vw, 120px)",
-          marginBottom: "clamp(40px, 8vw, 80px)",
-          opacity: showFunText ? 1 : 0,
-          transform: showFunText ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-          display: "flex",
-          justifyContent: "center"
-        }}>
-          <div style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "clamp(12px, 2vw, 16px)"
-          }}>
-            {/* Top line */}
-            <div className="fun-text-line" style={{
-              width: "100%",
-              height: "2px",
-              background: "linear-gradient(90deg, transparent 0%, #0F62FE 20%, #0F62FE 80%, transparent 100%)",
-              borderRadius: "1px"
-            }} />
-
-            <h1 style={{
-              fontSize: "clamp(24px, 4vw, 38px)",
-              fontWeight: 900,
-              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-              background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              animation: showFunText ? "shimmer 3s ease-in-out infinite" : "none",
-              margin: 0,
-              lineHeight: 1.2,
-              letterSpacing: "0.01em",
-              whiteSpace: "normal",
-              wordWrap: "break-word",
-              overflowWrap: "break-word"
-            }}>Ahorro, invierto, emprendo, crezco.</h1>
-
-            {/* Bottom line */}
-            <div className="fun-text-line" style={{
-              width: "100%",
-              height: "2px",
-              background: "linear-gradient(90deg, transparent 0%, #0F62FE 20%, #0F62FE 80%, transparent 100%)",
-              borderRadius: "1px"
-            }} />
-          </div>
         </div>
 
         {/* Landing Page Content */}
@@ -1114,15 +1056,6 @@ type Course = {
   duration: string
   image: string
   url: string
-}
-
-type Plan = {
-  name: string
-  cta: string
-  ctaUrl: string
-  priceNote?: string
-  highlighted?: boolean
-  features: string[]
 }
 
 type FAQ = { q: string; a: string }
@@ -1178,46 +1111,36 @@ const defaultCourses: Course[] = [
   },
 ]
 
-const defaultPlans: Plan[] = [
-  {
-    name: "Gratuito",
-    cta: "Empezar ahora",
-    ctaUrl: "/signup",
-    priceNote: "Plan individual",
-    highlighted: false,
-    features: [
-      "Acceso a cursos base",
-      "Retos gamificados y badges",
-      "Progreso y metas semanales",
-      "Soporte por email",
-    ],
-  },
-  {
-    name: "Emprendedor",
-    cta: "Solicitar demo",
-    ctaUrl: "/payment",
-    priceNote: "Pilotos y licenciamiento",
-    highlighted: true,
-    features: [
-      "Panel para docentes",
-      "Reportes y analítica",
-      "Integración LMS (LTI/SCORM)",
-      "Soporte prioritario",
-    ],
-  },
-  {
-    name: "Instituciones",
-    cta: "Hablar con ventas",
-    ctaUrl: "/signup",
-    priceNote: "Programas a medida",
-    highlighted: false,
-    features: [
-      "Rutas personalizadas",
-      "Sesiones en vivo",
-      "KPIs y compliance",
-      "Implementación dedicada",
-    ],
-  },
+const planTitles = ["Instituciones", "Individual"] as const
+const planDescriptions: Record<(typeof planTitles)[number], string> = {
+  Instituciones: "Para escuelas, universidades y organizaciones educativas.",
+  Individual: "Para estudiantes y personas que quieren aprender finanzas.",
+}
+
+const logoCarouselLogos: { src: string; alt: string }[] = [
+  { src: "/logos/logo-imef.png", alt: "IMEF Ejecutivos de Finanzas" },
+  { src: "/logos/logo-mondragon.png", alt: "Universidad Mondragón México" },
+  { src: "/logos/logo-google.png", alt: "Google" },
+  { src: "/logos/logo-queretaro.png", alt: "Querétaro - Juntos, Adelante" },
+  { src: "/logos/logo-hex.png", alt: "Partner" },
+  { src: "/logos/logo-balmoral.png", alt: "Balmoral Escocés Preparatoria" },
+]
+
+const problemSchools: { title: string; description: string }[] = [
+  { title: "Teoría sin práctica", description: "Se enseña el concepto pero no se practica con casos reales." },
+  { title: "Difícil medir avance", description: "No hay forma clara de ver el progreso de cada estudiante." },
+  { title: "Falta de tiempo del docente", description: "Los profesores no tienen tiempo para personalizar la enseñanza." },
+]
+const problemIndividual: { title: string; description: string }[] = [
+  { title: "No sé por dónde empezar", description: "Hay tanta información que no sé qué aprender primero." },
+  { title: "Aprendo pero no aplico", description: "Leo y veo contenido pero no paso a la acción con mi dinero." },
+  { title: "Me cuesta ser constante", description: "Empiezo con ánimo pero abandono al poco tiempo." },
+]
+
+const howItWorksSteps: { title: string; schoolsText: string; individualsText: string }[] = [
+  { title: "Empiezo", schoolsText: "El colegio crea grupos y accesos.", individualsText: "Creas tu cuenta y empiezas hoy." },
+  { title: "Practico", schoolsText: "Los estudiantes usan simuladores y retos en clase.", individualsText: "Haces retos y simuladores a tu ritmo." },
+  { title: "Mido mi progreso", schoolsText: "El docente ve reportes y avance por alumno.", individualsText: "Ves tu avance y logros en tu perfil." },
 ]
 
 const defaultFaqs: FAQ[] = [
@@ -1311,387 +1234,491 @@ function StepIcon3({ color }: { color: string }) {
   )
 }
 
+const audienceEscuelas = {
+  badge: "Para escuelas",
+  bullets: ["Licencia por escuela", "Panel docente y reportes", "Onboarding guiado"],
+  cta: "Agendar demo",
+  ctaHref: "#contacto",
+}
+const audienceParticulares = {
+  badge: "Para ti",
+  bullets: ["Acceso inmediato", "A tu ritmo", "Práctica con simuladores"],
+  cta: "Comprar ahora",
+  ctaHref: "/signup",
+}
+
 function LandingContent() {
   const primary = "#0F71FD"
   const accent = "#10B981"
+  const [audienceTab, setAudienceTab] = React.useState<"Escuelas" | "Particulares">("Escuelas")
+  const audienceContent = audienceTab === "Escuelas" ? audienceEscuelas : audienceParticulares
 
   return (
     <>
       <style>{landingCSS}</style>
 
-      {/* CÓMO FUNCIONA - Text Left, Image Right */}
-      <section id="sobre" className="section about reveal-element" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
-        <div className="container">
-          <div className="hero-section-grid hero-grid-alt" style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "center",
-            minHeight: "400px"
-          }}>
-            <div className="hero-text" style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              order: 1,
-              padding: "0 clamp(16px, 4vw, 24px)"
-            }}>
-              <h2 style={{
-                fontSize: "clamp(28px, 4vw, 48px)",
-                lineHeight: 1.15,
-                margin: "0 0 16px 0",
-                fontWeight: 800,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s ease-in-out infinite",
-                wordWrap: "break-word",
-                overflowWrap: "break-word"
-              }}>Presupuesto 50/30/20</h2>
-              <p style={{
-                fontSize: "clamp(18px, 2.5vw, 28px)",
-                color: "#475569",
-                margin: "0 0 32px 0",
-                lineHeight: 1.6,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                wordWrap: "break-word",
-                overflowWrap: "break-word"
-              }}>Ordeno mi dinero en minutos. Necesidades, gustos y ahorro. Simple y útil.</p>
-            </div>
-
-            {/* Image - Will be second on mobile */}
-            <div className="hero-image" style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              order: 2
-            }}>
-              <img
-                src="/hero1.png"
-                alt="Cómo funciona BIZEN"
-                className="hero-image-small"
-                style={{
-                  height: "auto",
-                  borderRadius: "16px",
-                  objectFit: "contain",
-                  display: "block",
-                  flexShrink: 0,
-                  width: "100%",
-                  maxWidth: "100%"
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* BENEFICIOS - Image Left, Text Right */}
-      <section className="section benefits reveal-element reveal-delay-1" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)", overflow: "visible" }}>
-        <div className="container" style={{ overflow: "visible" }}>
-          <div className="hero-section-grid hero-grid-alt" style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "flex-start",
-            minHeight: "auto",
-            overflow: "visible"
-          }}>
-            {/* Image - Left side on desktop, first on mobile */}
-            <div className="hero-image" style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              order: 1
-            }}>
-              <img
-                src="/hero2.png"
-                alt="Simuladores financieros BIZEN"
-                className="hero-image-small"
-                style={{
-                  height: "auto",
-                  borderRadius: "16px",
-                  objectFit: "contain",
-                  display: "block",
-                  flexShrink: 0,
-                  width: "100%",
-                  maxWidth: "100%"
-                }}
-              />
-            </div>
-
-            {/* Text - Right side on desktop, second on mobile */}
-            <div className="hero-text" style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              order: 2,
-              overflow: "visible",
-              minWidth: 0
-            }}>
-              <h2 style={{
-                fontSize: "clamp(28px, 4vw, 48px)",
-                lineHeight: 1.15,
-                margin: "0 0 16px 0",
-                fontWeight: 800,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s ease-in-out infinite",
-                wordWrap: "break-word",
-                overflowWrap: "break-word",
-                whiteSpace: "normal"
-              }}>Simuladores financieros</h2>
-              <p style={{
-                fontSize: "clamp(18px, 2.5vw, 28px)",
-                color: "#475569",
-                margin: "0 0 32px 0",
-                lineHeight: 1.6,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                wordWrap: "break-word",
-                overflowWrap: "break-word",
-                whiteSpace: "normal",
-                overflow: "visible"
-              }}>Pruebo escenarios reales. Cambio números y veo el impacto al instante. Aprendo haciendo.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CURSOS - Text Left, Image Right */}
-      <section id="cursos" className="section courses reveal-element reveal-delay-2" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)" }}>
-        <div className="container">
-          <div className="hero-section-grid hero-grid-alt" style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "center",
-            minHeight: "400px"
-          }}>
-            {/* Text - Left side on desktop, first on mobile */}
-            <div className="hero-text" style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              order: 1
-            }}>
-              <h2 style={{
-                fontSize: "clamp(28px, 4vw, 48px)",
-                lineHeight: 1.15,
-                margin: "0 0 16px 0",
-                fontWeight: 800,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s ease-in-out infinite",
-                wordWrap: "break-word",
-                overflowWrap: "break-word"
-              }}>Cashflow</h2>
-              <p style={{
-                fontSize: "clamp(18px, 2.5vw, 28px)",
-                color: "#475569",
-                margin: "0 0 32px 0",
-                lineHeight: 1.6,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                wordWrap: "break-word",
-                overflowWrap: "break-word"
-              }}>Aprendes jugando. Simulo ingresos, gastos y decisiones para que sientas el dinero en acción, pero sin riesgo.</p>
-            </div>
-
-            {/* Image - Right side on desktop, second on mobile */}
-            <div className="hero-image" style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              order: 2
-            }}>
-              <img
-                src="/hero3.png"
-                alt="Cashflow BIZEN"
-                className="hero-image-small"
-                style={{
-                  height: "auto",
-                  borderRadius: "16px",
-                  objectFit: "contain",
-                  display: "block",
-                  flexShrink: 0,
-                  width: "100%",
-                  maxWidth: "100%"
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FORO DE EMPRENDEDORES - Image Left, Text Right */}
-      <section className="section forum reveal-element reveal-delay-3" style={{ background: "transparent", paddingTop: "clamp(16px, 2vw, 24px)", paddingBottom: "clamp(24px, 3vw, 32px)", overflow: "visible" }}>
-        <div className="container" style={{ overflow: "visible" }}>
-          <div className="hero-section-grid hero-grid-alt" style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "flex-start",
-            minHeight: "auto",
-            overflow: "visible"
-          }}>
-            {/* Image - Left side on desktop, first on mobile */}
-            <div className="hero-image" style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              order: 1
-            }}>
-              <img
-                src="/hero4.png"
-                alt="Foro de emprendedores BIZEN"
-                className="hero-image-small"
-                style={{
-                  height: "auto",
-                  borderRadius: "16px",
-                  objectFit: "contain",
-                  display: "block",
-                  flexShrink: 0,
-                  width: "100%",
-                  maxWidth: "100%"
-                }}
-              />
-            </div>
-
-            {/* Text - Right side on desktop, second on mobile */}
-            <div className="hero-text" style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              order: 2,
-              overflow: "visible",
-              minWidth: 0
-            }}>
-              <h2 style={{
-                fontSize: "clamp(28px, 4vw, 48px)",
-                lineHeight: 1.15,
-                margin: "0 0 16px 0",
-                fontWeight: 800,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s ease-in-out infinite",
-                wordWrap: "break-word",
-                overflowWrap: "break-word",
-                whiteSpace: "normal"
-              }}>Foro de emprendedores</h2>
-              <p style={{
-                fontSize: "clamp(18px, 2.5vw, 28px)",
-                color: "#475569",
-                margin: "0 0 32px 0",
-                lineHeight: 1.6,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                wordWrap: "break-word",
-                overflowWrap: "break-word",
-                whiteSpace: "normal",
-                overflow: "visible"
-              }}>Pido feedback, comparto avances y aprendo de otros. Comunidad segura y moderada.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Y MUCHO MÁS... Text below Hero 4 */}
-      <div className="reveal-element reveal-delay-4" style={{
-        textAlign: "center",
-        padding: "clamp(48px, 8vw, 120px) 0",
-        background: "transparent"
-      }}>
-        <h2 className="y-mucho-mas-text" style={{
-          fontSize: "clamp(32px, 6vw, 64px) !important",
-          fontWeight: 900,
+      {/* Logo carousel above Planes */}
+      <section className="logos-carousel-section" style={{ background: "transparent", padding: "clamp(32px, 5vw, 48px) 0", overflow: "hidden" }}>
+        <p style={{
+          textAlign: "center",
+          margin: "0 0 clamp(20px, 3vw, 28px)",
+          fontSize: "clamp(18px, 2vw, 24px)",
+          fontWeight: 600,
+          color: "#1f2937",
           fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-          background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-          backgroundSize: "200% auto",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          animation: "shimmer 3s ease-in-out infinite",
-          margin: 0,
-          lineHeight: 1.2,
-          letterSpacing: "0.01em",
-          wordWrap: "break-word",
-          overflowWrap: "break-word"
-        }}>Y MUCHO MÁS...</h2>
-      </div>
+        }}>
+          Ellos ya confían en <span style={{ color: "#111" }}>BIZEN</span>
+        </p>
+        <div className="logos-carousel">
+          <div className="logos-carousel-track">
+            {[...logoCarouselLogos, ...logoCarouselLogos].map((logo, i) => (
+              <div key={i} className="logos-carousel-item">
+                <Image src={logo.src} alt={logo.alt} width={220} height={110} style={{ objectFit: "contain", opacity: 0.9 }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* PRECIOS */}
-      <section id="precios" className="section pricing reveal-element reveal-delay-2" style={{ background: "transparent" }}>
+      {/* Qué es BIZEN - solution intro */}
+      <section id="que-es-bizen" className="section solution-intro reveal-element" style={{ background: "transparent", padding: "clamp(48px, 8vw, 72px) 0" }}>
         <div className="container">
-          <header className="section-head">
+          <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
             <h2 style={{
-              background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              animation: "shimmer 3s ease-in-out infinite",
-              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif"
-            }}>Planes</h2>
-            <p style={{ fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif" }}>Elige el plan que mejor se adapte a tus necesidades.</p>
-          </header>
+              margin: "0 0 clamp(20px, 3vw, 28px)",
+              fontSize: "clamp(28px, 4vw, 40px)",
+              fontWeight: 800,
+              color: "#111",
+              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+              lineHeight: 1.2,
+            }}>
+              Qué es BIZEN
+            </h2>
+            <p style={{
+              margin: "0 0 24px",
+              fontSize: "clamp(16px, 1.1rem, 18px)",
+              color: "#374151",
+              fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+              lineHeight: 1.6,
+            }}>
+              BIZEN es la plataforma de educación financiera que combina gamificación e inteligencia artificial para que aprendas de forma práctica. Pensada para escuelas y para ti: cursos claros, simuladores reales y un progreso que puedes ver y medir.
+            </p>
+            <ul style={{
+              listStyle: "none",
+              margin: 0,
+              padding: 0,
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: "clamp(12px, 2vw, 20px)",
+            }}>
+              {["Cursos cortos", "Simuladores", "Progreso medible"].map((item, i) => (
+                <li key={i} style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 18px",
+                  borderRadius: "999px",
+                  background: "rgba(15, 98, 254, 0.1)",
+                  border: "1px solid rgba(15, 98, 254, 0.25)",
+                  fontSize: "clamp(14px, 1rem, 16px)",
+                  fontWeight: 600,
+                  color: "#0F62FE",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  <span style={{ color: "#0F62FE" }}>✓</span> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid-3" style={{ gap: "32px" }}>
-            {defaultPlans.map((p, i) => (
-              <article
-                key={i}
-                className={`plan ${p.highlighted ? "plan--highlight" : ""}`}
-                aria-label={`Plan ${p.name}`}
+      {/* Audience Switcher (Tabs) - Escuelas / Particulares */}
+      <section id="audiencia" className="section audience-switcher reveal-element" style={{ background: "transparent", padding: "clamp(40px, 6vw, 64px) 0" }}>
+        <div className="container">
+          <div style={{ maxWidth: "560px", margin: "0 auto" }}>
+            <div role="tablist" className="audience-tabs" style={{
+              display: "flex",
+              gap: "0",
+              borderRadius: "12px",
+              background: "rgba(15, 98, 254, 0.08)",
+              padding: "6px",
+              marginBottom: "28px",
+            }}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={audienceTab === "Escuelas"}
+                onClick={() => setAudienceTab("Escuelas")}
                 style={{
-                  minHeight: "520px",
-                  paddingBottom: "100px" // Ensure space for the absolute-ish button
+                  flex: 1,
+                  padding: "14px 20px",
+                  fontSize: "clamp(16px, 1.1rem, 18px)",
+                  fontWeight: 600,
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                  color: audienceTab === "Escuelas" ? "#fff" : "#475569",
+                  background: audienceTab === "Escuelas" ? "#0F62FE" : "transparent",
+                  border: "none",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  transition: "background 0.2s ease, color 0.2s ease",
                 }}
               >
-                {p.highlighted && <span className="tag">Recomendado</span>}
-                <h3 className="plan-name">{p.name}</h3>
-                {p.priceNote && <p className="plan-note">{p.priceNote}</p>}
+                Escuelas
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={audienceTab === "Particulares"}
+                onClick={() => setAudienceTab("Particulares")}
+                style={{
+                  flex: 1,
+                  padding: "14px 20px",
+                  fontSize: "clamp(16px, 1.1rem, 18px)",
+                  fontWeight: 600,
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                  color: audienceTab === "Particulares" ? "#fff" : "#475569",
+                  background: audienceTab === "Particulares" ? "#0F62FE" : "transparent",
+                  border: "none",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  transition: "background 0.2s ease, color 0.2s ease",
+                }}
+              >
+                Particulares
+              </button>
+            </div>
+            <div role="tabpanel" style={{ textAlign: "center" }}>
+              <span style={{
+                display: "inline-block",
+                padding: "8px 16px",
+                borderRadius: "999px",
+                fontSize: "13px",
+                fontWeight: 700,
+                color: "#0F62FE",
+                background: "rgba(15, 98, 254, 0.12)",
+                marginBottom: "20px",
+                fontFamily: "'Inter', sans-serif",
+              }}>
+                {audienceContent.badge}
+              </span>
+              <ul style={{
+                listStyle: "none",
+                margin: "0 0 24px",
+                padding: 0,
+                textAlign: "left",
+                maxWidth: "320px",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}>
+                {audienceContent.bullets.map((bullet, i) => (
+                  <li key={i} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "12px",
+                    fontSize: "clamp(15px, 1rem, 17px)",
+                    color: "#374151",
+                    fontFamily: "'Inter', sans-serif",
+                    lineHeight: 1.4,
+                  }}>
+                    <span style={{ color: "#0F62FE", flexShrink: 0 }}>✓</span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={audienceContent.ctaHref}
+                style={{
+                  display: "inline-block",
+                  padding: "14px 28px",
+                  fontSize: "clamp(16px, 1rem, 18px)",
+                  fontWeight: 600,
+                  color: "#fff",
+                  background: "#0F62FE",
+                  borderRadius: "12px",
+                  textDecoration: "none",
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                  transition: "background 0.2s ease, filter 0.2s ease",
+                  boxShadow: "0 4px 14px rgba(15, 98, 254, 0.35)",
+                }}
+                className="cta-button"
+              >
+                {audienceContent.cta}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                <ul className="plan-list">
-                  {p.features.map((f, j) => (
-                    <li key={j}>
-                      <span className="check" aria-hidden="true">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
+      {/* El problema - pain points, two columns */}
+      <section id="problema" className="section problem-section reveal-element reveal-delay-1" style={{ background: "transparent", padding: "clamp(48px, 8vw, 80px) 0" }}>
+        <div className="container">
+          <h2 style={{
+            margin: "0 0 clamp(32px, 5vw, 48px)",
+            fontSize: "clamp(28px, 4vw, 40px)",
+            fontWeight: 800,
+            color: "#111",
+            fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+            textAlign: "center",
+            lineHeight: 1.2,
+          }}>
+            El problema
+          </h2>
+          <div className="problem-columns" style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(32px, 5vw, 56px)",
+            maxWidth: "900px",
+            margin: "0 auto",
+            alignItems: "stretch",
+          }}>
+            <div className="problem-column">
+              <h3 style={{
+                margin: "0 0 20px",
+                fontSize: "clamp(18px, 2vw, 22px)",
+                fontWeight: 700,
+                color: "#0F62FE",
+                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+              }}>
+                En escuelas
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {problemSchools.map((card, i) => (
+                  <div key={i} className="problem-card" style={{
+                    padding: "20px 24px",
+                    borderRadius: "16px",
+                    background: "rgba(255, 255, 255, 0.9)",
+                    border: "1px solid rgba(15, 98, 254, 0.2)",
+                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+                  }}>
+                    <h4 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 700, color: "#1f2937", fontFamily: "'Inter', sans-serif" }}>
+                      {card.title}
+                    </h4>
+                    <p style={{ margin: 0, fontSize: "14px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                      {card.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="problem-column">
+              <h3 style={{
+                margin: "0 0 20px",
+                fontSize: "clamp(18px, 2vw, 22px)",
+                fontWeight: 700,
+                color: "#0F62FE",
+                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+              }}>
+                En particulares
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {problemIndividual.map((card, i) => (
+                  <div key={i} className="problem-card" style={{
+                    padding: "20px 24px",
+                    borderRadius: "16px",
+                    background: "rgba(255, 255, 255, 0.9)",
+                    border: "1px solid rgba(15, 98, 254, 0.2)",
+                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+                  }}>
+                    <h4 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 700, color: "#1f2937", fontFamily: "'Inter', sans-serif" }}>
+                      {card.title}
+                    </h4>
+                    <p style={{ margin: 0, fontSize: "14px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                      {card.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                <Link href={p.ctaUrl} className="btn primary plan-btn" style={{
-                  marginTop: "auto",
-                  width: "100%",
-                  position: "absolute",
-                  bottom: "32px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  maxWidth: "calc(100% - 48px)"
+      {/* Cómo funciona - 3 steps */}
+      <section id="como-funciona" className="section how-it-works reveal-element reveal-delay-2" style={{ background: "transparent", padding: "clamp(48px, 8vw, 80px) 0" }}>
+        <div className="container">
+          <h2 style={{
+            margin: "0 0 clamp(32px, 5vw, 48px)",
+            fontSize: "clamp(28px, 4vw, 40px)",
+            fontWeight: 800,
+            color: "#111",
+            fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+            textAlign: "center",
+            lineHeight: 1.2,
+          }}>
+            Cómo funciona
+          </h2>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "clamp(24px, 4vw, 40px)",
+            maxWidth: "960px",
+            margin: "0 auto",
+            alignItems: "stretch",
+          }} className="how-it-works-steps">
+            {howItWorksSteps.map((step, i) => (
+              <div key={i} className="step-card" style={{
+                padding: "clamp(24px, 3vw, 32px)",
+                borderRadius: "20px",
+                background: "rgba(255, 255, 255, 0.9)",
+                border: "1px solid rgba(15, 98, 254, 0.2)",
+                boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+              }}>
+                <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "rgba(15, 98, 254, 0.12)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px", flexShrink: 0 }}>
+                  {i === 0 && (
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                  )}
+                  {i === 1 && (
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg>
+                  )}
+                  {i === 2 && (
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
+                  )}
+                </div>
+                <h3 style={{
+                  margin: "0 0 16px",
+                  fontSize: "clamp(18px, 2vw, 22px)",
+                  fontWeight: 700,
+                  color: "#111",
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
                 }}>
-                  {p.cta}
-                </Link>
-              </article>
+                  {step.title}
+                </h3>
+                <p style={{ margin: "0 0 8px", fontSize: "13px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                  <span style={{ fontWeight: 600, color: "#475569" }}>En escuelas:</span> {step.schoolsText}
+                </p>
+                <p style={{ margin: 0, fontSize: "13px", color: "#64748b", lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>
+                  <span style={{ fontWeight: 600, color: "#475569" }}>En individual:</span> {step.individualsText}
+                </p>
+              </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PRECIOS - plan squares + CTA merged, no "Planes" title */}
+      <section id="precios" className="section pricing reveal-element reveal-delay-2" style={{ background: "transparent" }}>
+        <div className="container">
+          <div style={{ maxWidth: "800px", width: "100%", margin: "0 auto", textAlign: "center" }}>
+            {/* CTA first */}
+            <div style={{ marginBottom: "clamp(40px, 6vw, 56px)", maxWidth: "640px", marginLeft: "auto", marginRight: "auto" }}>
+              <h2 style={{
+                margin: 0,
+                fontSize: "clamp(28px, 4vw, 40px)",
+                fontWeight: 800,
+                color: "#111",
+                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+                lineHeight: 1.2,
+              }}>
+                ¿Listo para empezar?
+              </h2>
+              <p style={{
+                margin: "16px 0 28px",
+                fontSize: "clamp(16px, 1.1rem, 20px)",
+                color: "#475569",
+                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
+                lineHeight: 1.5,
+              }}>
+                Únete a BIZEN y aprende finanzas personales de forma práctica y divertida.
+              </p>
+              <Link
+                href="/signup"
+                style={{
+                  display: "inline-block",
+                  padding: "16px 32px",
+                  fontSize: "clamp(17px, 1.1rem, 19px)",
+                  fontWeight: 600,
+                  color: "#fff",
+                  background: "#0F62FE",
+                  borderRadius: "12px",
+                  textDecoration: "none",
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                  transition: "background 0.2s ease, filter 0.2s ease",
+                  boxShadow: "0 4px 14px rgba(15, 98, 254, 0.4)",
+                }}
+                className="cta-button"
+              >
+                Crear cuenta
+              </Link>
+            </div>
+
+            {/* Plan squares below CTA - nudge left for visual center */}
+            <div className="plans-two-squares" style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "clamp(32px, 5vw, 56px)",
+              width: "100%",
+              transform: "translateX(-52px)",
+            }}>
+            {planTitles.map((title, i) => (
+              <div
+                key={i}
+                className="plan-square"
+                style={{
+                  aspectRatio: "1",
+                  borderRadius: "28px",
+                  border: "2px solid rgba(15, 98, 254, 0.3)",
+                  background: "rgba(255, 255, 255, 0.9)",
+                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "clamp(28px, 4vw, 40px)",
+                  transition: "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
+                }}
+              >
+                <h3 style={{
+                  margin: 0,
+                  fontSize: (title === "Instituciones" || title === "Individual") ? "clamp(18px, 2.5vw, 26px)" : "clamp(22px, 3.5vw, 32px)",
+                  fontWeight: 700,
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                  textAlign: "center",
+                  lineHeight: 1.3,
+                }}>
+                  <span style={{ color: "#0F62FE" }}>BIZEN</span>{" "}
+                  <span style={{ color: "#1f2937" }}>{title}</span>
+                </h3>
+                <p style={{
+                  margin: "8px 0 0",
+                  fontSize: "clamp(13px, 1.1vw, 15px)",
+                  color: "#64748b",
+                  fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, sans-serif",
+                  textAlign: "center",
+                  lineHeight: 1.45,
+                  maxWidth: "260px",
+                }}>
+                  {planDescriptions[title]}
+                </p>
+                {title === "Instituciones" && (
+                  <div style={{ flexShrink: 0, marginTop: "16px", position: "relative", width: "clamp(160px, 36vw, 240px)", height: "clamp(160px, 36vw, 240px)" }}>
+                    <Image
+                      src="/bizen-instituciones.png"
+                      alt="BIZEN Instituciones - educación"
+                      fill
+                      style={{ objectFit: "contain" }}
+                    />
+                  </div>
+                )}
+                {title === "Individual" && (
+                  <div style={{ flexShrink: 0, marginTop: "16px", position: "relative", width: "clamp(160px, 36vw, 240px)", height: "clamp(160px, 36vw, 240px)" }}>
+                    <Image
+                      src="/bizen-particulares.png"
+                      alt="BIZEN Individual - para ti"
+                      fill
+                      style={{ objectFit: "contain" }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1719,110 +1746,6 @@ function LandingContent() {
             {defaultFaqs.map(({ q, a }, idx) => (
               <AccordionItem key={idx} question={q} answer={a} />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action Section below FAQ */}
-      <section className="reveal-element reveal-delay-3" style={{
-        background: "transparent",
-        padding: "clamp(48px, 8vw, 120px) 0"
-      }}>
-        <div className="container" style={{
-          maxWidth: "1400px",
-          margin: "0 auto",
-          padding: "0 clamp(16px, 4vw, 32px)"
-        }}>
-          <div className="cta-section-grid" style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(32px, 6vw, 64px)",
-            alignItems: "center",
-            minHeight: "400px"
-          }}>
-            {/* Text and Button Left */}
-            <div style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "clamp(24px, 4vw, 32px)",
-              textAlign: "center",
-              marginTop: "clamp(-60px, -8vw, -40px)"
-            }}>
-              <p style={{
-                fontSize: "clamp(32px, 6vw, 64px)",
-                fontWeight: 800,
-                fontFamily: "'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif",
-                background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s ease-in-out infinite",
-                margin: 0,
-                lineHeight: 1.2
-              }}>¿Qué esperas? Crea tu cuenta ya.</p>
-
-              <Link
-                href="/signup"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="empieza-ya-button"
-                style={{
-                  padding: "clamp(14px, 2.5vw, 18px) clamp(32px, 6vw, 48px)",
-                  fontSize: "clamp(16px, 2.2vw, 20px)",
-                  fontWeight: 700,
-                  fontFamily: "'Montserrat', sans-serif",
-                  background: "#0F62FE",
-                  color: "white",
-                  border: "3px solid transparent",
-                  borderRadius: "clamp(10px, 1.5vw, 12px)",
-                  textDecoration: "none",
-                  cursor: "pointer",
-                  boxShadow: "0 8px 24px rgba(15, 98, 254, 0.35)",
-                  textAlign: "center",
-                  letterSpacing: "0.3px",
-                  minHeight: "48px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  position: "relative",
-                  overflow: "hidden"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"
-                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(15, 98, 254, 0.45)"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0) scale(1)"
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(15, 98, 254, 0.35)"
-                }}
-              >
-                <span style={{ position: "relative", zIndex: 1 }}>Empieza Ya</span>
-              </Link>
-            </div>
-
-            {/* Image Right */}
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%"
-            }}>
-              <img
-                src="/hero5.png"
-                alt="BIZEN"
-                style={{
-                  width: "100%",
-                  maxWidth: "clamp(300px, 40vw, 500px)",
-                  height: "auto",
-                  borderRadius: "16px",
-                  objectFit: "contain",
-                  display: "block"
-                }}
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -2350,15 +2273,16 @@ const landingCSS = `
 }
 
 body {
-  background: linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
   background-attachment: fixed !important;
   font-family: 'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif !important;
 }
 
 html {
-  background: linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
   background-attachment: fixed !important;
   font-family: 'Inter', 'Poppins', 'Open Sans', system-ui, -apple-system, sans-serif !important;
+  scroll-behavior: smooth;
 }
 
 .section{padding: clamp(64px, 8vw, 120px) 0; scroll-margin-top: 80px; background: transparent !important;}
@@ -2433,6 +2357,56 @@ html {
 .check{color:var(--c-accent); font-weight:900; font-size:18px; min-width:20px; margin-top:2px;}
 .plan-btn:hover{transform:none !important;}
 .plan-btn:active{transform:none !important;}
+
+/* Logo carousel - infinite horizontal scroll */
+.logos-carousel-section { width: 100%; overflow: hidden; }
+.logos-carousel { width: 100%; overflow: hidden; }
+.logos-carousel-track {
+  display: flex;
+  align-items: center;
+  gap: clamp(48px, 8vw, 80px);
+  width: max-content;
+  animation: logo-carousel-scroll 25s linear infinite;
+  padding: 0 clamp(24px, 4vw, 48px);
+}
+.logos-carousel-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88px;
+  min-width: 160px;
+  max-width: 240px;
+}
+.logos-carousel-item img { width: auto; height: 100%; max-width: 100%; object-fit: contain; }
+@keyframes logo-carousel-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.plan-square:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(15, 98, 254, 0.2), 0 8px 24px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border-color: rgba(15, 98, 254, 0.5);
+}
+
+@media (max-width: 600px) {
+  .plans-two-squares { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 768px) {
+  .problem-columns { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 768px) {
+  .how-it-works-steps { grid-template-columns: 1fr !important; }
+}
+
+.cta-button:hover {
+  background: #1d4ed8 !important;
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(15, 98, 254, 0.45);
+}
 
 .accordion{display:grid; gap:16px}
 .accordion-item{
@@ -2610,12 +2584,12 @@ html {
     padding-right: clamp(12px, 3vw, 24px) !important;
   }
   
-  /* Main page container - full width, white background on mobile */
+  /* Main page container - full width, gradient background on mobile */
   .main-page-container {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: hidden !important;
-    background: #ffffff !important;
     margin: 0 !important;
     padding: 0 !important;
   }
@@ -2641,16 +2615,6 @@ html {
     padding: 0 !important;
     width: 100% !important;
     overflow-x: hidden !important;
-  }
-  
-  /* Fun text "Ahorro, invierto..." - adjust for mobile */
-  .fun-text-container {
-    padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 32px) !important;
-  }
-  
-  .fun-text-container h2 {
-    font-size: clamp(24px, 6vw, 40px) !important;
-    line-height: 1.3 !important;
   }
   
   /* Main hero section - adjust for mobile */
@@ -2733,7 +2697,7 @@ html {
   }
   
   .main-page-container {
-    background: linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%) !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
     width: 100% !important;
     max-width: 100% !important;
   }

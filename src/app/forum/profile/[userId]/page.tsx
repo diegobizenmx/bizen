@@ -207,34 +207,7 @@ export default function ForumProfilePage() {
   }, [user, userId])
 
   if (loading || loadingData) {
-    return (
-      <div style={{ 
-        display: "grid", 
-        placeItems: "center", 
-        minHeight: "60vh", 
-        fontFamily: "Montserrat, sans-serif",
-        background: "#ffffff"
-      }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{
-            width: 48,
-            height: 48,
-            border: "4px solid #0F62FE22",
-            borderTop: "4px solid #0F62FE",
-            borderRadius: "50%",
-            margin: "0 auto 16px",
-            animation: "spin 1s linear infinite",
-          }} />
-          <p style={{ color: "#666", fontSize: 16 }}>Cargando perfil...</p>
-        </div>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
-      </div>
-    )
+    return <div style={{ minHeight: "50vh", background: "#ffffff" }} />
   }
 
   if (!user || !profile) return null

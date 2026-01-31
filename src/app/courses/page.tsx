@@ -379,28 +379,32 @@ export default function CoursesPage() {
   }, [])
 
 
-  // Show loading or redirect if not authenticated
+  // Show loading or redirect if not authenticated - minimal placeholder in usable content area
   if (loading || loadingData || !user) {
     return (
-      <div style={{ display: "grid", placeItems: "center", minHeight: "60vh", fontFamily: "'Montserrat', sans-serif" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{
-            width: 48,
-            height: 48,
-            border: "4px solid #0F62FE22",
-            borderTop: "4px solid #0F62FE",
-            borderRadius: "50%",
-            margin: "0 auto 16px",
-            animation: "spin 1s linear infinite",
-          }} />
-          <p style={{ color: "#666", fontSize: 16 }}>{t.courses.loadingPath}</p>
-        </div>
+      <div
+        style={{
+          minHeight: "50vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "'Montserrat', sans-serif",
+          paddingLeft: 16,
+          paddingRight: 16,
+          marginLeft: 0,
+          boxSizing: "border-box",
+        }}
+        className="courses-loading-placeholder"
+      >
         <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+          @media (min-width: 768px) and (max-width: 1160px) {
+            .courses-loading-placeholder { margin-left: 220px; }
+          }
+          @media (min-width: 1161px) {
+            .courses-loading-placeholder { margin-left: 280px; }
           }
         `}</style>
+        {/* No spinner - blank or redirect handles it */}
       </div>
     )
   }
@@ -497,7 +501,17 @@ export default function CoursesPage() {
           alignItems: "stretch",
           gap: 0
         }}>
-          {courses.map((course) => (
+          {(() => {
+            let nextLessonId: string | null = null
+            for (const c of courses) {
+              if (c.isLocked) continue
+              const found = c.lessons.find((l) => !l.isLocked && !l.isCompleted)
+              if (found) {
+                nextLessonId = found.id
+                break
+              }
+            }
+            return courses.map((course) => (
             <div
               key={course.id}
               id={`course-${course.id}`}
@@ -552,76 +566,129 @@ export default function CoursesPage() {
                 </div>
               </div>
 
-              {/* Lessons list */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingLeft: "clamp(8px, 2vw, 16px)" }}>
-                {course.lessons.map((lesson) => (
+              {/* Lessons - horizontal scroll, bigger square cards */}
+              <div
+                className="lessons-scroll-container"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 16,
+                  overflowX: "auto",
+                  overflowY: "hidden",
+                  paddingBottom: 8,
+                  paddingTop: 4,
+                  scrollSnapType: "x mandatory",
+                  WebkitOverflowScrolling: "touch",
+                  scrollbarWidth: "thin"
+                }}
+              >
+                {course.lessons.map((lesson) => {
+                  const isNextToComplete = lesson.id === nextLessonId
+                  return (
                   <div
                     key={lesson.id}
+                    className={`lesson-square-card ${isNextToComplete ? "lesson-breathing" : ""}`}
                     style={{
+                      width: 260,
+                      minWidth: 260,
+                      aspectRatio: "1",
+                      flexShrink: 0,
                       display: "flex",
+                      flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      gap: 12,
-                      padding: "12px 16px",
+                      padding: 20,
                       background: lesson.isCompleted ? "#ECFDF5" : lesson.isLocked ? "#F9FAFB" : "#F0F9FF",
-                      borderRadius: 10,
-                      border: lesson.isLocked ? "1px solid #E5E7EB" : "1px solid rgba(59, 130, 246, 0.2)"
+                      borderRadius: 20,
+                      border: lesson.isLocked ? "2px solid #E5E7EB" : "2px solid rgba(59, 130, 246, 0.3)",
+                      boxSizing: "border-box",
+                      scrollSnapAlign: "start",
+                      animation: isNextToComplete ? "lesson-breathe 3s ease-in-out infinite" : undefined
                     }}
                   >
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 2 }}>
-                        {t.courses.lesson} {lesson.order} · {lesson.unitTitle}
+                    <div style={{ textAlign: "center", width: "100%", minWidth: 0, flex: "1 1 auto", display: "flex", flexDirection: "column", justifyContent: "flex-start", overflow: "hidden", gap: 4 }}>
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 14,
+                          background: lesson.isLocked ? "#9CA3AF" : "#3B82F6",
+                          color: "white",
+                          fontSize: 20,
+                          fontWeight: 800,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          margin: "0 auto 6px",
+                          flexShrink: 0
+                        }}
+                      >
+                        {lesson.order}
                       </div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#111" }}>{lesson.title}</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }} title={lesson.unitTitle}>
+                        {lesson.unitTitle}
+                      </div>
+                      <div style={{ fontSize: 17, fontWeight: 700, color: "#111", lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", width: "100%", wordBreak: "break-word" }} title={lesson.title}>
+                        {lesson.title}
+                      </div>
                     </div>
-                    {!lesson.isLocked && (
-                      <Button
-                        onClick={() => {
-                          if (lesson.order === 1 || lesson.order === 2) {
-                            router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}/interactive`)
-                          } else {
-                            router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}`)
-                          }
-                        }}
-                        style={{
-                          flexShrink: 0,
-                          fontSize: 14,
-                          fontWeight: 700,
-                          padding: "8px 16px",
-                          background: "#3B82F6",
-                          color: "white",
-                          border: "none",
-                          borderRadius: 8
-                        }}
-                      >
-                        {lesson.isCompleted ? "Ver" : "Iniciar"}
-                      </Button>
-                    )}
-                    {lesson.isLocked && !user && (
-                      <Button
-                        onClick={() => window.open("/signup", "_blank")}
-                        style={{
-                          flexShrink: 0,
-                          fontSize: 13,
-                          fontWeight: 700,
-                          padding: "8px 14px",
-                          background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
-                          color: "white",
-                          border: "none",
-                          borderRadius: 8
-                        }}
-                      >
-                        Crear cuenta
-                      </Button>
-                    )}
-                    {lesson.isLocked && user && (
-                      <span style={{ fontSize: 13, color: "#6B7280", fontWeight: 600 }}>Bloqueado</span>
-                    )}
+                    <div style={{ flexShrink: 0, marginTop: 14, width: "100%" }}>
+                      {!lesson.isLocked && (
+                        <Button
+                          className="lesson-btn lesson-btn-start"
+                          onClick={() => {
+                            if (lesson.order === 1 || lesson.order === 2) {
+                              router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}/interactive`)
+                            } else {
+                              router.push(`/learn/${lesson.courseId}/unit-1/${lesson.id}`)
+                            }
+                          }}
+                          style={{
+                            width: "100%",
+                            fontSize: 16,
+                            fontWeight: 700,
+                            padding: "10px 16px",
+                            background: "#3B82F6",
+                            color: "white",
+                            border: "none",
+                            borderRadius: 12,
+                            cursor: "pointer",
+                            transition: "background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease"
+                          }}
+                        >
+                          {lesson.isCompleted ? "Ver" : "Iniciar"}
+                        </Button>
+                      )}
+                      {lesson.isLocked && !user && (
+                        <Button
+                          className="lesson-btn lesson-btn-signup"
+                          onClick={() => window.open("/signup", "_blank")}
+                          style={{
+                            width: "100%",
+                            fontSize: 15,
+                            fontWeight: 700,
+                            padding: "10px 16px",
+                            background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
+                            color: "white",
+                            border: "none",
+                            borderRadius: 12,
+                            cursor: "pointer",
+                            transition: "background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease"
+                          }}
+                        >
+                          Crear cuenta
+                        </Button>
+                      )}
+                      {lesson.isLocked && user && (
+                        <span style={{ display: "block", textAlign: "center", fontSize: 15, color: "#6B7280", fontWeight: 600 }}>Bloqueado</span>
+                      )}
+                    </div>
                   </div>
-                ))}
+                );
+                })}
               </div>
             </div>
-          ))}
+          )); })()}
         </div>
       </main>
 
@@ -653,10 +720,25 @@ export default function CoursesPage() {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
         }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        
+        @keyframes lesson-breathe {
+          0%, 100% { transform: scale(1); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2); }
+          50% { transform: scale(1.02); box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35); }
+        }
+        
+        /* Lesson action buttons - hover effect */
+        .lesson-btn:hover {
+          transform: scale(1.02);
+          box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+        .lesson-btn:active {
+          transform: scale(0.98);
+        }
+        .lesson-btn-start:hover {
+          background: #2563EB !important;
+        }
+        .lesson-btn-signup:hover {
+          background: linear-gradient(135deg, #0A5FD4 0%, #3A8EF7 100%) !important;
         }
         
         @keyframes bounce {
