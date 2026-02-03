@@ -281,7 +281,8 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
             disabled={!state.isContinueEnabled}
             className={onExit ? "flex-1 max-w-none" : "w-full"}
           >
-            {isLastStep || isSummaryStep ? "Complete Lesson" : "Continue"}
+            {(currentStep as { continueLabel?: string }).continueLabel ??
+              (isLastStep || isSummaryStep ? "Completar lección" : "Continuar")}
           </StickyFooterButton>
         </div>
       }
@@ -289,7 +290,7 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
       {isReviewStep && (
         <div className="mb-4 p-3 bg-amber-100 border border-amber-400 rounded-lg">
           <p className="text-xl md:text-2xl font-semibold text-amber-900">
-            📚 Review: Try this question again
+            Otra oportunidad
           </p>
         </div>
       )}

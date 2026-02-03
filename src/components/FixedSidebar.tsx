@@ -225,13 +225,14 @@ export default function FixedSidebar() {
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "flex-end",
               gap: 12,
               marginBottom: 32,
               padding: "8px 0",
               background: "transparent",
               border: "none",
               cursor: "pointer",
-              textAlign: "left",
+              textAlign: "right",
               width: "100%"
             }}
             className="sidebar-brand"
@@ -359,6 +360,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenucourses.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">{t.nav.exploreCourses}</span>
               </button>
 
@@ -397,6 +405,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenudailychallenge.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">Reto diario</span>
               </button>
 
@@ -476,6 +491,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenucashflow.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">Cash flow</span>
               </button>
 
@@ -514,6 +536,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenusimulators.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">Simuladores</span>
               </button>
 
@@ -555,6 +584,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenuprogress.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">{t.nav.myProgress}</span>
               </button>
 
@@ -593,6 +629,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenuforum.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">Foro</span>
               </button>
 
@@ -631,6 +674,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenuranking.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">Ranking</span>
               </button>
               </>
@@ -677,6 +727,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenuprofile.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">{t.nav.profile}</span>
               </button>
 
@@ -715,6 +772,13 @@ export default function FixedSidebar() {
                   }
                 }}
               >
+                <Image
+                  src="/leftmenusettings.png"
+                  alt=""
+                  width={56}
+                  height={56}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
                 <span className="nav-item-label">Configuración</span>
               </button>
             </div>
@@ -1474,10 +1538,10 @@ export default function FixedSidebar() {
         
         .sidebar-user-info > div:first-child {
           flex-shrink: 0 !important;
-          width: 48px !important;
-          min-width: 48px !important;
-          height: 48px !important;
-          min-height: 48px !important;
+          width: 56px !important;
+          min-width: 56px !important;
+          height: 56px !important;
+          min-height: 56px !important;
         }
         
         .sidebar-username {

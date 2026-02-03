@@ -97,7 +97,7 @@ export default function CoursesPage() {
           {
             id: "course-1", title: "Fundamentos del Dinero", description: "Aprende los conceptos básicos sobre el dinero", level: "Beginner", order: 1,
             lessons: [
-              { unitTitle: "¿Qué es el dinero?", title: "Historia del dinero" },
+              { unitTitle: "¿Qué es el dinero?", title: "Por qué importa el dinero" },
               { unitTitle: "¿Qué es el dinero?", title: "¿Cómo gana valor?" },
               { unitTitle: "¿Qué es el dinero?", title: "Dinero físico vs digital" },
               { unitTitle: "Conceptos financieros básicos", title: "Ingresos y gastos" },
@@ -754,7 +754,6 @@ export default function CoursesPage() {
                 }}
               >
                 {course.lessons.map((lesson) => {
-                  const isFirstLessonCover = course.id === "course-1" && lesson.id === "l1-1"
                   const isCardClickable = !lesson.isLocked
                   return (
                   <div
@@ -783,36 +782,24 @@ export default function CoursesPage() {
                     }}
                   >
                     <div style={{ textAlign: "center", width: "100%", minWidth: 0, flex: "1 1 auto", display: "flex", flexDirection: "column", justifyContent: "flex-start", overflow: "hidden", gap: 4 }}>
-                      {isFirstLessonCover ? (
-                        <div style={{ width: "100%", height: 100, position: "relative", marginBottom: 6, flexShrink: 0, borderRadius: 12, overflow: "hidden", background: "#1f2937" }}>
-                          <Image
-                            src="/hero4.png"
-                            alt="Historia del dinero"
-                            fill
-                            sizes="260px"
-                            style={{ objectFit: "contain" }}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: 14,
-                            background: lesson.isLocked ? "#9CA3AF" : "#3B82F6",
-                            color: "white",
-                            fontSize: 20,
-                            fontWeight: 800,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "0 auto 6px",
-                            flexShrink: 0
-                          }}
-                        >
-                          {lesson.order}
-                        </div>
-                      )}
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 14,
+                          background: lesson.isLocked ? "#9CA3AF" : "#3B82F6",
+                          color: "white",
+                          fontSize: 20,
+                          fontWeight: 800,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          margin: "0 auto 6px",
+                          flexShrink: 0
+                        }}
+                      >
+                        {lesson.order}
+                      </div>
                       <div style={{ fontSize: 15, fontWeight: 600, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }} title={lesson.unitTitle}>
                         {lesson.unitTitle}
                       </div>
