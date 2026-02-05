@@ -19,6 +19,25 @@ export default function WelcomePage() {
   const [isMouthOpen, setIsMouthOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isPhone, setIsPhone] = useState(false)
+  const [activeHeroCard, setActiveHeroCard] = useState<number | null>(null)
+  const [activeProfile, setActiveProfile] = useState<"directores" | "docentes" | "estudiantes" | "padres">("directores")
+  const [demoModalOpen, setDemoModalOpen] = useState(false)
+  const [activeTestimonial, setActiveTestimonial] = useState(0)
+
+  const heroCardSummaries: { title: string; summary: string }[] = [
+    {
+      title: "Finanzas personales",
+      summary: "Aprendemos a controlar ingresos, gastos y deudas con cosas simples como presupuesto y hábitos.",
+    },
+    {
+      title: "Simuladores financieros",
+      summary: "Probamos escenarios (crédito, inversión, ahorro) para ver resultados sin arriesgar dinero real.",
+    },
+    {
+      title: "Plan de ahorro",
+      summary: "Definimos una meta y un monto mensual para ahorrar con orden y constancia.",
+    },
+  ]
 
   // Lock: show "use desktop/tablet" message on phones
   useEffect(() => {
@@ -69,12 +88,14 @@ export default function WelcomePage() {
     }
   }, [])
 
+  const gradientStyle = { background: "linear-gradient(180deg, #f5f9ff 0%, #eef6ff 18%, #e0efff 40%, #d4e8ff 60%, #dbeafe 75%, #d4e8ff 88%, #bfdbfe 100%)", backgroundAttachment: "scroll" as const }
+
   return (
     <div style={{
-      background: "linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%)",
-      backgroundAttachment: "fixed",
+      background: "#ffffff",
       flex: 1,
       width: "100%",
+      minWidth: "100%",
       maxWidth: "100%",
       margin: 0,
       padding: 0,
@@ -82,7 +103,7 @@ export default function WelcomePage() {
       boxSizing: "border-box",
       display: "flex",
       flexDirection: "column",
-    }} className="main-page-container">
+    }} className="main-page-container landing-page-root" data-landing-root>
       {/* Phone lock: ask to open on desktop/tablet */}
       {isPhone && (
         <div
@@ -90,7 +111,7 @@ export default function WelcomePage() {
         position: "fixed",
             inset: 0,
             zIndex: 99999,
-            background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 100%)",
+            background: "linear-gradient(135deg, #1e3a8a 0%, #4A90E2 100%)",
         display: "flex",
             flexDirection: "column",
         alignItems: "center",
@@ -135,19 +156,19 @@ export default function WelcomePage() {
       }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
           <Image src="/bizen-logo.png" alt="BIZEN logo" width={48} height={48} priority style={{ width: 48, height: "auto", flexShrink: 0 }} />
-          <span style={{ fontSize: 22, fontWeight: 700, color: "#0F62FE", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
+          <span style={{ fontSize: 22, fontWeight: 700, color: "#1e3a8a", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
         </Link>
         <nav style={{ display: "flex", gap: "24px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "14px 32px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
           <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
           <Link href="#impacto" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Impacto</Link>
           <Link href="#precios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Implementación</Link>
-          <Link href="#precios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Para escuelas</Link>
-          <Link href="#contacto" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Contacto</Link>
+          <Link href="#problema" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>El problema</Link>
         </nav>
-        <Link href="#contacto" style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#0F62FE", color: "white", borderRadius: 10, textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0 }} className="crear-cuenta-button">Agendar demo</Link>
+        <button type="button" onClick={() => setDemoModalOpen(true)} style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#1e3a8a", color: "white", borderRadius: 9999, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0 }} className="crear-cuenta-button">Agendar demo</button>
       </div>
 
       <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
+        <div style={gradientStyle}>
         <div style={{
           paddingTop: "clamp(16px, 3vw, 24px)",
           position: "relative",
@@ -193,7 +214,6 @@ export default function WelcomePage() {
             minHeight: "100vh",
             boxSizing: "border-box",
             overflow: "visible",
-            position: "relative",
           }} className="main-content-wrapper">
 
             {/* Tagline at top of hero - fixed width on desktop so text spreads instead of shrinking */}
@@ -218,7 +238,7 @@ export default function WelcomePage() {
                 fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                   width: "100%",
               }}>
-                &quot;La plataforma que está transformando la educación financiera en México.&quot;
+                La plataforma institucional que prepara a tus alumnos para el éxito financiero
               </p>
               <p className="hero-tagline-sub" style={{
                 fontSize: "clamp(18px, 1.2rem, 22px)",
@@ -229,38 +249,54 @@ export default function WelcomePage() {
                 fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                       width: "100%",
               }}>
-                BIZEN es la plataforma educativa que combina <span style={{ color: "#0F71FD", fontWeight: 600 }}>gamificación e inteligencia artificial</span> para enseñar <span style={{ color: "#0F71FD", fontWeight: 600 }}>finanzas personales</span> de forma práctica, clara y relevante para estudiantes de preparatoria y universidad.
+                BIZEN es la plataforma educativa que combina <span style={{ color: "#1e3a8a", fontWeight: 600 }}>gamificación e inteligencia artificial</span> para enseñar <span style={{ color: "#1e3a8a", fontWeight: 600 }}>finanzas personales</span> a estudiantes de preparatoria y universidad de forma práctica, clara y relevante.
               </p>
               </div>
 
             {/* Rectangles - separate full-width block, outside absolute container to avoid clipping */}
             <div className="hero-rectangles-wrapper">
               <div className="hero-rect-row">
-                <div className="hero-card-link">
-                  <div className="hero-rect-card">
-                    <div className="hero-rect-inner">
-                      <Image src="/hero1.png" alt="Billy con lápiz y libreta" fill style={{ objectFit: "contain" }} />
+                {[0, 1, 2].map((index) => (
+                  <div
+                    key={index}
+                    className={`hero-card-link${activeHeroCard === index ? " hero-card-summary-visible" : ""}`}
+                    onMouseEnter={() => setActiveHeroCard(index)}
+                    onMouseLeave={() => setActiveHeroCard(null)}
+                    onClick={() => setActiveHeroCard((prev) => (prev === index ? null : index))}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        setActiveHeroCard((prev) => (prev === index ? null : index))
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={activeHeroCard === index}
+                    aria-label={`${heroCardSummaries[index].title}. ${activeHeroCard === index ? heroCardSummaries[index].summary : "Click o pasa el cursor para ver resumen"}`}
+                  >
+                    <div className="hero-rect-card">
+                      <div className="hero-rect-inner">
+                        <Image
+                          src={index === 0 ? "/hero1.png" : index === 1 ? "/hero2.png" : "/hero3.png"}
+                          alt={index === 0 ? "Billy con lápiz y libreta" : index === 1 ? "Billy con tablet y gráfica financiera" : "Billy con alcancía"}
+                          fill
+                          style={{ objectFit: "contain" }}
+                        />
                     </div>
-                  </div>
-                  <span className="hero-circle-label">Finanzas<br />Personales</span>
+                      <div
+                        className="hero-card-summary hero-card-summary-bubble"
+                        role="region"
+                        aria-live="polite"
+                      >
+                        <span className="hero-card-summary-text">{heroCardSummaries[index].summary}</span>
                 </div>
-                <div className="hero-card-link">
-                  <div className="hero-rect-card">
-                    <div className="hero-rect-inner">
-                      <Image src="/hero2.png" alt="Billy con tablet y gráfica financiera" fill style={{ objectFit: "contain" }} />
-                    </div>
-                  </div>
-                  <span className="hero-circle-label">Simuladores<br />financieros</span>
-                </div>
-                <div className="hero-card-link">
-                  <div className="hero-rect-card">
-                    <div className="hero-rect-inner">
-                      <Image src="/hero3.png" alt="Billy con alcancía" fill style={{ objectFit: "contain" }} />
-                    </div>
-                  </div>
-                  <span className="hero-circle-label">Plan de<br />ahorro</span>
-                </div>
+              </div>
+                    <span className="hero-circle-label">
+                      {index === 0 ? <>Finanzas<br />Personales</> : index === 1 ? <>Simuladores<br />financieros</> : <>Plan de<br />ahorro</>}
+                    </span>
             </div>
+                ))}
+              </div>
             </div>
 
           </div>
@@ -275,6 +311,19 @@ export default function WelcomePage() {
         /* Prevent horizontal scroll on landing - keep all content in frame */
         html:has(.main-page-container),
         body:has(.main-page-container) { overflow-x: hidden !important; max-width: 100vw !important; }
+        
+        /* ELIMINATE left gap - force zero padding on ALL layout ancestors (no sidebar on landing) */
+        html:has(.main-page-container) body,
+        html:has(.main-page-container) body > div,
+        html:has(.main-page-container) body > div > div,
+        html:has(.main-page-container) body > div > div > div,
+        html:has(.main-page-container) .app-shell,
+        html:has(.main-page-container) .app-scroll,
+        html:has(.main-page-container) .app-main,
+        html:has(.main-page-container) main {
+          padding-left: 0 !important;
+          margin-left: 0 !important;
+        }
         .main-page-container { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
         .main-page-container main { overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; }
         .main-page-container main > div { overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; box-sizing: border-box !important; }
@@ -320,7 +369,7 @@ export default function WelcomePage() {
 
         /* Nav links: not bold, hover color change */
         .header-nav-link:hover {
-          color: #0F62FE !important;
+          color: #1e3a8a !important;
           transition: color 0.2s ease;
         }
         .header-nav-link {
@@ -329,7 +378,7 @@ export default function WelcomePage() {
 
         /* Crear cuenta button: solid blue, no shimmer */
         .crear-cuenta-button {
-          background: #0F62FE !important;
+          background: #1e3a8a !important;
           transition: background 0.2s ease, filter 0.2s ease;
           animation: none !important;
         }
@@ -367,7 +416,7 @@ export default function WelcomePage() {
           .main-header .crear-cuenta-button {
             padding: 15px 26px !important;
             font-size: 18px !important;
-            border-radius: 11px !important;
+            border-radius: 9999px !important;
           }
           .hero-top-block {
             top: clamp(44px, 5vw, 64px) !important;
@@ -521,7 +570,7 @@ export default function WelcomePage() {
           .main-header .crear-cuenta-button {
             padding: 18px 32px !important;
             font-size: 21px !important;
-            border-radius: 12px !important;
+            border-radius: 9999px !important;
           }
           /* Hero section: bigger tagline, subtext, rectangles and labels */
           .hero-top-block {
@@ -637,6 +686,7 @@ export default function WelcomePage() {
           gap: 16px;
           text-decoration: none;
           flex-shrink: 0;
+          cursor: pointer;
         }
         .hero-rect-card {
           width: clamp(200px, 22vw, 320px);
@@ -664,6 +714,11 @@ export default function WelcomePage() {
           position: relative;
           width: 60%;
           height: 60%;
+          transition: opacity 0.25s ease;
+        }
+        .hero-card-link:hover .hero-rect-inner,
+        .hero-card-link.hero-card-summary-visible .hero-rect-inner {
+          opacity: 0;
         }
         .hero-circle-label {
           font-size: clamp(14px, 1.8vw, 18px);
@@ -671,6 +726,52 @@ export default function WelcomePage() {
           color: #1f2937;
           text-align: center;
           line-height: 1.4;
+        }
+        @keyframes hero-bubble-in {
+          from {
+            opacity: 0;
+            transform: scale(0.88);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .hero-card-summary {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 16px;
+          border-radius: 28px;
+          background: rgba(255, 255, 255, 0.98);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(15, 113, 253, 0.15);
+          border: 1px solid rgba(15, 113, 253, 0.2);
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transition: opacity 0.2s ease, visibility 0.2s ease;
+          z-index: 2;
+          box-sizing: border-box;
+        }
+        .hero-card-summary-text {
+          display: block;
+          width: 100%;
+          max-width: 100%;
+          font-size: clamp(13px, 1.45vw, 17px);
+          line-height: 1.35;
+          color: #374151;
+          text-align: center;
+          margin: 0 auto;
+        }
+        .hero-card-link:hover .hero-card-summary,
+        .hero-card-link.hero-card-summary-visible .hero-card-summary {
+          opacity: 1;
+          visibility: visible;
+          animation: hero-bubble-in 0.28s ease-out forwards;
         }
         
         /* Scroll reveal animations */
@@ -790,13 +891,13 @@ export default function WelcomePage() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: #0F62FE;
+          background: #1e3a8a;
           border-radius: clamp(7px, 1.2vw, 9px);
           z-index: -1;
         }
         
         .empieza-ya-button {
-          background: #0F62FE !important;
+          background: #1e3a8a !important;
           border: 3px solid transparent !important;
           position: relative;
           animation: buttonPulse 2s ease-in-out infinite;
@@ -1217,12 +1318,282 @@ export default function WelcomePage() {
       `}</style>
         </div>
 
-        {/* Landing Page Content */}
-        <LandingContent />
+        {/* Landing Page Content - gradient: hero through perfiles */}
+        <LandingContent sectionRange="gradient" onOpenDemoModal={() => setDemoModalOpen(true)} />
+      </div>
+        {/* Rest of landing (white background) */}
+        <LandingContent sectionRange="rest" onOpenDemoModal={() => setDemoModalOpen(true)} />
       </main >
 
+      {/* Schedule Demo Modal - compact, enhanced */}
+      {demoModalOpen && (
+        <div role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" style={{ position: "fixed", inset: 0, zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", boxSizing: "border-box" }} onClick={(e) => e.target === e.currentTarget && setDemoModalOpen(false)}>
+          <div style={{ position: "relative", background: "#ffffff", borderRadius: "20px", border: "1px solid rgba(15, 98, 254, 0.12)", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.2), 0 0 0 1px rgba(15, 98, 254, 0.04)", padding: "28px 32px", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", maxWidth: "min(98vw, 520px)", width: "100%", maxHeight: "88vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+            <button type="button" aria-label="Cerrar" onClick={() => setDemoModalOpen(false)} style={{ position: "absolute", top: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", border: "none", background: "#f1f5f9", cursor: "pointer", fontSize: "18px", lineHeight: 1, color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s, color 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "#e2e8f0"; e.currentTarget.style.color = "#334155"; }} onMouseOut={(e) => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#64748b"; }}>×</button>
+            <div style={{ paddingRight: "36px" }}>
+              <div style={{ width: "40px", height: "4px", borderRadius: "2px", background: "linear-gradient(90deg, #1e3a8a, #60a5fa)", marginBottom: "16px" }} />
+              <h2 id="demo-modal-title" style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b", margin: "0 0 6px 0", lineHeight: 1.3 }}>Solicita tu demo gratis</h2>
+              <p style={{ fontSize: "14px", color: "#64748b", margin: "0 0 16px 0", lineHeight: 1.5 }}>15 min · Sin presión</p>
+              <ul style={{ listStyle: "none", margin: "0 0 16px 0", padding: 0, display: "flex", flexWrap: "wrap", gap: "8px 16px" }}>
+                {["Lecciones prácticas", "Reportes de progreso", "Implementación fácil"].map((item, i) => (
+                  <li key={i} style={{ display: "flex", gap: "6px", alignItems: "center", fontSize: "13px", color: "#475569" }}><span style={{ color: "#1e3a8a", fontWeight: 700, flexShrink: 0 }}>✓</span><span>{item}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div style={{ background: "#f8fafc", borderRadius: "12px", padding: "16px 20px", border: "1px solid #e2e8f0" }}>
+              <form onSubmit={async (e) => { e.preventDefault(); const form = e.currentTarget; const formData = new FormData(form); const name = formData.get("name") as string; const email = formData.get("email") as string; const school = formData.get("school") as string; const role = formData.get("role") as string; const students = formData.get("students") as string; const parts = [`Escuela: ${school || "—"}`, `Rol: ${role || "—"}`, students ? `Estudiantes: ${students}` : ""].filter(Boolean); const message = parts.join("\n"); const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement; const originalText = submitButton?.textContent; if (submitButton) { submitButton.disabled = true; submitButton.textContent = "Enviando…"; } try { const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, message }) }); const data = await res.json(); if (data.success) { alert(data.message || "Gracias. Te contactaremos pronto."); form.reset(); setDemoModalOpen(false); } else { alert(data.message || "Error. Intenta de nuevo."); } } catch { alert("Error al enviar. Intenta de nuevo más tarde."); } finally { if (submitButton) { submitButton.disabled = false; submitButton.textContent = originalText || "Agendar demo"; } } }} style={{ display: "grid", gap: "12px 16px", gridTemplateColumns: "1fr 1fr" }}>
+                {[{ id: "modal-demo-name", name: "name", label: "Nombre", type: "text", required: true }, { id: "modal-demo-email", name: "email", label: "Email", type: "email", required: true }, { id: "modal-demo-school", name: "school", label: "Escuela", type: "text", required: true }, { id: "modal-demo-role", name: "role", label: "Rol", type: "text", required: true, placeholder: "ej. Director" }].map((f) => (
+                  <div key={f.id} style={{ display: "flex", flexDirection: "column", gap: "4px", gridColumn: f.name === "school" || f.name === "role" ? undefined : "1 / -1" }}><label htmlFor={f.id} style={{ fontWeight: 500, fontSize: "12px", color: "#64748b" }}>{f.label}</label><input id={f.id} name={f.name} type={f.type} required={f.required} placeholder={f.placeholder} style={{ width: "100%", padding: "10px 12px", fontSize: "14px", borderRadius: "8px", background: "#fff", border: "1px solid #e2e8f0", color: "#1e293b", fontFamily: "inherit", boxSizing: "border-box" }} /></div>
+                ))}
+                <div style={{ gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: "4px" }}><label htmlFor="modal-demo-students" style={{ fontWeight: 500, fontSize: "12px", color: "#64748b" }}>Estudiantes (opcional)</label><input id="modal-demo-students" name="students" type="text" placeholder="ej. 250" style={{ width: "100%", padding: "10px 12px", fontSize: "14px", borderRadius: "8px", background: "#fff", border: "1px solid #e2e8f0", color: "#1e293b", fontFamily: "inherit", boxSizing: "border-box" }} /></div>
+                <button type="submit" style={{ width: "100%", marginTop: "4px", gridColumn: "1 / -1", padding: "12px 20px", minHeight: "44px", fontSize: "15px", fontWeight: 600, color: "#ffffff", background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)", border: "none", borderRadius: 9999, cursor: "pointer", fontFamily: "inherit", boxShadow: "0 2px 8px rgba(15, 98, 254, 0.35)" }}>Agendar demo</button>
+              </form>
+            </div>
+            <p style={{ margin: "12px 0 0 0", fontSize: "11px", color: "#94a3b8", lineHeight: 1.5 }}>Secundaria y preparatoria</p>
+          </div>
+        </div>
+      )}
+
+      {/* Testimonials Carousel */}
+      <section className="section testimonials-section" style={{ background: "#f8fafc", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)", marginBottom: "clamp(64px, 10vw, 100px)" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <h2 style={{ 
+          textAlign: "center",
+            margin: "0 0 clamp(40px, 6vw, 64px)", 
+            fontSize: "clamp(28px, 4.5vw, 44px)", 
+            fontWeight: 800, 
+            color: "#111", 
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif", 
+            lineHeight: 1.2 
+          }}>
+            Colegios líderes en México ya evolucionaron con BIZEN<span style={{ color: "#111" }}>.</span>
+          </h2>
+          
+          <div style={{ position: "relative", maxWidth: "900px", margin: "0 auto" }}>
+            {/* Left Arrow - disabled on first card */}
+            <button
+              type="button"
+              disabled={activeTestimonial === 0}
+              onClick={() => activeTestimonial > 0 && setActiveTestimonial(prev => prev - 1)}
+              style={{
+                position: "absolute",
+                left: "-60px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                background: activeTestimonial === 0 ? "rgba(203, 213, 225, 0.4)" : "rgba(139, 92, 246, 0.15)",
+                border: `1px solid ${activeTestimonial === 0 ? "rgba(148, 163, 184, 0.4)" : "rgba(139, 92, 246, 0.3)"}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: activeTestimonial === 0 ? "not-allowed" : "pointer",
+                zIndex: 10,
+                transition: "all 0.2s ease",
+                opacity: activeTestimonial === 0 ? 0.6 : 1,
+              }}
+              onMouseOver={(e) => {
+                if (activeTestimonial !== 0) {
+                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.25)"
+                  e.currentTarget.style.transform = "translateY(-50%) scale(1.05)"
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeTestimonial === 0) return
+                e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)"
+                e.currentTarget.style.transform = "translateY(-50%)"
+              }}
+              aria-label="Testimonial anterior"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={activeTestimonial === 0 ? "#94a3b8" : "#8b5cf6"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            {/* Right Arrow - disabled on last card */}
+            <button
+              type="button"
+              disabled={activeTestimonial === 2}
+              onClick={() => activeTestimonial < 2 && setActiveTestimonial(prev => prev + 1)}
+              style={{
+                position: "absolute",
+                right: "-60px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                background: activeTestimonial === 2 ? "rgba(203, 213, 225, 0.4)" : "rgba(15, 98, 254, 0.15)",
+                border: `1px solid ${activeTestimonial === 2 ? "rgba(148, 163, 184, 0.4)" : "rgba(15, 98, 254, 0.3)"}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: activeTestimonial === 2 ? "not-allowed" : "pointer",
+                zIndex: 10,
+                transition: "all 0.2s ease",
+                opacity: activeTestimonial === 2 ? 0.6 : 1,
+              }}
+              onMouseOver={(e) => {
+                if (activeTestimonial !== 2) {
+                  e.currentTarget.style.background = "rgba(15, 98, 254, 0.25)"
+                  e.currentTarget.style.transform = "translateY(-50%) scale(1.05)"
+                }
+              }}
+              onMouseOut={(e) => {
+                if (activeTestimonial === 2) return
+                e.currentTarget.style.background = "rgba(15, 98, 254, 0.15)"
+                e.currentTarget.style.transform = "translateY(-50%)"
+              }}
+              aria-label="Siguiente testimonial"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={activeTestimonial === 2 ? "#94a3b8" : "#1e3a8a"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+
+            {/* Testimonial Cards - animated on navigate */}
+            <div style={{ position: "relative", perspective: "1000px", minHeight: "320px" }}>
+              {[
+                {
+                  quote: "Una plataforma increíble para aprender finanzas personales de forma clara y práctica. A mi hijo le encantó.",
+                  name: "Gabriela Burgos",
+                  title: "Directora de Programas de Emprendimiento · BLOQUE",
+                  institution: "",
+                  image: "/image.png",
+                  logo: undefined,
+                },
+                {
+                  quote: "Una herramienta excepcional para quienes buscan desarrollar educación financiera de forma práctica.",
+                  name: "Alejandro Rolland",
+                  title: "Secretaría de Desarrollo Sustentable · Querétaro",
+                  institution: "",
+                  image: "/image%20copy.png",
+                  logo: undefined,
+                },
+                {
+                  quote: "Una plataforma innovadora que acerca las finanzas personales de manera sencilla y atractiva para jóvenes.",
+                  name: "Joanna Vazquez",
+                  title: "Coordinadora Universidad",
+                  institution: "Mondragón México",
+                  image: "/3.png",
+                  logo: "/bizen_sign.png",
+                },
+              ].map((testimonial, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    opacity: activeTestimonial === idx ? 1 : 0,
+                    transform: activeTestimonial === idx ? "translateX(0)" : idx < activeTestimonial ? "translateX(-36px)" : "translateX(36px)",
+                    pointerEvents: activeTestimonial === idx ? "auto" : "none",
+                    transition: "opacity 0.45s ease, transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                    zIndex: activeTestimonial === idx ? 2 : 1,
+                  }}
+                  className="testimonial-card-animate"
+                >
+          <div style={{
+                    background: "#ffffff",
+                    borderRadius: "24px",
+                    padding: "clamp(32px, 5vw, 48px)",
+                    border: "1px solid rgba(15, 98, 254, 0.12)",
+                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(15, 98, 254, 0.06)",
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr auto",
+                    gap: "clamp(28px, 4vw, 40px)",
+            alignItems: "center",
+                  }}>
+                    {/* Person Image */}
+                    <div style={{
+                      width: "clamp(120px, 15vw, 160px)",
+                      height: "clamp(120px, 15vw, 160px)",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      flexShrink: 0,
+                      position: "relative",
+                    }}>
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        fill
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+
+                    {/* Quote */}
+                    <div>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ marginBottom: "16px" }}>
+                        <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="#FCD34D"/>
+                        <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="#FCD34D"/>
+                      </svg>
+                      <p style={{ 
+                        margin: "0 0 20px", 
+                        fontSize: "clamp(16px, 1.15rem, 19px)", 
+                        lineHeight: 1.6, 
+                        color: "#1e293b",
+                        fontFamily: "'Inter', sans-serif",
+                      }}>
+                        {testimonial.quote}
+                      </p>
+                      <div>
+                        <p style={{ margin: "0 0 4px", fontSize: "clamp(15px, 1rem, 17px)", fontWeight: 700, color: "#111", fontFamily: "'Inter', sans-serif" }}>
+                          — {testimonial.name}
+                        </p>
+                        <p style={{ margin: 0, fontSize: "clamp(13px, 0.9rem, 15px)", color: "#64748b", fontFamily: "'Inter', sans-serif" }}>
+                          {testimonial.title}
+                        </p>
+                        {testimonial.institution ? (
+                          <p style={{ margin: "2px 0 0", fontSize: "clamp(13px, 0.9rem, 15px)", color: "#64748b", fontFamily: "'Inter', sans-serif" }}>
+                            {testimonial.institution}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {/* School Logo (optional) */}
+                    {testimonial.logo && (
+                      <div style={{ width: "clamp(64px, 8vw, 80px)", height: "clamp(64px, 8vw, 80px)", position: "relative", flexShrink: 0 }}>
+                        <Image
+                          src={testimonial.logo}
+                          alt="Logo"
+                          fill
+                          style={{ objectFit: "contain" }}
+                        />
+          </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+        </div>
+
+            {/* Indicators */}
+            <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "24px" }}>
+              {[0, 1, 2].map(idx => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveTestimonial(idx)}
+                  style={{
+                    width: activeTestimonial === idx ? "32px" : "12px",
+                    height: "12px",
+                    borderRadius: "6px",
+                    background: activeTestimonial === idx ? "#1e3a8a" : "#cbd5e1",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                  }}
+                  aria-label={`Go to testimonial ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      < LandingWaitlistFooter />
+      <LandingWaitlistFooter onOpenDemoModal={() => setDemoModalOpen(true)} />
     </div >
   )
 }
@@ -1402,21 +1773,16 @@ function StepIcon3({ color }: { color: string }) {
   )
 }
 
-const audienceEscuelas = {
-  badge: "Para escuelas",
-  bullets: ["Licencia por escuela", "Panel docente y reportes", "Onboarding guiado"],
-  cta: "Agendar demo",
-  ctaHref: "#contacto",
-}
-
-function LandingContent() {
-  const primary = "#0F71FD"
+function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRange?: 'gradient' | 'rest' | 'all'; onOpenDemoModal?: () => void }) {
+  const primary = "#1e3a8a"
   const accent = "#10B981"
-  const audienceContent = audienceEscuelas
+  const [activeProfile, setActiveProfile] = React.useState<"directores" | "docentes" | "estudiantes" | "padres">("directores")
+  const [activeAdventureSlide, setActiveAdventureSlide] = React.useState(0)
 
   return (
     <>
       <style>{landingCSS}</style>
+      {(sectionRange === 'all' || sectionRange === 'gradient') && (<>
 
       {/* Logo carousel above Planes */}
       <section className="logos-carousel-section" style={{ background: "transparent", padding: "clamp(32px, 5vw, 48px) 0", overflow: "hidden" }}>
@@ -1435,269 +1801,1201 @@ function LandingContent() {
             {[...logoCarouselLogos, ...logoCarouselLogos].map((logo, i) => (
               <div key={i} className="logos-carousel-item">
                 <Image src={logo.src} alt={logo.alt} width={220} height={110} style={{ objectFit: "contain", opacity: 0.9 }} />
-              </div>
+            </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ¿Qué es BIZEN? - solution intro */}
-      <section id="que-es-bizen" className="section solution-intro reveal-element" style={{ background: "linear-gradient(180deg, rgba(248, 251, 255, 0.5) 0%, transparent 50%)", padding: "clamp(56px, 10vw, 88px) clamp(16px, 4vw, 24px)" }}>
-        <div className="container" style={{ maxWidth: "720px", margin: "0 auto" }}>
-          <div style={{
-            textAlign: "center",
-            padding: "clamp(40px, 6vw, 56px) clamp(24px, 4vw, 40px)",
-            borderRadius: "20px",
-            background: "rgba(255, 255, 255, 0.85)",
-            border: "1px solid rgba(15, 98, 254, 0.12)",
-            boxShadow: "0 4px 24px rgba(15, 98, 254, 0.06)",
+      {/* Somos BIZEN - 4 blue cards */}
+      <section id="sobre-bizen" className="section somos-bizen-section reveal-element" style={{ 
+        background: "transparent", 
+        paddingTop: "clamp(56px, 10vw, 96px)",
+        paddingBottom: "clamp(24px, 4vw, 40px)",
+        paddingLeft: "clamp(16px, 4vw, 24px)",
+        paddingRight: "clamp(16px, 4vw, 24px)",
+      }}>
+        <div className="container" style={{ maxWidth: "1320px", margin: "0 auto" }}>
+          {/* Heading */}
+          <h2 style={{
+            textAlign: "left",
+            fontSize: "clamp(32px, 4.5vw, 52px)",
+            fontWeight: 800,
+            color: "#1f2937",
+            lineHeight: 1.2,
+            marginBottom: "clamp(40px, 6vw, 64px)",
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
           }}>
-            <h2 style={{
-              margin: "0 0 clamp(24px, 3vw, 32px)",
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              color: "#111",
-              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-              lineHeight: 1.2,
-              letterSpacing: "-0.02em",
-            }}>
-              ¿Qué es BIZEN?
-            </h2>
-            <p style={{
-              margin: "0 0 28px",
-              fontSize: "clamp(17px, 1.15rem, 19px)",
-              color: "#374151",
-              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-              lineHeight: 1.65,
-              maxWidth: "560px",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}>
-              BIZEN es la plataforma de educación financiera que combina gamificación e inteligencia artificial para que tus estudiantes aprendan de forma práctica. Pensada para escuelas: cursos claros, simuladores reales y un progreso que puedes ver y medir.
-            </p>
-            <ul style={{
-              listStyle: "none",
-              margin: 0,
-              padding: 0,
+            Somos BIZEN, la solución<br />
+            que transforma la<br />
+            educación<span style={{ color: "#111" }}>.</span>
+          </h2>
+
+          {/* 4 Cards Grid */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "clamp(20px, 3vw, 28px)",
+            maxWidth: "1280px",
+            margin: "0 auto",
+          }}
+          className="somos-bizen-grid"
+          >
+            {/* Card 1: Validación institucional (Gobierno) */}
+            <div className="somos-bizen-card" style={{
+              background: "#1e3a8a",
+              borderRadius: "20px",
+              padding: "clamp(28px, 4vw, 40px) clamp(24px, 3vw, 32px)",
+              color: "#ffffff",
               display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: "clamp(12px, 2vw, 20px)",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              minHeight: "320px",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              boxShadow: "0 4px 20px rgba(30, 58, 138, 0.4)",
             }}>
-              {["Cursos cortos", "Simuladores", "Progreso medible"].map((item, i) => (
-                <li key={i} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "12px 20px",
-                  borderRadius: "999px",
-                  background: "rgba(15, 98, 254, 0.1)",
-                  border: "1px solid rgba(15, 98, 254, 0.22)",
-                  fontSize: "clamp(14px, 1rem, 16px)",
-                  fontWeight: 600,
-                  color: "#0F62FE",
+              <div>
+                <h3 style={{
+                  fontSize: "clamp(22px, 2.5vw, 28px)",
+                fontWeight: 800,
+                  lineHeight: 1.3,
+                  marginBottom: "16px",
                   fontFamily: "'Inter', sans-serif",
-                  transition: "background 0.2s ease, border-color 0.2s ease, transform 0.2s ease",
-                }} className="que-es-bizen-pill">
-                  <span style={{ color: "#0F62FE", fontWeight: 700 }}>✓</span> {item}
-                </li>
-              ))}
-            </ul>
+                }}>
+                  Validación institucional (Gobierno)
+                </h3>
+              <p style={{
+                  fontSize: "clamp(15px, 1.1rem, 17px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                  marginBottom: "12px",
+                }}>
+                  Seleccionados entre <strong>+50 startups</strong>.
+                </p>
+                <p style={{
+                  fontSize: "clamp(14px, 1rem, 16px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  Parte del Programa de Incubación de la Secretaría de Desarrollo Económico, impulsando innovación educativa y emprendimiento juvenil en México.
+                </p>
+            </div>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "24px", flexWrap: "wrap" }}>
+                <div style={{ height: "44px", background: "rgba(255, 255, 255, 0.2)", borderRadius: "10px", padding: "0 14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: 600 }}>SEDESU / SEDEQ</div>
           </div>
         </div>
-      </section>
 
-      {/* Audience - Para escuelas */}
-      <section id="audiencia" className="section audience-switcher reveal-element" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.4) 50%, transparent 100%)", padding: "clamp(56px, 10vw, 88px) clamp(16px, 4vw, 24px)" }}>
-        <div className="container" style={{ maxWidth: "820px", margin: "0 auto" }}>
-          <div style={{ width: "100%" }}>
-            <div role="tabpanel" style={{
-              textAlign: "center",
-              padding: "clamp(36px, 5vw, 52px) clamp(28px, 4vw, 48px)",
+            {/* Card 2: Confianza Big Tech */}
+            <div className="somos-bizen-card" style={{
+              background: "#1e3a8a",
               borderRadius: "20px",
-              background: "rgba(255, 255, 255, 0.95)",
-              border: "1px solid rgba(15, 98, 254, 0.12)",
-              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(15, 98, 254, 0.06)",
+              padding: "clamp(28px, 4vw, 40px) clamp(24px, 3vw, 32px)",
+              color: "#ffffff",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              minHeight: "320px",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              boxShadow: "0 4px 20px rgba(30, 58, 138, 0.4)",
             }}>
-              <span style={{
-                display: "inline-block",
-                padding: "10px 20px",
-                borderRadius: "999px",
-                fontSize: "clamp(13px, 0.9rem, 14px)",
-                fontWeight: 700,
-                color: "#0F62FE",
-                background: "rgba(15, 98, 254, 0.12)",
-                marginBottom: "28px",
-                fontFamily: "'Inter', sans-serif",
-                letterSpacing: "0.02em",
-                textTransform: "uppercase",
-              }}>
-                {audienceContent.badge}
-              </span>
-              <ul style={{
-                listStyle: "none",
-                margin: "0 0 32px",
-                padding: 0,
-                textAlign: "left",
-                maxWidth: "420px",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}>
-                {audienceContent.bullets.map((bullet, i) => (
-                  <li key={i} style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "14px",
-                    marginBottom: "16px",
-                    fontSize: "clamp(16px, 1.05rem, 18px)",
-                    color: "#374151",
-                    fontFamily: "'Inter', sans-serif",
-                    lineHeight: 1.45,
-                  }}>
-                    <span style={{ color: "#0F62FE", flexShrink: 0, fontWeight: 700, fontSize: "18px" }}>✓</span>
-                    {bullet}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={audienceContent.ctaHref}
-                style={{
-                  display: "inline-block",
-                  padding: "16px 36px",
-                  fontSize: "clamp(17px, 1.05rem, 18px)",
-                  fontWeight: 600,
-                  color: "#fff",
-                  background: "#0F62FE",
-                  borderRadius: "12px",
-                  textDecoration: "none",
-                  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                  transition: "background 0.2s ease, box-shadow 0.2s ease",
-                  boxShadow: "0 4px 16px rgba(15, 98, 254, 0.35)",
-                }}
-                className="audience-cta-link"
-              >
-                {audienceContent.cta}
-              </Link>
+              <div>
+                <h3 style={{
+                  fontSize: "clamp(22px, 2.5vw, 28px)",
+                fontWeight: 800,
+                  lineHeight: 1.3,
+                  marginBottom: "16px",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  Confianza Big Tech
+                </h3>
+              <p style={{
+                  fontSize: "clamp(15px, 1.1rem, 17px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                  marginBottom: "12px",
+                }}>
+                  <strong>Google for Startups</strong> confía en BIZEN.
+                </p>
+                <p style={{
+                  fontSize: "clamp(14px, 1rem, 16px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  Startup EdTech respaldada por programas de Google for Startups, enfocada en educación financiera y emprendimiento para jóvenes.
+                </p>
+            </div>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "24px", flexWrap: "wrap" }}>
+                <div style={{ height: "44px", background: "rgba(255, 255, 255, 0.2)", borderRadius: "10px", padding: "0 14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: 600 }}>Google for Startups</div>
+          </div>
+        </div>
+
+            {/* Card 3: Comunidad EdTech LATAM */}
+            <div className="somos-bizen-card" style={{
+              background: "#1e3a8a",
+              borderRadius: "20px",
+              padding: "clamp(28px, 4vw, 40px) clamp(24px, 3vw, 32px)",
+              color: "#ffffff",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              minHeight: "320px",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              boxShadow: "0 4px 20px rgba(30, 58, 138, 0.4)",
+            }}>
+              <div>
+                <h3 style={{
+                  fontSize: "clamp(22px, 2.5vw, 28px)",
+                  fontWeight: 800,
+                  lineHeight: 1.3,
+                  marginBottom: "16px",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  Comunidad EdTech LATAM
+                </h3>
+                <p style={{
+                  fontSize: "clamp(15px, 1.1rem, 17px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                  marginBottom: "12px",
+                }}>
+                  Parte de la comunidad EdTech más grande de <strong>LATAM</strong>.
+                </p>
+                <p style={{
+                  fontSize: "clamp(14px, 1rem, 16px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  Conectados con startups, educadores e innovadores que están transformando la educación en América Latina.
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "24px", flexWrap: "wrap" }}>
+                <div style={{ height: "44px", background: "rgba(255, 255, 255, 0.2)", borderRadius: "10px", padding: "0 14px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: 600 }}>HolonIQ / EdTech</div>
+              </div>
+            </div>
+
+            {/* Card 4: Impacto educativo */}
+            <div className="somos-bizen-card" style={{
+              background: "#1e3a8a",
+              borderRadius: "20px",
+              padding: "clamp(28px, 4vw, 40px) clamp(24px, 3vw, 32px)",
+              color: "#ffffff",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              minHeight: "320px",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              boxShadow: "0 4px 20px rgba(30, 58, 138, 0.4)",
+            }}>
+              <div>
+                <h3 style={{
+                  fontSize: "clamp(22px, 2.5vw, 28px)",
+                fontWeight: 800,
+                  lineHeight: 1.3,
+                  marginBottom: "16px",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  Educación financiera que sí se usa.
+                </h3>
+              <p style={{
+                  fontSize: "clamp(14px, 1rem, 16px)",
+                  lineHeight: 1.5,
+                  opacity: 0.95,
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  BIZEN enseña ahorro, inversión y emprendimiento con metodología práctica, gamificada y alineada al mundo real.
+                </p>
+              </div>
             </div>
           </div>
-          <style>{`
-            .audience-tab-btn:focus-visible {
-              outline: 2px solid #0F62FE;
-              outline-offset: 2px;
-            }
-            .audience-cta-link:hover {
-              background: #0a4fc4 !important;
-              box-shadow: 0 6px 20px rgba(15, 98, 254, 0.4) !important;
-            }
-            .audience-cta-link:focus-visible {
-              outline: 2px solid #0F62FE;
-              outline-offset: 2px;
-            }
-          `}</style>
         </div>
       </section>
 
-      {/* El problema - pain points, centered */}
-      <section id="problema" className="section problem-section reveal-element reveal-delay-1" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.5) 25%, rgba(239, 246, 255, 0.45) 75%, transparent 100%)", padding: "clamp(64px, 10vw, 112px) clamp(20px, 4vw, 32px)", textAlign: "center" }}>
-        <div className="container problem-section-inner" style={{ maxWidth: "640px", margin: "0 auto", width: "100%" }}>
+      {/* 4 Perfiles Educativos */}
+      <section id="perfiles" className="section perfiles-section reveal-element" style={{ 
+        background: "linear-gradient(180deg, #D6E4FF 0%, #EDF5FF 60%, #C7DCF8 100%)",
+        paddingTop: "clamp(24px, 4vw, 40px)",
+        paddingBottom: "clamp(56px, 10vw, 88px)",
+        paddingLeft: "clamp(16px, 4vw, 24px)",
+        paddingRight: "clamp(16px, 4vw, 24px)",
+      }}>
+        <div className="container" style={{ maxWidth: "1400px", margin: "0 auto" }}>
+          {/* Header */}
           <h2 style={{
-            margin: "0 0 16px",
-            fontSize: "clamp(32px, 4.5vw, 48px)",
+            textAlign: "center",
+            fontSize: "clamp(32px, 4.5vw, 52px)",
             fontWeight: 800,
-            color: "#111",
+            color: "#1f2937",
+          lineHeight: 1.2,
+            marginBottom: "clamp(8px, 2vw, 16px)",
             fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-            lineHeight: 1.15,
-            letterSpacing: "-0.03em",
           }}>
-            El problema
+            1 solución, 4 perfiles educativos.<br />
+            <span style={{ color: "#1f2937" }}>Un clic que lo cambia todo</span>
+            <span style={{ color: "#111" }}>.</span>
           </h2>
-          <p style={{
-            margin: "0 0 clamp(48px, 8vw, 64px)",
-            fontSize: "clamp(17px, 1.1rem, 19px)",
-            color: "#475569",
-            fontFamily: "'Inter', sans-serif",
-            lineHeight: 1.6,
-            maxWidth: "480px",
-            marginLeft: "auto",
-            marginRight: "auto",
+
+          {/* Content Card - tabs inside at top */}
+          <div style={{
+            marginTop: "clamp(32px, 5vw, 48px)",
+            background: "rgba(255, 255, 255, 0.95)",
+            borderRadius: "24px",
+            padding: "clamp(24px, 4vw, 32px) clamp(24px, 4vw, 48px) clamp(32px, 5vw, 56px)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+            border: "1px solid rgba(15, 98, 254, 0.12)",
           }}>
-            La educación financiera tropieza con lo mismo.
-          </p>
-          <div className="problem-cards-list" style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "clamp(20px, 3vw, 28px)",
+            {/* Tabs - inside box */}
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "12px",
+              marginBottom: "clamp(28px, 4vw, 40px)",
+              flexWrap: "wrap",
+            }}
+            className="perfiles-tabs-row"
+            >
+              {[
+                { id: "directores" as const, label: "Directores" },
+                { id: "docentes" as const, label: "Docentes" },
+                { id: "estudiantes" as const, label: "Estudiantes" },
+                { id: "padres" as const, label: "Padres" },
+              ].map((profile) => (
+                <button
+                  key={profile.id}
+                  onClick={() => setActiveProfile(profile.id)}
+                style={{
+                    padding: "14px 28px",
+                    fontSize: "clamp(15px, 1.1rem, 18px)",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    border: "none",
+                    borderRadius: "12px",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    background: activeProfile === profile.id ? "#1e3a8a" : "rgba(15, 98, 254, 0.08)",
+                    color: activeProfile === profile.id ? "#ffffff" : "#4b5563",
+                  }}
+                  className="profile-tab-button"
+                >
+                  {profile.label}
+                </button>
+            ))}
+          </div>
+
+            <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+              gap: "clamp(32px, 5vw, 64px)",
             alignItems: "center",
-            width: "100%",
-          }}>
-            {problemSchools.map((card, i) => (
-              <div key={i} className="problem-card" style={{
-                width: "100%",
-                maxWidth: "560px",
-                padding: "clamp(24px, 3vw, 32px) clamp(28px, 4vw, 40px)",
-                borderRadius: "20px",
-                background: "#fff",
-                border: "2px solid rgba(15, 98, 254, 0.12)",
-                boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(15, 98, 254, 0.08)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                transition: "border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease",
-              }}>
+            }}
+            className="perfiles-content-grid"
+            >
+              {/* Left: Text Content - slide animation on tab change */}
+              <div className="perfiles-content-left" style={{ overflow: "hidden", position: "relative" }}>
+                <div key={activeProfile} className="perfiles-slide-in">
+                <h3 style={{
+                  fontSize: "clamp(28px, 3.5vw, 42px)",
+                  fontWeight: 800,
+                  color: "#1e3a8a",
+                  marginBottom: "clamp(16px, 3vw, 24px)",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  {activeProfile === "directores" && "Directores"}
+                  {activeProfile === "docentes" && "Docentes"}
+                  {activeProfile === "estudiantes" && "Estudiantes"}
+                  {activeProfile === "padres" && "Padres"}
+                </h3>
+
+                <p style={{
+                  fontSize: "clamp(16px, 1.15rem, 19px)",
+                  lineHeight: 1.65,
+                  color: "#374151",
+                  marginBottom: "clamp(24px, 4vw, 32px)",
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  {activeProfile === "directores" && "¿Buscas una educación moderna, basada en datos, que mejore el desempeño académico y ayude a incrementar tu matrícula?"}
+                  {activeProfile === "docentes" && "Herramientas prácticas para enseñar finanzas con contenido listo para usar, seguimiento en tiempo real y recursos descargables."}
+                  {activeProfile === "estudiantes" && "Aprende finanzas de forma divertida con cursos interactivos, simuladores reales y recompensas por tu progreso."}
+                  {activeProfile === "padres" && "Acompaña el aprendizaje financiero de tus hijos con acceso a su progreso, recursos compartidos y actividades familiares."}
+                </p>
+
+                {/* Bullet Points */}
+                <ul style={{
+                  listStyle: "none",
+                  margin: "0 0 clamp(28px, 4vw, 36px) 0",
+                  padding: 0,
+              display: "flex",
+              flexDirection: "column",
+                  gap: "16px",
+                }}>
+                  {activeProfile === "directores" && (
+                    <>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Toma mejores decisiones con <strong>métricas en tiempo real</strong>.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Aumenta la <strong>retención de matrícula</strong> al identificar oportunidades clave.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Optimiza recursos y maximiza el <strong>retorno de tu inversión</strong> educativa.
+                        </span>
+                      </li>
+                    </>
+                  )}
+                  {activeProfile === "docentes" && (
+                    <>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Contenido listo para usar con <strong>lecciones interactivas</strong>.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Seguimiento en <strong>tiempo real</strong> del progreso de tus estudiantes.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Recursos <strong>descargables</strong> y materiales de apoyo.
+                        </span>
+                      </li>
+                    </>
+                  )}
+                  {activeProfile === "estudiantes" && (
+                    <>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Aprende con <strong>gamificación</strong> y recompensas.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Practica con <strong>simuladores reales</strong> sin riesgo.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Rastrea tu <strong>progreso</strong> y gana certificaciones.
+                        </span>
+                      </li>
+                    </>
+                  )}
+                  {activeProfile === "padres" && (
+                    <>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Visualiza el <strong>progreso</strong> de tus hijos en tiempo real.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Accede a <strong>recursos compartidos</strong> y actividades familiares.
+                        </span>
+                      </li>
+                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                        <span style={{ 
+                          width: "24px", 
+                          height: "24px", 
+                          background: "#1e3a8a", 
+                          borderRadius: "50%", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "14px",
+                          flexShrink: 0,
+                        }}>✓</span>
+                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
+                          Fomenta la <strong>educación financiera</strong> desde casa.
+                        </span>
+                      </li>
+                    </>
+                  )}
+                </ul>
+
+                {/* CTA Button - opens demo modal */}
+                <button
+                  type="button"
+                  onClick={() => onOpenDemoModal?.()}
+                style={{
+                    padding: "16px 32px",
+                    fontSize: "clamp(16px, 1.1rem, 18px)",
+                  fontWeight: 700,
+                    fontFamily: "'Inter', sans-serif",
+                  background: "#1e3a8a",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: 9999,
+                  cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  display: "inline-flex",
+                  alignItems: "center",
+                    gap: "10px",
+                    boxShadow: "0 4px 16px rgba(15, 98, 254, 0.35)",
+                  }}
+                  className="quiero-demo-button"
+                >
+                  Quiero una demo
+                  <span style={{ fontSize: "20px" }}>→</span>
+                </button>
+                </div>
+            </div>
+
+              {/* Right: Image/Visual */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+                justifyContent: "center",
+                minHeight: "400px",
+            }}>
                 <div style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.06) 100%)",
-                  border: "1px solid rgba(239, 68, 68, 0.2)",
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "16px",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: "16px",
-                  flexShrink: 0,
+                  color: "#fff",
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  position: "relative",
+                  overflow: "hidden",
                 }}>
-                  <span style={{ fontSize: "20px", fontWeight: 800, color: "#DC2626", fontFamily: "'Inter', sans-serif" }}>{i + 1}</span>
+                  {/* Placeholder for dashboard image - you can add actual dashboard screenshots here */}
+                  <div style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "rgba(255, 255, 255, 0.1)",
+                    backdropFilter: "blur(10px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                  }}>
+                    Dashboard Preview
+                  </div>
                 </div>
-                <h3 style={{
-                  margin: "0 0 10px",
-                  fontSize: "clamp(18px, 1.25rem, 22px)",
-                  fontWeight: 700,
-                  color: "#1e293b",
-                  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                  lineHeight: 1.3,
-                }}>
-                  {card.title}
-                </h3>
-                <p style={{
-                  margin: 0,
-                  fontSize: "clamp(15px, 1rem, 16px)",
-                  color: "#64748b",
-                  lineHeight: 1.6,
-                  fontFamily: "'Inter', sans-serif",
-                  maxWidth: "420px",
-                }}>
-                  {card.description}
-                </p>
               </div>
-            ))}
+            </div>
           </div>
+        </div>
+      </section>
+      </>)}
+      {(sectionRange === 'all' || sectionRange === 'rest') && (
+      <div style={{
+        background: "linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8f2ff 65%, #c7e0ff 85%, #93c5fd 100%)",
+        width: "100%",
+        minHeight: "100%",
+        paddingBottom: "clamp(12px, 2vw, 24px)",
+      }}>
+      {/* Conoce BIZEN - Aprender dinámico y divertido + 6 habilidades */}
+      <section id="conoce-bizen" className="section conoce-bizen-section reveal-element" style={{ 
+        background: "#ffffff", 
+        padding: "clamp(56px, 10vw, 88px) clamp(16px, 4vw, 48px)" 
+      }}>
+        <div className="container" style={{ maxWidth: "1320px", margin: "0 auto" }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(140px, 28vw, 320px)",
+            alignItems: "center",
+          }}
+          className="conoce-bizen-grid"
+          >
+            {/* Left column */}
+            <div>
+              <p style={{
+                fontSize: "clamp(14px, 1rem, 16px)",
+                fontWeight: 600,
+                color: "#64748b",
+                marginBottom: "clamp(12px, 2vw, 16px)",
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.02em",
+              }}>
+                Conoce BIZEN
+              </p>
+            <h2 style={{
+                fontSize: "clamp(28px, 3.5vw, 42px)",
+              fontWeight: 800,
+                color: "#1e293b",
+                lineHeight: 1.2,
+                marginBottom: "clamp(20px, 3vw, 28px)",
+                fontFamily: "'Inter', sans-serif",
+              }}>
+                Aprender nunca ha sido tan dinámico y divertido<span style={{ color: "#111" }}>.</span>
+              </h2>
+            <p style={{
+                fontSize: "clamp(16px, 1.1rem, 18px)",
+                lineHeight: 1.6,
+              color: "#475569",
+                fontFamily: "'Inter', sans-serif",
+              }}>
+                Haz que tus estudiantes desarrollen habilidades mientras aprenden jugando.
+              </p>
+            </div>
+
+            {/* Right column - 6 skills in 2x3 grid */}
+          <div style={{
+            display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "clamp(20px, 3vw, 28px) clamp(24px, 4vw, 36px)",
+            }}>
+              {[
+                { label: "Pensamiento crítico", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> },
+                { label: "Resolución de problemas", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg> },
+                { label: "Creatividad e innovación", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg> },
+                { label: "Comunicación y colaboración", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
+                { label: "Trabajo en equipo", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
+                { label: "Habilidades socioemocionales", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg> },
+              ].map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div style={{
+                    width: "48px",
+                    height: "48px",
+                    minWidth: "48px",
+                    borderRadius: "50%",
+                    background: "#1e3a8a",
+                    color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <item.Icon />
+              </div>
+                  <span style={{
+                    fontSize: "clamp(15px, 1.05rem, 17px)",
+                    fontWeight: 500,
+                    color: "#334155",
+                    fontFamily: "'Inter', sans-serif",
+                    lineHeight: 1.3,
+                  }}>
+                    {item.label}
+                  </span>
+              </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Cada clase, una aventura divertida - Carousel */}
+      <section className="section adventure-carousel-section" style={{ background: "#ffffff", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <h2 style={{
+            textAlign: "center",
+            margin: "0 0 clamp(48px, 7vw, 72px)",
+            fontSize: "clamp(32px, 5vw, 48px)",
+            fontWeight: 800,
+            color: "#111",
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            lineHeight: 1.2
+          }}>
+            Cada clase, una aventura divertida<span style={{ color: "#EF4444" }}>.</span>
+          </h2>
+
+          <div style={{ position: "relative", maxWidth: "1000px", margin: "0 auto" }}>
+            {/* Left Arrow */}
+            <button
+              onClick={() => setActiveAdventureSlide(prev => prev === 0 ? 2 : prev - 1)}
+              style={{
+                position: "absolute",
+                left: "-70px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "52px",
+                height: "52px",
+                borderRadius: "50%",
+                background: "rgba(139, 92, 246, 0.15)",
+                border: "1px solid rgba(139, 92, 246, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                zIndex: 10,
+                transition: "all 0.2s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "rgba(139, 92, 246, 0.3)"
+                e.currentTarget.style.transform = "translateY(-50%) scale(1.08)"
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)"
+                e.currentTarget.style.transform = "translateY(-50%)"
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => setActiveAdventureSlide(prev => prev === 2 ? 0 : prev + 1)}
+              style={{
+                position: "absolute",
+                right: "-70px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "52px",
+                height: "52px",
+                borderRadius: "50%",
+                background: "rgba(15, 98, 254, 0.15)",
+                border: "1px solid rgba(15, 98, 254, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                zIndex: 10,
+                transition: "all 0.2s ease",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "rgba(15, 98, 254, 0.3)"
+                e.currentTarget.style.transform = "translateY(-50%) scale(1.08)"
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "rgba(15, 98, 254, 0.15)"
+                e.currentTarget.style.transform = "translateY(-50%)"
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+
+            {/* Carousel Content */}
+            <div style={{ position: "relative" }}>
+              {[
+                {
+                  title: "Microlearning",
+                  description: "Utilizamos contenidos digitales y videos cortos interactivos en todas nuestras lecciones, creados por especialistas académicos y de animación infantil (Netflix) para facilitar el aprendizaje de tus estudiantes.",
+                  imageSrc: "/landing-1.png",
+                  imageAlt: "Image 1",
+                },
+                {
+                  title: "Gamificación",
+                  description: "Cada lección incluye retos y recompensas que mantienen a los estudiantes motivados y comprometidos con su aprendizaje.",
+                  imageSrc: "/landing-2.png",
+                  imageAlt: "Image 2",
+                },
+                {
+                  title: "Contenido Interactivo",
+                  description: "Material multimedia diseñado para captar la atención y facilitar la comprensión de conceptos complejos.",
+                  imageSrc: "/landing-3.png",
+                  imageAlt: "Image 3",
+                },
+              ].map((slide, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: activeAdventureSlide === idx ? "block" : "none",
+                    opacity: activeAdventureSlide === idx ? 1 : 0,
+                    transition: "opacity 0.4s ease",
+                  }}
+                >
+                  <div style={{
+                    background: "linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)",
+                    borderRadius: "32px",
+                    padding: "clamp(48px, 6vw, 72px) clamp(40px, 5vw, 64px)",
+                    textAlign: "center",
+                  }}>
+                    {/* Image 1, 2, 3 */}
+                    <div style={{
+                      width: "100%",
+                      maxWidth: "640px",
+                      margin: "0 auto clamp(32px, 4vw, 48px)",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      position: "relative",
+                    }}>
+                      <Image
+                        src={slide.imageSrc}
+                        alt={slide.imageAlt}
+                        width={640}
+                        height={360}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          display: "block",
+                          borderRadius: "16px",
+                        }}
+                      />
+                    </div>
+
+                    <h3 style={{
+                      margin: "0 0 clamp(16px, 2vw, 24px)",
+                      fontSize: "clamp(28px, 3.5vw, 36px)",
+                      fontWeight: 800,
+                      color: "#ffffff",
+                      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                      lineHeight: 1.2,
+                    }}>
+                      {slide.title}
+                    </h3>
+
+                    <p style={{
+                      margin: "0 auto",
+                      fontSize: "clamp(15px, 1rem, 17px)",
+                      lineHeight: 1.6,
+                      color: "#ffffff",
+                      fontFamily: "'Inter', sans-serif",
+                      maxWidth: "720px",
+                      opacity: 0.95,
+                    }}>
+                      {slide.description}
+                    </p>
+                  </div>
+
+                  <div style={{ textAlign: "center", marginTop: "clamp(24px, 3vw, 32px)" }}>
+                    <button
+                      type="button"
+                      onClick={() => onOpenDemoModal?.()}
+                      style={{
+                        padding: "16px 32px",
+                        fontSize: "clamp(16px, 1.1rem, 18px)",
+                        fontWeight: 700,
+                        background: "#1e3a8a",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: 9999,
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontFamily: "'Inter', sans-serif",
+                        boxShadow: "0 4px 16px rgba(15, 98, 254, 0.4)",
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "translateY(-2px)"
+                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(15, 98, 254, 0.5)"
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)"
+                        e.currentTarget.style.boxShadow = "0 4px 16px rgba(15, 98, 254, 0.4)"
+                      }}
+                    >
+                      Solicita tu demo
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "24px" }}>
+              {[0, 1, 2].map(idx => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveAdventureSlide(idx)}
+                  style={{
+                    width: activeAdventureSlide === idx ? "32px" : "12px",
+                    height: "12px",
+                    borderRadius: "6px",
+                    background: activeAdventureSlide === idx ? "#1e3a8a" : "#cbd5e1",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                  }}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Convierte la curiosidad - 3 feature cards */}
+      <section className="section curiosidad-section reveal-element" style={{
+        background: "#ffffff",
+        padding: "clamp(56px, 10vw, 88px) clamp(24px, 4vw, 48px)",
+      }}>
+        <div className="container" style={{ maxWidth: "1400px", margin: "0 auto" }}>
+          {/* Heading with navy dot */}
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", gap: "14px", marginBottom: "clamp(44px, 6vw, 64px)" }}>
+            <span style={{
+              width: "12px",
+              height: "12px",
+              borderRadius: "50%",
+              background: "#1e3a8a",
+              flexShrink: 0,
+              marginTop: "clamp(14px, 1.8vw, 22px)",
+            }} aria-hidden />
+            <div style={{ textAlign: "center", maxWidth: "920px" }}>
+              <h2 style={{
+                margin: 0,
+                fontSize: "clamp(22px, 3vw, 36px)",
+                fontWeight: 700,
+                color: "#1e293b",
+                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                lineHeight: 1.3,
+              }}>
+                Tres obstáculos comunes
+              </h2>
+              <p style={{
+                margin: "clamp(8px, 1vw, 12px) 0 0",
+                fontSize: "clamp(17px, 1.15rem, 20px)",
+                lineHeight: 1.5,
+                color: "#475569",
+                fontFamily: "'Inter', sans-serif",
+              }}>
+                La educación financiera tropieza con lo mismo.
+              </p>
+            </div>
+          </div>
+
+          {/* Three feature cards with vertical dividers */}
+          <div
+            className="curiosidad-cards-grid"
+            style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1px 1fr 1px 1fr",
+            gap: 0,
+            alignItems: "stretch",
+            maxWidth: "1280px",
+            margin: "0 auto",
+          }}>
+            {/* Card 1 - Document/list */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 clamp(20px, 4vw, 48px)" }}>
+              <div style={{
+                width: "72px",
+                height: "72px",
+                borderRadius: "16px",
+                background: "#1e3a8a",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "clamp(24px, 3vw, 32px)",
+              }}>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6" />
+                  <path d="M8 13h8" />
+                  <path d="M8 17h8" />
+                  <path d="M8 9h2" />
+                </svg>
+              </div>
+              <span style={{
+                marginBottom: "6px",
+                fontSize: "clamp(12px, 0.85rem, 14px)",
+                fontWeight: 700,
+                color: "#64748b",
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.02em",
+              }}>
+                Obstáculo 1
+              </span>
+              <h3 style={{
+                margin: "0 0 clamp(8px, 1vw, 12px)",
+                fontSize: "clamp(18px, 1.25rem, 22px)",
+                fontWeight: 700,
+                color: "#1e293b",
+                fontFamily: "'Inter', sans-serif",
+                lineHeight: 1.3,
+              }}>
+                Teoría sin práctica
+              </h3>
+              <p style={{
+                margin: 0,
+                fontSize: "clamp(16px, 1.1rem, 19px)",
+                lineHeight: 1.55,
+                color: "#334155",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 500,
+              }}>
+                Se enseña el concepto pero no se practica con casos reales.
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="curiosidad-divider" style={{ background: "#e2e8f0", width: "1px", minHeight: "80px", alignSelf: "stretch" }} />
+
+            {/* Card 2 - Speech bubble / chat */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 clamp(20px, 4vw, 48px)" }}>
+              <div style={{
+                width: "72px",
+                height: "72px",
+                borderRadius: "16px",
+                background: "#1e3a8a",
+                  display: "flex",
+                  alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "clamp(24px, 3vw, 32px)",
+              }}>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  <circle cx="9" cy="12" r="1" fill="#ffffff" />
+                  <circle cx="12" cy="12" r="1" fill="#ffffff" />
+                  <circle cx="15" cy="12" r="1" fill="#ffffff" />
+                </svg>
+              </div>
+              <span style={{
+                marginBottom: "6px",
+                fontSize: "clamp(12px, 0.85rem, 14px)",
+                  fontWeight: 700,
+                color: "#64748b",
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.02em",
+              }}>
+                Obstáculo 2
+              </span>
+              <h3 style={{
+                margin: "0 0 clamp(8px, 1vw, 12px)",
+                fontSize: "clamp(18px, 1.25rem, 22px)",
+                fontWeight: 700,
+                color: "#1e293b",
+                fontFamily: "'Inter', sans-serif",
+                lineHeight: 1.3,
+              }}>
+                Difícil medir avance
+              </h3>
+              <p style={{
+                margin: 0,
+                fontSize: "clamp(16px, 1.1rem, 19px)",
+                lineHeight: 1.55,
+                color: "#334155",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 500,
+              }}>
+                No hay forma clara de ver el progreso de cada estudiante.
+              </p>
+              </div>
+
+            {/* Divider */}
+            <div className="curiosidad-divider" style={{ background: "#e2e8f0", width: "1px", minHeight: "80px", alignSelf: "stretch" }} />
+
+            {/* Card 3 - Pencil */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 clamp(20px, 4vw, 48px)" }}>
+              <div style={{
+                width: "72px",
+                height: "72px",
+                borderRadius: "16px",
+                background: "#1e3a8a",
+                  display: "flex",
+                  alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "clamp(24px, 3vw, 32px)",
+              }}>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19l7-7 3 3-7 7-3-3z" />
+                  <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+                  <path d="M2 2l7.586 7.586" />
+                  <line x1="4" y1="20" x2="8" y2="16" stroke="#ffffff" />
+                </svg>
+              </div>
+              <span style={{
+                marginBottom: "6px",
+                fontSize: "clamp(12px, 0.85rem, 14px)",
+                  fontWeight: 700,
+                color: "#64748b",
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.02em",
+              }}>
+                Obstáculo 3
+              </span>
+              <h3 style={{
+                margin: "0 0 clamp(8px, 1vw, 12px)",
+                fontSize: "clamp(18px, 1.25rem, 22px)",
+                fontWeight: 700,
+                color: "#1e293b",
+                fontFamily: "'Inter', sans-serif",
+                lineHeight: 1.3,
+              }}>
+                Falta de tiempo del docente
+              </h3>
+              <p style={{
+                margin: 0,
+                fontSize: "clamp(16px, 1.1rem, 19px)",
+                lineHeight: 1.55,
+                color: "#334155",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 500,
+              }}>
+                Los profesores no tienen tiempo para personalizar la enseñanza.
+              </p>
+              </div>
+          </div>
+          <p style={{
+            margin: "clamp(32px, 5vw, 48px) 0 0",
+            textAlign: "center",
+            fontSize: "clamp(18px, 1.25rem, 22px)",
+            fontWeight: 600,
+            color: "#1e3a8a",
+            fontFamily: "'Inter', sans-serif",
+            lineHeight: 1.4,
+          }}>
+            BIZEN está diseñado para superar estos obstáculos.
+          </p>
           <style>{`
-            .problem-section-inner { display: flex; flex-direction: column; align-items: center; }
-            .problem-card:hover {
-              border-color: rgba(15, 98, 254, 0.25) !important;
-              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(15, 98, 254, 0.12) !important;
-              transform: translateY(-2px);
-            }
-            @media (max-width: 767px) {
-              .problem-cards-list { width: 100%; }
+            @media (max-width: 700px) {
+              .curiosidad-cards-grid {
+                grid-template-columns: 1fr !important;
+                gap: clamp(24px, 4vw, 40px) !important;
+              }
+              .curiosidad-divider { display: none !important; }
             }
           `}</style>
         </div>
       </section>
 
-      {/* Cómo funciona - 3 steps */}
-      <section id="como-funciona" className="section how-it-works reveal-element reveal-delay-2" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.35) 20%, rgba(241, 245, 249, 0.3) 80%, transparent 100%)", padding: "clamp(56px, 10vw, 96px) clamp(16px, 4vw, 24px)" }}>
+      {/* Cómo funciona - 3 steps - pulled up and separated from footer */}
+      <section id="como-funciona" className="section how-it-works reveal-element reveal-delay-2" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(248, 251, 255, 0.35) 20%, rgba(241, 245, 249, 0.3) 80%, transparent 100%)", padding: "clamp(32px, 5vw, 56px) clamp(16px, 4vw, 24px) clamp(56px, 10vw, 96px) clamp(16px, 4vw, 24px)" }}>
         <div className="container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "clamp(40px, 6vw, 56px)" }}>
             <h2 style={{
@@ -1729,9 +3027,9 @@ function LandingContent() {
                 background: "rgba(255, 255, 255, 0.95)",
                 border: "1px solid rgba(15, 98, 254, 0.14)",
                 boxShadow: "0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(15, 98, 254, 0.06)",
-                display: "flex",
+                    display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                    alignItems: "center",
                 textAlign: "center",
                 transition: "border-color 0.2s ease, box-shadow 0.2s ease",
               }}>
@@ -1740,25 +3038,25 @@ function LandingContent() {
                   height: "64px",
                   borderRadius: "50%",
                   background: "linear-gradient(135deg, rgba(15, 98, 254, 0.15) 0%, rgba(15, 98, 254, 0.08) 100%)",
-                  border: "1px solid rgba(15, 98, 254, 0.2)",
-                  display: "flex",
-                  alignItems: "center",
+                    border: "1px solid rgba(15, 98, 254, 0.2)",
+                    display: "flex",
+                    alignItems: "center",
                   justifyContent: "center",
                   marginBottom: "20px",
                   flexShrink: 0,
                   position: "relative",
                 }}>
-                  <span style={{ position: "absolute", top: "-4px", right: "-4px", width: "24px", height: "24px", borderRadius: "50%", background: "#0F62FE", color: "#fff", fontSize: "12px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
+                  <span style={{ position: "absolute", top: "-4px", right: "-4px", width: "24px", height: "24px", borderRadius: "50%", background: "#1e3a8a", color: "#fff", fontSize: "12px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
                     {i + 1}
                   </span>
                   {i === 0 && (
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><polygon points="5 3 19 12 5 21 5 3" /></svg>
                   )}
                   {i === 1 && (
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg>
                   )}
                   {i === 2 && (
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F62FE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
                   )}
                 </div>
                 <h3 style={{
@@ -1774,8 +3072,8 @@ function LandingContent() {
                   <p style={{ margin: 0, fontSize: "clamp(14px, 0.95rem, 15px)", color: "#475569", lineHeight: 1.55, fontFamily: "'Inter', sans-serif" }}>
                     <span style={{ color: "#64748b" }}>{step.schoolsText}</span>
                   </p>
-                </div>
               </div>
+          </div>
             ))}
           </div>
           <style>{`
@@ -1804,304 +3102,8 @@ function LandingContent() {
         </div>
       </section>
 
-      {/* PRECIOS - plan squares + CTA merged, no "Planes" title */}
-      <section id="precios" className="section pricing reveal-element reveal-delay-2" style={{ background: "transparent" }}>
-        <div className="container">
-          <div style={{ maxWidth: "800px", width: "100%", margin: "0 auto", textAlign: "center" }}>
-            {/* CTA first */}
-            <div style={{ marginBottom: "clamp(40px, 6vw, 56px)", maxWidth: "640px", marginLeft: "auto", marginRight: "auto" }}>
-              <h2 style={{
-                margin: 0,
-                fontSize: "clamp(28px, 4vw, 40px)",
-                fontWeight: 800,
-                color: "#111",
-                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                lineHeight: 1.2,
-              }}>
-                ¿Listo para empezar?
-              </h2>
-              <p style={{
-                margin: "16px 0 28px",
-                fontSize: "clamp(16px, 1.1rem, 20px)",
-                color: "#475569",
-                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                lineHeight: 1.5,
-              }}>
-                Lleva educación financiera práctica a tu institución. Agenda una demo y conoce la plataforma.
-              </p>
-              <Link
-                href="#contacto"
-                style={{
-                  display: "inline-block",
-                  padding: "16px 32px",
-                  fontSize: "clamp(17px, 1.1rem, 19px)",
-                  fontWeight: 600,
-                  color: "#fff",
-                  background: "#0F62FE",
-                  borderRadius: "12px",
-                  textDecoration: "none",
-                  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                  transition: "background 0.2s ease, filter 0.2s ease",
-                  boxShadow: "0 4px 14px rgba(15, 98, 254, 0.4)",
-                }}
-                className="cta-button"
-              >
-                Agendar demo
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section id="faq" className="section faq reveal-element reveal-delay-3" style={{ background: "transparent" }}>
-        <div className="container">
-          <header className="section-head">
-            <h2 style={{
-              fontSize: "clamp(36px, 5.5vw, 56px)",
-              lineHeight: 1.15,
-              margin: "0 0 8px 0",
-              fontWeight: 800,
-              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-              background: "linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              animation: "shimmer 3s ease-in-out infinite"
-            }}>Preguntas frecuentes</h2>
-          </header>
-
-          <div className="accordion" role="list">
-            {defaultFaqs.map(({ q, a }, idx) => (
-              <AccordionItem key={idx} question={q} answer={a} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SCHEDULE A DEMO - lesson-style card, matches BIZEN UI */}
-      <section id="contacto" className="section contact reveal-element" style={{
-        background: "transparent",
-        paddingTop: "clamp(64px, 10vw, 96px)",
-        paddingBottom: "clamp(96px, 12vw, 160px)",
-        width: "100%",
-        boxSizing: "border-box",
-      }}>
-        <div style={{
-          maxWidth: "min(98vw, 1200px)",
-          margin: "0 auto",
-          padding: "0 clamp(24px, 5vw, 48px)",
-          width: "100%",
-          boxSizing: "border-box",
-        }}>
-          <div className="schedule-demo-card schedule-demo-two-col" style={{
-            position: "relative",
-            background: "#ffffff",
-            borderRadius: "16px",
-            border: "1px solid #e2e8f0",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-            padding: "clamp(28px, 5vw, 48px) clamp(28px, 4vw, 48px)",
-            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "clamp(32px, 5vw, 48px)",
-          }}>
-            <div style={{
-              position: "absolute",
-              top: "12px",
-              right: "clamp(24px, 5vw, 48px)",
-              zIndex: 2,
-              width: "clamp(72px, 10vw, 100px)",
-              height: "auto",
-              pointerEvents: "none",
-            }}>
-              <Image src="/hero4.png" alt="" width={100} height={100} style={{ width: "100%", height: "auto", objectFit: "contain" }} />
-            </div>
-            <div className="schedule-demo-content">
-              <h2 style={{
-                fontSize: "clamp(24px, 3.2vw, 30px)",
-                fontWeight: 700,
-                color: "#1e293b",
-                margin: "0 0 12px 0",
-                lineHeight: 1.25,
-              }}>
-                Ver cómo BIZEN prepara a los estudiantes para la vida real
-              </h2>
-              <p style={{
-                fontSize: "clamp(15px, 1.9vw, 17px)",
-                color: "#475569",
-                margin: "0 0 24px 0",
-                lineHeight: 1.5,
-              }}>
-                15 minutos. Sin presión. Solo claridad.
-              </p>
-
-              <ul style={{
-                listStyle: "none",
-                margin: "0 0 24px 0",
-                padding: 0,
-                display: "grid",
-                gap: "10px",
-              }}>
-                {["Cómo funcionan las lecciones de BIZEN", "Cómo las escuelas siguen el progreso de los estudiantes", "Lo fácil que es implementar"].map((item, i) => (
-                  <li key={i} style={{
-                    display: "flex",
-                    gap: "12px",
-                    alignItems: "flex-start",
-                    fontSize: "clamp(15px, 1.8vw, 16px)",
-                    color: "#334155",
-                    lineHeight: 1.5,
-                  }}>
-                    <span style={{ color: "#0F62FE", fontWeight: 700, flexShrink: 0 }}>✓</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <p style={{
-                fontSize: "clamp(14px, 1.7vw, 15px)",
-                color: "#64748b",
-                margin: 0,
-                lineHeight: 1.6,
-              }}>
-                Ideal para secundarias y preparatorias, directores, coordinadores académicos y escuelas que buscan educación práctica.
-              </p>
-            </div>
-
-            <div className="schedule-demo-form-wrap" style={{
-              background: "#f8fafc",
-              borderRadius: "14px",
-              padding: "24px 28px",
-              border: "1px solid #e2e8f0",
-            }}>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                const form = e.currentTarget
-                const formData = new FormData(form)
-                const name = formData.get("name") as string
-                const email = formData.get("email") as string
-                const school = formData.get("school") as string
-                const role = formData.get("role") as string
-                const students = formData.get("students") as string
-                const parts = [`Escuela: ${school || "—"}`, `Rol: ${role || "—"}`, students ? `Estudiantes: ${students}` : ""].filter(Boolean)
-                const message = parts.join("\n")
-
-                const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement
-                const originalText = submitButton.textContent
-                submitButton.disabled = true
-                submitButton.textContent = "Enviando…"
-
-                try {
-                  const res = await fetch("/api/contact", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, message }),
-                  })
-                  const data = await res.json()
-                  if (data.success) {
-                    alert(data.message || "Gracias. Te contactaremos pronto.")
-                    form.reset()
-                  } else {
-                    alert(data.message || "Error. Intenta de nuevo.")
-                  }
-                } catch {
-                  alert("Error al enviar. Intenta de nuevo más tarde.")
-                } finally {
-                  submitButton.disabled = false
-                  submitButton.textContent = originalText || "Agendar demo"
-                }
-              }}
-              className="schedule-demo-form"
-              style={{ display: "grid", gap: "18px 24px" }}
-            >
-              {[
-                { id: "demo-name", name: "name", label: "Nombre completo", type: "text", required: true },
-                { id: "demo-email", name: "email", label: "Email", type: "email", required: true },
-                { id: "demo-school", name: "school", label: "Nombre de la escuela", type: "text", required: true },
-                { id: "demo-role", name: "role", label: "Tu rol", type: "text", required: true, placeholder: "ej. Director, Coordinador académico" },
-                { id: "demo-students", name: "students", label: "Número de estudiantes (opcional)", type: "text", required: false },
-              ].map((f) => (
-                <div key={f.id} style={{ display: "flex", flexDirection: "column", gap: "6px", gridColumn: f.name === "students" ? "1 / -1" : undefined }}>
-                  <label htmlFor={f.id} style={{ fontWeight: 600, fontSize: "14px", color: "#475569" }}>
-                    {f.label}
-                  </label>
-                  <input
-                    id={f.id}
-                    name={f.name}
-                    type={f.type}
-                    required={f.required}
-                    placeholder={f.placeholder}
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      fontSize: "15px",
-                      borderRadius: "10px",
-                      background: "#fff",
-                      border: "1px solid #e2e8f0",
-                      color: "#1e293b",
-                      fontFamily: "inherit",
-                      boxSizing: "border-box",
-                      transition: "border-color 0.2s, box-shadow 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = "#0F62FE"
-                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(15, 98, 254, 0.2)"
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = "#cbd5e1"
-                      e.currentTarget.style.boxShadow = "none"
-                    }}
-                  />
-                </div>
-              ))}
-
-              <button
-                type="submit"
-                style={{
-                  width: "100%",
-                  marginTop: "8px",
-                  gridColumn: "1 / -1",
-                  padding: "16px 24px",
-                  minHeight: "52px",
-                  fontSize: "clamp(17px, 2vw, 20px)",
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  background: "#0F62FE",
-                  border: "none",
-                  borderRadius: "12px",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  boxShadow: "0 4px 14px rgba(15, 98, 254, 0.35)",
-                  transition: "background 0.2s, box-shadow 0.2s, transform 0.1s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#1d4ed8"
-                  e.currentTarget.style.boxShadow = "0 6px 20px rgba(15, 98, 254, 0.4)"
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#0F62FE"
-                  e.currentTarget.style.boxShadow = "0 4px 14px rgba(15, 98, 254, 0.35)"
-                }}
-              >
-                Agendar demo
-              </button>
-            </form>
-            </div>
-
-            <p style={{
-              margin: "24px 0 0 0",
-              gridColumn: "1 / -1",
-              fontSize: "13px",
-              color: "#94a3b8",
-              lineHeight: 1.5,
-            }}>
-              Creado específicamente para estudiantes de secundaria y preparatoria.
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
+      )}
 
     </>
   )
@@ -2121,7 +3123,7 @@ const landingCSS = `
         }
 
 :root{
-  --c-primary:#0F71FD;
+  --c-primary:#1e3a8a;
   --c-accent:#10B981;
   --c-text:#1E293B;
   --c-muted:#334155;
@@ -2135,14 +3137,12 @@ const landingCSS = `
 }
 
 body {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
-  background-attachment: fixed !important;
+  background: #ffffff !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
 html {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
-  background-attachment: fixed !important;
+  background: #ffffff !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   scroll-behavior: smooth;
 }
@@ -2234,9 +3234,9 @@ html {
 .plan{position:relative; padding:32px 24px; display:flex; flex-direction:column; height:auto; min-height:480px; border:1px solid rgba(255, 255, 255, 0.3); background:rgba(255, 255, 255, 0.6); backdrop-filter:blur(20px) saturate(180%); -webkit-backdrop-filter:blur(20px) saturate(180%); border-radius:32px; box-shadow:0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow:visible;}
 .plan:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(15, 98, 254, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6); border-color:rgba(15, 98, 254, 0.3);}
 .plan--highlight{background:rgba(240, 247, 255, 0.7); border:2px solid rgba(15, 98, 254, 0.4); box-shadow:0 12px 32px rgba(15, 98, 254, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6); position:relative; overflow:visible;}
-.plan--highlight::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%); background-size:200% auto; animation:shimmer 3s ease-in-out infinite;}
-.tag{position:absolute; top:16px; right:16px; background:linear-gradient(135deg, #0F62FE 0%, #4A90E2 100%); color:#fff; border-radius:999px; font-weight:800; padding:8px 14px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(15, 98, 254, 0.3); z-index:2;}
-.plan-name{font-size:clamp(24px, 3vw, 32px); margin:0 0 12px 0; font-weight:900; letter-spacing:-0.02em; background:linear-gradient(135deg, #0F62FE 0%, #4A90E2 50%, #0F62FE 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s ease-in-out infinite; font-family:'Inter', system-ui, -apple-system, sans-serif; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
+.plan--highlight::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #1e3a8a 0%, #4A90E2 50%, #1e3a8a 100%); background-size:200% auto; animation:shimmer 3s ease-in-out infinite;}
+.tag{position:absolute; top:16px; right:16px; background:linear-gradient(135deg, #1e3a8a 0%, #4A90E2 100%); color:#fff; border-radius:999px; font-weight:800; padding:8px 14px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(15, 98, 254, 0.3); z-index:2;}
+.plan-name{font-size:clamp(24px, 3vw, 32px); margin:0 0 12px 0; font-weight:900; letter-spacing:-0.02em; background:linear-gradient(135deg, #1e3a8a 0%, #4A90E2 50%, #1e3a8a 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s ease-in-out infinite; font-family:'Inter', system-ui, -apple-system, sans-serif; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
 .plan-note{font-size:14px; margin:0 0 24px 0; color:var(--c-muted); font-weight:500; white-space:normal;}
 .plan-list{list-style:none; margin:0 0 24px 0; padding:0; display:grid; gap:14px; flex-grow:1; overflow:visible;}
 .plan-list li{display:flex; gap:12px; align-items:flex-start; font-size:15px; line-height:1.6; color:var(--c-text); white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
@@ -2276,6 +3276,76 @@ html {
   max-width: 100% !important;
   overflow-x: hidden !important;
   box-sizing: border-box !important;
+}
+
+/* Somos BIZEN Cards - Hover Effects */
+.somos-bizen-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(30, 58, 138, 0.5) !important;
+}
+
+@media (max-width: 767px) {
+  .somos-bizen-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .conoce-bizen-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .somos-bizen-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Profiles Section - slide animation: next tab content slides in very smooth */
+@keyframes perfiles-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.perfiles-slide-in {
+  animation: perfiles-slide-in 1.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Profiles Section Responsive */
+.profile-tab-button:hover {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 98, 254, 0.35);
+}
+
+.quiero-demo-button:hover {
+  background: #1e40af !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 98, 254, 0.45) !important;
+}
+
+@media (max-width: 767px) {
+  .perfiles-content-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .perfiles-content-grid > div:last-child {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .perfiles-content-grid {
+    gap: 32px !important;
+  }
 }
 
 @media (max-width: 767px) {
@@ -2329,7 +3399,7 @@ html {
   font-weight:800;
   font-family:'Inter', system-ui, -apple-system, sans-serif;
   font-size:clamp(16px, 2vw, 20px);
-  color:#0F62FE;
+  color:#1e3a8a;
   transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin:center;
   word-wrap:break-word;
@@ -2338,9 +3408,9 @@ html {
   flex-wrap:wrap;
   gap:8px;
 }
-.accordion-trigger:hover, .accordion-trigger:active{transform:none; color:#0F62FE}
+.accordion-trigger:hover, .accordion-trigger:active{transform:none; color:#1e3a8a}
 .accordion-trigger:focus-visible{outline:2px solid rgba(15, 98, 254, 0.6); border-radius:20px}
-.chev{transition:transform var(--transition); color:#0F62FE}
+.chev{transition:transform var(--transition); color:#1e3a8a}
 .accordion-item.open .chev{transform:rotate(180deg)}
 .accordion-panel{
   padding:0 20px 18px 20px;
@@ -2497,7 +3567,7 @@ html {
   
   /* Main page container - full width, gradient background on mobile */
   .main-page-container {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
+    background: linear-gradient(180deg, #f5f9ff 0%, #eef6ff 18%, #e0efff 40%, #d4e8ff 60%, #dbeafe 75%, #d4e8ff 88%, #bfdbfe 100%) !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: hidden !important;
@@ -2608,7 +3678,7 @@ html {
   }
   
   .main-page-container {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 25%, #eef6ff 55%, #e3f0ff 85%, #dbeafe 100%) !important;
+    background: linear-gradient(180deg, #f5f9ff 0%, #eef6ff 18%, #e0efff 40%, #d4e8ff 60%, #dbeafe 75%, #d4e8ff 88%, #bfdbfe 100%) !important;
     width: 100% !important;
     max-width: 100% !important;
   }
