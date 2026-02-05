@@ -76,7 +76,7 @@ export function LandingWaitlistFooter({ onOpenDemoModal }: Props) {
                                 color: "#ffffff",
                                 padding: "12px 24px",
                                 fontSize: "clamp(16px, 1.2rem, 18px)",
-                                fontWeight: 700,
+                                fontWeight: 500,
                                 border: "none",
                                 borderRadius: 9999,
                                 cursor: "pointer",
@@ -111,7 +111,7 @@ export function LandingWaitlistFooter({ onOpenDemoModal }: Props) {
                 >
                     <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginLeft: "clamp(32px, 5vw, 56px)" }}>
                         <h2 style={{
-                        fontWeight: 700,
+                        fontWeight: 500,
                             fontSize: "clamp(40px, 5vw, 56px)",
                             color: "#ffffff",
                             fontFamily: "'Inter', sans-serif",
@@ -143,7 +143,7 @@ export function LandingWaitlistFooter({ onOpenDemoModal }: Props) {
                     <div style={{ display: "flex", flexDirection: "column", gap: "20px", alignItems: "flex-end" }}>
                         <h3 style={{
                             fontSize: "clamp(16px, 1.1rem, 18px)",
-                            fontWeight: 600,
+                            fontWeight: 500,
                             color: "#ffffff",
                             margin: 0,
                             fontFamily: "'Inter', sans-serif",

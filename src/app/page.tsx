@@ -57,35 +57,21 @@ export default function WelcomePage() {
     return () => clearInterval(mouthInterval)
   }, [])
 
-  // Scroll reveal effect using Intersection Observer
+  // Reveal-on-scroll: add .revealed when .reveal-element enters viewport
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -50px 0px',
-      threshold: 0.1
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed')
-          // Once revealed, we can stop observing
-          observer.unobserve(entry.target)
-        }
-      })
-    }, observerOptions)
-
-    // Use a small delay to ensure DOM is ready
-    const timeoutId = setTimeout(() => {
-      const revealElements = document.querySelectorAll('.reveal-element')
-      revealElements.forEach((el) => observer.observe(el))
-    }, 100)
-
-    return () => {
-      clearTimeout(timeoutId)
-      const revealElements = document.querySelectorAll('.reveal-element')
-      revealElements.forEach((el) => observer.unobserve(el))
-    }
+    if (typeof window === "undefined" || !window.IntersectionObserver) return
+    const els = document.querySelectorAll(".reveal-element")
+    if (!els.length) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("revealed")
+        })
+      },
+      { rootMargin: "0px 0px -60px 0px", threshold: 0.1 }
+    )
+    els.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
   }, [])
 
   const gradientStyle = { background: "linear-gradient(180deg, #f5f9ff 0%, #eef6ff 18%, #e0efff 40%, #d4e8ff 60%, #dbeafe 75%, #d4e8ff 88%, #bfdbfe 100%)", backgroundAttachment: "scroll" as const }
@@ -134,10 +120,10 @@ export default function WelcomePage() {
               marginBottom: 16,
             }}
           />
-          <span style={{ fontSize: 28, fontWeight: 800, color: "#fff", letterSpacing: "0.05em" }}>
+          <span style={{ fontSize: 28, fontWeight: 600, color: "#fff", letterSpacing: "0.05em" }}>
             BIZEN
           </span>
-          <p style={{ fontSize: 22, fontWeight: 700, margin: "24px 0 0", maxWidth: 320, lineHeight: 1.4 }}>
+          <p style={{ fontSize: 22, fontWeight: 500, margin: "24px 0 0", maxWidth: 320, lineHeight: 1.4 }}>
             Para una mejor experiencia, ábrelo en tu computadora o tablet.
           </p>
         </div>
@@ -156,7 +142,7 @@ export default function WelcomePage() {
       }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
           <Image src="/bizen-logo.png" alt="BIZEN logo" width={48} height={48} priority style={{ width: 48, height: "auto", flexShrink: 0 }} />
-          <span style={{ fontSize: 22, fontWeight: 700, color: "#1e3a8a", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
+          <span style={{ fontSize: 22, fontWeight: 500, color: "#1e3a8a", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
         </Link>
         <nav style={{ display: "flex", gap: "24px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "14px 32px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
           <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
@@ -230,9 +216,9 @@ export default function WelcomePage() {
               transition: "opacity 0.6s ease 0.3s",
             }}>
               <p className="hero-tagline" style={{
-                fontSize: "clamp(36px, 5.5vw, 64px)",
+                fontSize: "clamp(32px, 5vw, 58px)",
                 color: "#000",
-                fontWeight: 700,
+                fontWeight: 500,
                 margin: 0,
                 lineHeight: 1.1,
                 fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
@@ -424,7 +410,7 @@ export default function WelcomePage() {
             max-width: 1200px !important;
           }
           .hero-tagline {
-            font-size: clamp(38px, 5vw, 58px) !important;
+            font-size: clamp(32px, 5vw, 52px) !important;
           }
           .hero-tagline-sub {
             font-size: clamp(18px, 1.15rem, 21px) !important;
@@ -476,7 +462,7 @@ export default function WelcomePage() {
             max-width: 1240px !important;
           }
           .hero-tagline {
-            font-size: clamp(40px, 5.2vw, 62px) !important;
+            font-size: clamp(34px, 5vw, 54px) !important;
           }
           .hero-tagline-sub {
             font-size: clamp(19px, 1.2rem, 22px) !important;
@@ -524,7 +510,7 @@ export default function WelcomePage() {
             max-width: 1280px !important;
           }
           .hero-tagline {
-            font-size: clamp(42px, 5.5vw, 66px) !important;
+            font-size: clamp(36px, 5vw, 56px) !important;
           }
           .hero-tagline-sub {
             font-size: clamp(19px, 1.25rem, 23px) !important;
@@ -579,7 +565,7 @@ export default function WelcomePage() {
             width: min(96vw, 1280px) !important;
           }
           .hero-tagline {
-            font-size: clamp(42px, 5.5vw, 72px) !important;
+            font-size: clamp(36px, 5vw, 58px) !important;
           }
           .hero-tagline-sub {
             font-size: clamp(19px, 1.25rem, 24px) !important;
@@ -627,7 +613,7 @@ export default function WelcomePage() {
             width: min(96vw, 1320px) !important;
           }
           .hero-tagline {
-            font-size: clamp(48px, 6vw, 80px) !important;
+            font-size: clamp(38px, 5vw, 60px) !important;
           }
           .hero-tagline-sub {
             font-size: clamp(20px, 1.3rem, 26px) !important;
@@ -772,29 +758,6 @@ export default function WelcomePage() {
           opacity: 1;
           visibility: visible;
           animation: hero-bubble-in 0.28s ease-out forwards;
-        }
-        
-        /* Scroll reveal animations */
-        .reveal-element {
-          opacity: 0;
-          transform: translateY(40px);
-          transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .reveal-element.revealed {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .reveal-element.reveal-delay-1 {
-          transition-delay: 0.1s;
-        }
-        .reveal-element.reveal-delay-2 {
-          transition-delay: 0.2s;
-        }
-        .reveal-element.reveal-delay-3 {
-          transition-delay: 0.3s;
-        }
-        .reveal-element.reveal-delay-4 {
-          transition-delay: 0.4s;
         }
         
         @keyframes shimmer {
@@ -1332,11 +1295,11 @@ export default function WelcomePage() {
             <button type="button" aria-label="Cerrar" onClick={() => setDemoModalOpen(false)} style={{ position: "absolute", top: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", border: "none", background: "#f1f5f9", cursor: "pointer", fontSize: "18px", lineHeight: 1, color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s, color 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "#e2e8f0"; e.currentTarget.style.color = "#334155"; }} onMouseOut={(e) => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#64748b"; }}>×</button>
             <div style={{ paddingRight: "36px" }}>
               <div style={{ width: "40px", height: "4px", borderRadius: "2px", background: "linear-gradient(90deg, #1e3a8a, #60a5fa)", marginBottom: "16px" }} />
-              <h2 id="demo-modal-title" style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b", margin: "0 0 6px 0", lineHeight: 1.3 }}>Solicita tu demo gratis</h2>
+              <h2 id="demo-modal-title" style={{ fontSize: "18px", fontWeight: 500, color: "#1e293b", margin: "0 0 6px 0", lineHeight: 1.3 }}>Solicita tu demo gratis</h2>
               <p style={{ fontSize: "14px", color: "#64748b", margin: "0 0 16px 0", lineHeight: 1.5 }}>15 min · Sin presión</p>
               <ul style={{ listStyle: "none", margin: "0 0 16px 0", padding: 0, display: "flex", flexWrap: "wrap", gap: "8px 16px" }}>
                 {["Lecciones prácticas", "Reportes de progreso", "Implementación fácil"].map((item, i) => (
-                  <li key={i} style={{ display: "flex", gap: "6px", alignItems: "center", fontSize: "13px", color: "#475569" }}><span style={{ color: "#1e3a8a", fontWeight: 700, flexShrink: 0 }}>✓</span><span>{item}</span></li>
+                  <li key={i} style={{ display: "flex", gap: "6px", alignItems: "center", fontSize: "13px", color: "#475569" }}><span style={{ color: "#1e3a8a", fontWeight: 500, flexShrink: 0 }}>✓</span><span>{item}</span></li>
                 ))}
               </ul>
             </div>
@@ -1355,13 +1318,13 @@ export default function WelcomePage() {
       )}
 
       {/* Testimonials Carousel */}
-      <section className="section testimonials-section" style={{ background: "#f8fafc", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)", marginBottom: "clamp(64px, 10vw, 100px)" }}>
+      <section className="section testimonials-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)", marginBottom: "clamp(64px, 10vw, 100px)" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h2 style={{ 
           textAlign: "center",
             margin: "0 0 clamp(40px, 6vw, 64px)", 
             fontSize: "clamp(28px, 4.5vw, 44px)", 
-            fontWeight: 800, 
+            fontWeight: 600, 
             color: "#111", 
             fontFamily: "'Inter', system-ui, -apple-system, sans-serif", 
             lineHeight: 1.2 
@@ -1476,7 +1439,7 @@ export default function WelcomePage() {
                   name: "Joanna Vazquez",
                   title: "Coordinadora Universidad",
                   institution: "Mondragón México",
-                  image: "/3.png",
+                  image: "/joanna.png",
                   logo: "/bizen_sign.png",
                 },
               ].map((testimonial, idx) => (
@@ -1539,7 +1502,7 @@ export default function WelcomePage() {
                         {testimonial.quote}
                       </p>
                       <div>
-                        <p style={{ margin: "0 0 4px", fontSize: "clamp(15px, 1rem, 17px)", fontWeight: 700, color: "#111", fontFamily: "'Inter', sans-serif" }}>
+                        <p style={{ margin: "0 0 4px", fontSize: "clamp(15px, 1rem, 17px)", fontWeight: 500, color: "#111", fontFamily: "'Inter', sans-serif" }}>
                           — {testimonial.name}
                         </p>
                         <p style={{ margin: 0, fontSize: "clamp(13px, 0.9rem, 15px)", color: "#64748b", fontFamily: "'Inter', sans-serif" }}>
@@ -1785,7 +1748,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
       {(sectionRange === 'all' || sectionRange === 'gradient') && (<>
 
       {/* Logo carousel above Planes */}
-      <section className="logos-carousel-section" style={{ background: "transparent", padding: "clamp(32px, 5vw, 48px) 0", overflow: "hidden" }}>
+      <section className="section logos-carousel-section reveal-element" style={{ background: "transparent", padding: "clamp(32px, 5vw, 48px) 0", overflow: "hidden" }}>
         <p style={{
               textAlign: "center",
           margin: "0 0 clamp(20px, 3vw, 28px)",
@@ -1820,7 +1783,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
           <h2 style={{
             textAlign: "left",
             fontSize: "clamp(32px, 4.5vw, 52px)",
-            fontWeight: 800,
+            fontWeight: 600,
             color: "#1f2937",
             lineHeight: 1.2,
             marginBottom: "clamp(40px, 6vw, 64px)",
@@ -1857,7 +1820,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <div>
                 <h3 style={{
                   fontSize: "clamp(22px, 2.5vw, 28px)",
-                fontWeight: 800,
+                fontWeight: 600,
                   lineHeight: 1.3,
                   marginBottom: "16px",
                   fontFamily: "'Inter', sans-serif",
@@ -1903,7 +1866,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <div>
                 <h3 style={{
                   fontSize: "clamp(22px, 2.5vw, 28px)",
-                fontWeight: 800,
+                fontWeight: 600,
                   lineHeight: 1.3,
                   marginBottom: "16px",
                   fontFamily: "'Inter', sans-serif",
@@ -1949,7 +1912,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <div>
                 <h3 style={{
                   fontSize: "clamp(22px, 2.5vw, 28px)",
-                  fontWeight: 800,
+                  fontWeight: 600,
                   lineHeight: 1.3,
                   marginBottom: "16px",
                   fontFamily: "'Inter', sans-serif",
@@ -1995,7 +1958,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <div>
                 <h3 style={{
                   fontSize: "clamp(22px, 2.5vw, 28px)",
-                fontWeight: 800,
+                fontWeight: 600,
                   lineHeight: 1.3,
                   marginBottom: "16px",
                   fontFamily: "'Inter', sans-serif",
@@ -2029,7 +1992,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
           <h2 style={{
             textAlign: "center",
             fontSize: "clamp(32px, 4.5vw, 52px)",
-            fontWeight: 800,
+            fontWeight: 600,
             color: "#1f2937",
           lineHeight: 1.2,
             marginBottom: "clamp(8px, 2vw, 16px)",
@@ -2100,7 +2063,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 <div key={activeProfile} className="perfiles-slide-in">
                 <h3 style={{
                   fontSize: "clamp(28px, 3.5vw, 42px)",
-                  fontWeight: 800,
+                  fontWeight: 600,
                   color: "#1e3a8a",
                   marginBottom: "clamp(16px, 3vw, 24px)",
                   fontFamily: "'Inter', sans-serif",
@@ -2145,7 +2108,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2163,7 +2126,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2181,7 +2144,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2203,7 +2166,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2221,7 +2184,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2239,7 +2202,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2261,7 +2224,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2279,7 +2242,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2297,7 +2260,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2319,7 +2282,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2337,7 +2300,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2355,7 +2318,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                           alignItems: "center", 
                           justifyContent: "center",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 500,
                           fontSize: "14px",
                           flexShrink: 0,
                         }}>✓</span>
@@ -2374,7 +2337,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 style={{
                     padding: "16px 32px",
                     fontSize: "clamp(16px, 1.1rem, 18px)",
-                  fontWeight: 700,
+                  fontWeight: 500,
                     fontFamily: "'Inter', sans-serif",
                   background: "#1e3a8a",
                     color: "#ffffff",
@@ -2395,40 +2358,43 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 </div>
             </div>
 
-              {/* Right: Image/Visual */}
+              {/* Right: Photo for active profile (1 solución, 4 perfiles educativos) */}
             <div style={{
               display: "flex",
               alignItems: "center",
-                justifyContent: "center",
-                minHeight: "400px",
+              justifyContent: "center",
+              minHeight: "360px",
             }}>
-                <div style={{
+                <div key={activeProfile} className="perfiles-slide-in" style={{
                   width: "100%",
-                  height: "100%",
-                  borderRadius: "16px",
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#fff",
-                  fontSize: "24px",
-                  fontWeight: 600,
-                  position: "relative",
+                  maxWidth: "400px",
+                  borderRadius: "28px",
                   overflow: "hidden",
+                  position: "relative",
+                  boxShadow: "0 12px 40px rgba(0, 0, 0, 0.12)",
                 }}>
-                  {/* Placeholder for dashboard image - you can add actual dashboard screenshots here */}
-                  <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "rgba(255, 255, 255, 0.1)",
-                    backdropFilter: "blur(10px)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "18px",
-                  }}>
-                    Dashboard Preview
-                  </div>
+                  <Image
+                    src={
+                      activeProfile === "directores" ? "/perfil-directores.png" :
+                      activeProfile === "docentes" ? "/perfil-docentes.png" :
+                      activeProfile === "estudiantes" ? "/perfil-estudiantes.png" :
+                      "/perfil-padres.png"
+                    }
+                    alt={
+                      activeProfile === "directores" ? "Directores usando BIZEN" :
+                      activeProfile === "docentes" ? "Docentes en el aula" :
+                      activeProfile === "estudiantes" ? "Estudiante con la plataforma" :
+                      "Padres e hijos aprendiendo"
+                    }
+                    width={400}
+                    height={300}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      display: "block",
+                      objectFit: "cover",
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -2471,13 +2437,13 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               </p>
             <h2 style={{
                 fontSize: "clamp(28px, 3.5vw, 42px)",
-              fontWeight: 800,
+              fontWeight: 600,
                 color: "#1e293b",
                 lineHeight: 1.2,
                 marginBottom: "clamp(20px, 3vw, 28px)",
                 fontFamily: "'Inter', sans-serif",
               }}>
-                Aprender nunca ha sido tan dinámico y divertido<span style={{ color: "#111" }}>.</span>
+                Aprender finanzas nunca ha sido tan claro y relevante<span style={{ color: "#111" }}>.</span>
               </h2>
             <p style={{
                 fontSize: "clamp(16px, 1.1rem, 18px)",
@@ -2485,7 +2451,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               color: "#475569",
                 fontFamily: "'Inter', sans-serif",
               }}>
-                Haz que tus estudiantes desarrollen habilidades mientras aprenden jugando.
+                Impulsa a tu escuela a desarrollar habilidades clave mientras los estudiantes aprenden de forma práctica y guiada.
               </p>
             </div>
 
@@ -2496,12 +2462,12 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               gap: "clamp(20px, 3vw, 28px) clamp(24px, 4vw, 36px)",
             }}>
               {[
-                { label: "Pensamiento crítico", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> },
-                { label: "Resolución de problemas", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg> },
-                { label: "Creatividad e innovación", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg> },
-                { label: "Comunicación y colaboración", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> },
-                { label: "Trabajo en equipo", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
-                { label: "Habilidades socioemocionales", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg> },
+                { label: "Toma de decisiones informadas", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> },
+                { label: "Pensamiento crítico aplicado", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> },
+                { label: "Resolución de problemas financieros reales", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg> },
+                { label: "Planeación y visión a futuro", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
+                { label: "Trabajo colaborativo en el aula", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
+                { label: "Responsabilidad y habilidades socioemocionales", Icon: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg> },
               ].map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                   <div style={{
@@ -2534,13 +2500,13 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
       </section>
 
       {/* Cada clase, una aventura divertida - Carousel */}
-      <section className="section adventure-carousel-section" style={{ background: "#ffffff", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <section className="section adventure-carousel-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)", overflow: "visible" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", overflow: "visible" }}>
           <h2 style={{
             textAlign: "center",
             margin: "0 0 clamp(48px, 7vw, 72px)",
             fontSize: "clamp(32px, 5vw, 48px)",
-            fontWeight: 800,
+            fontWeight: 600,
             color: "#111",
             fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
             lineHeight: 1.2
@@ -2548,7 +2514,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
             Cada clase, una aventura divertida<span style={{ color: "#EF4444" }}>.</span>
           </h2>
 
-          <div style={{ position: "relative", maxWidth: "1000px", margin: "0 auto" }}>
+          <div style={{ position: "relative", maxWidth: "1000px", margin: "0 auto", overflow: "visible" }}>
             {/* Left Arrow */}
             <button
               onClick={() => setActiveAdventureSlide(prev => prev === 0 ? 2 : prev - 1)}
@@ -2617,8 +2583,8 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               </svg>
             </button>
 
-            {/* Carousel Content */}
-            <div style={{ position: "relative" }}>
+            {/* Carousel Content - smooth crossfade when changing cards; minHeight reserves space so card doesn't overlap dots */}
+            <div style={{ position: "relative", minHeight: "640px", overflow: "visible" }}>
               {[
                 {
                   title: "Microlearning",
@@ -2642,9 +2608,13 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 <div
                   key={idx}
                   style={{
-                    display: activeAdventureSlide === idx ? "block" : "none",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
                     opacity: activeAdventureSlide === idx ? 1 : 0,
-                    transition: "opacity 0.4s ease",
+                    pointerEvents: activeAdventureSlide === idx ? "auto" : "none",
+                    transition: "opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
                   }}
                 >
                   <div style={{
@@ -2679,7 +2649,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                     <h3 style={{
                       margin: "0 0 clamp(16px, 2vw, 24px)",
                       fontSize: "clamp(28px, 3.5vw, 36px)",
-                      fontWeight: 800,
+                      fontWeight: 600,
                       color: "#ffffff",
                       fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                       lineHeight: 1.2,
@@ -2707,7 +2677,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                       style={{
                         padding: "16px 32px",
                         fontSize: "clamp(16px, 1.1rem, 18px)",
-                        fontWeight: 700,
+                        fontWeight: 500,
                         background: "#1e3a8a",
                         color: "#ffffff",
                         border: "none",
@@ -2739,7 +2709,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               ))}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "24px" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "32px", position: "relative", zIndex: 5 }}>
               {[0, 1, 2].map(idx => (
                 <button
                   key={idx}
@@ -2781,7 +2751,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <h2 style={{
                 margin: 0,
                 fontSize: "clamp(22px, 3vw, 36px)",
-                fontWeight: 700,
+                fontWeight: 500,
                 color: "#1e293b",
                 fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                 lineHeight: 1.3,
@@ -2834,7 +2804,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <span style={{
                 marginBottom: "6px",
                 fontSize: "clamp(12px, 0.85rem, 14px)",
-                fontWeight: 700,
+                fontWeight: 500,
                 color: "#64748b",
                 fontFamily: "'Inter', sans-serif",
                 letterSpacing: "0.02em",
@@ -2844,7 +2814,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <h3 style={{
                 margin: "0 0 clamp(8px, 1vw, 12px)",
                 fontSize: "clamp(18px, 1.25rem, 22px)",
-                fontWeight: 700,
+                fontWeight: 500,
                 color: "#1e293b",
                 fontFamily: "'Inter', sans-serif",
                 lineHeight: 1.3,
@@ -2888,7 +2858,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <span style={{
                 marginBottom: "6px",
                 fontSize: "clamp(12px, 0.85rem, 14px)",
-                  fontWeight: 700,
+                  fontWeight: 500,
                 color: "#64748b",
                 fontFamily: "'Inter', sans-serif",
                 letterSpacing: "0.02em",
@@ -2898,7 +2868,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <h3 style={{
                 margin: "0 0 clamp(8px, 1vw, 12px)",
                 fontSize: "clamp(18px, 1.25rem, 22px)",
-                fontWeight: 700,
+                fontWeight: 500,
                 color: "#1e293b",
                 fontFamily: "'Inter', sans-serif",
                 lineHeight: 1.3,
@@ -2942,7 +2912,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <span style={{
                 marginBottom: "6px",
                 fontSize: "clamp(12px, 0.85rem, 14px)",
-                  fontWeight: 700,
+                  fontWeight: 500,
                 color: "#64748b",
                 fontFamily: "'Inter', sans-serif",
                 letterSpacing: "0.02em",
@@ -2952,7 +2922,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               <h3 style={{
                 margin: "0 0 clamp(8px, 1vw, 12px)",
                 fontSize: "clamp(18px, 1.25rem, 22px)",
-                fontWeight: 700,
+                fontWeight: 500,
                 color: "#1e293b",
                 fontFamily: "'Inter', sans-serif",
                 lineHeight: 1.3,
@@ -3001,7 +2971,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
             <h2 style={{
               margin: "0 0 12px",
               fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
+              fontWeight: 600,
               color: "#111",
               fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
               lineHeight: 1.2,
@@ -3046,7 +3016,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                   flexShrink: 0,
                   position: "relative",
                 }}>
-                  <span style={{ position: "absolute", top: "-4px", right: "-4px", width: "24px", height: "24px", borderRadius: "50%", background: "#1e3a8a", color: "#fff", fontSize: "12px", fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
+                  <span style={{ position: "absolute", top: "-4px", right: "-4px", width: "24px", height: "24px", borderRadius: "50%", background: "#1e3a8a", color: "#fff", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
                     {i + 1}
                   </span>
                   {i === 0 && (
@@ -3062,7 +3032,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 <h3 style={{
                   margin: "0 0 20px",
                   fontSize: "clamp(18px, 2vw, 22px)",
-                  fontWeight: 700,
+                  fontWeight: 500,
                   color: "#111",
                   fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
                 }}>
@@ -3134,11 +3104,15 @@ const landingCSS = `
   --shadow:0 10px 30px rgba(0,0,0,.06);
   --shadow-sm:0 4px 16px rgba(0,0,0,.06);
   --transition:180ms cubic-bezier(.2,.8,.2,1);
+  --font-weight-normal:400;
+  --font-weight-medium:500;
+  --font-weight-semibold:600;
 }
 
 body {
   background: #ffffff !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 400 !important;
 }
 
 html {
@@ -3148,14 +3122,28 @@ html {
 }
 
 .section{padding: clamp(64px, 8vw, 120px) 0; scroll-margin-top: 80px; background: transparent !important;}
+
+/* Reveal on scroll - fade up when section enters viewport */
+.reveal-element {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-element.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-element.reveal-delay-1 { transition-delay: 0.12s; }
+.reveal-element.reveal-delay-2 { transition-delay: 0.22s; }
+
         .section.contact,
         #contacto {
           padding-bottom: clamp(64px, 8vw, 128px) !important;
           overflow: visible !important;
         }
 .section-head{max-width:900px; margin:0 auto 28px auto; text-align:center; overflow:visible; word-wrap:break-word; overflow-wrap:break-word;}
-.section-head h2{margin:0 0 8px 0; font-size:clamp(28px, 4.2vw, 40px); line-height:1.15; white-space:normal;}
-.section-head p{margin:0; color:var(--c-muted); white-space:normal;}
+.section-head h2{margin:0 0 8px 0; font-size:clamp(28px, 4.2vw, 40px); font-weight:600; line-height:1.15; white-space:normal;}
+.section-head p{margin:0; color:var(--c-muted); font-weight:400; white-space:normal;}
 
 .container{
   width:100%;
@@ -3169,6 +3157,10 @@ html {
   overflow-x: hidden !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
+}
+.main-page-container .adventure-carousel-section {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
 }
 @media (min-width: 768px){
   .container{ padding:0 clamp(24px, 4vw, 40px) !important; overflow-x: hidden !important; }
@@ -3185,7 +3177,7 @@ html {
 .hero-copy .sub{font-size:clamp(16px, 2.4vw, 20px); color:var(--c-muted); margin:0 0 14px 0}
 .hero-actions{display:flex; gap:12px; flex-wrap:wrap}
 .badges{display:flex; gap:10px; margin:18px 0 0 0; padding:0; list-style:none; flex-wrap:wrap}
-.badges li{background:white; border:1px solid var(--c-border); padding:8px 12px; border-radius:999px; font-weight:700;}
+.badges li{background:white; border:1px solid var(--c-border); padding:8px 12px; border-radius:999px; font-weight:500;}
 .badges li a{color:inherit; transition:opacity var(--transition); cursor:pointer;}
 .badges li a:hover{opacity:.7;}
 .hero-media img{object-fit:contain; width:100%; height:auto; max-height:700px}
@@ -3221,13 +3213,13 @@ html {
 @media (min-width: 900px){ .steps{ grid-template-columns: repeat(3, 1fr) !important; gap: 28px !important; } }
 
 .benefit{display:grid; gap:10px; text-align:left}
-.benefit .benefit-icon{width:40px; height:40px; display:grid; place-items:center; background:rgba(16,185,129,.15); color:#065F46; border-radius:12px; font-weight:900;}
+.benefit .benefit-icon{width:40px; height:40px; display:grid; place-items:center; background:rgba(16,185,129,.15); color:#065F46; border-radius:12px; font-weight:600;}
 
 .course-media img{width:100%; height:auto; aspect-ratio: 16/10; object-fit:cover}
 .course-title{margin:2px 0 8px}
 .course-body{padding:6px 2px 8px 2px}
 .course-meta{display:flex; align-items:center; gap:8px; color:var(--c-muted)}
-.pill{display:inline-flex; align-items:center; height:28px; padding:0 10px; border-radius:999px; background:rgba(14,165,233,.12); color:#0b77a1; font-weight:800; font-size:13px;}
+.pill{display:inline-flex; align-items:center; height:28px; padding:0 10px; border-radius:999px; background:rgba(14,165,233,.12); color:#0b77a1; font-weight:500; font-size:13px;}
 .dot{opacity:.4}
 .course-actions{padding-top:6px}
 
@@ -3235,12 +3227,12 @@ html {
 .plan:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(15, 98, 254, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6); border-color:rgba(15, 98, 254, 0.3);}
 .plan--highlight{background:rgba(240, 247, 255, 0.7); border:2px solid rgba(15, 98, 254, 0.4); box-shadow:0 12px 32px rgba(15, 98, 254, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6); position:relative; overflow:visible;}
 .plan--highlight::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, #1e3a8a 0%, #4A90E2 50%, #1e3a8a 100%); background-size:200% auto; animation:shimmer 3s ease-in-out infinite;}
-.tag{position:absolute; top:16px; right:16px; background:linear-gradient(135deg, #1e3a8a 0%, #4A90E2 100%); color:#fff; border-radius:999px; font-weight:800; padding:8px 14px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(15, 98, 254, 0.3); z-index:2;}
-.plan-name{font-size:clamp(24px, 3vw, 32px); margin:0 0 12px 0; font-weight:900; letter-spacing:-0.02em; background:linear-gradient(135deg, #1e3a8a 0%, #4A90E2 50%, #1e3a8a 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s ease-in-out infinite; font-family:'Inter', system-ui, -apple-system, sans-serif; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
-.plan-note{font-size:14px; margin:0 0 24px 0; color:var(--c-muted); font-weight:500; white-space:normal;}
+.tag{position:absolute; top:16px; right:16px; background:linear-gradient(135deg, #1e3a8a 0%, #4A90E2 100%); color:#fff; border-radius:999px; font-weight:500; padding:8px 14px; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(15, 98, 254, 0.3); z-index:2;}
+.plan-name{font-size:clamp(24px, 3vw, 32px); margin:0 0 12px 0; font-weight:600; letter-spacing:-0.02em; background:linear-gradient(135deg, #1e3a8a 0%, #4A90E2 50%, #1e3a8a 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s ease-in-out infinite; font-family:'Inter', system-ui, -apple-system, sans-serif; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
+.plan-note{font-size:14px; margin:0 0 24px 0; color:var(--c-muted); font-weight:400; white-space:normal;}
 .plan-list{list-style:none; margin:0 0 24px 0; padding:0; display:grid; gap:14px; flex-grow:1; overflow:visible;}
 .plan-list li{display:flex; gap:12px; align-items:flex-start; font-size:15px; line-height:1.6; color:var(--c-text); white-space:normal; word-wrap:break-word; overflow-wrap:break-word;}
-.check{color:var(--c-accent); font-weight:900; font-size:18px; min-width:20px; margin-top:2px;}
+.check{color:var(--c-accent); font-weight:600; font-size:18px; min-width:20px; margin-top:2px;}
 .plan-btn:hover{transform:none !important;}
 .plan-btn:active{transform:none !important;}
 
@@ -3396,7 +3388,7 @@ html {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  font-weight:800;
+  font-weight:500;
   font-family:'Inter', system-ui, -apple-system, sans-serif;
   font-size:clamp(16px, 2vw, 20px);
   color:#1e3a8a;
@@ -3836,7 +3828,7 @@ html {
   --ring:0 0 0 0 rgba(14,165,233,.35);
   display:inline-flex; align-items:center; justify-content:center;
   height:42px; padding:0 16px; border-radius:12px;
-  border:1px solid var(--c-border); cursor:pointer; font-weight:800;
+  border:1px solid var(--c-border); cursor:pointer; font-weight:500;
   transition:transform 60ms ease, box-shadow var(--transition), background var(--transition), color var(--transition), border-color var(--transition);
   box-shadow:var(--shadow-sm);
   transform-origin:center;

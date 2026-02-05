@@ -196,6 +196,12 @@ Run: `node test-env.js`
 - Verify Supabase project is running
 - Test connection with: `npx prisma db pull`
 
+### "Error in PostgreSQL connection: Error { kind: Closed }" (Prisma)
+- Caused by Supabase connection pooler (port 6543) closing idle connections.
+- **Fix:** Add `&connection_limit=1` to your `DATABASE_URL` so each request uses a short-lived connection.
+- Example: `...?pgbouncer=true&sslmode=require&connection_limit=1`
+- Restart the dev server after changing `.env.local`.
+
 ### "Authentication error"
 - Check `NEXT_PUBLIC_SUPABASE_ANON_KEY` is correct
 - Verify it matches your Supabase project

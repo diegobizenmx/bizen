@@ -6,8 +6,11 @@ const globalForPrisma = globalThis as unknown as {
 
 /**
  * Prisma Client Singleton
- * Prevents multiple instances in development and production
- * Critical for middleware and serverless functions
+ * Prevents multiple instances in development and production.
+ *
+ * If you see "Error in PostgreSQL connection: Error { kind: Closed }" with Supabase
+ * pooler (port 6543), add to your DATABASE_URL: &connection_limit=1
+ * Example: ...?pgbouncer=true&sslmode=require&connection_limit=1
  */
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
   log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
