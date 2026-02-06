@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { resend } from '@/lib/resend'
 
 export const runtime = 'nodejs'
 
@@ -8,6 +6,7 @@ const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'contacto@bizen.mx'
 const CONTACT_FROM = process.env.RESEND_FROM || 'BIZEN Web <onboarding@resend.dev>'
 
 async function sendContactEmail(name: string, email: string, message: string) {
+  const { resend } = await import('@/lib/resend')
   const { data, error } = await resend.emails.send({
     from: CONTACT_FROM,
     to: CONTACT_EMAIL,
@@ -25,11 +24,28 @@ async function sendContactEmail(name: string, email: string, message: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { name, email, message } = body
+    let body: unknown
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json(
+        { success: false, message: 'Cuerpo de la solicitud inválido.' },
+        { status: 400 }
+      )
+    }
+    if (body == null || typeof body !== 'object' || Array.isArray(body)) {
+      return NextResponse.json(
+        { success: false, message: 'Por favor completa todos los campos requeridos.' },
+        { status: 400 }
+      )
+    }
+    const { name, email, message } = body as Record<string, unknown>
 
-    // Validate required fields
-    if (!name || !email || !message) {
+    const trimmedName = String(name ?? '').trim()
+    const trimmedEmail = String(email ?? '').trim().toLowerCase()
+    const trimmedMessage = String(message ?? '').trim()
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       return NextResponse.json(
         {
           success: false,
@@ -37,11 +53,6 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       )
-    }
-
-    const trimmedName = name.trim()
-    const trimmedEmail = email.trim().toLowerCase()
-    const trimmedMessage = message.trim()
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -61,9 +72,11 @@ export async function POST(request: NextRequest) {
         const data = await sendContactEmail(trimmedName, trimmedEmail, trimmedMessage)
         // Optionally save to DB as well (non-blocking)
         if (process.env.DATABASE_URL) {
-          prisma.contactMessage.create({
-            data: { name: trimmedName, email: trimmedEmail, message: trimmedMessage },
-          }).catch((e) => console.error('[/api/contact] DB save (optional) failed:', e))
+          import('@/lib/prisma').then(({ prisma }) =>
+            prisma.contactMessage.create({
+              data: { name: trimmedName, email: trimmedEmail, message: trimmedMessage },
+            })
+          ).catch((e) => console.error('[/api/contact] DB save (optional) failed:', e))
         }
         return NextResponse.json(
           {
@@ -81,6 +94,7 @@ export async function POST(request: NextRequest) {
     // 2) Fallback: save to DB only
     if (process.env.DATABASE_URL) {
       try {
+        const { prisma } = await import('@/lib/prisma')
         const newMessage = await prisma.contactMessage.create({
           data: {
             name: trimmedName,

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServer } from "@/lib/supabase/server"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { calculateLevel, xpInCurrentLevel, totalXpForNextLevel, xpForNextLevel } from "@/lib/xp"
-
-const prisma = new PrismaClient()
 
 export async function GET() {
   try {
@@ -125,8 +123,6 @@ export async function GET() {
       { error: "Failed to fetch stats" },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 
