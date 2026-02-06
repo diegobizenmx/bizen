@@ -9,5 +9,6 @@ export const lesson1Steps: LessonStep[] = [
     description: "Antes de empezar, piensa esto:",
     body: "Usas dinero todos los días\n\nPero no siempre existió\n\nHoy voy a entender cómo empezó todo",
     isAssessment: false,
+    fullScreen: true,
   },
 ]

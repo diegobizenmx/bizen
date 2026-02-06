@@ -150,6 +150,12 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
       onAnswered: (result: { isCompleted: boolean; isCorrect?: boolean; answerData?: any }) => {
         handleAnswered(currentStep.id, result)
       },
+      // For fullScreen steps, pass navigation callbacks
+      ...(currentStep.fullScreen ? {
+        onExit: onExit,
+        onContinue: handleContinue,
+        isContinueEnabled: state.isContinueEnabled,
+      } : {}),
     }
 
     // Add previous answer data for review steps
@@ -264,6 +270,65 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
 
   const isLastStep = state.currentStepIndex >= state.allSteps.length - 1
   const isSummaryStep = currentStep.stepType === "summary"
+
+  // Full-screen mode: render step directly without chrome
+  if (currentStep.fullScreen) {
+    return (
+      <div
+        className="flex flex-col bg-white text-slate-900 relative w-full flex-1 min-h-0"
+        style={{
+          paddingTop: "env(safe-area-inset-top)",
+          minHeight: "100dvh",
+          height: "100dvh",
+          overflow: "hidden",
+        }}
+      >
+        <div className="flex-1 overflow-y-auto">
+          {renderStep()}
+        </div>
+        {showExitConfirm && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="exit-dialog-title"
+            onClick={() => setShowExitConfirm(false)}
+          >
+            <div
+              className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 md:p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 id="exit-dialog-title" className="text-xl md:text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                ⚠️ ¿Estás seguro?
+              </h2>
+              <p className="text-base md:text-lg text-slate-600 mb-6 leading-relaxed">
+                Si sales ahora, se perderá tu progreso de la lección actual. ¿Deseas continuar?
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowExitConfirm(false)}
+                  className="flex-1 px-5 py-3 rounded-xl font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors shadow-md"
+                >
+                  Continuar con la lección
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowExitConfirm(false)
+                    onExit?.()
+                  }}
+                  className="flex-1 px-5 py-3 rounded-xl font-semibold text-red-600 bg-white border border-red-300 hover:bg-red-50 transition-colors"
+                >
+                  Salir de la lección
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <LessonScreen

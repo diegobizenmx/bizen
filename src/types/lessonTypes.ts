@@ -138,6 +138,7 @@ export interface BaseLessonStep {
   isAssessment?: boolean; // true if it should be considered for correctness tracking
   recordIncorrect?: boolean; // default true for question steps
   reviewSourceStepId?: string; // used when a review step is a repetition of another step
+  fullScreen?: boolean; // true to hide progress bar and footer, step renders its own buttons
 }
 
 // ============================================================================
