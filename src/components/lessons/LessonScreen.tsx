@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { ProgressBar } from "./ProgressBar"
+import { LessonProgressHeader } from "./LessonProgressHeader"
 import { LessonContainer } from "./LessonContainer"
 import { StickyFooter } from "./StickyFooter"
 
@@ -9,6 +9,9 @@ interface LessonScreenProps {
   children: React.ReactNode
   currentStep: number
   totalSteps: number
+  streak?: number
+  stars?: 1 | 2 | 3
+  showProgressBar?: boolean
   footerContent?: React.ReactNode
   className?: string
 }
@@ -17,7 +20,7 @@ interface LessonScreenProps {
  * Main lesson screen component
  * - Full-height layout with flex column
  * - Background: bg-slate-900 text-white
- * - Progress bar at top
+ * - Progress header (with streak & stars) at top - ALWAYS SHOWN
  * - Scrollable content in middle
  * - Sticky footer at bottom
  */
@@ -25,33 +28,78 @@ export function LessonScreen({
   children,
   currentStep,
   totalSteps,
+  streak = 0,
+  stars = 3,
+  showProgressBar = true,
   footerContent,
   className = "",
 }: LessonScreenProps) {
+  const starsClamped = (stars === 1 || stars === 2 || stars === 3 ? stars : 3) as 1 | 2 | 3
+
   return (
     <div
-      className="flex flex-col text-slate-900 relative w-full flex-1 min-h-0"
+      className="flex flex-col text-slate-900 relative w-full flex-1 min-h-0 lesson-screen-root"
       style={{
         paddingTop: "env(safe-area-inset-top)",
-        minHeight: "100dvh",
-        height: "100dvh",
+        minHeight: 0,
+        height: "100%",
         overflow: "hidden",
         background: "#f1f5f9",
       }}
     >
-      {/* Progress Bar - visible strip at top */}
-      <div style={{ flexShrink: 0, paddingTop: 8, paddingBottom: 8 }}>
-        <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-      </div>
+      {/* Progress bar - shown unless parent renders its own (e.g. interactive page) */}
+      {showProgressBar && (
+        <div
+          className="lesson-progress-bar-fixed"
+          style={{
+            flexShrink: 0,
+            minHeight: 90,
+            paddingTop: 8,
+            paddingBottom: 12,
+            paddingLeft: 12,
+            paddingRight: 12,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#f1f5f9",
+            borderBottom: "2px solid #cbd5e1",
+            boxSizing: "border-box",
+          }}
+        >
+          <LessonProgressHeader
+            currentStepIndex={currentStep - 1}
+            totalSteps={totalSteps}
+            streak={streak}
+            stars={starsClamped}
+          />
+        </div>
+      )}
 
-      {/* Main Content - Scrollable; extra padding so content is not hidden under fixed footer */}
-      <LessonContainer className={className} bottomPad={footerContent ? 100 : undefined}>
+      {/* Content - fills space between progress bar and nav buttons */}
+      <LessonContainer
+        className={className}
+        bottomPad={footerContent ? 0 : undefined}
+        topPad={0}
+        noScroll
+      >
         {children}
       </LessonContainer>
 
-      {/* Footer - Fixed to bottom of viewport so it stays visible */}
+      {/* Nav buttons - at bottom of slide (in flow, so no empty gap) */}
       {footerContent && (
-        <div className="lesson-footer-fixed">
+        <div
+          className="lesson-footer-in-flow"
+          style={{
+            flexShrink: 0,
+            paddingLeft: 24,
+            paddingRight: 24,
+            maxWidth: 720,
+            marginLeft: "auto",
+            marginRight: "auto",
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
           <StickyFooter>{footerContent}</StickyFooter>
         </div>
       )}

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react"
 import { SummaryStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
-import { LessonProgressHeader } from "../LessonProgressHeader"
+// LessonProgressHeader now shown in LessonScreen for all slides
 
 interface SummaryStepProps {
   step: SummaryStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; continueLabel?: string }
@@ -35,30 +35,23 @@ export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEn
         display: 'flex', 
         flexDirection: 'column', 
         alignItems: 'center', 
+        justifyContent: 'space-between',
         textAlign: 'center', 
-        height: '100%',
-        minHeight: '100dvh',
+        minHeight: 0,
+        flex: 1,
         padding: '2rem 1.5rem',
         background: '#f1f5f9',
         boxSizing: 'border-box',
       }}>
-        <LessonProgressHeader
-          currentStepIndex={currentStepIndex}
-          totalSteps={totalSteps}
-          streak={streak}
-          stars={stars}
-        />
-
-        {/* Content area - scrolls if needed so buttons stay visible */}
+        {/* Content area - fills space */}
         <div style={{ 
           flex: 1, 
-          minHeight: 0,
-          overflowY: 'auto',
           display: 'flex', 
           flexDirection: 'column', 
-          alignItems: 'center', 
+          alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
+          minHeight: 0,
         }}>
           <h2 style={{ 
             fontSize: 'clamp(40px, 8vw, 64px)', 
@@ -123,7 +116,7 @@ export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEn
               minWidth: '180px',
             }}
           >
-            {step.continueLabel || "Continuar"}
+            {isLastStep ? "Siguiente lección" : (step.continueLabel || "Continuar")}
           </button>
         </div>
       </div>

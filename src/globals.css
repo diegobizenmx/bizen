@@ -401,6 +401,21 @@ body[data-lesson-interactive="true"] .mobile-footer-container {
   display: none !important;
 }
 
+/* LOCKED: no scroll within lessons - screen is fixed, overflow hidden */
+body[data-lesson-interactive="true"] .lesson-screen-root,
+body[data-lesson-interactive="true"] .lesson-container-no-scroll {
+  overflow: hidden !important;
+}
+/* LOCKED: main page cannot scroll on lesson - one viewport only */
+body[data-lesson-interactive="true"] .app-scroll {
+  overflow: hidden !important;
+}
+
+/* Lesson progress bar: fixed at top for ALL lessons and slides (position set in LessonScreen + interactive page) */
+.lesson-progress-bar-fixed {
+  z-index: 100 !important;
+}
+
 /* ============================================
    TABLET/IPAD LAYOUT FIX
    Ensure ALL content uses full width accounting for fixed left sidebar
@@ -553,12 +568,38 @@ body[data-lesson-interactive="true"] .mobile-footer-container {
   }
 }
 
-/* Landing page (all viewports): no left gap, full-width background */
+/* Landing page (all viewports): no left gap, full-width background + SINGLE SCROLL */
 body[data-landing-page="true"],
 html:has(body[data-landing-page="true"]) {
   margin: 0 !important;
   padding: 0 !important;
   overflow-x: hidden !important;
+  overflow-y: visible !important;
+  height: auto !important;
+  min-height: 100% !important;
+}
+/* SINGLE SCROLL ONLY: no nested scroll anywhere on landing - main (body) scroll only */
+body[data-landing-page="true"] * {
+  overflow-y: visible !important;
+}
+/* Exception: demo modal can scroll when content is long */
+body[data-landing-page="true"] .landing-demo-modal-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+/* Keep existing section/container rules for min-height etc. */
+body[data-landing-page="true"] .main-page-container,
+body[data-landing-page="true"] .main-page-container main,
+body[data-landing-page="true"] .main-page-container section,
+body[data-landing-page="true"] .main-page-container .section,
+body[data-landing-page="true"] .main-content-wrapper,
+body[data-landing-page="true"] .hero-rectangles-wrapper,
+body[data-landing-page="true"] .main-header {
+  overflow-x: hidden !important;
+  min-height: 0 !important;
+}
+body[data-landing-page="true"] .main-page-container {
+  overflow: visible !important;
 }
 
 /* Landing page: remove nested scroll - let body scroll, not app-scroll */

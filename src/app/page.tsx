@@ -17,7 +17,7 @@ export default function WelcomePage() {
   const [isMouthOpen, setIsMouthOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [activeHeroCard, setActiveHeroCard] = useState<number | null>(null)
-  const [activeProfile, setActiveProfile] = useState<"directores" | "docentes" | "estudiantes" | "padres">("directores")
+  const [activeProfile, setActiveProfile] = useState<"docentes" | "estudiantes" | "padres">("docentes")
   const [demoModalOpen, setDemoModalOpen] = useState(false)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
 
@@ -101,7 +101,15 @@ export default function WelcomePage() {
           <Link href="#precios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Implementación</Link>
           <Link href="#problema" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>El problema</Link>
         </nav>
-        <button type="button" onClick={() => setDemoModalOpen(true)} style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#1e3a8a", color: "white", borderRadius: 9999, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0 }} className="crear-cuenta-button">Agendar demo</button>
+        <Link href="/login" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, minHeight: 52, padding: "0 8px", boxSizing: "border-box" }} aria-label="Iniciar sesión">
+          <span style={{ width: 52, height: 52, borderRadius: "50%", background: "#1e3a8a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: "#fff" }}>
+              <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
+            </svg>
+          </span>
+        </Link>
+        <button type="button" onClick={() => setDemoModalOpen(true)} style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#1e3a8a", color: "white", borderRadius: 9999, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0, minHeight: 52, boxSizing: "border-box" }} className="crear-cuenta-button">Agendar demo</button>
       </div>
 
       <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
@@ -274,6 +282,24 @@ export default function WelcomePage() {
           overflow-x: hidden !important;
           height: auto !important;
           min-height: 100% !important;
+        }
+        /* SINGLE SCROLL ONLY: no nested scroll - every element must not create scroll */
+        html:has(.main-page-container) * {
+          overflow-y: visible !important;
+        }
+        html:has(.main-page-container) .landing-demo-modal-content {
+          overflow-y: auto !important;
+        }
+        html:has(.main-page-container) .main-page-container,
+        html:has(.main-page-container) .main-page-container main,
+        html:has(.main-page-container) .main-page-container section,
+        html:has(.main-page-container) .main-content-wrapper,
+        html:has(.main-page-container) .hero-rectangles-wrapper,
+        html:has(.main-page-container) .main-header {
+          overflow-x: hidden !important;
+        }
+        html:has(.main-page-container) .main-page-container {
+          overflow: visible !important;
         }
         .main-page-container { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
         .main-page-container main { overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; }
@@ -1255,7 +1281,7 @@ export default function WelcomePage() {
       {/* Schedule Demo Modal - compact, enhanced */}
       {demoModalOpen && (
         <div role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" style={{ position: "fixed", inset: 0, zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", boxSizing: "border-box" }} onClick={(e) => e.target === e.currentTarget && setDemoModalOpen(false)}>
-          <div style={{ position: "relative", background: "#ffffff", borderRadius: "20px", border: "1px solid rgba(15, 98, 254, 0.12)", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.2), 0 0 0 1px rgba(15, 98, 254, 0.04)", padding: "28px 32px", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", maxWidth: "min(98vw, 520px)", width: "100%", maxHeight: "88vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+          <div className="landing-demo-modal-content" style={{ position: "relative", background: "#ffffff", borderRadius: "20px", border: "1px solid rgba(15, 98, 254, 0.12)", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.2), 0 0 0 1px rgba(15, 98, 254, 0.04)", padding: "28px 32px", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", maxWidth: "min(98vw, 520px)", width: "100%", maxHeight: "88vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
             <button type="button" aria-label="Cerrar" onClick={() => setDemoModalOpen(false)} style={{ position: "absolute", top: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", border: "none", background: "#f1f5f9", cursor: "pointer", fontSize: "18px", lineHeight: 1, color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s, color 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "#e2e8f0"; e.currentTarget.style.color = "#334155"; }} onMouseOut={(e) => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#64748b"; }}>×</button>
             <div style={{ paddingRight: "36px" }}>
               <div style={{ width: "40px", height: "4px", borderRadius: "2px", background: "linear-gradient(90deg, #1e3a8a, #60a5fa)", marginBottom: "16px" }} />
@@ -1281,8 +1307,8 @@ export default function WelcomePage() {
         </div>
       )}
 
-      {/* Testimonials Carousel */}
-      <section className="section testimonials-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)", marginBottom: "clamp(64px, 10vw, 100px)" }}>
+      {/* Testimonials Carousel - last section (Impacto link targets here) */}
+      <section id="impacto" className="section testimonials-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px)", marginBottom: "clamp(64px, 10vw, 100px)" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h2 style={{ 
           textAlign: "center",
@@ -1703,7 +1729,7 @@ function StepIcon3({ color }: { color: string }) {
 function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRange?: 'gradient' | 'rest' | 'all'; onOpenDemoModal?: () => void }) {
   const primary = "#1e3a8a"
   const accent = "#10B981"
-  const [activeProfile, setActiveProfile] = React.useState<"directores" | "docentes" | "estudiantes" | "padres">("directores")
+  const [activeProfile, setActiveProfile] = React.useState<"docentes" | "estudiantes" | "padres">("docentes")
   const [activeAdventureSlide, setActiveAdventureSlide] = React.useState(0)
 
   return (
@@ -1987,7 +2013,6 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
             className="perfiles-tabs-row"
             >
               {[
-                { id: "directores" as const, label: "Directores" },
                 { id: "docentes" as const, label: "Docentes" },
                 { id: "estudiantes" as const, label: "Estudiantes" },
                 { id: "padres" as const, label: "Padres" },
@@ -2032,7 +2057,6 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                   marginBottom: "clamp(16px, 3vw, 24px)",
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  {activeProfile === "directores" && "Directores"}
                   {activeProfile === "docentes" && "Docentes"}
                   {activeProfile === "estudiantes" && "Estudiantes"}
                   {activeProfile === "padres" && "Padres"}
@@ -2045,7 +2069,6 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                   marginBottom: "clamp(24px, 4vw, 32px)",
                   fontFamily: "'Inter', sans-serif",
                 }}>
-                  {activeProfile === "directores" && "¿Buscas una educación moderna, basada en datos, que mejore el desempeño académico y ayude a incrementar tu matrícula?"}
                   {activeProfile === "docentes" && "Herramientas prácticas para enseñar finanzas con contenido listo para usar, seguimiento en tiempo real y recursos descargables."}
                   {activeProfile === "estudiantes" && "Aprende finanzas de forma divertida con cursos interactivos, simuladores reales y recompensas por tu progreso."}
                   {activeProfile === "padres" && "Acompaña el aprendizaje financiero de tus hijos con acceso a su progreso, recursos compartidos y actividades familiares."}
@@ -2060,64 +2083,6 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               flexDirection: "column",
                   gap: "16px",
                 }}>
-                  {activeProfile === "directores" && (
-                    <>
-                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                        <span style={{ 
-                          width: "24px", 
-                          height: "24px", 
-                          background: "#1e3a8a", 
-                          borderRadius: "50%", 
-                          display: "flex", 
-                          alignItems: "center", 
-                          justifyContent: "center",
-                          color: "#fff",
-                          fontWeight: 500,
-                          fontSize: "14px",
-                          flexShrink: 0,
-                        }}>✓</span>
-                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
-                          Toma mejores decisiones con <strong>métricas en tiempo real</strong>.
-                        </span>
-                      </li>
-                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                        <span style={{ 
-                          width: "24px", 
-                          height: "24px", 
-                          background: "#1e3a8a", 
-                          borderRadius: "50%", 
-                          display: "flex", 
-                          alignItems: "center", 
-                          justifyContent: "center",
-                          color: "#fff",
-                          fontWeight: 500,
-                          fontSize: "14px",
-                          flexShrink: 0,
-                        }}>✓</span>
-                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
-                          Aumenta la <strong>retención de matrícula</strong> al identificar oportunidades clave.
-                        </span>
-                      </li>
-                      <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                        <span style={{ 
-                          width: "24px", 
-                          height: "24px", 
-                          background: "#1e3a8a", 
-                          borderRadius: "50%", 
-                          display: "flex", 
-                          alignItems: "center", 
-                          justifyContent: "center",
-                          color: "#fff",
-                          fontWeight: 500,
-                          fontSize: "14px",
-                          flexShrink: 0,
-                        }}>✓</span>
-                        <span style={{ fontSize: "clamp(15px, 1.05rem, 17px)", lineHeight: 1.5, color: "#374151" }}>
-                          Optimiza recursos y maximiza el <strong>retorno de tu inversión</strong> educativa.
-                        </span>
-                      </li>
-                    </>
-                  )}
                   {activeProfile === "docentes" && (
                     <>
                       <li style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
@@ -2339,13 +2304,11 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 }}>
                   <Image
                     src={
-                      activeProfile === "directores" ? "/perfil-directores.png" :
                       activeProfile === "docentes" ? "/perfil-docentes.png" :
                       activeProfile === "estudiantes" ? "/perfil-estudiantes.png" :
                       "/perfil-padres.png"
                     }
                     alt={
-                      activeProfile === "directores" ? "Directores usando BIZEN" :
                       activeProfile === "docentes" ? "Docentes en el aula" :
                       activeProfile === "estudiantes" ? "Estudiante con la plataforma" :
                       "Padres e hijos aprendiendo"
@@ -2463,9 +2426,9 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
         </div>
       </section>
 
-      {/* Cada clase, una aventura divertida - Carousel */}
+      {/* Cada clase, una aventura divertida - Carousel (no scroll; single main page scroll only) */}
       <section className="section adventure-carousel-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(12px, 1.5vw, 20px) clamp(20px, 4vw, 48px)", overflow: "visible" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", overflow: "visible" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", overflow: "visible" }} className="adventure-carousel-inner">
           <h2 style={{
             textAlign: "center",
             margin: "0 0 clamp(48px, 7vw, 72px)",
@@ -2695,8 +2658,8 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
         </div>
       </section>
 
-      {/* Convierte la curiosidad - 3 feature cards */}
-      <section className="section curiosidad-section reveal-element" style={{
+      {/* Convierte la curiosidad - 3 feature cards (El problema link targets here) */}
+      <section id="problema" className="section curiosidad-section reveal-element" style={{
         background: "#ffffff",
         padding: "clamp(56px, 10vw, 88px) clamp(24px, 4vw, 48px)",
       }}>
@@ -3122,10 +3085,14 @@ html {
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
+/* Cada clase section: no internal scroll - single main page scroll only */
 .main-page-container .adventure-carousel-section {
   overflow-x: clip !important;
   overflow-y: visible !important;
   padding: clamp(12px, 1.5vw, 20px) clamp(20px, 4vw, 48px) !important;
+}
+.main-page-container .adventure-carousel-inner {
+  overflow: visible !important;
 }
 @media (min-width: 768px){
   .container{ padding:0 clamp(24px, 4vw, 40px) !important; overflow-x: hidden !important; }

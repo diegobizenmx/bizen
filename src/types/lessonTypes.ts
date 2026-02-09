@@ -74,6 +74,7 @@ export interface TrueFalseStepFields {
 export interface OrderStepFields {
   stepType: "order";
   question?: string;
+  imageUrl?: string;
   items: Array<{
     id: string;
     label: string;
@@ -84,6 +85,7 @@ export interface OrderStepFields {
 export interface MatchStepFields {
   stepType: "match";
   question?: string;
+  imageUrl?: string;
   leftItems: Array<{
     id: string;
     label: string;

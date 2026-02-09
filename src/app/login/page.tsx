@@ -33,7 +33,7 @@ function Card(props: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 function Label({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
-  return <label htmlFor={htmlFor} style={{ display: "block" as const, fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>{children}</label>
+  return <label htmlFor={htmlFor} style={{ display: "block" as const, fontSize: 13, fontWeight: 500, color: "#1e293b", marginBottom: 6 }}>{children}</label>
 }
 
 function TextField(props: React.InputHTMLAttributes<HTMLInputElement>) {
@@ -43,26 +43,24 @@ function TextField(props: React.InputHTMLAttributes<HTMLInputElement>) {
       className="auth-input"
       style={{
         width: "100%",
-        height: 46,
-        borderRadius: 12,
-        border: "1px solid rgba(11, 113, 254, 0.2)",
-        padding: "0 16px",
+        height: 44,
+        borderRadius: 8,
+        border: "1px solid #cbd5e1",
+        padding: "0 14px",
         outline: "none",
         fontSize: 15,
-        color: "#111",
-        background: "#f5f9ff",
-        transition: "box-shadow .2s ease, border-color .2s ease, background .2s ease",
+        color: "#1e293b",
+        background: "#f8fafc",
+        transition: "border-color .2s ease, background .2s ease",
         ...(props.style || {}),
       }}
       onFocus={(e) => {
-        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(11, 113, 254, 0.2)"
         e.currentTarget.style.background = "#fff"
-        e.currentTarget.style.borderColor = "rgba(11, 113, 254, 0.4)"
+        e.currentTarget.style.borderColor = "#0B71FE"
       }}
       onBlur={(e) => {
-        e.currentTarget.style.boxShadow = "none"
-        e.currentTarget.style.background = "#f5f9ff"
-        e.currentTarget.style.borderColor = "rgba(11, 113, 254, 0.2)"
+        e.currentTarget.style.background = "#f8fafc"
+        e.currentTarget.style.borderColor = "#cbd5e1"
       }}
     />
   )
@@ -80,18 +78,15 @@ function Button(props: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading
         border: "none",
         width: "100%",
         minWidth: 0,
-        background: rest.disabled ? "#cfd8e3" : `linear-gradient(90deg, #0B71FE 0%, #4A9EFF 50%, #0B71FE 100%)`,
-        backgroundSize: rest.disabled ? "auto" : "200% auto",
-        backgroundPosition: rest.disabled ? "left" : "0% 0%",
+        background: rest.disabled ? "#cfd8e3" : "#0B71FE",
         color: "#fff",
         fontWeight: 700,
         letterSpacing: 0.2,
         cursor: rest.disabled ? "not-allowed" : "pointer",
         transform: "translateZ(0)",
-        transition: "transform .06s, filter .2s, box-shadow .2s",
-        boxShadow: rest.disabled ? "none" : "0 6px 16px rgba(0,0,0,0.12)",
+        transition: "transform .06s, background .2s, box-shadow .2s",
+        boxShadow: rest.disabled ? "none" : "0 6px 16px rgba(11, 113, 254, 0.3)",
         fontFamily: 'Montserrat, sans-serif',
-        animation: rest.disabled ? "none" : "shimmer-button 3s ease-in-out infinite",
       }}
       onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
       onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -204,162 +199,210 @@ function BIZENLoginContent() {
     <main className="auth-page" style={{
       position: "relative" as const,
       overflow: "hidden" as const,
-      background: "linear-gradient(180deg, #f0f7ff 0%, #e8f4ff 50%, #f0f7ff 100%)",
+      background: "linear-gradient(180deg, #e8f4ff 0%, #f5f9ff 50%, #e8f4ff 100%)",
       height: "100dvh",
       minHeight: "100dvh",
-      padding: "clamp(16px, 4vw, 24px)",
-      display: "grid" as const,
-      placeItems: "center",
+      display: "flex" as const,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
       boxSizing: "border-box" as const,
+      padding: "20px",
     }}>
-      {/* Fixed brand name on the left */}
-      <Link href="/" style={{ position: "fixed" as const, left: "clamp(16px, 4vw, 24px)", top: "clamp(16px, 4vw, 24px)", display: "flex" as const, alignItems: "center" as const, textDecoration: "none", color: "inherit", zIndex: 10 }}>
-        <strong style={{ fontSize: "clamp(22px, 5vw, 28px)", color: "#0B71FE", fontFamily: "Montserrat, sans-serif" }}>{brandName}</strong>
+      {/* Fixed brand name top left */}
+      <Link href="/" style={{ position: "fixed" as const, left: 24, top: 24, display: "flex" as const, alignItems: "center" as const, textDecoration: "none", color: "inherit", zIndex: 10 }}>
+        <strong style={{ fontSize: 28, color: "#0B71FE", fontFamily: "Montserrat, sans-serif" }}>{brandName}.</strong>
       </Link>
 
-      {/* Decorative blue elements - visible soft blobs */}
-      <div aria-hidden style={{ position: "absolute" as const, top: "-10%", right: "-5%", width: "clamp(320px, 55vw, 560px)", height: "clamp(320px, 55vw, 560px)", background: "radial-gradient(circle, rgba(15, 98, 254, 0.22) 0%, rgba(15, 98, 254, 0.08) 50%, transparent 75%)", borderRadius: "50%", pointerEvents: "none" as const, zIndex: 0 }} />
-      <div aria-hidden style={{ position: "absolute" as const, bottom: "-10%", left: "-5%", width: "clamp(280px, 50vw, 480px)", height: "clamp(280px, 50vw, 480px)", background: "radial-gradient(circle, rgba(74, 158, 255, 0.18) 0%, rgba(74, 158, 255, 0.06) 50%, transparent 75%)", borderRadius: "50%", pointerEvents: "none" as const, zIndex: 0 }} />
-      <div aria-hidden style={{ position: "absolute" as const, top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "clamp(240px, 40vw, 380px)", height: "clamp(240px, 40vw, 380px)", background: "radial-gradient(circle, rgba(11, 113, 254, 0.12) 0%, rgba(11, 113, 254, 0.04) 50%, transparent 75%)", borderRadius: "50%", pointerEvents: "none" as const, zIndex: 0 }} />
+      {/* Decorative science elements - atoms, DNA, molecules */}
+      <div aria-hidden style={{ position: "absolute" as const, top: 60, left: 80, opacity: 0.6, zIndex: 0 }}>
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="35" fill="none" stroke="#FF6B9D" strokeWidth="2"/>
+          <circle cx="40" cy="40" r="5" fill="#FF6B9D"/>
+          <circle cx="15" cy="40" r="8" fill="#93C5FD"/>
+          <circle cx="65" cy="40" r="8" fill="#93C5FD"/>
+        </svg>
+      </div>
+      <div aria-hidden style={{ position: "absolute" as const, top: "30%", right: 60, opacity: 0.5, zIndex: 0 }}>
+        <svg width="60" height="100" viewBox="0 0 60 100">
+          <path d="M30 10 Q20 30 30 50 T30 90" fill="none" stroke="#FFA500" strokeWidth="3"/>
+          <circle cx="30" cy="10" r="8" fill="#FFA500"/>
+          <circle cx="30" cy="50" r="8" fill="#FFA500"/>
+          <circle cx="30" cy="90" r="8" fill="#FFA500"/>
+        </svg>
+      </div>
+      <div aria-hidden style={{ position: "absolute" as const, bottom: 100, left: 60, opacity: 0.6, zIndex: 0 }}>
+        <svg width="70" height="120" viewBox="0 0 70 120">
+          <ellipse cx="35" cy="30" rx="25" ry="15" fill="none" stroke="#60A5FA" strokeWidth="2"/>
+          <ellipse cx="35" cy="60" rx="25" ry="15" fill="none" stroke="#60A5FA" strokeWidth="2"/>
+          <ellipse cx="35" cy="90" rx="25" ry="15" fill="none" stroke="#60A5FA" strokeWidth="2"/>
+          <line x1="10" y1="30" x2="60" y2="30" stroke="#60A5FA" strokeWidth="2"/>
+          <line x1="10" y1="60" x2="60" y2="60" stroke="#60A5FA" strokeWidth="2"/>
+        </svg>
+      </div>
+      <div aria-hidden style={{ position: "absolute" as const, bottom: 80, right: 100, opacity: 0.5, zIndex: 0 }}>
+        <svg width="90" height="70" viewBox="0 0 90 70">
+          <path d="M10 35 L30 20 L50 35 L70 20 L80 35" fill="none" stroke="#FFA500" strokeWidth="3"/>
+          <circle cx="10" cy="35" r="6" fill="#FFA500"/>
+          <circle cx="30" cy="20" r="6" fill="#FFA500"/>
+          <circle cx="50" cy="35" r="6" fill="#FFA500"/>
+          <circle cx="70" cy="20" r="6" fill="#FFA500"/>
+          <rect x="70" y="40" width="15" height="25" fill="#FFA500" opacity="0.6"/>
+        </svg>
+      </div>
 
-      <div className="auth-content" style={{
+      {/* Centered login card */}
+      <Card style={{
+        width: "100%",
+        maxWidth: 480,
+        padding: "clamp(24px, 5vw, 40px)",
         position: "relative" as const,
         zIndex: 1,
-        width: "100%",
-        maxWidth: 1200,
-        margin: "0 auto",
-        paddingTop: 0,
-        paddingBottom: "clamp(16px, 4vw, 24px)",
-        display: "flex" as const,
-        flexDirection: "row" as const,
-        alignItems: "center" as const,
-        justifyContent: "center" as const,
-        gap: "clamp(24px, 6vw, 60px)",
-        flexWrap: "wrap" as const,
-        minHeight: 0,
-        overflow: "auto" as const,
-        maxHeight: "100dvh",
-        boxSizing: "border-box" as const,
       }}>
-
-        <div style={{
-          width: "100%",
-          maxWidth: 480,
-          flex: "1 1 480px",
-          order: 2,
-          minWidth: 0,
-        }}>
-          <div>
-            <div style={{ display: "grid" as const, gap: "clamp(6px, 1.5vw, 8px)", marginTop: "clamp(32px, 8vw, 64px)", marginBottom: "clamp(12px, 3vw, 16px)", textAlign: "center" }}>
-              <h1 style={{
-                margin: 0,
-                fontSize: "clamp(22px, 5vw, 28px)",
-                background: "linear-gradient(90deg, #0B71FE 0%, #4A9EFF 50%, #0B71FE 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer-text 3s ease-in-out infinite",
-                fontWeight: 700
-              }}>Iniciar sesión</h1>
-              <div style={{ display: "flex" as const, justifyContent: "center" as const, marginTop: -32 }}>
-                <Image src="/bizen_sign.png" alt="BIZEN" width={400} height={160} style={{ width: "auto", height: "clamp(110px, 24vw, 180px)", objectFit: "contain" }} />
-              </div>
-            </div>
-
-            <form onSubmit={onSubmit} className="auth-form" style={{ display: "grid" as const, gap: 18, width: "100%", maxWidth: AUTH_FORM_MAX_WIDTH, margin: "0 auto", minWidth: 0 }}>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <TextField id="email" name="email" type="email" placeholder="tu@email.com" required autoComplete="email"
-                  value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
-              </div>
-
-              <div>
-                <div style={{ display: "flex" as const, justifyContent: "space-between" as const, alignItems: "end" }}>
-                  <Label htmlFor="password">Contraseña</Label>
-                  <button type="button" onClick={() => setShowPass((s) => !s)}
-                    style={{ background: "transparent", border: "none", color: linkColor, fontSize: 12, cursor: "pointer" }}>
-                    {showPass ? "Ocultar" : "Mostrar"}
-                  </button>
-                </div>
-                <TextField id="password" name="password" type={showPass ? "text" : "password"} placeholder="Tu contraseña"
-                  required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
-              </div>
-
-              <div style={{ display: "flex" as const, justifyContent: "space-between" as const, alignItems: "center" }}>
-                <label style={{ display: "inline-flex" as const, gap: 8, alignItems: "center" as const, fontSize: 12, color: "#444" }}>
-                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.currentTarget.checked)} /> Recuérdame
-                </label>
-                <a href="/bizen/forgot-password" className="auth-link" style={{ fontSize: 12, color: linkColor, textDecoration: "none", fontWeight: 600, transition: "color 0.2s ease" }}>¿Olvidaste tu contraseña?</a>
-              </div>
-
-              <Button type="submit" disabled={loading || googleLoading} loading={loading}>Entrar</Button>
-
-              <Divider label="o continúa con" />
-
-              <button
-                type="button"
-                className="auth-google-btn"
-                onClick={handleGoogleSignIn}
-                disabled={loading || googleLoading}
-                style={{
-                  height: AUTH_CONTROL_HEIGHT,
-                  minHeight: AUTH_CONTROL_HEIGHT,
-                  borderRadius: 12,
-                  border: "1px solid rgba(11, 113, 254, 0.25)",
-                  width: "100%",
-                  minWidth: 0,
-                  background: "#fff",
-                  color: "#333",
-                  fontWeight: 600,
-                  cursor: googleLoading ? "wait" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 12,
-                  transition: "all 0.2s ease",
-                  fontFamily: 'Montserrat, sans-serif',
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4" />
-                  <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853" />
-                  <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05" />
-                  <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335" />
-                </svg>
-                {googleLoading ? "Redirigiendo..." : "Continuar con Google"}
-              </button>
-
-              <Divider label="¿No tienes cuenta?" />
-              <a href="/signup" className="auth-link auth-secondary-btn" style={{ display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const, height: AUTH_CONTROL_HEIGHT, minHeight: AUTH_CONTROL_HEIGHT, width: "100%", minWidth: 0, textDecoration: "none", fontSize: 15, color: linkColor, fontWeight: 600, transition: "color 0.2s ease, background 0.2s ease, border-color 0.2s ease", borderRadius: 12, border: "1px solid rgba(11, 113, 254, 0.25)", background: "#fff", boxSizing: "border-box" as const }}>
-                Crear cuenta
-              </a>
-            </form>
-
-            {message && (
-              <p role="status" style={{ marginTop: 14, textAlign: "center", wordBreak: "break-word", overflowWrap: "anywhere", color: "#dc2626" }}>
-                {message}
-              </p>
-            )}
-          </div>
-
-          <div style={{ textAlign: "center", marginTop: 24, color: "#6b7280", fontSize: 13 }}>
-            © {new Date().getFullYear()} {brandName}. Todos los derechos reservados.
-            <div style={{ marginTop: 10 }}>
-              <Link href="/bizen/terminos" className="auth-link" style={{ color: "#0B71FE", textDecoration: "none", marginRight: 20, fontWeight: 500, transition: "color 0.2s ease" }}>Términos</Link>
-              <Link href="/bizen/privacidad" className="auth-link" style={{ color: "#0B71FE", textDecoration: "none", fontWeight: 500, transition: "color 0.2s ease" }}>Aviso de Privacidad</Link>
-            </div>
-          </div>
+        {/* Character icon at top */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+          <Image 
+            src="/hero1.png" 
+            alt="BIZEN" 
+            width={80} 
+            height={80} 
+            style={{ width: 80, height: 80, objectFit: "contain" }} 
+          />
         </div>
+
+        {/* Welcome text */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <h1 style={{
+            fontSize: 28,
+            fontWeight: 700,
+            color: "#0B71FE",
+            margin: 0,
+            marginBottom: 8,
+            fontFamily: "Montserrat, sans-serif"
+          }}>
+            ¡Bienvenido a {brandName}!
+          </h1>
+        </div>
+
+        {/* Login form */}
+        <form onSubmit={onSubmit} className="auth-form" style={{ display: "grid" as const, gap: 16 }}>
+          <div>
+            <Label htmlFor="email">Usuario *</Label>
+            <TextField 
+              id="email" 
+              name="email" 
+              type="email" 
+              placeholder="" 
+              required 
+              autoComplete="email"
+              value={email} 
+              onChange={(e) => setEmail(e.currentTarget.value)} 
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="password">Contraseña *</Label>
+            <div style={{ position: "relative" as const }}>
+              <TextField 
+                id="password" 
+                name="password" 
+                type={showPass ? "text" : "password"} 
+                placeholder=""
+                required 
+                autoComplete="current-password" 
+                value={password} 
+                onChange={(e) => setPassword(e.currentTarget.value)}
+                style={{ paddingRight: 40 }}
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPass((s) => !s)}
+                style={{ 
+                  position: "absolute" as const, 
+                  right: 12, 
+                  top: "50%", 
+                  transform: "translateY(-50%)", 
+                  background: "transparent", 
+                  border: "none", 
+                  cursor: "pointer",
+                  padding: 4
+                }}
+                aria-label={showPass ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2">
+                  {showPass ? (
+                    <>
+                      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+                      <line x1="1" y1="1" x2="23" y2="23"/>
+                    </>
+                  ) : (
+                    <>
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </>
+                  )}
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div style={{ display: "flex" as const, justifyContent: "flex-start", alignItems: "center" }}>
+            <a href="/bizen/forgot-password" className="auth-link" style={{ fontSize: 13, color: "#0B71FE", textDecoration: "none", fontWeight: 500 }}>
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+
+          <Button type="submit" disabled={loading || googleLoading} loading={loading}>
+            Entrar a {brandName}
+          </Button>
+
+          <label style={{ display: "flex" as const, gap: 8, alignItems: "center" as const, fontSize: 14, color: "#444", justifyContent: "center" }}>
+            <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.currentTarget.checked)} /> 
+            Mantener la sesión iniciada
+          </label>
+        </form>
+
+        {message && (
+          <p role="status" style={{ marginTop: 16, textAlign: "center", wordBreak: "break-word", overflowWrap: "anywhere", color: "#dc2626", fontSize: 14 }}>
+            {message}
+          </p>
+        )}
+
+        {/* Help text at bottom */}
+        <div style={{ 
+          marginTop: 32, 
+          textAlign: "center", 
+          fontSize: 12, 
+          color: "#64748b",
+          lineHeight: 1.6
+        }}>
+          ¿Necesitas ayuda?<br/>
+          Mándanos un correo a{" "}
+          <a href={`mailto:${supportEmail}`} style={{ color: "#0B71FE", textDecoration: "none" }}>
+            {supportEmail}
+          </a>
+          {" "}como escríbenos por Whatsapp al +52 55 4183 1994
+        </div>
+      </Card>
+
+      {/* Version info bottom left */}
+      <div style={{ 
+        position: "fixed" as const, 
+        bottom: 20, 
+        left: 20, 
+        fontSize: 11, 
+        color: "#94a3b8",
+        fontFamily: "monospace",
+        zIndex: 10
+      }}>
+        <div>Local: 4.5.1</div>
+        <div>Global: 4.5.1</div>
       </div>
 
       <style>{`
         .auth-page .auth-form { box-sizing: border-box; }
         .auth-page .auth-form > * { min-width: 0; }
         .auth-page .auth-form .auth-input,
-        .auth-page .auth-form button[type="submit"],
-        .auth-page .auth-form .auth-google-btn,
-        .auth-page .auth-form .auth-secondary-btn {
+        .auth-page .auth-form button[type="submit"] {
           width: 100% !important;
           min-width: 0 !important;
           max-width: 100% !important;
@@ -368,28 +411,8 @@ function BIZENLoginContent() {
         }
         .auth-page .auth-form button[type="submit"] { border: 1px solid transparent !important; }
         .auth-page .auth-link:hover { color: #1e40af !important; text-decoration: underline !important; }
-        .auth-page .auth-input:hover { border-color: rgba(11, 113, 254, 0.4) !important; background: #eef6ff !important; }
-        .auth-page .auth-google-btn:hover:not(:disabled) { background: #f5f9ff !important; border-color: rgba(11, 113, 254, 0.4) !important; box-shadow: 0 4px 12px rgba(11, 113, 254, 0.15) !important; }
-        .auth-page .auth-form button[type="submit"]:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 8px 20px rgba(11, 113, 254, 0.25) !important; }
-        .auth-page .auth-secondary-btn:hover { background: #f5f9ff !important; border-color: rgba(11, 113, 254, 0.4) !important; }
-        @keyframes shimmer-text {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes shimmer-button {
-          0% { background-position: 0% 0%; }
-          50% { background-position: 100% 0%; }
-          100% { background-position: 0% 0%; }
-        }
-        
-        @media (max-width: 1024px) {
-          .auth-page .auth-content {
-            flex-direction: column !important;
-            gap: 32px !important;
-          }
-        }
+        .auth-page .auth-input:hover { border-color: rgba(11, 113, 254, 0.4) !important; background: #ffffff !important; }
+        .auth-page .auth-form button[type="submit"]:hover:not(:disabled) { background: #1e80ff !important; box-shadow: 0 8px 20px rgba(11, 113, 254, 0.35) !important; }
       `}</style>
     </main>
   )

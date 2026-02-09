@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useCallback, useRef } from "react"
+import { useEffect, useCallback, useRef, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
-import { LessonEngine } from "@/components/lessons"
+import { LessonEngine, LessonProgressHeader } from "@/components/lessons"
 import { getStepsForLesson } from "@/data/lessons/registry"
 
 /**
@@ -18,10 +18,20 @@ export default function InteractiveLessonPage() {
   const router = useRouter()
   const params = useParams()
   const { user } = useAuth()
-  const { lessonId } = params
+  const { courseId, lessonId } = params
   const lessonIdStr = lessonId as string
+  const courseIdStr = (courseId as string) || "1"
+
+  const [showExitDialog, setShowExitDialog] = useState(false)
 
   const lessonSteps = getStepsForLesson(lessonIdStr)
+
+  const [progress, setProgress] = useState({
+    currentStep: 1,
+    totalSteps: lessonSteps.length || 1,
+    streak: 0,
+    stars: 3 as 1 | 2 | 3,
+  })
 
   // Hide app mobile footer on this page (CSS in globals.css hides via data-lesson-interactive)
   useEffect(() => {
@@ -58,26 +68,39 @@ export default function InteractiveLessonPage() {
         }).then(() => supabase.auth.refreshSession())
       })
     }
-    // Force full-page redirect so user always reaches courses
+    // Redirect to lessons menu within the course (not next lesson, not global /courses)
+    const courseLessonsPath = `/courses/${courseIdStr}`
     if (typeof window !== "undefined") {
-      window.location.href = "/courses"
+      window.location.href = courseLessonsPath
     } else {
-      router.replace("/courses")
+      router.replace(courseLessonsPath)
     }
-  }, [lessonIdStr, user, router])
+  }, [lessonIdStr, user, router, courseIdStr])
 
   const handleExit = () => {
+    setShowExitDialog(true)
+  }
+
+  const confirmExitLesson = () => {
+    setShowExitDialog(false)
     router.push("/courses")
+  }
+
+  const cancelExitLesson = () => {
+    setShowExitDialog(false)
   }
 
   return (
     <>
       <style>{`
+        /* LOCKED: one viewport, no scroll inside lesson */
         .lesson-interactive-outer {
-          min-height: 100vh;
-          min-height: 100dvh;
-          height: 100dvh;
+          height: 100dvh !important;
+          max-height: 100dvh !important;
+          min-height: 100dvh !important;
+          overflow: hidden !important;
           box-sizing: border-box;
+          background: #f1f5f9 !important;
         }
         @media (min-width: 768px) and (max-width: 1160px) {
           .lesson-interactive-outer {
@@ -97,41 +120,165 @@ export default function InteractiveLessonPage() {
             width: 100% !important;
           }
         }
-        /* Fixed footer: always at bottom of viewport, aligned with lesson content */
-        .lesson-footer-fixed {
-          position: fixed !important;
-          bottom: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          z-index: 100;
+        /* LOCKED: no scroll inside - content area is fixed, overflow hidden */
+        .lesson-screen-root {
+          overflow: hidden !important;
+          min-height: 0 !important;
+          flex: 1 !important;
+        }
+        .lesson-container-no-scroll {
+          overflow: hidden !important;
+          min-height: 0 !important;
+          flex: 1 !important;
+        }
+        /* Nav buttons at bottom of slide - in flow so bottom doesn't look empty */
+        .lesson-footer-in-flow {
+          width: 100%;
           background: #f1f5f9;
           border-top: 2px solid #cbd5e1;
-        }
-        @media (max-width: 767px) {
-          .lesson-footer-fixed {
-            bottom: 0 !important;
-          }
-        }
-        @media (min-width: 768px) and (max-width: 1160px) {
-          .lesson-footer-fixed {
-            left: 220px !important;
-            width: calc(100% - 220px) !important;
-          }
-        }
-        @media (min-width: 1161px) {
-          .lesson-footer-fixed {
-            left: 280px !important;
-            width: calc(100% - 280px) !important;
-          }
+          padding-top: 16px;
+          padding-bottom: max(16px, env(safe-area-inset-bottom));
         }
       `}</style>
-      <div className="lesson-interactive-outer" style={{ minHeight: "100dvh", height: "100dvh", display: "flex", flexDirection: "column" }}>
+      <div className="lesson-interactive-outer" style={{ height: "100dvh", maxHeight: "100dvh", overflow: "hidden", display: "flex", flexDirection: "column", background: "#f1f5f9" }}>
+        {/* Progress bar - FIRST element, always visible at top */}
+        <div
+          style={{
+            flexShrink: 0,
+            minHeight: 90,
+            padding: "12px 16px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#f1f5f9",
+            borderBottom: "2px solid #cbd5e1",
+            boxSizing: "border-box",
+          }}
+        >
+          <LessonProgressHeader
+            currentStepIndex={progress.currentStep - 1}
+            totalSteps={progress.totalSteps}
+            streak={progress.streak}
+            stars={progress.stars}
+          />
+        </div>
         <LessonEngine
           lessonSteps={lessonSteps}
           onComplete={handleComplete}
           onExit={handleExit}
+          onProgressChange={setProgress}
         />
       </div>
+
+      {/* Exit confirmation – same as sidebar when leaving lesson via "Courses" */}
+      {showExitDialog && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1100,
+            padding: 20,
+            fontFamily: "'Montserrat', sans-serif",
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              borderRadius: 16,
+              padding: "32px",
+              maxWidth: 450,
+              width: "100%",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 24,
+                fontWeight: 800,
+                marginBottom: 16,
+                background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              ⚠️ ¿Estás seguro?
+            </div>
+            <p
+              style={{
+                fontSize: 16,
+                color: "#374151",
+                lineHeight: 1.6,
+                marginBottom: 24,
+              }}
+            >
+              Si sales ahora, se perderá tu progreso de la lección actual. ¿Deseas continuar?
+            </p>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                flexDirection: "column",
+              }}
+            >
+              <button
+                type="button"
+                onClick={cancelExitLesson}
+                style={{
+                  padding: "14px 24px",
+                  background: "linear-gradient(135deg, #0B71FE 0%, #4A9EFF 100%)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "transform 0.2s ease",
+                  boxShadow: "0 4px 12px rgba(11, 113, 254, 0.3)",
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.02)" }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)" }}
+              >
+                Continuar con la lección
+              </button>
+              <button
+                type="button"
+                onClick={confirmExitLesson}
+                style={{
+                  padding: "14px 24px",
+                  background: "white",
+                  color: "#DC2626",
+                  border: "1px solid rgba(220, 38, 38, 0.3)",
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#FEF2F2"
+                  e.currentTarget.style.transform = "scale(1.02)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "white"
+                  e.currentTarget.style.transform = "scale(1)"
+                }}
+              >
+                Salir de la lección
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

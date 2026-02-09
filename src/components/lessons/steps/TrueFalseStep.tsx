@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { TrueFalseStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
 import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
-import { LessonProgressHeader } from "../LessonProgressHeader"
+// LessonProgressHeader now shown in LessonScreen for all slides
 
 interface TrueFalseStepProps {
   step: TrueFalseStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; continueLabel?: string }
@@ -107,20 +107,14 @@ export function TrueFalseStep({
         alignItems: 'center', 
         justifyContent: 'space-between',
         textAlign: 'center', 
-        minHeight: '100dvh',
+        minHeight: 0,
+        flex: 1,
         padding: '2rem 1.5rem',
         background: '#f1f5f9',
         boxSizing: 'border-box',
       }}>
-        <LessonProgressHeader
-          currentStepIndex={currentStepIndex}
-          totalSteps={totalSteps}
-          streak={streak}
-          stars={stars}
-        />
-
         {/* Content area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: '700px', gap: '3rem' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: '700px', gap: '3rem', minHeight: 0 }}>
           {/* Statement as title */}
           <h2 style={{ 
             fontSize: 'clamp(24px, 5vw, 40px)', 

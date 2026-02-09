@@ -2,6 +2,7 @@ import type { LessonStep } from "@/types/lessonTypes"
 import { lesson1Steps } from "./lesson1"
 import { lesson2Steps } from "./lesson2"
 import { lessonQueEsElDineroParaMiSteps } from "./lesson-que-es-el-dinero-para-mi"
+import { lessonComoMeHaceSentirElDineroSteps } from "./lesson-como-me-hace-sentir-el-dinero"
 
 /**
  * Maps lesson ID to steps. Add entries when you add lesson content.
@@ -11,6 +12,7 @@ export const lessonRegistry: Record<string, LessonStep[]> = {
   "l1-1": lesson1Steps,
   "l1-2": lesson2Steps,
   "que-es-el-dinero-para-mi-hoy": lessonQueEsElDineroParaMiSteps,
+  "como-me-hace-sentir-el-dinero": lessonComoMeHaceSentirElDineroSteps,
 }
 
 /** Get steps for a lesson ID. Returns empty array if none. */

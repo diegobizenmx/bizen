@@ -21,12 +21,14 @@ interface LessonEngineProps {
   /** Called when lesson is completed; receives stars earned (1–3). */
   onComplete?: (stars?: number) => void
   onExit?: () => void
+  /** Called when progress changes; parent can render progress bar outside LessonScreen */
+  onProgressChange?: (progress: { currentStep: number; totalSteps: number; streak: number; stars: number }) => void
 }
 
 /**
  * Main lesson engine component that manages state and renders appropriate step components
  */
-export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEngineProps) {
+export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange }: LessonEngineProps) {
   const [state, dispatch] = useReducer(lessonReducer, {
     originalSteps: lessonSteps,
     allSteps: lessonSteps,
@@ -113,6 +115,15 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
           ? 2
           : 1
 
+  useEffect(() => {
+    onProgressChange?.({
+      currentStep: state.currentStepIndex + 1,
+      totalSteps: state.allSteps.length,
+      streak,
+      stars,
+    })
+  }, [state.currentStepIndex, state.allSteps.length, streak, stars, onProgressChange])
+
   const handleContinue = useCallback(() => {
     const isLastStep = state.currentStepIndex >= state.allSteps.length - 1
     const currentStepForContinue = state.allSteps[state.currentStepIndex]
@@ -180,6 +191,8 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
   const isLastStepInEngine = state.currentStepIndex >= state.allSteps.length - 1
   const isSummaryStepType = currentStep.stepType === "summary"
   const shouldPassFullScreenProps = currentStep.fullScreen || isSummaryStepType
+  // Match and order steps always get nav props so they can show the same Salir/Continuar buttons as other slides
+  const shouldPassNavProps = shouldPassFullScreenProps || currentStep.stepType === "match" || currentStep.stepType === "order"
 
   const renderStep = () => {
     const stepProps = {
@@ -187,8 +200,8 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
       onAnswered: (result: { isCompleted: boolean; isCorrect?: boolean; answerData?: any }) => {
         handleAnswered(currentStep.id, result)
       },
-      // For fullScreen steps (and always for summary), pass navigation + progress so "Completar misión" is shown
-      ...(shouldPassFullScreenProps
+      // For fullScreen steps, summary, and match steps: pass navigation so Salir/Continuar buttons show
+      ...(shouldPassNavProps
         ? {
             onExit: onExit,
             onContinue: handleContinue,
@@ -319,14 +332,12 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
         className="flex flex-col bg-white text-slate-900 relative w-full flex-1 min-h-0"
         style={{
           paddingTop: "env(safe-area-inset-top)",
-          minHeight: "100dvh",
-          height: "100dvh",
+          minHeight: 0,
+          height: "100%",
           overflow: "hidden",
         }}
       >
-        <div className="flex-1 overflow-y-auto">
-          {renderStep()}
-        </div>
+        {renderStep()}
       </div>
     )
   }
@@ -335,6 +346,9 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
     <LessonScreen
       currentStep={state.currentStepIndex + 1}
       totalSteps={state.allSteps.length}
+      streak={streak}
+      stars={stars}
+      showProgressBar={!onProgressChange}
       footerContent={
         <div
           style={{
@@ -374,7 +388,7 @@ export function LessonEngine({ lessonSteps, onComplete, onExit }: LessonEnginePr
             }}
             className="rounded-xl"
           >
-            {(currentStep as { continueLabel?: string }).continueLabel ?? (isSummaryStep ? "Siguiente lección" : isLastStep ? "Completar misión" : "Continuar")}
+            {isSummaryStep || isLastStep ? "Siguiente lección" : ((currentStep as { continueLabel?: string }).continueLabel ?? "Continuar")}
           </StickyFooterButton>
         </div>
       }
