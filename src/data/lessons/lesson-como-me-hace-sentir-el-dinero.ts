@@ -7,28 +7,27 @@ import type { LessonStep } from "@/types/lessonTypes"
  * Estimated duration: 12–15 minutes
  * Language: Content in Spanish, instructions in English.
  *
- * IMAGE PLACEHOLDERS (add assets and set imageUrl on the corresponding steps):
- * - Step cms-intro: [IMAGE PLACEHOLDER: teenager thinking about money with mixed emotions]
- * - Step cms-teoria-1: [IMAGE PLACEHOLDER: brain vs heart illustration]
- * - Step cms-match: [IMAGE PLACEHOLDER: icons representing different emotions]
- * - Step cms-scenario: [IMAGE PLACEHOLDER: teen looking at something desirable in a store]
- * - Step cms-key-idea: [IMAGE PLACEHOLDER: calm teen organizing money]
+ * Applies cursor-rules.md "Lesson images (MANDATORY)":
+ * - Images MUST be left or right of content (imageAlign: "left" | "right"); never above/below centered.
+ * - Match steps: no image. T/F: must have image. Closure (summary): may use centered image.
  */
 
+const IMG = "/uploads/lesson-2"
+
 export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
-  // FLASHCARD 1 – Intro (Progressive intro)
+  // FLASHCARD 1 – Intro [IMAGE 1 – RIGHT]
   {
     id: "cms-intro",
     stepType: "info",
-    title: "Cómo me hace sentir el dinero",
-    body: "El dinero no solo se piensa.\n\nTambién se siente.",
+    body: "El dinero no solo se piensa.\nTambién se siente.",
     isAssessment: false,
     continueLabel: "Empezar",
     fullScreen: true,
-    // imageUrl: "/lessons/como-me-siente/intro.png" – [IMAGE PLACEHOLDER: teenager thinking about money with mixed emotions]
+    imageUrl: `${IMG}/intro.png`,
+    imageAlign: "right",
   },
 
-  // FLASHCARD 2 – Quick Poll (non-graded; emotional baseline)
+  // FLASHCARD 2 – Quick Poll (no image)
   {
     id: "cms-poll",
     stepType: "mcq",
@@ -45,31 +44,34 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // FLASHCARD 3 – Theory
+  // FLASHCARD 3 – Theory [IMAGE 2 – LEFT]
   {
     id: "cms-teoria-1",
     stepType: "info",
-    body: "Las emociones influyen en cómo usamos el dinero.\n\nA veces más que la lógica.",
+    body: "Las emociones influyen en cómo usamos el dinero.",
     isAssessment: false,
     continueLabel: "Continuar",
     fullScreen: true,
-    // imageUrl: "/lessons/como-me-siente/cerebro-corazon.png" – [IMAGE PLACEHOLDER: brain vs heart illustration]
+    imageUrl: `${IMG}/heart-brain.png`,
+    imageAlign: "left",
   },
 
-  // FLASHCARD 4 – True / False
+  // FLASHCARD 4 – True / False [IMAGE 3 – RIGHT] (T/F must have image)
   {
     id: "cms-tf-1",
     stepType: "true_false",
-    statement: "Tomamos decisiones de dinero solo con la razón.",
+    statement: "Las decisiones de dinero siempre son racionales.",
     correctValue: false,
     explanation: "Falso. Muchas decisiones se toman desde la emoción.",
     isAssessment: true,
     recordIncorrect: true,
     continueLabel: "Continuar",
     fullScreen: true,
+    imageUrl: `${IMG}/emotions-grid.png`,
+    imageAlign: "right",
   },
 
-  // FLASHCARD 5 – Match concept to emotion
+  // FLASHCARD 5 – Match (NO image per rule)
   {
     id: "cms-match",
     stepType: "match",
@@ -96,15 +98,23 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     recordIncorrect: true,
     continueLabel: "Continuar",
     fullScreen: true,
-    // Feedback in UI: "Las emociones aparecen en situaciones financieras cotidianas."
-    // [IMAGE PLACEHOLDER: icons representing different emotions]
   },
 
-  // FLASHCARD 6 – Scenario decision (no correct answer; register emotion)
+  // FLASHCARD 6 – Theory
+  {
+    id: "cms-teoria-2",
+    stepType: "info",
+    body: "No es malo sentir emociones con el dinero.\nEl problema es decidir solo con ellas.",
+    isAssessment: false,
+    continueLabel: "Continuar",
+    fullScreen: true,
+  },
+
+  // FLASHCARD 7 – Scenario [IMAGE 4 – LEFT]
   {
     id: "cms-scenario",
     stepType: "mcq",
-    question: "Ves algo que te gusta mucho, pero no lo tenías planeado comprar.\n\n¿Qué emoción aparece primero?",
+    question: "Ves algo que te gusta mucho,\npero no lo tenías planeado comprar.\n\n¿Qué emoción aparece primero?",
     options: [
       { id: "opt-emocion", label: "Emoción", isCorrect: true },
       { id: "opt-ansiedad", label: "Ansiedad", isCorrect: true },
@@ -115,38 +125,40 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     recordIncorrect: false,
     continueLabel: "Continuar",
     fullScreen: true,
-    // [IMAGE PLACEHOLDER: teen looking at something desirable in a store]
+    imageUrl: `${IMG}/scenario-sneaker.png`,
+    imageAlign: "left",
   },
 
-  // FLASHCARD 7 – Theory
-  {
-    id: "cms-teoria-2",
-    stepType: "info",
-    body: "No es malo sentir emociones con el dinero.\n\nEl problema es decidir solo con ellas.",
-    isAssessment: false,
-    continueLabel: "Continuar",
-    fullScreen: true,
-  },
-
-  // FLASHCARD 8 – Order by intensity (menor a mayor)
+  // FLASHCARD 8 – Order by intensity [IMAGE 5 – RIGHT]
   {
     id: "cms-order",
     stepType: "order",
     question: "Ordena las emociones de menor a mayor intensidad cuando se trata de dinero.",
+    imageUrl: `${IMG}/stacked-cards.png`,
+    imageAlign: "right",
     items: [
-      { id: "item-tranquilidad", label: "Tranquilidad", correctOrder: 1 },
-      { id: "item-emocion", label: "Emoción", correctOrder: 2 },
       { id: "item-estres", label: "Estrés", correctOrder: 3 },
+      { id: "item-tranquilidad", label: "Tranquilidad", correctOrder: 1 },
       { id: "item-miedo", label: "Miedo", correctOrder: 4 },
+      { id: "item-emocion", label: "Emoción", correctOrder: 2 },
     ],
     isAssessment: true,
     recordIncorrect: true,
     continueLabel: "Continuar",
     fullScreen: true,
-    // Feedback: "Las emociones más intensas suelen llevar a peores decisiones."
   },
 
-  // FLASHCARD 9 – Multiple choice quiz
+  // FLASHCARD 9 – Theory
+  {
+    id: "cms-teoria-3",
+    stepType: "info",
+    body: "Reconocer cómo me siento\nme ayuda a decidir mejor.",
+    isAssessment: false,
+    continueLabel: "Continuar",
+    fullScreen: true,
+  },
+
+  // FLASHCARD 10 – MCQ (no image: content-dense)
   {
     id: "cms-mcq",
     stepType: "mcq",
@@ -159,8 +171,8 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
         isCorrect: true,
         explanation: "Correcto. La emoción intensa puede nublar la decisión.",
       },
-      { id: "opt-reflexion", label: "Reflexión", isCorrect: false },
       { id: "opt-paciencia", label: "Paciencia", isCorrect: false },
+      { id: "opt-reflexion", label: "Reflexión", isCorrect: false },
     ],
     isAssessment: true,
     recordIncorrect: true,
@@ -168,7 +180,7 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // FLASHCARD 10 – Reflection (non-graded; self-awareness)
+  // FLASHCARD 11 – Reflection [IMAGE 6 – LEFT]
   {
     id: "cms-reflexion",
     stepType: "mcq",
@@ -183,27 +195,18 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     recordIncorrect: false,
     continueLabel: "Continuar",
     fullScreen: true,
+    imageUrl: `${IMG}/reflection.png`,
+    imageAlign: "left",
   },
 
-  // FLASHCARD 11 – Key idea
-  {
-    id: "cms-key-idea",
-    stepType: "info",
-    body: "Reconocer cómo me siento con el dinero\n\nes el primer paso para decidir mejor.",
-    isAssessment: false,
-    continueLabel: "Continuar",
-    fullScreen: true,
-    // imageUrl: "/lessons/como-me-siente/decidir-mejor.png" – [IMAGE PLACEHOLDER: calm teen organizing money]
-  },
-
-  // FLASHCARD 12 – Closure (Progress feedback)
+  // FLASHCARD 12 – Closure (Progress Feedback)
   {
     id: "cms-cierre",
     stepType: "summary",
     title: "Lección completada",
-    body: "Ahora sabes que el dinero también se siente.",
+    body: "Ahora entiendes mejor cómo te hace sentir el dinero.",
     isAssessment: false,
-    continueLabel: "Siguiente lección: Lo que creo que el dinero dice de mí",
+    continueLabel: "Siguiente lección",
     fullScreen: true,
   },
 ]

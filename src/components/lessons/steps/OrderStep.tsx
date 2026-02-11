@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useRef } from "react"
+import { motion } from "framer-motion"
 import { OrderStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
 import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
@@ -16,10 +17,22 @@ interface OrderStepProps {
   currentStepIndex?: number
   totalSteps?: number
   streak?: number
-  stars?: 1 | 2 | 3
+  stars?: 0 | 1 | 2 | 3
+  /** When true (review step), do not advance on wrong answer */
+  isReviewStep?: boolean
 }
 
 const ORDER_ITEM_BLUE = "#2563eb"
+
+/** Fisher–Yates shuffle. Used so "Order by Priority" / "Timeline" steps never show correct order initially. */
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
 
 export function OrderStep({
   step,
@@ -32,46 +45,102 @@ export function OrderStep({
   totalSteps = 1,
   streak = 0,
   stars = 3,
+  isReviewStep = false,
 }: OrderStepProps) {
-  const [orderedItemIds, setOrderedItemIds] = useState<string[]>(
-    initialOrder ?? step.items.map((item) => item.id)
-  )
+  const [orderedItemIds, setOrderedItemIds] = useState<string[]>(() => {
+    const itemIds = step.items.map((item) => item.id)
+    if (initialOrder?.length === itemIds.length) return initialOrder
+    const correctOrderIds = [...step.items]
+      .sort((a, b) => a.correctOrder - b.correctOrder)
+      .map((it) => it.id)
+    let order = shuffleArray(itemIds)
+    const sameAsCorrect = order.every((id, i) => id === correctOrderIds[i])
+    if (sameAsCorrect && order.length >= 2) {
+      order = [...order]
+      ;[order[0], order[1]] = [order[1], order[0]]
+    }
+    return order
+  })
   const [hasEvaluated, setHasEvaluated] = useState(false)
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const hasPlayedSound = useRef(false)
   const onAnsweredRef = useRef(onAnswered)
   onAnsweredRef.current = onAnswered
 
-  useEffect(() => {
-    // Check if items are in correct order
-    const isCorrect = orderedItemIds.every((id, index) => {
+  const isCorrectOrder = () =>
+    orderedItemIds.every((id, index) => {
       const item = step.items.find((it) => it.id === id)
       return item && item.correctOrder === index + 1
     })
 
-    if (!hasEvaluated) {
-      setHasEvaluated(true)
+  /** Returns a fresh shuffled order (never the correct order). */
+  const getShuffledOrder = (): string[] => {
+    const itemIds = step.items.map((item) => item.id)
+    const correctOrderIds = [...step.items]
+      .sort((a, b) => a.correctOrder - b.correctOrder)
+      .map((it) => it.id)
+    let order = shuffleArray(itemIds)
+    const sameAsCorrect = order.every((id, i) => id === correctOrderIds[i])
+    if (sameAsCorrect && order.length >= 2) {
+      order = [...order]
+      ;[order[0], order[1]] = [order[1], order[0]]
+    }
+    return order
+  }
 
-      // Play sound only once
+  /** Comprobar: show feedback; if correct, lock and call onAnswered. If wrong, user can try again. */
+  const handleComprobar = () => {
+    if (hasEvaluated) return
+    const correct = isCorrectOrder()
+    setShowFeedback(true)
+    if (correct) {
+      setHasEvaluated(true)
       if (!hasPlayedSound.current) {
-        if (isCorrect) {
-          playCorrectSound()
-        } else {
-          playIncorrectSound()
-        }
+        playCorrectSound()
+        hasPlayedSound.current = true
+      }
+      onAnsweredRef.current({
+        isCompleted: true,
+        isCorrect: true,
+        answerData: { orderedItemIds: [...orderedItemIds] },
+      })
+    } else {
+      if (!hasPlayedSound.current) {
+        playIncorrectSound()
         hasPlayedSound.current = true
       }
     }
+  }
 
-    // Use ref so parent re-renders (new onAnswered) don't retrigger this effect and cause a loop
+  /** Intentar de nuevo: reset order to a fresh shuffle and clear feedback. */
+  const handleIntentarDeNuevo = () => {
+    setOrderedItemIds(getShuffledOrder())
+    setShowFeedback(false)
+    setDraggedIndex(null)
+  }
+
+  /** Evaluate only when user submits (clicks Continuar). Do not auto-evaluate on reorder. Returns isCorrect. */
+  const evaluateAndSubmit = (): boolean => {
+    if (hasEvaluated) return isCorrectOrder()
+    const isCorrect = isCorrectOrder()
+    setHasEvaluated(true)
+    if (!hasPlayedSound.current) {
+      if (isCorrect) playCorrectSound()
+      else playIncorrectSound()
+      hasPlayedSound.current = true
+    }
     onAnsweredRef.current({
       isCompleted: true,
       isCorrect,
       answerData: { orderedItemIds: [...orderedItemIds] },
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- hasEvaluated omitted to avoid double run when we set it
-  }, [orderedItemIds, step.items])
+    return isCorrect
+  }
 
   const moveItem = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return
+    setShowFeedback(false)
     const newOrder = [...orderedItemIds]
     const [removed] = newOrder.splice(fromIndex, 1)
     newOrder.splice(toIndex, 0, removed)
@@ -79,25 +148,28 @@ export function OrderStep({
   }
 
   const moveUp = (index: number) => {
-    if (index > 0 && !hasEvaluated) {
-      moveItem(index, index - 1)
-    }
+    if (index > 0 && !hasEvaluated) moveItem(index, index - 1)
   }
 
   const moveDown = (index: number) => {
-    if (index < orderedItemIds.length - 1 && !hasEvaluated) {
-      moveItem(index, index + 1)
-    }
+    if (index < orderedItemIds.length - 1 && !hasEvaluated) moveItem(index, index + 1)
   }
 
-  const getItemStyle = (item: typeof step.items[0], currentIndex: number) => {
-    if (!hasEvaluated) {
-      return ""
-    }
-    const isCorrect = item.correctOrder === currentIndex + 1
-    return isCorrect
-      ? "bg-emerald-100 border-emerald-600"
-      : "bg-red-100 border-red-600"
+  const handleDragStart = (index: number) => {
+    if (hasEvaluated) return
+    setShowFeedback(false)
+    setDraggedIndex(index)
+  }
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault()
+    if (hasEvaluated || draggedIndex === null) return
+    if (draggedIndex !== index) moveItem(draggedIndex, index)
+    setDraggedIndex(index)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null)
   }
 
   const useFullScreenLayout = onExit != null || onContinue != null
@@ -107,7 +179,8 @@ export function OrderStep({
       width: "100%",
       maxWidth: "900px",
       display: "flex",
-      gap: "1.5rem",
+      gap: "1rem",
+      flexWrap: "wrap",
       justifyContent: "space-between",
       alignItems: "center",
       marginTop: "2rem",
@@ -129,25 +202,53 @@ export function OrderStep({
       >
         Salir
       </button>
-      <button
-        type="button"
-        onClick={() => onContinue?.()}
-        disabled={!isContinueEnabled}
-        style={{
-          padding: "16px 48px",
-          fontSize: "clamp(18px, 3.5vw, 24px)",
-          fontWeight: 600,
-          color: "#ffffff",
-          background: isContinueEnabled ? "#2563eb" : "#94a3b8",
-          border: "none",
-          borderRadius: "9999px",
-          cursor: isContinueEnabled ? "pointer" : "not-allowed",
-          fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-          minWidth: "180px",
-        }}
-      >
-        {(step as { continueLabel?: string }).continueLabel ?? "Continuar"}
-      </button>
+      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        {/* Comprobar: show only when not evaluated and no wrong feedback (hidden after wrong answer until user resets) */}
+        {!hasEvaluated && !showFeedback && (
+          <button
+            type="button"
+            onClick={handleComprobar}
+            style={{
+              padding: "16px 32px",
+              fontSize: "clamp(16px, 2.5vw, 20px)",
+              fontWeight: 600,
+              color: "#1e293b",
+              background: "#ffffff",
+              border: "3px solid #1e293b",
+              borderRadius: "9999px",
+              cursor: "pointer",
+              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            }}
+          >
+            Comprobar
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            if (!hasEvaluated) {
+              const correct = evaluateAndSubmit()
+              if (isReviewStep && !correct) return
+            }
+            onContinue?.()
+          }}
+          disabled={!isContinueEnabled}
+          style={{
+            padding: "16px 48px",
+            fontSize: "clamp(18px, 3.5vw, 24px)",
+            fontWeight: 600,
+            color: "#ffffff",
+            background: isContinueEnabled ? "#2563eb" : "#94a3b8",
+            border: "none",
+            borderRadius: "9999px",
+            cursor: isContinueEnabled ? "pointer" : "not-allowed",
+            fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            minWidth: "180px",
+          }}
+        >
+          {(step as { continueLabel?: string }).continueLabel ?? "Continuar"}
+        </button>
+      </div>
     </div>
   ) : null
 
@@ -172,85 +273,82 @@ export function OrderStep({
         </div>
       )}
 
-      {/* Two-column layout: image (left) | items (right) */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "clamp(20px, 3vw, 48px)",
-        alignItems: "stretch",
-        flex: 1,
-        minHeight: 0,
-      }} className="order-layout-grid">
-        {/* Image Area - left side */}
-        <div style={{
-          background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
-          borderRadius: "16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#ffffff",
-          fontSize: "clamp(18px, 2.5vw, 28px)",
-          fontWeight: 600,
-          padding: "24px",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          {step.imageUrl ? (
-            <img 
-              src={step.imageUrl} 
+      {/* Layout: image LEFT or RIGHT of items per imageAlign */}
+      {(() => {
+        const imageAlign = (step as { imageAlign?: "left" | "right" }).imageAlign ?? "left"
+        const imageCell = step.imageUrl ? (
+          <div key="img" style={{ display: "flex", alignItems: "center", justifyContent: "center", minWidth: 0, maxWidth: "min(45%, 320px)" }}>
+            <img
+              src={step.imageUrl}
               alt={step.question || "Order illustration"}
               style={{
-                width: "100%",
-                height: "100%",
+                maxWidth: "100%",
+                width: "auto",
+                height: "auto",
+                maxHeight: "clamp(120px, 20vh, 220px)",
                 objectFit: "contain",
-                position: "absolute",
-                top: 0,
-                left: 0,
               }}
             />
-          ) : (
-            <span>IMAGEN</span>
+          </div>
+        ) : null
+        const itemsCell = (
+        <div key="items" style={{ display: "flex", flexDirection: "column", gap: "clamp(12px, 2vh, 20px)", minWidth: 0, overflowY: "auto" }}>
+          {!hasEvaluated && (
+            <p style={{
+              fontSize: "clamp(13px, 1.8vw, 16px)",
+              color: "#64748b",
+              margin: "0 0 4px 0",
+              fontStyle: "italic",
+            }}>
+              Arrastra las tarjetas o usa las flechas para cambiar el orden.
+            </p>
           )}
-        </div>
-
-        {/* Items list - right side */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(12px, 2vh, 20px)" }}>
           {orderedItemIds.map((itemId, index) => {
             const item = step.items.find((it) => it.id === itemId)
             if (!item) return null
-            const isCorrect = hasEvaluated && item.correctOrder === index + 1
+            const showCorrectness = hasEvaluated || showFeedback
+            const isCorrect = showCorrectness && item.correctOrder === index + 1
 
             return (
-              <div
+              <motion.div
                 key={itemId}
+                layout
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                draggable={!hasEvaluated}
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
                 style={{
                   padding: "clamp(16px, 2.5vh, 24px)",
                   fontSize: "clamp(16px, 2vw, 22px)",
                   fontWeight: 700,
                   color: "#1e293b",
-                  background: "#ffffff",
-                  border: `3px solid ${hasEvaluated ? (isCorrect ? "#10b981" : "#ef4444") : ORDER_ITEM_BLUE}`,
+                  background: draggedIndex === index ? "#e0e7ff" : "#ffffff",
+                  border: `3px solid ${showCorrectness ? (isCorrect ? "#10b981" : "#ef4444") : ORDER_ITEM_BLUE}`,
                   borderRadius: "12px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: "12px",
-                  transition: "all 0.2s ease",
+                  cursor: hasEvaluated ? "default" : "grab",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1 }}>
+                  {!hasEvaluated && (
+                    <span style={{ color: "#94a3b8", fontSize: "18px", userSelect: "none" }} aria-hidden>⋮⋮</span>
+                  )}
                   <span style={{ fontSize: "clamp(20px, 2.5vw, 28px)", fontWeight: 700, minWidth: "32px", textAlign: "center" }}>
                     {index + 1}
                   </span>
                   <span style={{ flex: 1 }}>{item.label}</span>
-                  {hasEvaluated && (
+                  {(hasEvaluated || showFeedback) && (
                     <span style={{ fontSize: "clamp(18px, 2vw, 24px)" }}>
                       {isCorrect ? "✓" : "✗"}
                     </span>
                   )}
                 </div>
                 {!hasEvaluated && (
-                  <div style={{ display: "flex", gap: "8px" }}>
+                  <div style={{ display: "flex", gap: "8px" }} onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
@@ -313,20 +411,48 @@ export function OrderStep({
                     </button>
                   </div>
                 )}
-              </div>
+              </motion.div>
             )
           })}
+          {showFeedback && !hasEvaluated && (
+            <div style={{ marginTop: "1rem", textAlign: "center" }}>
+              <button
+                type="button"
+                onClick={handleIntentarDeNuevo}
+                style={{
+                  padding: "14px 28px",
+                  fontSize: "clamp(15px, 2.2vw, 18px)",
+                  fontWeight: 600,
+                  color: "#1e293b",
+                  background: "#ffffff",
+                  border: "3px solid #1e293b",
+                  borderRadius: "9999px",
+                  cursor: "pointer",
+                  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                }}
+              >
+                Intentar de nuevo
+              </button>
+            </div>
+          )}
         </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 767px) {
-          .order-layout-grid {
-            grid-template-columns: 1fr !important;
-            gap: 24px !important;
-          }
-        }
-      `}</style>
+        )
+        return (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: step.imageUrl ? "minmax(0, 1fr) minmax(0, 1fr)" : "1fr",
+            gap: "clamp(16px, 3vw, 32px)",
+            alignItems: "stretch",
+            flex: 1,
+            minHeight: 0,
+            width: "100%",
+          }}>
+            {step.imageUrl
+              ? (imageAlign === "right" ? <>{itemsCell}{imageCell}</> : <>{imageCell}{itemsCell}</>)
+              : itemsCell}
+          </div>
+        )
+      })()}
     </>
   )
 

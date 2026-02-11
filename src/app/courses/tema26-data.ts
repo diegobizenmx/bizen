@@ -15,7 +15,7 @@ export const TEMA26_SUBTEMAS: Tema26Subtema[] = [
   {
     title: "Dinero y forma de vivir",
     lessons: [
-      { title: "Qué es el estilo de vida", level: "Básico", slug: "que-es-el-estilo-de-vida" },
+      { title: "¿Qué es el estilo de vida?", level: "Básico", slug: "que-es-el-estilo-de-vida" },
       { title: "Relación entre dinero y estilo de vida", level: "Básico", slug: "relacion-entre-dinero-y-estilo-de-vida" },
       { title: "Estilo de vida consciente vs automático", level: "Intermedio", slug: "estilo-de-vida-consciente-vs-automatico" },
     ],

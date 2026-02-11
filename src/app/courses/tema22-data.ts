@@ -15,13 +15,13 @@ export const TEMA22_SUBTEMAS: Tema22Subtema[] = [
   {
     title: "Entender el precio",
     lessons: [
-      { title: "Qué es el precio", level: "Básico", slug: "que-es-el-precio" },
+      { title: "¿Qué es el precio?", level: "Básico", slug: "que-es-el-precio" },
       { title: "Precio vs valor", level: "Básico", slug: "precio-vs-valor" },
-      { title: "Por qué cobrar bien es importante", level: "Intermedio", slug: "por-que-cobrar-bien-es-importante" },
+      { title: "¿Por qué cobrar bien es importante?", level: "Intermedio", slug: "por-que-cobrar-bien-es-importante" },
     ],
   },
   {
-    title: "Cómo definir precios",
+    title: "¿Cómo definir precios?",
     lessons: [
       { title: "Costear correctamente", level: "Intermedio", slug: "costear-correctamente" },
       { title: "Precio basado en costos", level: "Intermedio", slug: "precio-basado-en-costos" },
@@ -39,8 +39,8 @@ export const TEMA22_SUBTEMAS: Tema22Subtema[] = [
   {
     title: "Ajustar precios",
     lessons: [
-      { title: "Cuándo subir precios", level: "Avanzado", slug: "cuando-subir-precios" },
-      { title: "Cuándo bajar precios", level: "Avanzado", slug: "cuando-bajar-precios" },
+      { title: "¿Cuándo subir precios?", level: "Avanzado", slug: "cuando-subir-precios" },
+      { title: "¿Cuándo bajar precios?", level: "Avanzado", slug: "cuando-bajar-precios" },
       { title: "Errores comunes al poner precios", level: "Avanzado", slug: "errores-comunes-al-poner-precios" },
     ],
   },

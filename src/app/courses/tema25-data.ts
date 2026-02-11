@@ -13,11 +13,11 @@ export interface Tema25Subtema {
 
 export const TEMA25_SUBTEMAS: Tema25Subtema[] = [
   {
-    title: "Qué es escalar",
+    title: "¿Qué es escalar?",
     lessons: [
-      { title: "Qué significa escalar", level: "Básico", slug: "que-significa-escalar" },
+      { title: "¿Qué significa escalar?", level: "Básico", slug: "que-significa-escalar" },
       { title: "Crecer vs escalar", level: "Intermedio", slug: "crecer-vs-escalar" },
-      { title: "Cuándo es buen momento para escalar", level: "Intermedio", slug: "cuando-es-buen-momento-para-escalar" },
+      { title: "¿Cuándo es buen momento para escalar?", level: "Intermedio", slug: "cuando-es-buen-momento-para-escalar" },
     ],
   },
   {

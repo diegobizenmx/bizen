@@ -7,7 +7,7 @@ import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
 interface MatchStepProps {
-  step: MatchStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; continueLabel?: string }
+  step: MatchStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; continueLabel?: string; imageUrl?: string; imageAlign?: "left" | "right" }
   onAnswered: (result: { isCompleted: boolean; isCorrect?: boolean; answerData?: any }) => void
   matches?: Array<{ leftId: string; rightId: string }>
   onExit?: () => void
@@ -16,7 +16,7 @@ interface MatchStepProps {
   currentStepIndex?: number
   totalSteps?: number
   streak?: number
-  stars?: 1 | 2 | 3
+  stars?: 0 | 1 | 2 | 3
 }
 
 const CONCEPT_BORDER_BLUE = "#2563eb"
@@ -155,9 +155,26 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
     </div>
   ) : null
 
-  const content = (
+  const imageAlign = (step.imageAlign === "left" || step.imageAlign === "right") ? step.imageAlign : "right"
+  const imageBlock = step.imageUrl ? (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, minWidth: "100px", maxWidth: "min(40%, 280px)" }}>
+      <img
+        src={step.imageUrl}
+        alt={step.question || "Match illustration"}
+        style={{
+          maxWidth: "100%",
+          width: "auto",
+          height: "auto",
+          maxHeight: "clamp(120px, 20vh, 220px)",
+          objectFit: "contain",
+        }}
+      />
+    </div>
+  ) : null
+
+  const mainContent = (
     <>
-      {/* Title: ENLAZA LOS CONCEPTOS */}
+      {/* Title */}
       <div style={{ textAlign: "center", marginBottom: "clamp(24px, 4vh, 48px)" }}>
         <h2 style={{
           fontSize: "clamp(18px, 2.5vw, 32px)",
@@ -174,10 +191,11 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
         </h2>
       </div>
 
-      {/* 3-column layout: left items | right items | image */}
+      {/* 2-column layout: left items | right items (activity only, no image here) */}
       <div style={{
+        width: "100%",
         display: "grid",
-        gridTemplateColumns: "1fr 1fr 1.4fr",
+        gridTemplateColumns: "1fr 1fr",
         gap: "clamp(20px, 3vw, 48px)",
         alignItems: "stretch",
         flex: 1,
@@ -265,38 +283,6 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
             )
           })}
         </div>
-
-        {/* Image Area - displays actual image if provided */}
-        <div style={{
-          background: "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
-          borderRadius: "16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#ffffff",
-          fontSize: "clamp(18px, 2.5vw, 28px)",
-          fontWeight: 600,
-          padding: "24px",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          {step.imageUrl ? (
-            <img 
-              src={step.imageUrl} 
-              alt={step.question || "Match illustration"}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                position: "absolute",
-                top: 0,
-                left: 0,
-              }}
-            />
-          ) : (
-            <span>IMAGEN</span>
-          )}
-        </div>
       </div>
 
       <style>{`
@@ -310,24 +296,55 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
     </>
   )
 
+  const content = imageBlock ? (
+    <div style={{ display: "flex", flexDirection: "row", alignItems: "stretch", justifyContent: "center", gap: "clamp(16px, 3vw, 32px)", flexWrap: "nowrap", width: "100%", minWidth: 0, minHeight: 0 }}>
+      {imageAlign === "left" ? imageBlock : null}
+      <div style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>{mainContent}</div>
+      {imageAlign === "right" ? imageBlock : null}
+    </div>
+  ) : mainContent
+
   if (useFullScreenLayout) {
     return (
       <div style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-between",
         textAlign: "center",
         minHeight: 0,
         flex: 1,
-        padding: "2rem 1.5rem",
+        width: "100%",
+        padding: "1rem 1.5rem 0",
+        paddingBottom: 0,
         background: "#f1f5f9",
         boxSizing: "border-box",
       }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", maxWidth: "1600px", padding: "0 clamp(20px, 4vw, 60px)", minHeight: 0 }}>
+        {/* Scrollable content – keeps buttons visible */}
+        <div style={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+          WebkitOverflowScrolling: "touch",
+          width: "100%",
+          maxWidth: "100%",
+          padding: "0 clamp(20px, 4vw, 60px)",
+          paddingBottom: "1rem",
+        }}>
           {content}
         </div>
-        {buttonsRow}
+        {/* Buttons always visible at bottom */}
+        <div style={{
+          flexShrink: 0,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          paddingTop: "1rem",
+          paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+          background: "#f1f5f9",
+        }}>
+          {buttonsRow}
+        </div>
       </div>
     )
   }
@@ -338,10 +355,10 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
       height: "100%",
       display: "flex",
       flexDirection: "column",
+      alignItems: "center",
       justifyContent: "center",
       padding: "clamp(16px, 3vh, 40px) clamp(20px, 4vw, 60px)",
-      maxWidth: "1600px",
-      margin: "0 auto",
+      boxSizing: "border-box",
     }}>
       {content}
     </div>

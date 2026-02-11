@@ -15,8 +15,8 @@ export const TEMA14_SUBTEMAS: Tema14Subtema[] = [
   {
     title: "Entender los errores",
     lessons: [
-      { title: "Qué es un error financiero", level: "Básico", slug: "que-es-un-error-financiero" },
-      { title: "Por qué todos cometemos errores", level: "Básico", slug: "por-que-todos-cometemos-errores" },
+      { title: "¿Qué es un error financiero?", level: "Básico", slug: "que-es-un-error-financiero" },
+      { title: "¿Por qué todos cometemos errores?", level: "Básico", slug: "por-que-todos-cometemos-errores" },
       { title: "Aprender del error", level: "Intermedio", slug: "aprender-del-error" },
       { title: "Evitar culparse en exceso", level: "Intermedio", slug: "evitar-culparse-en-exceso" },
     ],

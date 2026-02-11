@@ -13,12 +13,12 @@ export interface Tema4Subtema {
 
 export const TEMA4_SUBTEMAS: Tema4Subtema[] = [
   {
-    title: "Qué es un presupuesto",
+    title: "¿Qué es un presupuesto?",
     lessons: [
-      { title: "Qué es un presupuesto", level: "Básico", slug: "que-es-un-presupuesto" },
-      { title: "Para qué sirve un presupuesto", level: "Básico", slug: "para-que-sirve-un-presupuesto" },
+      { title: "¿Qué es un presupuesto?", level: "Básico", slug: "que-es-un-presupuesto" },
+      { title: "¿Para qué sirve un presupuesto?", level: "Básico", slug: "para-que-sirve-un-presupuesto" },
       { title: "Mitos sobre el presupuesto", level: "Básico", slug: "mitos-sobre-el-presupuesto" },
-      { title: "Por qué muchas personas odian presupuestar", level: "Intermedio", slug: "por-que-muchas-personas-odian-presupuestar" },
+      { title: "¿Por qué muchas personas odian presupuestar?", level: "Intermedio", slug: "por-que-muchas-personas-odian-presupuestar" },
       { title: "Cambiar la forma de ver el presupuesto", level: "Intermedio", slug: "cambiar-la-forma-de-ver-el-presupuesto" },
     ],
   },
@@ -46,7 +46,7 @@ export const TEMA4_SUBTEMAS: Tema4Subtema[] = [
     title: "Usar el presupuesto en la vida real",
     lessons: [
       { title: "Seguir un presupuesto día a día", level: "Intermedio", slug: "seguir-un-presupuesto-dia-a-dia" },
-      { title: "Qué hacer cuando no se cumple", level: "Intermedio", slug: "que-hacer-cuando-no-se-cumple" },
+      { title: "¿Qué hacer cuando no se cumple?", level: "Intermedio", slug: "que-hacer-cuando-no-se-cumple" },
       { title: "Ajustar el presupuesto con el tiempo", level: "Intermedio", slug: "ajustar-el-presupuesto-con-el-tiempo" },
       { title: "Errores comunes al presupuestar", level: "Avanzado", slug: "errores-comunes-al-presupuestar" },
       { title: "Aprender del error sin rendirse", level: "Avanzado", slug: "aprender-del-error-sin-rendirse" },

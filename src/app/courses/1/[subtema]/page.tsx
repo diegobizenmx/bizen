@@ -206,6 +206,11 @@ export default function Tema1SubtemaPage() {
                       gap: 4,
                     }}
                   >
+                    <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 4 }}>
+                      <img src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain" }} />
+                      <img src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain" }} />
+                      <img src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain" }} />
+                    </div>
                     <div
                       style={{
                         width: 44,

@@ -401,6 +401,11 @@ body[data-lesson-interactive="true"] .mobile-footer-container {
   display: none !important;
 }
 
+/* Hide left sidebar when a lesson is active (full-width lesson view) */
+body[data-lesson-interactive="true"] [data-fixed-sidebar] {
+  display: none !important;
+}
+
 /* LOCKED: no scroll within lessons - screen is fixed, overflow hidden */
 body[data-lesson-interactive="true"] .lesson-screen-root,
 body[data-lesson-interactive="true"] .lesson-container-no-scroll {
@@ -414,6 +419,40 @@ body[data-lesson-interactive="true"] .app-scroll {
 /* Lesson progress bar: fixed at top for ALL lessons and slides (position set in LessonScreen + interactive page) */
 .lesson-progress-bar-fixed {
   z-index: 100 !important;
+}
+
+/* Smooth fade/slide transition when changing lesson step/slide - applied project-wide */
+.lesson-step-transition {
+  animation: lessonStepIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centered slide content block - all lesson slides centered in the middle of the screen */
+.lesson-slide-content-center {
+  width: 100%;
+  max-width: 720px;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+@keyframes lessonStepIn {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ============================================
@@ -600,9 +639,53 @@ body[data-landing-page="true"] .main-header {
 }
 body[data-landing-page="true"] .main-page-container {
   overflow: visible !important;
+  flex: none !important;
+  height: auto !important;
+  min-height: auto !important;
 }
 
-/* Landing page: remove nested scroll - let body scroll, not app-scroll */
+/* Main hero: BLOQUEA scroll anidado. main no debe tener altura fija; wrappers del hero sin scroll. */
+body[data-landing-page="true"] .main-page-container main {
+  flex: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+}
+body[data-landing-page="true"] .main-page-container main > div {
+  height: auto !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+}
+body[data-landing-page="true"] .landing-hero-wrapper {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  max-height: none !important;
+  overflow-scrolling: unset !important;
+  -webkit-overflow-scrolling: unset !important;
+}
+body[data-landing-page="true"] .main-content-wrapper {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  max-height: none !important;
+  -webkit-overflow-scrolling: unset !important;
+}
+
+/* Landing: no app-shell/app-scroll in DOM (AppLayout returns only children for "/").
+   Nested scroll can come from the React/Next root (body's first child) or other wrappers
+   if they get a fixed height + overflow. Force them to overflow:visible + height:auto
+   so only the document (viewport) scrolls. */
+body[data-landing-page="true"] > div,
+body[data-landing-page="true"] #__next,
+body[data-landing-page="true"] #__next > div {
+  overflow: visible !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100% !important;
+}
 body[data-landing-page="true"] .app-shell {
   position: static !important;
   inset: auto !important;

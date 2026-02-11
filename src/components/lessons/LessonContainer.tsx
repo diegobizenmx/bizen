@@ -32,6 +32,8 @@ export function LessonContainer({ children, className = "", bottomPad, topPad = 
         flex: 1,
         display: "flex",
         flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
         overflow: "hidden",
         boxSizing: "border-box",
         width: "100%",

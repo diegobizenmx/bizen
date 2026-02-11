@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import { useLessonProgress } from "@/hooks/useLessonProgress"
 
 interface Lesson {
   id: string
@@ -24,12 +25,19 @@ interface Course {
   lessons: Lesson[]
 }
 
+// Approximate total lessons across 30 topics (for progress bar cap)
+const APPROX_TOTAL_LESSONS = 150
+
 export default function CoursesPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const { completedLessons } = useLessonProgress()
   const [courses, setCourses] = useState<Course[]>([])
   const [loadingData, setLoadingData] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
+
+  const completedCount = completedLessons.length
+  const progressPct = Math.min(100, Math.round((completedCount / APPROX_TOTAL_LESSONS) * 100))
 
   // Redirect unauthenticated users
   useEffect(() => {
@@ -197,7 +205,7 @@ export default function CoursesPage() {
         boxSizing: "border-box",
         width: "100%"
       }} className="courses-main-content">
-        {/* Same width as course bars (800px) - streak right-aligned, then course list */}
+        {/* Same width as course bars (800px) - progress at top, then course list */}
             <div style={{
           width: "100%",
           maxWidth: "800px",
@@ -211,116 +219,165 @@ export default function CoursesPage() {
           alignItems: "stretch",
           gap: 0
         }}>
-          {/* 30 main topics */}
+          {/* Progress indicator – lessons completed across all 30 topics */}
+          <div
+            style={{
+              width: "100%",
+              marginBottom: "clamp(20px, 4vw, 28px)",
+              padding: "clamp(14px, 2.5vw, 18px) clamp(16px, 2.5vw, 20px)",
+              background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
+              border: "2px solid rgba(59, 130, 246, 0.25)",
+              borderRadius: 12,
+              boxSizing: "border-box",
+            }}
+            aria-label={`Progreso: ${completedCount} lecciones completadas`}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10,
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "clamp(14px, 2.5vw, 16px)",
+                  fontWeight: 700,
+                  color: "#1e40af",
+                }}
+              >
+                {completedCount} lecciones completadas
+              </span>
+              <span
+                style={{
+                  fontSize: "clamp(13px, 2.2vw, 15px)",
+                  fontWeight: 600,
+                  color: "#64748b",
+                }}
+              >
+                {progressPct}%
+              </span>
+            </div>
+            <div
+              style={{
+                width: "100%",
+                height: 10,
+                borderRadius: 10,
+                background: "rgba(59, 130, 246, 0.2)",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: `${progressPct}%`,
+                  height: "100%",
+                  borderRadius: 10,
+                  background: "linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)",
+                  transition: "width 0.5s ease",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* 30 topics – single column, scroll down (no stars on course/topic covers) */}
           <section
             style={{
               width: "100%",
               marginBottom: "clamp(32px, 6vw, 48px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "clamp(12px, 2vw, 16px)",
+              overflowY: "auto",
+              maxHeight: "none",
             }}
-            aria-label="Temas principales"
+            aria-label="Temas"
           >
-            <h2
-              style={{
-                fontSize: "clamp(20px, 4vw, 26px)",
-                fontWeight: 800,
-                color: "#1e293b",
-                marginBottom: "clamp(16px, 3vw, 24px)",
-                lineHeight: 1.2,
-              }}
-            >
-              Temas principales
-            </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
-                gap: "clamp(12px, 2vw, 16px)",
-              }}
-            >
-              {[
-                { id: 1, title: "Mi relación con el dinero" },
-                { id: 2, title: "Qué es el dinero y por qué existe" },
-                { id: 3, title: "Cómo entra y sale el dinero de mi vida" },
-                { id: 4, title: "Presupuesto: tomar control sin ahogarme" },
-                { id: 5, title: "Ahorro con propósito" },
-                { id: 6, title: "Deuda: cuándo ayuda y cuándo destruye" },
-                { id: 7, title: "Sistema financiero explicado fácil" },
-                { id: 8, title: "Impuestos en la vida real" },
-                { id: 9, title: "Inflación y poder adquisitivo" },
-                { id: 10, title: "Introducción a la inversión" },
-                { id: 11, title: "Instrumentos de inversión básicos" },
-                { id: 12, title: "Psicología del inversionista" },
-                { id: 13, title: "Construcción de patrimonio a largo plazo" },
-                { id: 14, title: "Errores financieros comunes" },
-                { id: 15, title: "Tomar decisiones financieras conscientes" },
-                { id: 16, title: "Mentalidad emprendedora" },
-                { id: 17, title: "Identificar problemas y oportunidades de negocio" },
-                { id: 18, title: "Validar ideas sin gastar dinero" },
-                { id: 19, title: "Modelo de negocio explicado simple" },
-                { id: 20, title: "Ingresos, costos y utilidad en un negocio" },
-                { id: 21, title: "Flujo de efectivo" },
-                { id: 22, title: "Precios y valor" },
-                { id: 23, title: "Contabilidad básica para no contadores" },
-                { id: 24, title: "Errores comunes al emprender" },
-                { id: 25, title: "Escalar un negocio" },
-                { id: 26, title: "Dinero y estilo de vida" },
-                { id: 27, title: "Dinero y decisiones importantes" },
-                { id: 28, title: "Dinero en crisis" },
-                { id: 29, title: "Dinero, estrés y bienestar personal" },
-                { id: 30, title: "Diseñar mi vida financiera a futuro" },
-              ].map((topic) => (
-                <button
-                  key={topic.id}
-                  type="button"
-                  onClick={() => router.push(`/courses/${topic.id}`)}
+            {[
+              { id: 1, title: "Mi relación con el dinero" },
+              { id: 2, title: "¿Qué es el dinero y por qué existe?" },
+              { id: 3, title: "¿Cómo entra y sale el dinero de mi vida?" },
+              { id: 4, title: "Presupuesto: tomar control sin ahogarme" },
+              { id: 5, title: "Ahorro con propósito" },
+              { id: 6, title: "¿Deuda: cuándo ayuda y cuándo destruye?" },
+              { id: 7, title: "Sistema financiero explicado fácil" },
+              { id: 8, title: "Impuestos en la vida real" },
+              { id: 9, title: "Inflación y poder adquisitivo" },
+              { id: 10, title: "Introducción a la inversión" },
+              { id: 11, title: "Instrumentos de inversión básicos" },
+              { id: 12, title: "Psicología del inversionista" },
+              { id: 13, title: "Construcción de patrimonio a largo plazo" },
+              { id: 14, title: "Errores financieros comunes" },
+              { id: 15, title: "Tomar decisiones financieras conscientes" },
+              { id: 16, title: "Mentalidad emprendedora" },
+              { id: 17, title: "Identificar problemas y oportunidades de negocio" },
+              { id: 18, title: "Validar ideas sin gastar dinero" },
+              { id: 19, title: "Modelo de negocio explicado simple" },
+              { id: 20, title: "Ingresos, costos y utilidad en un negocio" },
+              { id: 21, title: "Flujo de efectivo" },
+              { id: 22, title: "Precios y valor" },
+              { id: 23, title: "Contabilidad básica para no contadores" },
+              { id: 24, title: "Errores comunes al emprender" },
+              { id: 25, title: "Escalar un negocio" },
+              { id: 26, title: "Dinero y estilo de vida" },
+              { id: 27, title: "Dinero y decisiones importantes" },
+              { id: 28, title: "Dinero en crisis" },
+              { id: 29, title: "Dinero, estrés y bienestar personal" },
+              { id: 30, title: "Diseñar mi vida financiera a futuro" },
+            ].map((topic) => (
+              <button
+                key={topic.id}
+                type="button"
+                onClick={() => router.push(`/courses/${topic.id}`)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "clamp(14px, 2.5vw, 18px) clamp(16px, 2.5vw, 20px)",
+                  background: "#f8fafc",
+                  border: "2px solid #e2e8f0",
+                  borderRadius: 12,
+                  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                  width: "100%",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                }}
+                className="course-topic-item"
+              >
+                <span
                   style={{
+                    flexShrink: 0,
+                    width: 28,
+                    height: 28,
+                    borderRadius: 8,
+                    background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 700,
                     display: "flex",
                     alignItems: "center",
-                    gap: 12,
-                    padding: "clamp(14px, 2.5vw, 18px) clamp(16px, 2.5vw, 20px)",
-                    background: "#f8fafc",
-                    border: "2px solid #e2e8f0",
-                    borderRadius: 12,
-                    transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-                    width: "100%",
-                    cursor: "pointer",
-                    textAlign: "left",
-                    fontFamily: "inherit",
+                    justifyContent: "center",
                   }}
-                  className="course-topic-item"
                 >
-                  <span
-                    style={{
-                      flexShrink: 0,
-                      width: 28,
-                      height: 28,
-                      borderRadius: 8,
-                      background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-                      color: "#fff",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {topic.id}
-                  </span>
-                  <span
-                    style={{
-                      flex: 1,
-                      fontSize: "clamp(14px, 2.5vw, 16px)",
-                      fontWeight: 600,
-                      color: "#334155",
-                      lineHeight: 1.35,
-                    }}
-                  >
-                    {topic.title}
-                  </span>
-                  <span style={{ flexShrink: 0, fontSize: 18, color: "#64748b" }} aria-hidden>→</span>
-                </button>
-              ))}
-            </div>
+                  {topic.id}
+                </span>
+                <span
+                  style={{
+                    flex: 1,
+                    fontSize: "clamp(14px, 2.5vw, 16px)",
+                    fontWeight: 600,
+                    color: "#334155",
+                    lineHeight: 1.35,
+                  }}
+                >
+                  {topic.title}
+                </span>
+                <span style={{ flexShrink: 0, fontSize: 18, color: "#64748b" }} aria-hidden>→</span>
+              </button>
+            ))}
           </section>
 
         </div>

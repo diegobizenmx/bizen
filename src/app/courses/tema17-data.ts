@@ -15,9 +15,9 @@ export const TEMA17_SUBTEMAS: Tema17Subtema[] = [
   {
     title: "Ver problemas",
     lessons: [
-      { title: "Qué es un problema", level: "Básico", slug: "que-es-un-problema" },
+      { title: "¿Qué es un problema?", level: "Básico", slug: "que-es-un-problema" },
       { title: "Problemas reales vs aparentes", level: "Básico", slug: "problemas-reales-vs-aparentes" },
-      { title: "Por qué los problemas valen dinero", level: "Intermedio", slug: "por-que-los-problemas-valen-dinero" },
+      { title: "¿Por qué los problemas valen dinero?", level: "Intermedio", slug: "por-que-los-problemas-valen-dinero" },
       { title: "Pensar desde el punto de vista del cliente", level: "Intermedio", slug: "pensar-desde-el-punto-de-vista-del-cliente" },
     ],
   },
@@ -43,7 +43,7 @@ export const TEMA17_SUBTEMAS: Tema17Subtema[] = [
     title: "Evaluar oportunidades",
     lessons: [
       { title: "Tamaño del problema", level: "Intermedio", slug: "tamano-del-problema" },
-      { title: "Quién pagaría por la solución", level: "Intermedio", slug: "quien-pagaria-por-la-solucion" },
+      { title: "¿Quién pagaría por la solución?", level: "Intermedio", slug: "quien-pagaria-por-la-solucion" },
       { title: "Diferenciar oportunidad de ocurrencia", level: "Avanzado", slug: "diferenciar-oportunidad-de-ocurrencia" },
       { title: "Riesgos de la oportunidad", level: "Avanzado", slug: "riesgos-de-la-oportunidad" },
     ],

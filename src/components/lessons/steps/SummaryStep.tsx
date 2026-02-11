@@ -15,7 +15,7 @@ interface SummaryStepProps {
   currentStepIndex?: number
   totalSteps?: number
   streak?: number
-  stars?: 1 | 2 | 3
+  stars?: 0 | 1 | 2 | 3
 }
 
 export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEnabled, isLastStep, currentStepIndex = 0, totalSteps = 1, streak = 0, stars = 3 }: SummaryStepProps) {
@@ -39,19 +39,22 @@ export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEn
         textAlign: 'center', 
         minHeight: 0,
         flex: 1,
+        height: '100%',
+        width: '100%',
         padding: '2rem 1.5rem',
         background: '#f1f5f9',
         boxSizing: 'border-box',
       }}>
-        {/* Content area - fills space */}
+        {/* Content area - scrollable so buttons stay in view */}
         <div style={{ 
           flex: 1, 
+          minHeight: 0,
+          overflowY: 'auto',
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
-          minHeight: 0,
         }}>
           <h2 style={{ 
             fontSize: 'clamp(40px, 8vw, 64px)', 
@@ -66,9 +69,23 @@ export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEn
               <p key={i} style={{ margin: '0.8rem 0' }}>{line}</p>
             ))}
           </div>
+          {/* Lesson-completed image: below text, above nav buttons; constrained so buttons stay in view */}
+          <div style={{ marginTop: '1.5rem', flexShrink: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 0 }}>
+            <img
+              src={(step as { imageUrl?: string }).imageUrl || "/Lección%20completada.png"}
+              alt="Lección completada"
+              style={{
+                maxWidth: 'min(280px, 75vw)',
+                maxHeight: 'min(200px, 35vh)',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+          </div>
         </div>
 
-        {/* Buttons at bottom - always visible (flexShrink: 0) */}
+        {/* Buttons - always visible at bottom; reserved space */}
         <div style={{ 
           width: '100%', 
           maxWidth: '900px',
@@ -76,8 +93,11 @@ export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEn
           gap: '1.5rem',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginTop: '1.5rem',
+          marginTop: '0.5rem',
+          paddingTop: '0.75rem',
+          paddingBottom: 'env(safe-area-inset-bottom, 0)',
           flexShrink: 0,
+          minHeight: 72,
         }}>
           <button
             onClick={onExit}

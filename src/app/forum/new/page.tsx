@@ -251,7 +251,7 @@ export default function NewThreadPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Escribe un título claro y descriptivo"
+                placeholder="¿Cuál es el título de tu tema?"
                 maxLength={150}
                 required
                 style={{
@@ -439,7 +439,7 @@ export default function NewThreadPage() {
                 <textarea
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
-                  placeholder="Describe tu pregunta o idea en detalle. Usa texto plano o Markdown."
+                  placeholder="¿Cuál es tu pregunta o idea? Descríbela en detalle. Usa texto plano o Markdown."
                   required
                   style={{
                     width: "100%",

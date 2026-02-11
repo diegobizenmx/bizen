@@ -79,42 +79,42 @@ export default function WelcomePage() {
       display: "flex",
       flexDirection: "column",
     }} className="main-page-container landing-page-root" data-landing-root>
-      {/* Top of page: logo, nav links, Crear cuenta - bigger elements, button always in view */}
+      {/* Top of page: logo, nav, botones - muy junto */}
       <div className="main-header" style={{
         width: "100%",
         maxWidth: "100%",
         boxSizing: "border-box",
-        padding: "18px 24px",
+        padding: "4px 8px",
         display: "flex",
         justifyContent: "space-between",
-            alignItems: "center",
-        gap: "24px",
+        alignItems: "center",
+        gap: "4px",
         flexWrap: "wrap",
       }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
-          <Image src="/bizen-logo.png" alt="BIZEN logo" width={48} height={48} priority style={{ width: 48, height: "auto", flexShrink: 0 }} />
-          <span style={{ fontSize: 22, fontWeight: 500, color: "#1e3a8a", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 0, textDecoration: "none", flexShrink: 0 }}>
+          <span style={{ fontSize: 18, fontWeight: 500, color: "#1e3a8a", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
         </Link>
-        <nav style={{ display: "flex", gap: "24px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "14px 32px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
-          <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
-          <Link href="#impacto" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Impacto</Link>
-          <Link href="#precios" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Implementación</Link>
-          <Link href="#problema" className="header-nav-link" style={{ fontSize: 19, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>El problema</Link>
+        <nav style={{ display: "flex", gap: "4px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "4px 8px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
+          <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
+          <Link href="#impacto" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Impacto</Link>
+          <Link href="#precios" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Implementación</Link>
+          <Link href="#problema" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>El problema</Link>
         </nav>
-        <Link href="/login" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, minHeight: 52, padding: "0 8px", boxSizing: "border-box" }} aria-label="Iniciar sesión">
-          <span style={{ width: 52, height: 52, borderRadius: "50%", background: "#1e3a8a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: "#fff" }}>
+        <Link href="/login" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, minHeight: 40, padding: "0 4px", boxSizing: "border-box" }} aria-label="Iniciar sesión">
+          <span style={{ width: 40, height: 40, borderRadius: "50%", background: "#1e3a8a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: "#fff" }}>
               <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
               <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
             </svg>
           </span>
         </Link>
-        <button type="button" onClick={() => setDemoModalOpen(true)} style={{ padding: "16px 28px", fontSize: 19, fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#1e3a8a", color: "white", borderRadius: 9999, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0, minHeight: 52, boxSizing: "border-box" }} className="crear-cuenta-button">Agendar demo</button>
+        <button type="button" onClick={() => setDemoModalOpen(true)} style={{ padding: "clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 20px)", fontSize: "clamp(13px, 1.8vw, 16px)", fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#1e3a8a", color: "white", borderRadius: 9999, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0, minHeight: 44, minWidth: "min-content", boxSizing: "border-box" }} className="crear-cuenta-button">Agendar demo</button>
       </div>
 
       <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
         <div style={gradientStyle}>
-        <div style={{
+        {/* Wrapper sin scroll propio: solo document scroll (evita scroll anidado en hero) */}
+        <div className="landing-hero-wrapper" style={{
           paddingTop: "clamp(16px, 3vw, 24px)",
           position: "relative",
           fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
@@ -371,27 +371,23 @@ export default function WelcomePage() {
             display: block !important;
           }
           .main-header {
-            padding: 20px 28px !important;
-            gap: 28px !important;
+            padding: 4px 10px !important;
+            gap: 6px !important;
           }
           .main-header a[href="/"] span {
-            font-size: 24px !important;
-          }
-          .main-header a[href="/"] img {
-            width: 52px !important;
-            height: auto !important;
+            font-size: 20px !important;
           }
           .main-header .header-bar-nav {
-            padding: 14px 28px !important;
-            gap: 28px !important;
+            padding: 4px 10px !important;
+            gap: 6px !important;
           }
           .main-header .header-bar-nav a,
           .main-header .header-nav-link {
-            font-size: 18px !important;
+            font-size: 15px !important;
           }
           .main-header .crear-cuenta-button {
-            padding: 15px 26px !important;
-            font-size: 18px !important;
+            padding: 6px 12px !important;
+            font-size: 15px !important;
             border-radius: 9999px !important;
           }
           .hero-top-block {
@@ -425,26 +421,23 @@ export default function WelcomePage() {
 
         @media (min-width: 900px) {
           .main-header {
-            padding: 21px 30px !important;
-            gap: 30px !important;
+            padding: 6px 12px !important;
+            gap: 8px !important;
           }
           .main-header a[href="/"] span {
-            font-size: 26px !important;
-          }
-          .main-header a[href="/"] img {
-            width: 56px !important;
+            font-size: 22px !important;
           }
           .main-header .header-bar-nav {
-            padding: 15px 32px !important;
-            gap: 30px !important;
+            padding: 4px 12px !important;
+            gap: 8px !important;
           }
           .main-header .header-bar-nav a,
           .main-header .header-nav-link {
-            font-size: 19px !important;
+            font-size: 16px !important;
           }
           .main-header .crear-cuenta-button {
-            padding: 16px 28px !important;
-            font-size: 19px !important;
+            padding: 6px 14px !important;
+            font-size: 16px !important;
           }
           .hero-top-block {
             top: clamp(46px, 5.5vw, 68px) !important;
@@ -473,26 +466,23 @@ export default function WelcomePage() {
 
         @media (min-width: 1024px) {
           .main-header {
-            padding: 22px 32px !important;
-            gap: 32px !important;
+            padding: 6px 14px !important;
+            gap: 8px !important;
           }
           .main-header a[href="/"] span {
-            font-size: 27px !important;
-          }
-          .main-header a[href="/"] img {
-            width: 58px !important;
+            font-size: 23px !important;
           }
           .main-header .header-bar-nav {
-            padding: 16px 34px !important;
-            gap: 32px !important;
+            padding: 4px 14px !important;
+            gap: 8px !important;
           }
           .main-header .header-bar-nav a,
           .main-header .header-nav-link {
-            font-size: 20px !important;
+            font-size: 17px !important;
           }
           .main-header .crear-cuenta-button {
-            padding: 17px 30px !important;
-            font-size: 20px !important;
+            padding: 6px 16px !important;
+            font-size: 17px !important;
           }
           .hero-top-block {
             top: clamp(48px, 6vw, 72px) !important;
@@ -525,27 +515,23 @@ export default function WelcomePage() {
         /* Screens > 1100px: scale up top elements so it doesn't look empty */
         @media (min-width: 1100px) {
           .main-header {
-            padding: 22px 32px !important;
-            gap: 32px !important;
+            padding: 6px 16px !important;
+            gap: 8px !important;
           }
           .main-header a[href="/"] span {
-            font-size: 28px !important;
-          }
-          .main-header a[href="/"] img {
-            width: 58px !important;
-            height: auto !important;
+            font-size: 24px !important;
           }
           .main-header .header-bar-nav {
-            padding: 16px 36px !important;
-            gap: 32px !important;
+            padding: 4px 16px !important;
+            gap: 8px !important;
           }
           .main-header .header-bar-nav a,
           .main-header .header-nav-link {
-            font-size: 21px !important;
+            font-size: 18px !important;
           }
           .main-header .crear-cuenta-button {
-            padding: 18px 32px !important;
-            font-size: 21px !important;
+            padding: 6px 18px !important;
+            font-size: 18px !important;
             border-radius: 9999px !important;
           }
           /* Hero section: bigger tagline, subtext, rectangles and labels */
@@ -575,26 +561,23 @@ export default function WelcomePage() {
         }
         @media (min-width: 1400px) {
           .main-header {
-            padding: 26px 40px !important;
-            gap: 40px !important;
+            padding: 8px 18px !important;
+            gap: 10px !important;
           }
           .main-header a[href="/"] span {
-            font-size: 30px !important;
-          }
-          .main-header a[href="/"] img {
-            width: 64px !important;
+            font-size: 26px !important;
           }
           .main-header .header-bar-nav {
-            padding: 18px 48px !important;
-            gap: 40px !important;
+            padding: 5px 18px !important;
+            gap: 10px !important;
           }
           .main-header .header-bar-nav a,
           .main-header .header-nav-link {
-            font-size: 23px !important;
+            font-size: 19px !important;
           }
           .main-header .crear-cuenta-button {
-            padding: 20px 36px !important;
-            font-size: 23px !important;
+            padding: 8px 18px !important;
+            font-size: 19px !important;
           }
           /* Hero section: even larger on very wide screens */
           .hero-top-block {
@@ -637,8 +620,48 @@ export default function WelcomePage() {
         }
         @media (max-width: 768px) {
           .hero-rectangles-wrapper {
-            margin-top: clamp(80px, 12vw, 150px);
-            padding: 0 clamp(16px, 4vw, 24px);
+            margin-top: clamp(64px, 12vw, 120px);
+            padding: 0 clamp(12px, 4vw, 20px);
+          }
+          .hero-rect-row {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(12px, 3vw, 20px);
+            padding: 0 clamp(12px, 3vw, 16px) 8px;
+            min-width: 0;
+          }
+          .hero-rect-card {
+            width: clamp(100px, 28vw, 160px);
+            height: clamp(64px, 16vw, 100px);
+            border-radius: 20px;
+          }
+          .hero-card-link {
+            gap: 8px;
+          }
+          .hero-circle-label {
+            font-size: clamp(11px, 2.5vw, 14px);
+            line-height: 1.25;
+          }
+          .hero-card-summary-text {
+            font-size: clamp(11px, 2.2vw, 13px);
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-rectangles-wrapper {
+            margin-top: clamp(48px, 10vw, 80px);
+            padding: 0 12px;
+          }
+          .hero-rect-row {
+            gap: 10px;
+            padding: 0 8px 8px;
+          }
+          .hero-rect-card {
+            width: clamp(88px, 26vw, 130px);
+            height: clamp(56px, 14vw, 88px);
+            border-radius: 16px;
+          }
+          .hero-circle-label {
+            font-size: clamp(10px, 2.4vw, 12px);
           }
         }
         .hero-rect-row {
@@ -915,10 +938,36 @@ export default function WelcomePage() {
           .main-header nav {
             flex-shrink: 1 !important;
           }
+          /* Header: muy junto en mobile */
+          .main-page-container .main-header {
+            padding: 4px 8px !important;
+            gap: 4px !important;
+          }
+          .main-page-container .main-header .header-bar-nav {
+            padding: 4px 8px !important;
+            gap: 4px !important;
+          }
+          /* Agendar demo: responsive, touch-friendly */
+          .main-header .crear-cuenta-button,
           .crear-cuenta-button {
-            padding: 8px 14px !important;
-            font-size: 13px !important;
+            padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 14px) !important;
+            font-size: clamp(13px, 2vw, 15px) !important;
             white-space: nowrap !important;
+            min-height: 44px !important;
+          }
+          /* Hide carousel arrows on mobile (they sit outside container and break layout) */
+          .landing-carousel-arrow,
+          .landing-testimonial-arrow,
+          .landing-adventure-arrow {
+            display: none !important;
+          }
+          .main-page-container .quiero-demo-button {
+            padding: clamp(12px, 3vw, 14px) clamp(18px, 4vw, 24px) !important;
+            font-size: clamp(14px, 2vw, 16px) !important;
+            min-height: 44px !important;
+          }
+          .main-page-container .quiero-demo-arrow {
+            font-size: clamp(14px, 3vw, 18px) !important;
           }
           
           /* Main content fixes */
@@ -1323,9 +1372,10 @@ export default function WelcomePage() {
           </h2>
           
           <div style={{ position: "relative", maxWidth: "900px", margin: "0 auto" }}>
-            {/* Left Arrow - disabled on first card */}
+            {/* Left Arrow - disabled on first card; hidden on mobile to avoid overflow */}
             <button
               type="button"
+              className="landing-carousel-arrow landing-testimonial-arrow"
               disabled={activeTestimonial === 0}
               onClick={() => activeTestimonial > 0 && setActiveTestimonial(prev => prev - 1)}
               style={{
@@ -1364,9 +1414,10 @@ export default function WelcomePage() {
               </svg>
             </button>
 
-            {/* Right Arrow - disabled on last card */}
+            {/* Right Arrow - disabled on last card; hidden on mobile */}
             <button
               type="button"
+              className="landing-carousel-arrow landing-testimonial-arrow"
               disabled={activeTestimonial === 2}
               onClick={() => activeTestimonial < 2 && setActiveTestimonial(prev => prev + 1)}
               style={{
@@ -2264,8 +2315,8 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                   type="button"
                   onClick={() => onOpenDemoModal?.()}
                 style={{
-                    padding: "16px 32px",
-                    fontSize: "clamp(16px, 1.1rem, 18px)",
+                    padding: "clamp(12px, 2.5vw, 16px) clamp(20px, 4vw, 32px)",
+                    fontSize: "clamp(14px, 2vw, 18px)",
                   fontWeight: 500,
                     fontFamily: "'Inter', sans-serif",
                   background: "#1e3a8a",
@@ -2276,13 +2327,14 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                     transition: "all 0.2s ease",
                   display: "inline-flex",
                   alignItems: "center",
-                    gap: "10px",
+                    gap: "clamp(6px, 1.5vw, 10px)",
                     boxShadow: "0 4px 16px rgba(15, 98, 254, 0.35)",
-                  }}
+                  minHeight: 44,
+                }}
                   className="quiero-demo-button"
                 >
                   Quiero una demo
-                  <span style={{ fontSize: "20px" }}>→</span>
+                  <span className="quiero-demo-arrow" style={{ fontSize: "clamp(16px, 4vw, 20px)" }} aria-hidden>→</span>
                 </button>
                 </div>
             </div>
@@ -2442,8 +2494,11 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
           </h2>
 
           <div style={{ position: "relative", maxWidth: "1000px", margin: "0 auto", overflow: "visible" }}>
-            {/* Left Arrow */}
+            {/* Left Arrow - hidden on mobile to avoid overflow */}
             <button
+              type="button"
+              className="landing-carousel-arrow landing-adventure-arrow"
+              aria-label="Slide anterior"
               onClick={() => setActiveAdventureSlide(prev => prev === 0 ? 2 : prev - 1)}
               style={{
                 position: "absolute",
@@ -2476,8 +2531,11 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               </svg>
             </button>
 
-            {/* Right Arrow */}
+            {/* Right Arrow - hidden on mobile */}
             <button
+              type="button"
+              className="landing-carousel-arrow landing-adventure-arrow"
+              aria-label="Siguiente slide"
               onClick={() => setActiveAdventureSlide(prev => prev === 2 ? 0 : prev + 1)}
               style={{
                 position: "absolute",
@@ -2904,7 +2962,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
               lineHeight: 1.2,
               letterSpacing: "-0.02em",
             }}>
-              Cómo funciona
+              ¿Cómo funciona?
             </h2>
             <p style={{ margin: 0, fontSize: "clamp(16px, 1.05rem, 18px)", color: "#64748b", fontFamily: "'Inter', sans-serif", maxWidth: "480px", marginLeft: "auto", marginRight: "auto" }}>
               Tres pasos: empiezas, practicas y mides tu avance.

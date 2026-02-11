@@ -10,7 +10,7 @@ interface LessonScreenProps {
   currentStep: number
   totalSteps: number
   streak?: number
-  stars?: 1 | 2 | 3
+  stars?: 0 | 1 | 2 | 3
   showProgressBar?: boolean
   footerContent?: React.ReactNode
   className?: string
@@ -34,7 +34,7 @@ export function LessonScreen({
   footerContent,
   className = "",
 }: LessonScreenProps) {
-  const starsClamped = (stars === 1 || stars === 2 || stars === 3 ? stars : 3) as 1 | 2 | 3
+  const starsClamped = (typeof stars === "number" && stars >= 0 && stars <= 3 ? stars : 3) as 0 | 1 | 2 | 3
 
   return (
     <div
@@ -75,14 +75,22 @@ export function LessonScreen({
         </div>
       )}
 
-      {/* Content - fills space between progress bar and nav buttons */}
+      {/* Content - fills space between progress bar and nav buttons; smooth fade on step change */}
       <LessonContainer
         className={className}
         bottomPad={footerContent ? 0 : undefined}
         topPad={0}
         noScroll
       >
-        {children}
+        <div
+          key={currentStep}
+          className="lesson-step-transition"
+          style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+        >
+          <div className="lesson-slide-content-center" style={{ width: "100%" }}>
+            {children}
+          </div>
+        </div>
       </LessonContainer>
 
       {/* Nav buttons - at bottom of slide (in flow, so no empty gap) */}

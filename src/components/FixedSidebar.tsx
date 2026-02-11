@@ -1066,7 +1066,7 @@ export default function FixedSidebar() {
               marginBottom: 28,
               textAlign: "center"
             }}>
-              Necesitas una cuenta para acceder a esta función. Crea tu cuenta gratis para desbloquear todas las herramientas de BIZEN, incluyendo asignaciones, seguimiento de progreso, foro y más.
+              ¿Necesitas una cuenta? Crea tu cuenta gratis para acceder a esta función y desbloquear todas las herramientas de BIZEN, incluyendo asignaciones, seguimiento de progreso, foro y más.
             </p>
 
             <div style={{

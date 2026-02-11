@@ -24,7 +24,7 @@ export const TEMA12_SUBTEMAS: Tema12Subtema[] = [
   {
     title: "Sesgos mentales",
     lessons: [
-      { title: "Qué son los sesgos mentales", level: "Básico", slug: "que-son-los-sesgos-mentales" },
+      { title: "¿Qué son los sesgos mentales?", level: "Básico", slug: "que-son-los-sesgos-mentales" },
       { title: "Sesgo de confirmación", level: "Intermedio", slug: "sesgo-de-confirmacion" },
       { title: "Sesgo de aversión a la pérdida", level: "Intermedio", slug: "sesgo-de-aversion-a-la-perdida" },
       { title: "Seguir a la multitud", level: "Intermedio", slug: "seguir-a-la-multitud" },

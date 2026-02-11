@@ -18,10 +18,10 @@ import {
 
 interface LessonEngineProps {
   lessonSteps: LessonStep[]
-  /** Called when lesson is completed; receives stars earned (1–3). */
+  /** Called when lesson is completed; receives stars earned (0–3, based on mistakes). */
   onComplete?: (stars?: number) => void
   onExit?: () => void
-  /** Called when progress changes; parent can render progress bar outside LessonScreen */
+  /** Called when progress changes (progress bar = currentStep/totalSteps; stars = by mistakes). */
   onProgressChange?: (progress: { currentStep: number; totalSteps: number; streak: number; stars: number }) => void
 }
 
@@ -97,23 +97,10 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
     if (result?.isCorrect) streak++
     else break
   }
-  const totalQuiz = originalQuizStepIds.length
-  const correctCount = originalQuizStepIds.filter(
-    (id) => state.answersByStepId[id]?.isCorrect
-  ).length
-  const answeredCount = originalQuizStepIds.filter(
-    (id) => state.answersByStepId[id] !== undefined
-  ).length
-  // Start with 3 stars; then by % correct: >66% = 3, 34–66% = 2, <34% = 1
-  const percentage = totalQuiz > 0 ? (correctCount / totalQuiz) * 100 : 100
-  const stars: 1 | 2 | 3 =
-    answeredCount === 0
-      ? 3
-      : percentage > 66
-        ? 3
-        : percentage >= 34
-          ? 2
-          : 1
+  // Stars 0–3 by mistake count: assessment steps still wrong (in incorrectSteps) at completion
+  const mistakeCount = state.incorrectSteps.length
+  const stars: 0 | 1 | 2 | 3 =
+    mistakeCount === 0 ? 3 : mistakeCount === 1 ? 2 : mistakeCount === 2 ? 1 : 0
 
   useEffect(() => {
     onProgressChange?.({
@@ -201,6 +188,7 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
         handleAnswered(currentStep.id, result)
       },
       // For fullScreen steps, summary, and match steps: pass navigation so Salir/Continuar buttons show
+      // Order steps: Continuar disabled until user clicks Comprobar first (then enabled only if correct)
       ...(shouldPassNavProps
         ? {
             onExit: onExit,
@@ -247,6 +235,7 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
         return (
           <TrueFalseStep
             {...reviewProps}
+            isReviewStep={isReviewStep}
             selectedValue={
               isReviewStep && previousAnswer?.answerData?.selectedValue !== undefined
                 ? previousAnswer.answerData.selectedValue
@@ -259,6 +248,7 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
         return (
           <OrderStep
             {...reviewProps}
+            isReviewStep={isReviewStep}
             orderedItemIds={
               isReviewStep && previousAnswer?.answerData?.orderedItemIds
                 ? previousAnswer.answerData.orderedItemIds
@@ -337,7 +327,11 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
           overflow: "hidden",
         }}
       >
-        {renderStep()}
+        <div key={state.currentStepIndex} className="lesson-step-transition" style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <div className="lesson-slide-content-center" style={{ width: "100%", height: "100%", minHeight: 0, display: isSummaryStepType ? "flex" : "block", flexDirection: isSummaryStepType ? "column" : undefined }}>
+            {renderStep()}
+          </div>
+        </div>
       </div>
     )
   }

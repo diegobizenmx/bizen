@@ -65,7 +65,7 @@ export default function HistoryPage() {
   }
   
   async function handleDelete(id: string) {
-    if (!confirm('¿Estás seguro de eliminar esta simulación?')) return;
+    if (!confirm('¿Estás seguro de que quieres eliminar esta simulación?')) return;
     
     try {
       const response = await fetch(`/api/simuladores/runs/${id}`, {

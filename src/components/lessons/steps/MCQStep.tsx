@@ -7,7 +7,7 @@ import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
 interface MCQStepProps {
-  step: McqStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; reviewSourceStepId?: string }
+  step: McqStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; reviewSourceStepId?: string; imageUrl?: string; imageAlign?: "left" | "right" }
   onAnswered: (result: { isCompleted: boolean; isCorrect?: boolean; answerData?: any }) => void
   selectedOptionId?: string
   onExit?: () => void
@@ -16,7 +16,7 @@ interface MCQStepProps {
   currentStepIndex?: number
   totalSteps?: number
   streak?: number
-  stars?: 1 | 2 | 3
+  stars?: 0 | 1 | 2 | 3
 }
 
 export function MCQStep({ step, onAnswered, selectedOptionId: initialSelected, onExit, onContinue, isContinueEnabled, currentStepIndex = 0, totalSteps = 1, streak = 0, stars = 3 }: MCQStepProps) {
@@ -115,8 +115,17 @@ export function MCQStep({ step, onAnswered, selectedOptionId: initialSelected, o
         background: '#f1f5f9',
         boxSizing: 'border-box',
       }}>
-        {/* Content area - fills available height */}
-        <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: '800px' }}>
+        {/* Content area – image LEFT or RIGHT of activity (nowrap so buttons stay visible) */}
+        <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', width: '100%', maxWidth: '900px' }}>
+          {(() => {
+            const align = (step.imageAlign === 'left' || step.imageAlign === 'right') ? step.imageAlign : 'right'
+            const imageBlock = step.imageUrl ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, minWidth: '120px', maxWidth: 'min(40%, 300px)' }}>
+                <img src={step.imageUrl} alt="" style={{ maxWidth: '100%', width: 'auto', height: 'auto', maxHeight: 'clamp(120px, 20vh, 240px)', objectFit: 'contain' }} />
+              </div>
+            ) : null
+            const activityBlock = (
+              <>
           {/* Question as title */}
           <h2 style={{ 
             fontSize: 'clamp(24px, 5vw, 40px)', 
@@ -187,6 +196,19 @@ export function MCQStep({ step, onAnswered, selectedOptionId: initialSelected, o
               )
             })}
           </div>
+              </>
+            )
+            if (imageBlock) {
+              const contentSide = <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>{activityBlock}</div>
+              return (
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', gap: 'clamp(16px, 3vw, 32px)', flexWrap: 'nowrap', width: '100%', height: '100%', minHeight: 0 }}>
+                  {align === 'left' ? imageBlock : contentSide}
+                  {align === 'left' ? contentSide : imageBlock}
+                </div>
+              )
+            }
+            return activityBlock
+          })()}
         </div>
 
         {/* Buttons at bottom */}

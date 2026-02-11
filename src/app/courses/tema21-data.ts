@@ -13,10 +13,10 @@ export interface Tema21Subtema {
 
 export const TEMA21_SUBTEMAS: Tema21Subtema[] = [
   {
-    title: "Qué es el flujo de efectivo",
+    title: "¿Qué es el flujo de efectivo?",
     lessons: [
-      { title: "Qué es el flujo de efectivo", level: "Básico", slug: "que-es-el-flujo-de-efectivo" },
-      { title: "Por qué es vital para un negocio", level: "Básico", slug: "por-que-es-vital-para-un-negocio" },
+      { title: "¿Qué es el flujo de efectivo?", level: "Básico", slug: "que-es-el-flujo-de-efectivo" },
+      { title: "¿Por qué es vital para un negocio?", level: "Básico", slug: "por-que-es-vital-para-un-negocio" },
       { title: "Utilidad vs flujo", level: "Intermedio", slug: "utilidad-vs-flujo" },
     ],
   },

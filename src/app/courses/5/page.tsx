@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import { useLessonProgress } from "@/hooks/useLessonProgress"
 import Button from "@/components/ui/button"
 import { TEMA5_SUBTEMAS } from "../tema5-data"
 import type { Tema5Lesson } from "../tema5-data"
@@ -34,6 +35,7 @@ const SUBTEMA_BAR_SHADOWS = [
 export default function Tema5Page() {
   const router = useRouter()
   const { user, loading } = useAuth()
+  const { completedLessons, lessonStars } = useLessonProgress()
   const [lessonModal, setLessonModal] = useState<Tema5Lesson | null>(null)
   const [lessonModalUnitTitle, setLessonModalUnitTitle] = useState("")
 
@@ -182,17 +184,16 @@ export default function Tema5Page() {
                       </div>
                     </div>
                   </div>
-                  <div
-                    style={{
-                      width: "100%",
-                      height: 8,
-                      borderRadius: 4,
-                      background: "rgba(255,255,255,0.35)",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div style={{ width: "0%", height: "100%", borderRadius: 4, background: "rgba(255,255,255,0.95)", transition: "width 0.3s ease" }} />
-                  </div>
+                  {(() => {
+                    const total = sub.lessons.length
+                    const completed = sub.lessons.filter((l) => completedLessons.includes(l.slug)).length
+                    const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+                    return (
+                      <div style={{ width: "100%", height: 8, borderRadius: 4, background: "rgba(255,255,255,0.35)", overflow: "hidden" }}>
+                        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 4, background: "rgba(255,255,255,0.95)", transition: "width 0.3s ease" }} />
+                      </div>
+                    )
+                  })()}
                 </div>
 
                 <div
@@ -304,6 +305,14 @@ export default function Tema5Page() {
                             >
                               {lesson.level}
                             </span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 6 }} role="img" aria-label={completedLessons.includes(lesson.slug) ? `${lessonStars[lesson.slug] ?? 0} de 3 estrellas` : "Sin completar"}>
+                            {[1, 2, 3].map((i) => {
+                              const earned = completedLessons.includes(lesson.slug) ? (lessonStars[lesson.slug] ?? 0) : 0
+                              return (
+                                <img key={i} src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain", opacity: i <= earned ? 1 : 0.35, filter: i <= earned ? "none" : "grayscale(1)" }} />
+                              )
+                            })}
                           </div>
                         </div>
                       </div>

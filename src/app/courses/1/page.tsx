@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import { useLessonProgress } from "@/hooks/useLessonProgress"
 import Button from "@/components/ui/button"
 import { TEMA1_SUBTEMAS } from "../tema1-data"
 import type { Tema1Lesson } from "../tema1-data"
@@ -33,6 +34,7 @@ const SUBTEMA_BAR_SHADOWS = [
 export default function Tema1Page() {
   const router = useRouter()
   const { user, loading } = useAuth()
+  const { completedLessons, lessonStars } = useLessonProgress()
   const [lessonModal, setLessonModal] = useState<Tema1Lesson | null>(null)
   const [lessonModalUnitTitle, setLessonModalUnitTitle] = useState("")
 
@@ -185,18 +187,25 @@ export default function Tema1Page() {
                       </div>
                     </div>
                   </div>
-                  {/* Progress bar placeholder (no completion tracking yet) */}
-                  <div
-                    style={{
-                      width: "100%",
-                      height: 8,
-                      borderRadius: 4,
-                      background: "rgba(255,255,255,0.35)",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div style={{ width: "0%", height: "100%", borderRadius: 4, background: "rgba(255,255,255,0.95)", transition: "width 0.3s ease" }} />
-                  </div>
+                  {/* Progress bar: actual completion for this subtema */}
+                  {(() => {
+                    const total = sub.lessons.length
+                    const completed = sub.lessons.filter((l) => completedLessons.includes(l.slug)).length
+                    const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+                    return (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: 8,
+                          borderRadius: 4,
+                          background: "rgba(255,255,255,0.35)",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 4, background: "rgba(255,255,255,0.95)", transition: "width 0.3s ease" }} />
+                      </div>
+                    )
+                  })()}
                 </div>
 
                 {/* Lessons - horizontal scroll, same as 14 courses */}
@@ -309,6 +318,26 @@ export default function Tema1Page() {
                             >
                               {lesson.level}
                             </span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 6 }} role="img" aria-label={completedLessons.includes(lesson.slug) ? `${lessonStars[lesson.slug] ?? 0} de 3 estrellas` : "Sin completar"}>
+                            {[1, 2, 3].map((i) => {
+                              const earned = completedLessons.includes(lesson.slug) ? (lessonStars[lesson.slug] ?? 0) : 0
+                              const filled = i <= earned
+                              return (
+                                <img
+                                  key={i}
+                                  src="/stars.png"
+                                  alt=""
+                                  style={{
+                                    width: 22,
+                                    height: 22,
+                                    objectFit: "contain",
+                                    opacity: filled ? 1 : 0.35,
+                                    filter: filled ? "none" : "grayscale(1)",
+                                  }}
+                                />
+                              )
+                            })}
                           </div>
                         </div>
                       </div>

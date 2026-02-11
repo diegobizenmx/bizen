@@ -15,9 +15,9 @@ export const TEMA8_SUBTEMAS: Tema8Subtema[] = [
   {
     title: "Entender los impuestos",
     lessons: [
-      { title: "Qué son los impuestos", level: "Básico", slug: "que-son-los-impuestos" },
-      { title: "Para qué sirven los impuestos", level: "Básico", slug: "para-que-sirven-los-impuestos" },
-      { title: "Por qué todos pagamos impuestos", level: "Básico", slug: "por-que-todos-pagamos-impuestos" },
+      { title: "¿Qué son los impuestos?", level: "Básico", slug: "que-son-los-impuestos" },
+      { title: "¿Para qué sirven los impuestos?", level: "Básico", slug: "para-que-sirven-los-impuestos" },
+      { title: "¿Por qué todos pagamos impuestos?", level: "Básico", slug: "por-que-todos-pagamos-impuestos" },
       { title: "Mitos sobre los impuestos", level: "Básico", slug: "mitos-sobre-los-impuestos" },
       { title: "Cambiar la forma de ver los impuestos", level: "Intermedio", slug: "cambiar-la-forma-de-ver-los-impuestos" },
     ],
@@ -29,14 +29,14 @@ export const TEMA8_SUBTEMAS: Tema8Subtema[] = [
       { title: "IVA explicado fácil", level: "Básico", slug: "iva-explicado-facil" },
       { title: "ISR explicado simple", level: "Intermedio", slug: "isr-explicado-simple" },
       { title: "Impuestos visibles e invisibles", level: "Intermedio", slug: "impuestos-visibles-e-invisibles" },
-      { title: "Cómo afectan mi poder de compra", level: "Intermedio", slug: "como-afectan-mi-poder-de-compra" },
+      { title: "¿Cómo afectan mi poder de compra?", level: "Intermedio", slug: "como-afectan-mi-poder-de-compra" },
     ],
   },
   {
     title: "Personas físicas",
     lessons: [
-      { title: "Qué es una persona física", level: "Básico", slug: "que-es-una-persona-fisica" },
-      { title: "Por qué debo declarar", level: "Intermedio", slug: "por-que-debo-declarar" },
+      { title: "¿Qué es una persona física?", level: "Básico", slug: "que-es-una-persona-fisica" },
+      { title: "¿Por qué debo declarar?", level: "Intermedio", slug: "por-que-debo-declarar" },
       { title: "Ingresos gravables", level: "Intermedio", slug: "ingresos-gravables" },
       { title: "Deducciones personales", level: "Intermedio", slug: "deducciones-personales" },
       { title: "Errores comunes al declarar", level: "Avanzado", slug: "errores-comunes-al-declarar" },
@@ -45,7 +45,7 @@ export const TEMA8_SUBTEMAS: Tema8Subtema[] = [
   {
     title: "Cumplimiento y consecuencias",
     lessons: [
-      { title: "Qué pasa si no pago impuestos", level: "Intermedio", slug: "que-pasa-si-no-pago-impuestos" },
+      { title: "¿Qué pasa si no pago impuestos?", level: "Intermedio", slug: "que-pasa-si-no-pago-impuestos" },
       { title: "Multas y recargos", level: "Intermedio", slug: "multas-y-recargos" },
       { title: "Problemas fiscales comunes", level: "Avanzado", slug: "problemas-fiscales-comunes" },
       { title: "Regularizar mi situación fiscal", level: "Avanzado", slug: "regularizar-mi-situacion-fiscal" },

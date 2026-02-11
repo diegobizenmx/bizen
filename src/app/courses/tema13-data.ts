@@ -13,9 +13,9 @@ export interface Tema13Subtema {
 
 export const TEMA13_SUBTEMAS: Tema13Subtema[] = [
   {
-    title: "Qué es el patrimonio",
+    title: "¿Qué es el patrimonio?",
     lessons: [
-      { title: "Qué es el patrimonio", level: "Básico", slug: "que-es-el-patrimonio" },
+      { title: "¿Qué es el patrimonio?", level: "Básico", slug: "que-es-el-patrimonio" },
       { title: "Patrimonio vs ingresos", level: "Básico", slug: "patrimonio-vs-ingresos" },
       { title: "Patrimonio neto explicado fácil", level: "Básico", slug: "patrimonio-neto-explicado-facil" },
       { title: "Pensar en el largo plazo", level: "Intermedio", slug: "pensar-en-el-largo-plazo" },
@@ -24,10 +24,10 @@ export const TEMA13_SUBTEMAS: Tema13Subtema[] = [
   {
     title: "Activos y pasivos",
     lessons: [
-      { title: "Qué es un activo", level: "Básico", slug: "que-es-un-activo" },
-      { title: "Qué es un pasivo", level: "Básico", slug: "que-es-un-pasivo" },
+      { title: "¿Qué es un activo?", level: "Básico", slug: "que-es-un-activo" },
+      { title: "¿Qué es un pasivo?", level: "Básico", slug: "que-es-un-pasivo" },
       { title: "Diferencia entre activos y pasivos", level: "Básico", slug: "diferencia-entre-activos-y-pasivos" },
-      { title: "Cómo se construyen los activos", level: "Intermedio", slug: "como-se-construyen-los-activos" },
+      { title: "¿Cómo se construyen los activos?", level: "Intermedio", slug: "como-se-construyen-los-activos" },
       { title: "Errores comunes al adquirir pasivos", level: "Intermedio", slug: "errores-comunes-al-adquirir-pasivos" },
     ],
   },

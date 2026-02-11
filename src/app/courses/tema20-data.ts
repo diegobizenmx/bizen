@@ -15,9 +15,9 @@ export const TEMA20_SUBTEMAS: Tema20Subtema[] = [
   {
     title: "Entender el dinero del negocio",
     lessons: [
-      { title: "Qué son los ingresos de un negocio", level: "Básico", slug: "que-son-los-ingresos-de-un-negocio" },
-      { title: "Qué son los costos", level: "Básico", slug: "que-son-los-costos" },
-      { title: "Qué es la utilidad", level: "Básico", slug: "que-es-la-utilidad" },
+      { title: "¿Qué son los ingresos de un negocio?", level: "Básico", slug: "que-son-los-ingresos-de-un-negocio" },
+      { title: "¿Qué son los costos?", level: "Básico", slug: "que-son-los-costos" },
+      { title: "¿Qué es la utilidad?", level: "Básico", slug: "que-es-la-utilidad" },
       { title: "Ingresos no son ganancias", level: "Básico", slug: "ingresos-no-son-ganancias" },
     ],
   },
@@ -33,7 +33,7 @@ export const TEMA20_SUBTEMAS: Tema20Subtema[] = [
   {
     title: "Calcular utilidad",
     lessons: [
-      { title: "Cómo calcular la utilidad", level: "Intermedio", slug: "como-calcular-la-utilidad" },
+      { title: "¿Cómo calcular la utilidad?", level: "Intermedio", slug: "como-calcular-la-utilidad" },
       { title: "Margen de utilidad", level: "Intermedio", slug: "margen-de-utilidad" },
       { title: "Errores comunes al calcular", level: "Avanzado", slug: "errores-comunes-al-calcular" },
     ],

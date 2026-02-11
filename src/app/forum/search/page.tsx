@@ -157,7 +157,7 @@ function ForumSearchContent() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar temas..."
+              placeholder="¿Qué tema buscas?"
               style={{
                 flex: 1,
                 padding: "12px 16px",

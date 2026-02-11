@@ -291,7 +291,7 @@ function BIZENLoginContent() {
               id="email" 
               name="email" 
               type="email" 
-              placeholder="" 
+              placeholder="¿Tu correo electrónico?" 
               required 
               autoComplete="email"
               value={email} 
@@ -306,7 +306,7 @@ function BIZENLoginContent() {
                 id="password" 
                 name="password" 
                 type={showPass ? "text" : "password"} 
-                placeholder=""
+                placeholder="¿Tu contraseña?"
                 required 
                 autoComplete="current-password" 
                 value={password} 

@@ -15,8 +15,8 @@ export const TEMA23_SUBTEMAS: Tema23Subtema[] = [
   {
     title: "Entender la contabilidad",
     lessons: [
-      { title: "Qué es la contabilidad", level: "Básico", slug: "que-es-la-contabilidad" },
-      { title: "Para qué sirve la contabilidad", level: "Básico", slug: "para-que-sirve-la-contabilidad" },
+      { title: "¿Qué es la contabilidad?", level: "Básico", slug: "que-es-la-contabilidad" },
+      { title: "¿Para qué sirve la contabilidad?", level: "Básico", slug: "para-que-sirve-la-contabilidad" },
       { title: "Mitos sobre la contabilidad", level: "Básico", slug: "mitos-sobre-la-contabilidad" },
       { title: "Contabilidad para tomar decisiones", level: "Intermedio", slug: "contabilidad-para-tomar-decisiones" },
     ],
@@ -24,8 +24,8 @@ export const TEMA23_SUBTEMAS: Tema23Subtema[] = [
   {
     title: "Estados financieros",
     lessons: [
-      { title: "Qué es un estado de resultados", level: "Intermedio", slug: "que-es-un-estado-de-resultados" },
-      { title: "Qué es un balance general", level: "Intermedio", slug: "que-es-un-balance-general" },
+      { title: "¿Qué es un estado de resultados?", level: "Intermedio", slug: "que-es-un-estado-de-resultados" },
+      { title: "¿Qué es un balance general?", level: "Intermedio", slug: "que-es-un-balance-general" },
       { title: "Ingresos, gastos y utilidad", level: "Intermedio", slug: "ingresos-gastos-y-utilidad" },
     ],
   },

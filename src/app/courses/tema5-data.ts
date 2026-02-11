@@ -15,10 +15,10 @@ export const TEMA5_SUBTEMAS: Tema5Subtema[] = [
   {
     title: "Entender el ahorro",
     lessons: [
-      { title: "Qué es ahorrar", level: "Básico", slug: "que-es-ahorrar" },
-      { title: "Para qué sirve el ahorro", level: "Básico", slug: "para-que-sirve-el-ahorro" },
+      { title: "¿Qué es ahorrar?", level: "Básico", slug: "que-es-ahorrar" },
+      { title: "¿Para qué sirve el ahorro?", level: "Básico", slug: "para-que-sirve-el-ahorro" },
       { title: "Mitos sobre el ahorro", level: "Básico", slug: "mitos-sobre-el-ahorro" },
-      { title: "Por qué cuesta ahorrar", level: "Intermedio", slug: "por-que-cuesta-ahorrar" },
+      { title: "¿Por qué cuesta ahorrar?", level: "Intermedio", slug: "por-que-cuesta-ahorrar" },
       { title: "Cambiar la forma de ver el ahorro", level: "Intermedio", slug: "cambiar-la-forma-de-ver-el-ahorro" },
     ],
   },
@@ -35,15 +35,15 @@ export const TEMA5_SUBTEMAS: Tema5Subtema[] = [
   {
     title: "Fondo de emergencia",
     lessons: [
-      { title: "Qué es un fondo de emergencia", level: "Básico", slug: "que-es-un-fondo-de-emergencia" },
-      { title: "Para qué sirve un fondo de emergencia", level: "Básico", slug: "para-que-sirve-un-fondo-de-emergencia" },
-      { title: "Cuánto debería tener", level: "Intermedio", slug: "cuanto-deberia-tener" },
-      { title: "Cómo construirlo poco a poco", level: "Intermedio", slug: "como-construirlo-poco-a-poco" },
+      { title: "¿Qué es un fondo de emergencia?", level: "Básico", slug: "que-es-un-fondo-de-emergencia" },
+      { title: "¿Para qué sirve un fondo de emergencia?", level: "Básico", slug: "para-que-sirve-un-fondo-de-emergencia" },
+      { title: "¿Cuánto debería tener?", level: "Intermedio", slug: "cuanto-deberia-tener" },
+      { title: "¿Cómo construirlo poco a poco?", level: "Intermedio", slug: "como-construirlo-poco-a-poco" },
       { title: "Errores comunes con el fondo de emergencia", level: "Avanzado", slug: "errores-comunes-con-el-fondo-de-emergencia" },
     ],
   },
   {
-    title: "Cómo ahorrar en la vida real",
+    title: "¿Cómo ahorrar en la vida real?",
     lessons: [
       { title: "Separar ahorro y gasto", level: "Intermedio", slug: "separar-ahorro-y-gasto" },
       { title: "Ahorrar cuando gano poco", level: "Intermedio", slug: "ahorrar-cuando-gano-poco" },

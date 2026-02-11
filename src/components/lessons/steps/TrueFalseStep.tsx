@@ -7,7 +7,7 @@ import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
 interface TrueFalseStepProps {
-  step: TrueFalseStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; continueLabel?: string }
+  step: TrueFalseStepFields & { id: string; title?: string; description?: string; fullScreen?: boolean; continueLabel?: string; imageUrl?: string; imageAlign?: "left" | "right" }
   onAnswered: (result: { isCompleted: boolean; isCorrect?: boolean; answerData?: any }) => void
   selectedValue?: boolean
   onExit?: () => void
@@ -16,7 +16,9 @@ interface TrueFalseStepProps {
   currentStepIndex?: number
   totalSteps?: number
   streak?: number
-  stars?: 1 | 2 | 3
+  stars?: 0 | 1 | 2 | 3
+  /** When true (review = second or more chance), show reset button to try again */
+  isReviewStep?: boolean
 }
 
 export function TrueFalseStep({
@@ -30,10 +32,17 @@ export function TrueFalseStep({
   totalSteps = 1,
   streak = 0,
   stars = 3,
+  isReviewStep = false,
 }: TrueFalseStepProps) {
   const [selectedValue, setSelectedValue] = useState<boolean | undefined>(initialValue)
   const [showFeedback, setShowFeedback] = useState(false)
   const [hasChecked, setHasChecked] = useState(false)
+
+  const handleReset = () => {
+    setSelectedValue(undefined)
+    setShowFeedback(false)
+    setHasChecked(false)
+  }
 
   const handleSelect = (value: boolean) => {
     if (step.fullScreen) {
@@ -98,36 +107,37 @@ export function TrueFalseStep({
       : { background: '#fee2e2', border: '3px solid #ef4444', color: '#dc2626' }
   }
 
-  // Full-screen mode: new visual design matching the image
+  // Full-screen mode: image LEFT or RIGHT of activity (T/F must have image per rules)
   if (step.fullScreen && onExit && onContinue) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        textAlign: 'center', 
-        minHeight: 0,
-        flex: 1,
-        padding: '2rem 1.5rem',
-        background: '#f1f5f9',
-        boxSizing: 'border-box',
-      }}>
-        {/* Content area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: '700px', gap: '3rem', minHeight: 0 }}>
-          {/* Statement as title */}
-          <h2 style={{ 
-            fontSize: 'clamp(24px, 5vw, 40px)', 
-            fontWeight: 600, 
-            marginBottom: 0,
-            color: '#1e293b',
-            lineHeight: 1.3,
-          }}>
-            {step.statement}
-          </h2>
-          
-          {/* Buttons: vertically stacked */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '600px' }}>
+    const align = step.imageAlign ?? "right"
+    const imageBlock = step.imageUrl ? (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, minWidth: '120px', maxWidth: 'min(40%, 300px)' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={step.imageUrl}
+          alt=""
+          style={{
+            maxWidth: '100%',
+            width: 'auto',
+            height: 'auto',
+            maxHeight: 'clamp(120px, 20vh, 240px)',
+            objectFit: 'contain',
+          }}
+        />
+      </div>
+    ) : null
+    const activityBlock = (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3rem', width: '100%', maxWidth: '700px', minWidth: 0 }}>
+        <h2 style={{ 
+          fontSize: 'clamp(24px, 5vw, 40px)', 
+          fontWeight: 600, 
+          marginBottom: 0,
+          color: '#1e293b',
+          lineHeight: 1.3,
+        }}>
+          {step.statement}
+        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '600px' }}>
             <button
               onClick={() => handleSelect(true)}
               disabled={hasChecked && isContinueEnabled}
@@ -198,6 +208,57 @@ export function TrueFalseStep({
               {step.explanation}
             </div>
           )}
+
+          {/* Reset button: show on review only when answer is not 100% correct (so user can try again) */}
+          {isReviewStep && (!hasChecked || selectedValue !== step.correctValue) && (
+            <div style={{ marginTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={handleReset}
+                style={{
+                  padding: '12px 24px',
+                  fontSize: 'clamp(14px, 2vw, 17px)',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  background: '#ffffff',
+                  border: '3px solid #1e293b',
+                  borderRadius: '9999px',
+                  cursor: 'pointer',
+                  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                }}
+              >
+                Intentar de nuevo
+              </button>
+            </div>
+          )}
+        </div>
+    )
+
+    return (
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        textAlign: 'center', 
+        minHeight: 0,
+        flex: 1,
+        padding: '2rem 1.5rem',
+        background: '#f1f5f9',
+        boxSizing: 'border-box',
+      }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', width: '100%', maxWidth: '900px', minHeight: 0 }}>
+          {imageBlock ? (
+            (() => {
+              const contentSide = <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>{activityBlock}</div>
+              return (
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', gap: 'clamp(16px, 3vw, 32px)', flexWrap: 'nowrap', height: '100%', minHeight: 0 }}>
+                  {align === 'left' ? imageBlock : contentSide}
+                  {align === 'left' ? contentSide : imageBlock}
+                </div>
+              )
+            })()
+          ) : activityBlock}
         </div>
 
         {/* Buttons at bottom */}

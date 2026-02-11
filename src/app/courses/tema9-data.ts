@@ -15,18 +15,18 @@ export const TEMA9_SUBTEMAS: Tema9Subtema[] = [
   {
     title: "Entender la inflación",
     lessons: [
-      { title: "Qué es la inflación", level: "Básico", slug: "que-es-la-inflacion" },
-      { title: "Por qué existe la inflación", level: "Básico", slug: "por-que-existe-la-inflacion" },
+      { title: "¿Qué es la inflación?", level: "Básico", slug: "que-es-la-inflacion" },
+      { title: "¿Por qué existe la inflación?", level: "Básico", slug: "por-que-existe-la-inflacion" },
       { title: "Inflación en la vida diaria", level: "Básico", slug: "inflacion-en-la-vida-diaria" },
       { title: "Mitos sobre la inflación", level: "Básico", slug: "mitos-sobre-la-inflacion" },
       { title: "Cambiar la forma de ver la inflación", level: "Intermedio", slug: "cambiar-la-forma-de-ver-la-inflacion" },
     ],
   },
   {
-    title: "Cómo afecta mi dinero",
+    title: "¿Cómo afecta mi dinero?",
     lessons: [
-      { title: "Qué es el poder adquisitivo", level: "Básico", slug: "que-es-el-poder-adquisitivo" },
-      { title: "Por qué el dinero pierde valor", level: "Básico", slug: "por-que-el-dinero-pierde-valor" },
+      { title: "¿Qué es el poder adquisitivo?", level: "Básico", slug: "que-es-el-poder-adquisitivo" },
+      { title: "¿Por qué el dinero pierde valor?", level: "Básico", slug: "por-que-el-dinero-pierde-valor" },
       { title: "Aumentos de precios con el tiempo", level: "Intermedio", slug: "aumentos-de-precios-con-el-tiempo" },
       { title: "Inflación y ahorro", level: "Intermedio", slug: "inflacion-y-ahorro" },
       { title: "Inflación y deudas", level: "Intermedio", slug: "inflacion-y-deudas" },
@@ -46,7 +46,7 @@ export const TEMA9_SUBTEMAS: Tema9Subtema[] = [
     lessons: [
       { title: "Inflación moderada vs alta", level: "Intermedio", slug: "inflacion-moderada-vs-alta" },
       { title: "Inflación y crecimiento económico", level: "Intermedio", slug: "inflacion-y-crecimiento-economico" },
-      { title: "Qué pasa en crisis inflacionarias", level: "Avanzado", slug: "que-pasa-en-crisis-inflacionarias" },
+      { title: "¿Qué pasa en crisis inflacionarias?", level: "Avanzado", slug: "que-pasa-en-crisis-inflacionarias" },
       { title: "Ejemplos históricos de inflación", level: "Avanzado", slug: "ejemplos-historicos-de-inflacion" },
     ],
   },

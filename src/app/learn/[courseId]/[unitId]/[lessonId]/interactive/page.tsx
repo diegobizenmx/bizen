@@ -30,7 +30,7 @@ export default function InteractiveLessonPage() {
     currentStep: 1,
     totalSteps: lessonSteps.length || 1,
     streak: 0,
-    stars: 3 as 1 | 2 | 3,
+    stars: 3 as 0 | 1 | 2 | 3,
   })
 
   // Hide app mobile footer on this page (CSS in globals.css hides via data-lesson-interactive)
@@ -45,7 +45,7 @@ export default function InteractiveLessonPage() {
     if (redirectToCoursesRef.current) return
     redirectToCoursesRef.current = true
 
-    const starsEarned = typeof stars === "number" && stars >= 1 && stars <= 3 ? stars : 2
+    const starsEarned = typeof stars === "number" && stars >= 0 && stars <= 3 ? stars : 2
     if (lessonIdStr && typeof window !== "undefined" && !user) {
       const stored = localStorage.getItem("guestCompletedLessons")
       const existing: string[] = stored ? JSON.parse(stored) : []
@@ -68,12 +68,13 @@ export default function InteractiveLessonPage() {
         }).then(() => supabase.auth.refreshSession())
       })
     }
-    // Redirect to lessons menu within the course (not next lesson, not global /courses)
-    const courseLessonsPath = `/courses/${courseIdStr}`
+    // Redirect to lessons menu (course page) after finishing the lesson
+    const courseNum = courseIdStr.replace(/^course-/, "") || "1"
+    const coursePagePath = `/courses/${courseNum}`
     if (typeof window !== "undefined") {
-      window.location.href = courseLessonsPath
+      window.location.href = coursePagePath
     } else {
-      router.replace(courseLessonsPath)
+      router.replace(coursePagePath)
     }
   }, [lessonIdStr, user, router, courseIdStr])
 
@@ -102,23 +103,10 @@ export default function InteractiveLessonPage() {
           box-sizing: border-box;
           background: #f1f5f9 !important;
         }
-        @media (min-width: 768px) and (max-width: 1160px) {
-          .lesson-interactive-outer {
-            margin-left: 220px !important;
-            width: calc(100% - 220px) !important;
-          }
-        }
-        @media (min-width: 1161px) {
-          .lesson-interactive-outer {
-            margin-left: 280px !important;
-            width: calc(100% - 280px) !important;
-          }
-        }
-        @media (max-width: 767px) {
-          .lesson-interactive-outer {
-            margin-left: 0 !important;
-            width: 100% !important;
-          }
+        /* Full width on all screen sizes when sidebar is hidden (lesson view) */
+        .lesson-interactive-outer {
+          margin-left: 0 !important;
+          width: 100% !important;
         }
         /* LOCKED: no scroll inside - content area is fixed, overflow hidden */
         .lesson-screen-root {

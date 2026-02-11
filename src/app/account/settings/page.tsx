@@ -151,7 +151,7 @@ export default function AccountSettingsPage() {
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                placeholder="Elige un apodo único"
+                placeholder="¿Qué apodo quieres usar?"
                 maxLength={30}
                 style={{
                   width: "100%",

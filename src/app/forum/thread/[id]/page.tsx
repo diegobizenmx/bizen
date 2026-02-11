@@ -979,7 +979,7 @@ export default function ThreadDetailPage() {
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Comparte tu respuesta o ideas..."
+                placeholder="¿Qué quieres compartir? Escribe tu respuesta o ideas..."
                 style={{
                   width: "100%",
                   minHeight: 150,

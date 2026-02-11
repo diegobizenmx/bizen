@@ -13,10 +13,10 @@ export interface Tema19Subtema {
 
 export const TEMA19_SUBTEMAS: Tema19Subtema[] = [
   {
-    title: "Qué es un modelo de negocio",
+    title: "¿Qué es un modelo de negocio?",
     lessons: [
-      { title: "Qué es un modelo de negocio", level: "Básico", slug: "que-es-un-modelo-de-negocio" },
-      { title: "Por qué un negocio necesita modelo", level: "Básico", slug: "por-que-un-negocio-necesita-modelo" },
+      { title: "¿Qué es un modelo de negocio?", level: "Básico", slug: "que-es-un-modelo-de-negocio" },
+      { title: "¿Por qué un negocio necesita modelo?", level: "Básico", slug: "por-que-un-negocio-necesita-modelo" },
       { title: "Producto vs negocio", level: "Básico", slug: "producto-vs-negocio" },
       { title: "Mitos sobre modelos de negocio", level: "Intermedio", slug: "mitos-sobre-modelos-de-negocio" },
     ],

@@ -13,11 +13,11 @@ export interface Tema15Subtema {
 
 export const TEMA15_SUBTEMAS: Tema15Subtema[] = [
   {
-    title: "Qué es decidir bien con dinero",
+    title: "¿Qué es decidir bien con dinero?",
     lessons: [
-      { title: "Qué es una decisión financiera", level: "Básico", slug: "que-es-una-decision-financiera" },
+      { title: "¿Qué es una decisión financiera?", level: "Básico", slug: "que-es-una-decision-financiera" },
       { title: "Decidir vs reaccionar", level: "Básico", slug: "decidir-vs-reaccionar" },
-      { title: "Por qué decidir con dinero es difícil", level: "Intermedio", slug: "por-que-decidir-con-dinero-es-dificil" },
+      { title: "¿Por qué decidir con dinero es difícil?", level: "Intermedio", slug: "por-que-decidir-con-dinero-es-dificil" },
       { title: "Responsabilidad en las decisiones", level: "Intermedio", slug: "responsabilidad-en-las-decisiones" },
     ],
   },

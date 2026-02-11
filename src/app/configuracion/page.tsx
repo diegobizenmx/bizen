@@ -249,7 +249,7 @@ function SettingsContent() {
       },
       reset: {
         button: "Reset to Default Settings",
-        title: "Reset Settings?",
+        title: "Reset settings?",
         message: "This will reset all your preferences to default values. This action cannot be undone.",
         cancel: "Cancel",
         confirm: "Reset"

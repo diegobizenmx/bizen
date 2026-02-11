@@ -13,10 +13,10 @@ export interface Tema10Subtema {
 
 export const TEMA10_SUBTEMAS: Tema10Subtema[] = [
   {
-    title: "Qué es invertir",
+    title: "¿Qué es invertir?",
     lessons: [
-      { title: "Qué es invertir", level: "Básico", slug: "que-es-invertir" },
-      { title: "Por qué invertir", level: "Básico", slug: "por-que-invertir" },
+      { title: "¿Qué es invertir?", level: "Básico", slug: "que-es-invertir" },
+      { title: "¿Por qué invertir?", level: "Básico", slug: "por-que-invertir" },
       { title: "Diferencia entre ahorrar e invertir", level: "Básico", slug: "diferencia-entre-ahorrar-e-invertir" },
       { title: "Mitos sobre la inversión", level: "Básico", slug: "mitos-sobre-la-inversion" },
       { title: "Cambiar la forma de ver la inversión", level: "Intermedio", slug: "cambiar-la-forma-de-ver-la-inversion" },
@@ -25,7 +25,7 @@ export const TEMA10_SUBTEMAS: Tema10Subtema[] = [
   {
     title: "Riesgo y rendimiento",
     lessons: [
-      { title: "Qué es el riesgo", level: "Básico", slug: "que-es-el-riesgo" },
+      { title: "¿Qué es el riesgo?", level: "Básico", slug: "que-es-el-riesgo" },
       { title: "Riesgo vs rendimiento", level: "Básico", slug: "riesgo-vs-rendimiento" },
       { title: "No existe inversión sin riesgo", level: "Intermedio", slug: "no-existe-inversion-sin-riesgo" },
       { title: "Riesgos que sí puedo controlar", level: "Intermedio", slug: "riesgos-que-si-puedo-controlar" },
@@ -43,7 +43,7 @@ export const TEMA10_SUBTEMAS: Tema10Subtema[] = [
   {
     title: "Empezar a invertir",
     lessons: [
-      { title: "Cuándo es buen momento para invertir", level: "Intermedio", slug: "cuando-es-buen-momento-para-invertir" },
+      { title: "¿Cuándo es buen momento para invertir?", level: "Intermedio", slug: "cuando-es-buen-momento-para-invertir" },
       { title: "Invertir con poco dinero", level: "Intermedio", slug: "invertir-con-poco-dinero" },
       { title: "Errores comunes al empezar", level: "Avanzado", slug: "errores-comunes-al-empezar" },
       { title: "Aprender antes de arriesgar", level: "Avanzado", slug: "aprender-antes-de-arriesgar" },

@@ -1,28 +1,32 @@
 import type { LessonStep } from "@/types/lessonTypes"
 
 /**
- * Lesson: Qué es el dinero para mí
+ * Lesson: ¿Qué es el dinero para mí?
  * Theme: Mi relación con el dinero
  * Lesson ID: que-es-el-dinero-para-mi-hoy
  * Estimated duration: 12–15 minutes
- * 12 slides – intro, activation, theory, quizzes, reflection, closing, progress.
+ * 12 flashcards – intro, poll, theory, T/F, match, scenario, order, theory, T/F, reflection, theory, summary.
+ * RULE: No two consecutive theory/text flashcards.
+ * Typography: Inter (primary), SF Pro, Roboto, Helvetica Neue, sans-serif.
+ * Instructions: English. Content: Spanish.
  */
 
 export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
-  // SLIDE 1 – Intro
+  // FLASHCARD 1 – Intro (Progressive intro) – heart & brain connection
   {
     id: "qed-intro",
     stepType: "info",
-    title: "Qué es el dinero para mí",
-    body: "Antes de hablar de números, vamos a hablar de ti.\n\nNo hay respuestas buenas o malas.",
+    title: "¿Qué es el dinero para mí?",
+    body: "Antes de hablar de números,\nvamos a hablar de ti.\n\nNo hay respuestas buenas o malas.",
+    imageUrl: "/uploads/lesson-1/slide1.png",
     isAssessment: false,
     continueLabel: "Empezar",
     fullScreen: true,
   },
 
-  // SLIDE 2 – Quick activation (no correct/incorrect; register selection only)
+  // FLASHCARD 2 – Engagement (Quick Poll, non-graded – store as personal insight)
   {
-    id: "qed-activation",
+    id: "qed-poll",
     stepType: "mcq",
     question: "Cuando escuchas la palabra dinero, ¿qué sientes primero?",
     options: [
@@ -38,17 +42,18 @@ export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // SLIDE 3 – Quick theory
+  // FLASHCARD 3 – Theory – two cards (pensar/sentir → influye en decisiones)
   {
     id: "qed-teoria-1",
     stepType: "info",
-    body: "El dinero no es solo algo que se gana o se gasta.\n\nTambién es algo que se siente.",
+    body: "El dinero no es solo algo que se gana o se gasta.\nTambién es algo que se siente.",
+    imageUrl: "/uploads/lesson-1/slide3.png",
     isAssessment: false,
     continueLabel: "Continuar",
     fullScreen: true,
   },
 
-  // SLIDE 4 – True or False
+  // FLASHCARD 4 – Knowledge Check (True/False)
   {
     id: "qed-tf-1",
     stepType: "true_false",
@@ -61,41 +66,23 @@ export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // SLIDE 5 – Quick theory
+  // FLASHCARD 5 – Concept Mapping (Match concept to meaning) – beach vs desk contrast
   {
-    id: "qed-teoria-2",
-    stepType: "info",
-    body: "Todos tenemos una relación con el dinero, aunque nunca nos hayan enseñado sobre él.",
-    isAssessment: false,
-    continueLabel: "Continuar",
-    fullScreen: true,
-  },
-
-  // SLIDE 6 – Everyday example
-  {
-    id: "qed-ejemplo",
-    stepType: "info",
-    body: "Dos personas ganan lo mismo.\n\nUna vive tranquila.\n\nLa otra vive estresada.\n\nEl dinero es el mismo. La relación no.",
-    isAssessment: false,
-    continueLabel: "Continuar",
-    fullScreen: true,
-  },
-
-  // SLIDE 7 – Multiple choice quiz
-  {
-    id: "qed-mcq-1",
-    stepType: "mcq",
-    question: "¿Qué influye más en cómo usamos el dinero?",
-    options: [
-      { id: "opt-cuanto", label: "Cuánto dinero tenemos", isCorrect: false },
-      {
-        id: "opt-pensar",
-        label: "Nuestra forma de pensar sobre él",
-        isCorrect: true,
-        explanation: "Exacto. Dos personas con el mismo dinero pueden vivir situaciones muy distintas.",
-      },
-      { id: "opt-suerte", label: "La suerte", isCorrect: false },
-      { id: "opt-demas", label: "Lo que hacen los demás", isCorrect: false },
+    id: "qed-match",
+    stepType: "match",
+    question: "Relaciona el concepto con su significado.",
+    imageUrl: "/uploads/lesson-1/slide5.png",
+    leftItems: [
+      { id: "left-dinero", label: "Dinero" },
+      { id: "left-relacion", label: "Relación con el dinero" },
+    ],
+    rightItems: [
+      { id: "right-influye", label: "Algo que influye en decisiones diarias" },
+      { id: "right-pienso", label: "Cómo pienso y siento sobre el dinero" },
+    ],
+    correctPairs: [
+      { leftId: "left-dinero", rightId: "right-influye" },
+      { leftId: "left-relacion", rightId: "right-pienso" },
     ],
     isAssessment: true,
     recordIncorrect: true,
@@ -103,30 +90,58 @@ export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // SLIDE 8 – Key idea
+  // FLASHCARD 6 – Example (Scenario) – stacked priority cards
   {
-    id: "qed-key-idea",
+    id: "qed-scenario",
     stepType: "info",
-    body: "Antes de aprender finanzas, hay que entender cómo pensamos.\n\nSi no, repetimos los mismos errores.",
+    body: "Dos personas ganan lo mismo.\nUna vive tranquila.\nLa otra vive estresada.\n\nEl dinero es el mismo.\nLa relación no.",
+    imageUrl: "/uploads/lesson-1/slide6.png",
     isAssessment: false,
     continueLabel: "Continuar",
     fullScreen: true,
   },
 
-  // SLIDE 9 – True or False
+  // FLASHCARD 7 – Structuring (Order by priority) – girl with piggy bank
   {
-    id: "qed-tf-2",
-    stepType: "true_false",
-    statement: "Si no pienso mucho en el dinero, no me afecta.",
-    correctValue: false,
-    explanation: "Aunque no lo pienses, el dinero influye en decisiones todos los días.",
+    id: "qed-order",
+    stepType: "order",
+    question: "Ordena lo que más influye en cómo usamos el dinero.",
+    imageUrl: "/uploads/lesson-1/slide7.png",
+    items: [
+      { id: "item-pensar", label: "Forma de pensar", correctOrder: 1 },
+      { id: "item-emociones", label: "Emociones", correctOrder: 2 },
+      { id: "item-cantidad", label: "Cantidad de dinero", correctOrder: 3 },
+    ],
     isAssessment: true,
     recordIncorrect: true,
     continueLabel: "Continuar",
     fullScreen: true,
   },
 
-  // SLIDE 10 – Mini reflection (no grade; save as personal progress)
+  // FLASHCARD 8 – Theory
+  {
+    id: "qed-teoria-2",
+    stepType: "info",
+    body: "Antes de aprender finanzas,\nhay que entender cómo pensamos.",
+    isAssessment: false,
+    continueLabel: "Continuar",
+    fullScreen: true,
+  },
+
+  // FLASHCARD 9 – Knowledge Check (True/False)
+  {
+    id: "qed-tf-2",
+    stepType: "true_false",
+    statement: "Si no pienso mucho en el dinero, no me afecta.",
+    correctValue: false,
+    explanation: "Aunque no lo pienses,\nel dinero influye en decisiones todos los días.",
+    isAssessment: true,
+    recordIncorrect: true,
+    continueLabel: "Continuar",
+    fullScreen: true,
+  },
+
+  // FLASHCARD 10 – Reflection (non-graded – save as self-awareness data)
   {
     id: "qed-reflexion",
     stepType: "mcq",
@@ -143,22 +158,23 @@ export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // SLIDE 11 – Lesson closing
+  // FLASHCARD 11 – Theory – reflection image
   {
-    id: "qed-cierre",
+    id: "qed-teoria-3",
     stepType: "info",
-    body: "No necesitas saberlo todo hoy.\n\nSolo empezar a darte cuenta.",
+    body: "Darte cuenta es el primer paso.\nNo cambiar nada todavía.\nSolo observar.",
+    imageUrl: "/uploads/lesson-1/slide11.png",
     isAssessment: false,
     continueLabel: "Continuar",
     fullScreen: true,
   },
 
-  // SLIDE 12 – Progress & CTA
+  // FLASHCARD 12 – Closure (Progress feedback – XP, progress bar, next lesson CTA)
   {
     id: "qed-progress",
     stepType: "summary",
     title: "Lección completada",
-    body: "Has completado esta lección.\n\nTu progreso se ha guardado.",
+    body: "Has dado el primer paso para entender tu relación con el dinero.",
     isAssessment: false,
     continueLabel: "Siguiente lección: Cómo me hace sentir el dinero",
     fullScreen: true,

@@ -337,7 +337,7 @@ export default function BillyChatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Escribe tu mensaje..."
+                  placeholder="¿Qué quieres preguntar?"
                   style={{
                     flex: 1,
                     padding: "12px 16px",

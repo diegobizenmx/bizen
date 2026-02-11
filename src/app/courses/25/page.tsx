@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import { useLessonProgress } from "@/hooks/useLessonProgress"
 import Button from "@/components/ui/button"
 import { TEMA25_SUBTEMAS } from "../tema25-data"
 import type { Tema25Lesson } from "../tema25-data"
@@ -34,6 +35,7 @@ const SUBTEMA_BAR_SHADOWS = [
 export default function Tema25Page() {
   const router = useRouter()
   const { user, loading } = useAuth()
+  const { completedLessons, lessonStars } = useLessonProgress()
   const [lessonModal, setLessonModal] = useState<Tema25Lesson | null>(null)
   const [lessonModalUnitTitle, setLessonModalUnitTitle] = useState("")
 
@@ -304,6 +306,11 @@ export default function Tema25Page() {
                             >
                               {lesson.level}
                             </span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 6 }}>
+                            <img src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain" }} />
+                            <img src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain" }} />
+                            <img src="/stars.png" alt="" style={{ width: 22, height: 22, objectFit: "contain" }} />
                           </div>
                         </div>
                       </div>

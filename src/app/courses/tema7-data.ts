@@ -13,21 +13,21 @@ export interface Tema7Subtema {
 
 export const TEMA7_SUBTEMAS: Tema7Subtema[] = [
   {
-    title: "Qué es el sistema financiero",
+    title: "¿Qué es el sistema financiero?",
     lessons: [
-      { title: "Qué es el sistema financiero", level: "Básico", slug: "que-es-el-sistema-financiero" },
-      { title: "Para qué sirve el sistema financiero", level: "Básico", slug: "para-que-sirve-el-sistema-financiero" },
-      { title: "Quién participa en el sistema financiero", level: "Básico", slug: "quien-participa-en-el-sistema-financiero" },
-      { title: "Por qué es importante entenderlo", level: "Intermedio", slug: "por-que-es-importante-entenderlo" },
-      { title: "Cómo me afecta en la vida diaria", level: "Intermedio", slug: "como-me-afecta-en-la-vida-diaria" },
+      { title: "¿Qué es el sistema financiero?", level: "Básico", slug: "que-es-el-sistema-financiero" },
+      { title: "¿Para qué sirve el sistema financiero?", level: "Básico", slug: "para-que-sirve-el-sistema-financiero" },
+      { title: "¿Quién participa en el sistema financiero?", level: "Básico", slug: "quien-participa-en-el-sistema-financiero" },
+      { title: "¿Por qué es importante entenderlo?", level: "Intermedio", slug: "por-que-es-importante-entenderlo" },
+      { title: "¿Cómo me afecta en la vida diaria?", level: "Intermedio", slug: "como-me-afecta-en-la-vida-diaria" },
     ],
   },
   {
     title: "Bancos",
     lessons: [
-      { title: "Qué es un banco", level: "Básico", slug: "que-es-un-banco" },
-      { title: "Para qué sirve un banco", level: "Básico", slug: "para-que-sirve-un-banco" },
-      { title: "Qué hacen los bancos con mi dinero", level: "Intermedio", slug: "que-hacen-los-bancos-con-mi-dinero" },
+      { title: "¿Qué es un banco?", level: "Básico", slug: "que-es-un-banco" },
+      { title: "¿Para qué sirve un banco?", level: "Básico", slug: "para-que-sirve-un-banco" },
+      { title: "¿Qué hacen los bancos con mi dinero?", level: "Intermedio", slug: "que-hacen-los-bancos-con-mi-dinero" },
       { title: "Tipos de bancos", level: "Intermedio", slug: "tipos-de-bancos" },
       { title: "Riesgos y beneficios de los bancos", level: "Intermedio", slug: "riesgos-y-beneficios-de-los-bancos" },
     ],
@@ -45,11 +45,11 @@ export const TEMA7_SUBTEMAS: Tema7Subtema[] = [
   {
     title: "Crédito y financiamiento",
     lessons: [
-      { title: "Qué es el crédito", level: "Básico", slug: "que-es-el-credito" },
-      { title: "Cómo se otorga un crédito", level: "Intermedio", slug: "como-se-otorga-un-credito" },
+      { title: "¿Qué es el crédito?", level: "Básico", slug: "que-es-el-credito" },
+      { title: "¿Cómo se otorga un crédito?", level: "Intermedio", slug: "como-se-otorga-un-credito" },
       { title: "Historial crediticio", level: "Intermedio", slug: "historial-crediticio" },
       { title: "Buró de crédito explicado fácil", level: "Intermedio", slug: "buro-de-credito-explicado-facil" },
-      { title: "Cómo cuidar mi historial", level: "Avanzado", slug: "como-cuidar-mi-historial" },
+      { title: "¿Cómo cuidar mi historial?", level: "Avanzado", slug: "como-cuidar-mi-historial" },
     ],
   },
   {

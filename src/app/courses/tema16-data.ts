@@ -13,11 +13,11 @@ export interface Tema16Subtema {
 
 export const TEMA16_SUBTEMAS: Tema16Subtema[] = [
   {
-    title: "Qué es emprender",
+    title: "¿Qué es emprender?",
     lessons: [
-      { title: "Qué es emprender", level: "Básico", slug: "que-es-emprender" },
+      { title: "¿Qué es emprender?", level: "Básico", slug: "que-es-emprender" },
       { title: "Diferencia entre empleado, autoempleado y emprendedor", level: "Básico", slug: "diferencia-entre-empleado-autoempleado-y-emprendedor" },
-      { title: "Por qué la gente emprende", level: "Básico", slug: "por-que-la-gente-emprende" },
+      { title: "¿Por qué la gente emprende?", level: "Básico", slug: "por-que-la-gente-emprende" },
       { title: "Mitos sobre emprender", level: "Básico", slug: "mitos-sobre-emprender" },
       { title: "Cambiar la forma de ver el emprendimiento", level: "Intermedio", slug: "cambiar-la-forma-de-ver-el-emprendimiento" },
     ],

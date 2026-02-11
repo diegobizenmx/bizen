@@ -15,14 +15,14 @@ export const TEMA28_SUBTEMAS: Tema28Subtema[] = [
   {
     title: "Entender la crisis",
     lessons: [
-      { title: "Qué es una crisis financiera personal", level: "Básico", slug: "que-es-una-crisis-financiera-personal" },
+      { title: "¿Qué es una crisis financiera personal?", level: "Básico", slug: "que-es-una-crisis-financiera-personal" },
       { title: "Crisis esperadas e inesperadas", level: "Intermedio", slug: "crisis-esperadas-e-inesperadas" },
     ],
   },
   {
     title: "Reaccionar ante la crisis",
     lessons: [
-      { title: "Qué hacer cuando falta dinero", level: "Intermedio", slug: "que-hacer-cuando-falta-dinero" },
+      { title: "¿Qué hacer cuando falta dinero?", level: "Intermedio", slug: "que-hacer-cuando-falta-dinero" },
       { title: "Priorizar en momentos difíciles", level: "Intermedio", slug: "priorizar-en-momentos-dificiles" },
     ],
   },

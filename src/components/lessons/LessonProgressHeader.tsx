@@ -7,8 +7,8 @@ export interface LessonProgressHeaderProps {
   totalSteps: number
   /** Consecutive correct quiz answers from the start (until first mistake). */
   streak: number
-  /** 1, 2, or 3 stars based on mistakes: 0 mistakes = 3, 1 mistake = 2, else 1. */
-  stars: 1 | 2 | 3
+  /** 0–3 stars based on mistakes: 0 mistakes = 3, 1 = 2, 2 = 1, 3+ = 0. */
+  stars: 0 | 1 | 2 | 3
 }
 
 const BLUE = "#2563eb"
@@ -104,7 +104,7 @@ export function LessonProgressHeader({
         <span
           style={{ display: "flex", alignItems: "center", gap: "6px" }}
           role="img"
-          aria-label={`${stars} de 3 estrellas`}
+          aria-label={stars === 0 ? "0 de 3 estrellas" : `${stars} de 3 estrellas`}
         >
           {[1, 2, 3].map((i) => (
             <img

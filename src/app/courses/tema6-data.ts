@@ -15,9 +15,9 @@ export const TEMA6_SUBTEMAS: Tema6Subtema[] = [
   {
     title: "Entender la deuda",
     lessons: [
-      { title: "Qué es la deuda", level: "Básico", slug: "que-es-la-deuda" },
-      { title: "Por qué existe la deuda", level: "Básico", slug: "por-que-existe-la-deuda" },
-      { title: "Por qué la gente usa deuda", level: "Básico", slug: "por-que-la-gente-usa-deuda" },
+      { title: "¿Qué es la deuda?", level: "Básico", slug: "que-es-la-deuda" },
+      { title: "¿Por qué existe la deuda?", level: "Básico", slug: "por-que-existe-la-deuda" },
+      { title: "¿Por qué la gente usa deuda?", level: "Básico", slug: "por-que-la-gente-usa-deuda" },
       { title: "Mitos sobre la deuda", level: "Básico", slug: "mitos-sobre-la-deuda" },
       { title: "Deuda como herramienta vs problema", level: "Intermedio", slug: "deuda-como-herramienta-vs-problema" },
     ],
@@ -35,8 +35,8 @@ export const TEMA6_SUBTEMAS: Tema6Subtema[] = [
   {
     title: "Crédito en la vida real",
     lessons: [
-      { title: "Qué es el crédito", level: "Básico", slug: "que-es-el-credito" },
-      { title: "Cómo funcionan las tarjetas de crédito", level: "Básico", slug: "como-funcionan-las-tarjetas-de-credito" },
+      { title: "¿Qué es el crédito?", level: "Básico", slug: "que-es-el-credito" },
+      { title: "¿Cómo funcionan las tarjetas de crédito?", level: "Básico", slug: "como-funcionan-las-tarjetas-de-credito" },
       { title: "Intereses y CAT explicados fácil", level: "Intermedio", slug: "intereses-y-cat-explicados-facil" },
       { title: "Pagos mínimos y consecuencias", level: "Intermedio", slug: "pagos-minimos-y-consecuencias" },
       { title: "Errores comunes con tarjetas", level: "Avanzado", slug: "errores-comunes-con-tarjetas" },

@@ -71,6 +71,11 @@ export interface TrueFalseStepFields {
   explanation?: string;
 }
 
+/**
+ * Order by Priority / Timeline Ordering step.
+ * RULE: Draggable items must be shown in SHUFFLED order; correct order is only in correctOrder (AnswerKey).
+ * OrderStep shuffles the initial display automatically; items array order in data is irrelevant.
+ */
 export interface OrderStepFields {
   stepType: "order";
   question?: string;
@@ -78,7 +83,7 @@ export interface OrderStepFields {
   items: Array<{
     id: string;
     label: string;
-    correctOrder: number; // The correct position (1-based or 0-based)
+    correctOrder: number; // AnswerKey: correct position (1-based). Display order is always shuffled.
   }>;
 }
 
@@ -121,6 +126,8 @@ export interface SummaryStepFields {
   stepType: "summary";
   title: string;
   body: string;
+  /** Optional image URL for lesson-completed slide; defaults to /Lección completada.png */
+  imageUrl?: string;
 }
 
 export interface ReviewStepFields {
@@ -142,6 +149,10 @@ export interface BaseLessonStep {
   reviewSourceStepId?: string; // used when a review step is a repetition of another step
   fullScreen?: boolean; // true to hide progress bar and footer, step renders its own buttons
   continueLabel?: string; // e.g. "Continuar", "Seguir", "Avanzar", "Completar misión"
+  /** Optional image URL for steps that support it (info, true_false, order, summary, mcq). Match steps never use images. */
+  imageUrl?: string;
+  /** When imageUrl is set: place image LEFT or RIGHT of the activity. Default "right". */
+  imageAlign?: "left" | "right";
 }
 
 // ============================================================================

@@ -13,10 +13,10 @@ export interface Tema18Subtema {
 
 export const TEMA18_SUBTEMAS: Tema18Subtema[] = [
   {
-    title: "Qué es validar",
+    title: "¿Qué es validar?",
     lessons: [
-      { title: "Qué es validar una idea", level: "Básico", slug: "que-es-validar-una-idea" },
-      { title: "Por qué validar antes de invertir", level: "Básico", slug: "por-que-validar-antes-de-invertir" },
+      { title: "¿Qué es validar una idea?", level: "Básico", slug: "que-es-validar-una-idea" },
+      { title: "¿Por qué validar antes de invertir?", level: "Básico", slug: "por-que-validar-antes-de-invertir" },
       { title: "Mitos sobre la validación", level: "Básico", slug: "mitos-sobre-la-validacion" },
       { title: "Errores por no validar", level: "Intermedio", slug: "errores-por-no-validar" },
     ],

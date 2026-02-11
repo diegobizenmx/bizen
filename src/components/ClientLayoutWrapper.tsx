@@ -145,8 +145,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
 
   return (
     <>
-      {/* Show FixedSidebar only on larger screens (>767px) */}
-      {!isAuthPage && !isMobile && <FixedSidebar />}
+      {/* Show FixedSidebar only on larger screens (>767px), hidden during interactive lesson */}
+      {!isAuthPage && !isMobile && !isLessonInteractivePage && <FixedSidebar />}
       
       {/* Show MobileFooterNav only on mobile (≤767px), hidden on lesson interactive page */}
       {!isAuthPage && isMobile && !isLessonInteractivePage && <MobileFooterNav />}
