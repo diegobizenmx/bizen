@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { CONTENT_MAX_WIDTH, CONTENT_PADDING_X, CONTENT_PADDING_Y } from "./layoutConstants"
 
 interface LessonContainerProps {
   children: React.ReactNode
@@ -22,11 +23,11 @@ export function LessonContainer({ children, className = "", bottomPad, topPad = 
   const inner = (
     <div
       style={{
-        paddingTop: 16 + topPad,
-        paddingBottom: bottomPad != null ? 16 + bottomPad : 16,
-        paddingLeft: 24,
-        paddingRight: 24,
-        maxWidth: 720,
+        paddingTop: topPad !== undefined && topPad > 0 ? `calc(${CONTENT_PADDING_Y} + ${topPad}px)` : CONTENT_PADDING_Y,
+        paddingBottom: bottomPad != null ? `calc(${CONTENT_PADDING_Y} + ${bottomPad}px)` : CONTENT_PADDING_Y,
+        paddingLeft: CONTENT_PADDING_X,
+        paddingRight: CONTENT_PADDING_X,
+        maxWidth: CONTENT_MAX_WIDTH,
         margin: "0 auto",
         minHeight: 0,
         flex: 1,

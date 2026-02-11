@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { MatchStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
+import { CONTENT_MAX_WIDTH, CONTENT_PADDING_X } from "../layoutConstants"
 import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
@@ -109,7 +110,7 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
   const buttonsRow = useFullScreenLayout ? (
     <div style={{
       width: "100%",
-      maxWidth: "900px",
+      maxWidth: CONTENT_MAX_WIDTH,
       display: "flex",
       gap: "1.5rem",
       justifyContent: "space-between",
@@ -328,7 +329,7 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
           WebkitOverflowScrolling: "touch",
           width: "100%",
           maxWidth: "100%",
-          padding: "0 clamp(20px, 4vw, 60px)",
+          padding: `0 ${CONTENT_PADDING_X}`,
           paddingBottom: "1rem",
         }}>
           {content}
@@ -357,7 +358,7 @@ export function MatchStep({ step, onAnswered, matches: initialMatches = [], onEx
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      padding: "clamp(16px, 3vh, 40px) clamp(20px, 4vw, 60px)",
+      padding: `clamp(16px, 3vh, 40px) ${CONTENT_PADDING_X}`,
       boxSizing: "border-box",
     }}>
       {content}

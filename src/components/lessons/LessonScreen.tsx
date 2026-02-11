@@ -4,6 +4,7 @@ import React from "react"
 import { LessonProgressHeader } from "./LessonProgressHeader"
 import { LessonContainer } from "./LessonContainer"
 import { StickyFooter } from "./StickyFooter"
+import { CONTENT_MAX_WIDTH, CONTENT_PADDING_X } from "./layoutConstants"
 
 interface LessonScreenProps {
   children: React.ReactNode
@@ -99,9 +100,9 @@ export function LessonScreen({
           className="lesson-footer-in-flow"
           style={{
             flexShrink: 0,
-            paddingLeft: 24,
-            paddingRight: 24,
-            maxWidth: 720,
+            paddingLeft: CONTENT_PADDING_X,
+            paddingRight: CONTENT_PADDING_X,
+            maxWidth: CONTENT_MAX_WIDTH,
             marginLeft: "auto",
             marginRight: "auto",
             width: "100%",

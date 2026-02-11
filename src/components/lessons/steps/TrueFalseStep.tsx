@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { TrueFalseStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
+import { CONTENT_MAX_WIDTH, CONTENT_GAP } from "../layoutConstants"
 import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
@@ -247,12 +248,12 @@ export function TrueFalseStep({
         background: '#f1f5f9',
         boxSizing: 'border-box',
       }}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', width: '100%', maxWidth: '900px', minHeight: 0 }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', width: '100%', maxWidth: CONTENT_MAX_WIDTH, minHeight: 0 }}>
           {imageBlock ? (
             (() => {
               const contentSide = <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>{activityBlock}</div>
               return (
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', gap: 'clamp(16px, 3vw, 32px)', flexWrap: 'nowrap', height: '100%', minHeight: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', gap: CONTENT_GAP, flexWrap: 'nowrap', height: '100%', minHeight: 0 }}>
                   {align === 'left' ? imageBlock : contentSide}
                   {align === 'left' ? contentSide : imageBlock}
                 </div>
@@ -264,7 +265,7 @@ export function TrueFalseStep({
         {/* Buttons at bottom */}
         <div style={{ 
           width: '100%', 
-          maxWidth: '900px',
+          maxWidth: CONTENT_MAX_WIDTH,
           display: 'flex', 
           gap: '1rem',
           justifyContent: 'space-between',

@@ -2,6 +2,43 @@
 
 Project-specific instructions for Cursor when editing this codebase.
 
+## GLOBAL LAYOUT RULES (MANDATORY FOR ALL CONTENT)
+
+These rules apply to every screen, slide, and content area. If they are not followed, the layout is invalid.
+
+1. **All content must be visually centered.**
+   - Text, buttons, interactions, and images must sit inside a centered container.
+   - No element should touch or feel close to any screen edge.
+
+2. **Content container requirements:**
+   - Equal left and right spacing.
+   - Balanced top and bottom spacing.
+   - The same container width and padding across ALL slides/screens.
+
+3. **Consistent visual rhythm:**
+   - Every slide must feel aligned with the previous one.
+   - No slide may shift content left, right, up, or down compared to others.
+
+4. **Images (when allowed):**
+   - Be placed LEFT or RIGHT inside the centered container.
+   - Never break the centered layout.
+   - Never push text outside the container.
+
+5. **Buttons and CTAs:**
+   - Align with the centered content.
+   - Maintain equal spacing from other elements.
+
+6. **Responsive behavior:**
+   - The centered container must remain centered on all screen sizes.
+   - Padding may adapt, but alignment must not change.
+
+7. **Consistency over creativity:**
+   - Do NOT experiment with layout variations.
+   - Do NOT change alignment per slide.
+   - Do NOT create asymmetrical layouts.
+
+Use the shared layout constants (`CONTENT_MAX_WIDTH`, `CONTENT_PADDING_X`, etc.) in `src/components/lessons/layoutConstants.ts` for all lesson and app content so every slide uses the same container.
+
 ## Project
 
 - **BIZEN**: Plataforma institucional de educación financiera (Next.js, React, Supabase/Prisma).

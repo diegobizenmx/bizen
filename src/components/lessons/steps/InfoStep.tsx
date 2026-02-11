@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import { InfoStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
+import { CONTENT_MAX_WIDTH, CONTENT_GAP } from "../layoutConstants"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
 interface InfoStepProps {
@@ -49,7 +50,7 @@ export function InfoStep({ step, onAnswered, onExit, onContinue, isContinueEnabl
         {/* Top section: Billy header + Quiero Ver button */}
         <div style={{
           width: '100%',
-          maxWidth: '900px',
+          maxWidth: CONTENT_MAX_WIDTH,
           display: 'flex',
           gap: '1rem',
           justifyContent: 'space-between',
@@ -98,7 +99,7 @@ export function InfoStep({ step, onAnswered, onExit, onContinue, isContinueEnabl
           flex: 1,
           minHeight: 0,
           width: '100%',
-          maxWidth: '900px',
+          maxWidth: CONTENT_MAX_WIDTH,
           border: `4px solid ${FLASHCARD_BORDER_COLOR}`,
           borderRadius: '24px',
           background: '#ffffff',
@@ -169,7 +170,7 @@ export function InfoStep({ step, onAnswered, onExit, onContinue, isContinueEnabl
                     flexDirection: 'row',
                     alignItems: 'stretch',
                     justifyContent: 'center',
-                    gap: 'clamp(16px, 3vw, 32px)',
+                    gap: CONTENT_GAP,
                     flexWrap: 'nowrap',
                   }}>
                     {align === 'left' ? imageBlock : contentSide}
@@ -186,7 +187,7 @@ export function InfoStep({ step, onAnswered, onExit, onContinue, isContinueEnabl
         {isRevealed && (
           <div style={{ 
             width: '100%', 
-            maxWidth: '900px',
+            maxWidth: CONTENT_MAX_WIDTH,
             display: 'flex', 
             gap: '1.5rem',
             justifyContent: 'space-between',
@@ -266,7 +267,7 @@ export function InfoStep({ step, onAnswered, onExit, onContinue, isContinueEnabl
         (() => {
           const contentSide = <div style={{ flex: 1, minWidth: 0, overflowY: 'auto' }}>{textBlock}</div>
           return (
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', gap: 'clamp(16px, 3vw, 32px)', flexWrap: 'nowrap', width: '100%', maxWidth: '900px', minHeight: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch', justifyContent: 'center', gap: CONTENT_GAP, flexWrap: 'nowrap', width: '100%', maxWidth: CONTENT_MAX_WIDTH, minHeight: 0 }}>
               {align === 'left' ? imageBlock : contentSide}
               {align === 'left' ? contentSide : imageBlock}
             </div>

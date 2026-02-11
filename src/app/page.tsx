@@ -20,6 +20,7 @@ export default function WelcomePage() {
   const [activeProfile, setActiveProfile] = useState<"docentes" | "estudiantes" | "padres">("docentes")
   const [demoModalOpen, setDemoModalOpen] = useState(false)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const heroCardSummaries: { title: string; summary: string }[] = [
     {
@@ -79,174 +80,222 @@ export default function WelcomePage() {
       display: "flex",
       flexDirection: "column",
     }} className="main-page-container landing-page-root" data-landing-root>
-      {/* Top of page: logo, nav, botones - muy junto */}
-      <div className="main-header" style={{
+      {/* Header: match reference – blue nav links, house + Inicia sesión, Agenda tu DEMO */}
+      <header className="main-header landing-header" style={{
         width: "100%",
         maxWidth: "100%",
         boxSizing: "border-box",
-        padding: "4px 8px",
+        padding: "clamp(14px, 2.5vw, 28px) clamp(20px, 5vw, 56px)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        gap: "4px",
-        flexWrap: "wrap",
+        gap: "clamp(24px, 5vw, 56px)",
+        flexWrap: "nowrap",
+        background: "#ffffff",
+        position: "relative",
+        zIndex: 100,
       }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 0, textDecoration: "none", flexShrink: 0 }}>
-          <span style={{ fontSize: 18, fontWeight: 500, color: "#1e3a8a", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.3px" }}>BIZEN</span>
-        </Link>
-        <nav style={{ display: "flex", gap: "4px", alignItems: "center", flexShrink: 1, minWidth: 0, padding: "4px 8px", backgroundColor: "#dbeafe", borderRadius: 9999 }} className="header-bar-nav">
-          <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Sobre Bizen</Link>
-          <Link href="#impacto" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Impacto</Link>
-          <Link href="#precios" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Implementación</Link>
-          <Link href="#problema" className="header-nav-link" style={{ fontSize: 15, fontWeight: 400, color: "#1e40af", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>El problema</Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "clamp(8px, 2vw, 16px)", flexShrink: 0 }}>
+          <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }} aria-label="BIZEN home">
+            <span style={{ fontSize: "clamp(18px, 2.2vw, 22px)", fontWeight: 600, color: "#2C7BEF", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", letterSpacing: "0.02em" }}>BIZEN</span>
+          </Link>
+          <button type="button" className="landing-header-mobile-menu-btn" aria-label="Abrir menú" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((o) => !o)} style={{ display: "none", alignItems: "center", justifyContent: "center", width: 44, height: 44, padding: 0, border: "none", background: "transparent", cursor: "pointer", color: "#2C7BEF" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+          </button>
+        </div>
+
+        <nav className="header-bar-nav landing-header-nav" style={{ display: "flex", gap: "clamp(40px, 6vw, 80px)", alignItems: "center", flexShrink: 0 }}>
+          <Link href="#sobre-bizen" className="header-nav-link landing-header-nav-link" style={{ fontSize: "clamp(14px, 1.6vw, 16px)", fontWeight: 500, color: "#2C7BEF", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap", padding: "12px 16px" }}>Sobre Bizen</Link>
+          <Link href="#precios" className="header-nav-link landing-header-nav-link" style={{ fontSize: "clamp(14px, 1.6vw, 16px)", fontWeight: 500, color: "#2C7BEF", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap", padding: "12px 16px" }}>Implementación</Link>
+          <Link href="#impacto" className="header-nav-link landing-header-nav-link" style={{ fontSize: "clamp(14px, 1.6vw, 16px)", fontWeight: 500, color: "#2C7BEF", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap", padding: "12px 16px" }}>Impacto</Link>
+          <Link href="#problema" className="header-nav-link landing-header-nav-link" style={{ fontSize: "clamp(14px, 1.6vw, 16px)", fontWeight: 500, color: "#2C7BEF", fontFamily: "'Inter', system-ui, -apple-system, sans-serif", textDecoration: "none", whiteSpace: "nowrap", padding: "12px 16px" }}>Problema</Link>
         </nav>
-        <Link href="/login" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, minHeight: 40, padding: "0 4px", boxSizing: "border-box" }} aria-label="Iniciar sesión">
-          <span style={{ width: 40, height: 40, borderRadius: "50%", background: "#1e3a8a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: "#fff" }}>
-              <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-            </svg>
-          </span>
-        </Link>
-        <button type="button" onClick={() => setDemoModalOpen(true)} style={{ padding: "clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 20px)", fontSize: "clamp(13px, 1.8vw, 16px)", fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "#1e3a8a", color: "white", borderRadius: 9999, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", whiteSpace: "nowrap", flexShrink: 0, minHeight: 44, minWidth: "min-content", boxSizing: "border-box" }} className="crear-cuenta-button">Agendar demo</button>
-      </div>
+
+        <div className="landing-header-actions" style={{ display: "flex", alignItems: "center", gap: "clamp(20px, 3vw, 36px)", flexShrink: 0 }}>
+          <Link href="/login" className="landing-header-login" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", color: "#2C7BEF", fontWeight: 500, fontSize: "clamp(14px, 1.6vw, 16px)", fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }} aria-label="Iniciar sesión">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+            <span>Inicia sesión</span>
+          </Link>
+          <button type="button" onClick={() => { setDemoModalOpen(true); setMobileMenuOpen(false); }} className="landing-header-demo crear-cuenta-button" style={{ padding: 0, fontSize: "clamp(14px, 1.6vw, 16px)", fontWeight: 500, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", background: "transparent", color: "#2C7BEF", border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>Agenda tu DEMO</button>
+        </div>
+      </header>
+
+      {/* Mobile nav overlay */}
+      {mobileMenuOpen && (
+        <div className="landing-mobile-nav-overlay" role="dialog" aria-label="Menú de navegación" style={{ position: "fixed", inset: 0, zIndex: 99, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "flex-start", justifyContent: "flex-end" }} onClick={() => setMobileMenuOpen(false)}>
+          <div className="landing-mobile-nav-drawer" style={{ width: "min(280px, 85vw)", maxWidth: "100%", height: "100%", background: "#fff", boxShadow: "-4px 0 24px rgba(0,0,0,0.15)", padding: "24px 20px", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
+              <button type="button" aria-label="Cerrar menú" onClick={() => setMobileMenuOpen(false)} style={{ width: 44, height: 44, padding: 0, border: "none", background: "transparent", cursor: "pointer", color: "#374151" }}>×</button>
+            </div>
+            <nav style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <Link href="#sobre-bizen" className="header-nav-link" style={{ fontSize: 16, fontWeight: 500, color: "#2C7BEF", textDecoration: "none", padding: "12px 0" }} onClick={() => setMobileMenuOpen(false)}>Sobre Bizen</Link>
+              <Link href="#precios" className="header-nav-link" style={{ fontSize: 16, fontWeight: 500, color: "#2C7BEF", textDecoration: "none", padding: "12px 0" }} onClick={() => setMobileMenuOpen(false)}>Implementación</Link>
+              <Link href="#impacto" className="header-nav-link" style={{ fontSize: 16, fontWeight: 500, color: "#2C7BEF", textDecoration: "none", padding: "12px 0" }} onClick={() => setMobileMenuOpen(false)}>Impacto</Link>
+              <Link href="#problema" className="header-nav-link" style={{ fontSize: 16, fontWeight: 500, color: "#2C7BEF", textDecoration: "none", padding: "12px 0" }} onClick={() => setMobileMenuOpen(false)}>Problema</Link>
+            </nav>
+            <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "12px" }}>
+              <Link href="/login" style={{ fontSize: 16, fontWeight: 500, color: "#2C7BEF", textDecoration: "none", display: "flex", alignItems: "center", gap: "8px" }} onClick={() => setMobileMenuOpen(false)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                <span>Inicia sesión</span>
+              </Link>
+              <button type="button" onClick={() => { setDemoModalOpen(true); setMobileMenuOpen(false); }} style={{ fontSize: 16, fontWeight: 500, color: "#2C7BEF", background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: "12px 0" }}>Agenda tu DEMO</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main style={{ flex: 1, width: "100%", maxWidth: "100%", display: "flex", flexDirection: "column" }}>
         <div style={gradientStyle}>
-        {/* Wrapper sin scroll propio: solo document scroll (evita scroll anidado en hero) */}
+        {/* Hero Section - centered text with geometric shapes */}
         <div className="landing-hero-wrapper" style={{
-          paddingTop: "clamp(16px, 3vw, 24px)",
+          paddingTop: "clamp(40px, 6vw, 80px)",
+          paddingBottom: "clamp(60px, 8vw, 100px)",
           position: "relative",
           fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
           width: "100%",
           maxWidth: "100%",
           boxSizing: "border-box",
-          minHeight: "100vh",
+          minHeight: "80vh",
           overflowX: "hidden",
           overflowY: "visible",
         }}>
 
-          {/* Decorative blue accents - hidden on mobile */}
-          <div style={{
+          {/* Blue geometric shapes - left side (hidden on small screens to avoid overlap) */}
+          <div className="landing-hero-shapes landing-hero-shapes-left" style={{
             position: "absolute",
-            top: "clamp(-100px, -15vw, -200px)",
-            right: "clamp(-100px, -15vw, -200px)",
-            width: "clamp(300px, 50vw, 800px)",
-            height: "clamp(300px, 50vw, 800px)",
-            background: "radial-gradient(circle, rgba(15, 98, 254, 0.04) 0%, transparent 70%)",
-            borderRadius: "50%",
-            overflow: "hidden",
+            left: "0",
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "clamp(150px, 20vw, 300px)",
+            height: "clamp(300px, 40vh, 500px)",
             pointerEvents: "none",
-            display: "none",
-          }} className="decorative-blue-accent" />
-
-          {/* Main Content - cards positioned way up, right below tagline */}
-          <div style={{
-            position: "relative",
-            zIndex: 1,
-            maxWidth: "100%",
-            margin: "0 auto",
-            flex: 1,
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            padding: "clamp(16px, 3vw, 40px)",
-            paddingTop: "clamp(0, 2vw, 16px)",
-            paddingBottom: "clamp(40px, 6vw, 60px)",
-            width: "100%",
-            minHeight: "100vh",
-            boxSizing: "border-box",
-            overflow: "visible",
-          }} className="main-content-wrapper">
-
-            {/* Tagline at top of hero - fixed width on desktop so text spreads instead of shrinking */}
-            <div className="hero-top-block" style={{
-              position: "absolute",
-              left: "50%",
-              top: "clamp(40px, 6vw, 72px)",
-              transform: "translateX(-50%)",
-              textAlign: "center",
-              width: "min(98vw, 1320px)",
-              maxWidth: "1320px",
-              zIndex: 10,
-                opacity: isVisible ? 1 : 0,
-              transition: "opacity 0.6s ease 0.3s",
-            }}>
-              <p className="hero-tagline" style={{
-                fontSize: "clamp(36px, 6vw, 72px)",
-                color: "#000",
-                fontWeight: 500,
-                margin: 0,
-                lineHeight: 1.1,
-                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                  width: "100%",
-              }}>
-                La plataforma institucional que prepara a tus alumnos para el éxito financiero
-              </p>
-              <p className="hero-tagline-sub" style={{
-                fontSize: "clamp(18px, 1.2rem, 22px)",
-                color: "#374151",
-                fontWeight: 400,
-                margin: "8px 0 4px 0",
-                lineHeight: 1.5,
-                fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-                      width: "100%",
-              }}>
-                BIZEN es la plataforma educativa que combina <span style={{ color: "#1e3a8a", fontWeight: 600 }}>gamificación e inteligencia artificial</span> para enseñar <span style={{ color: "#1e3a8a", fontWeight: 600 }}>finanzas personales</span> a estudiantes de preparatoria y universidad de forma práctica, clara y relevante.
-              </p>
-              </div>
-
-            {/* Rectangles - separate full-width block, outside absolute container to avoid clipping */}
-            <div className="hero-rectangles-wrapper" style={{ marginTop: "clamp(112px, 16vw, 220px)" }}>
-              <div className="hero-rect-row">
-                {[0, 1, 2].map((index) => (
-                  <div
-                    key={index}
-                    className={`hero-card-link${activeHeroCard === index ? " hero-card-summary-visible" : ""}`}
-                    onMouseEnter={() => setActiveHeroCard(index)}
-                    onMouseLeave={() => setActiveHeroCard(null)}
-                    onClick={() => setActiveHeroCard((prev) => (prev === index ? null : index))}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault()
-                        setActiveHeroCard((prev) => (prev === index ? null : index))
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
-                    aria-expanded={activeHeroCard === index}
-                    aria-label={`${heroCardSummaries[index].title}. ${activeHeroCard === index ? heroCardSummaries[index].summary : "Click o pasa el cursor para ver resumen"}`}
-                  >
-                    <div className="hero-rect-card">
-                      <div className="hero-rect-inner">
-                        <Image
-                          src={index === 0 ? "/hero1.png" : index === 1 ? "/hero2.png" : "/hero3.png"}
-                          alt={index === 0 ? "Billy con lápiz y libreta" : index === 1 ? "Billy con tablet y gráfica financiera" : "Billy con alcancía"}
-                          fill
-                          style={{ objectFit: "contain" }}
-                        />
-                    </div>
-                      <div
-                        className="hero-card-summary hero-card-summary-bubble"
-                        role="region"
-                        aria-live="polite"
-                      >
-                        <span className="hero-card-summary-text">{heroCardSummaries[index].summary}</span>
-                </div>
-              </div>
-                    <span className="hero-circle-label">
-                      {index === 0 ? <>Finanzas<br />Personales</> : index === 1 ? <>Simuladores<br />financieros</> : <>Plan de<br />ahorro</>}
-                    </span>
-            </div>
-                ))}
-              </div>
-            </div>
-
+            zIndex: 0,
+          }}>
+            <div style={{ position: "absolute", left: "0", top: "10%", width: "60%", height: "25%", background: "#0066FF", transform: "rotate(-15deg)", opacity: 0.9 }} />
+            <div style={{ position: "absolute", left: "20%", top: "40%", width: "70%", height: "30%", background: "#0052CC", transform: "rotate(25deg)", opacity: 0.85 }} />
+            <div style={{ position: "absolute", left: "10%", bottom: "15%", width: "55%", height: "20%", background: "#0047B3", transform: "rotate(-25deg)", opacity: 0.8 }} />
           </div>
 
-          <style>{`
+          {/* Gray geometric shapes - right side (hidden on small screens to avoid overlap) */}
+          <div className="landing-hero-shapes landing-hero-shapes-right" style={{
+            position: "absolute",
+            right: "0",
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "clamp(150px, 20vw, 300px)",
+            height: "clamp(300px, 40vh, 500px)",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}>
+            <div style={{ position: "absolute", right: "0", top: "15%", width: "65%", height: "28%", background: "#B8B8B8", transform: "rotate(20deg)", opacity: 0.75 }} />
+            <div style={{ position: "absolute", right: "15%", top: "45%", width: "75%", height: "25%", background: "#999999", transform: "rotate(-18deg)", opacity: 0.7 }} />
+            <div style={{ position: "absolute", right: "5%", bottom: "20%", width: "60%", height: "22%", background: "#CCCCCC", transform: "rotate(15deg)", opacity: 0.65 }} />
+          </div>
+
+          {/* Main content - centered */}
+          <div className="landing-hero-content" style={{
+            position: "relative",
+            zIndex: 1,
+            textAlign: "center",
+            width: "100%",
+            maxWidth: "min(90%, 1100px)",
+            margin: "clamp(32px, 5vw, 64px) auto 0",
+            padding: "0 clamp(20px, 4vw, 40px)",
+            boxSizing: "border-box",
+            opacity: isVisible ? 1 : 0,
+            transition: "opacity 0.6s ease 0.3s",
+          }}>
+            {/* Main headline */}
+            <h1 style={{
+              fontSize: "clamp(28px, 5vw, 56px)",
+              color: "#000",
+              fontWeight: 700,
+              margin: "0 0 clamp(48px, 7vw, 80px) 0",
+              lineHeight: 1.2,
+              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+              letterSpacing: "-0.02em",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+            }}>
+              El futuro de la <span style={{ color: "#2C7BEF" }}>Educación Financiera</span> para jóvenes en un click
+            </h1>
+
+            {/* Subheading with highlighted text - responsive, never overlaps */}
+            <p className="landing-hero-sub" style={{
+              fontSize: "clamp(16px, 2vw, 20px)",
+              color: "#374151",
+              fontWeight: 400,
+              margin: "0 auto",
+              marginTop: "clamp(32px, 5vw, 64px)",
+              marginBottom: "clamp(24px, 4vw, 48px)",
+              lineHeight: 1.6,
+              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+              maxWidth: "900px",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              boxSizing: "border-box",
+            }}>
+              LA PLATAFORMA EDUCATIVA QUE COMBINA <span style={{ color: "#2C7BEF", fontWeight: 600 }}>GAMIFICACIÓN E INTELIGENCIA ARTIFICIAL</span> PARA ENSEÑAR FINANZAS PERSONALES A ESTUDIANTES DE PREPARATORIA Y UNIVERSIDAD DE FORMA PRÁCTICA, CLARA Y RELEVANTE.
+            </p>
+          </div>
+
+          {/* Company logos section - carousel (spacing keeps it clear of sub text on small screens) */}
+          <div className="landing-hero-logos-wrap" style={{
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+            maxWidth: "min(90%, 1200px)",
+            margin: "clamp(80px, 12vw, 140px) auto 0",
+            textAlign: "center",
+          }}>
+            <p style={{
+              fontSize: "clamp(14px, 1.5vw, 18px)",
+              color: "#6b7280",
+              fontWeight: 500,
+              margin: "0 0 clamp(24px, 3vw, 40px) 0",
+              fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            }}>
+              Empresas que ya confían
+            </p>
+
+            {/* Logos carousel */}
+            <div style={{ overflow: "hidden", width: "100%" }}>
+              <div className="logos-carousel-track" style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "clamp(40px, 6vw, 80px)",
+                animation: "scroll-logos 30s linear infinite",
+              }}>
+                {[...logoCarouselLogos, ...logoCarouselLogos].map((logo, i) => {
+                  const isGoogle = logo.src.includes("google");
+                  return (
+                  <div key={i} style={{
+                    flexShrink: 0,
+                    height: isGoogle ? "clamp(28px, 3.5vw, 42px)" : "clamp(40px, 5vw, 60px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <Image
+                      src={logo.src}
+                      alt={logo.alt}
+                      width={isGoogle ? 80 : 120}
+                      height={isGoogle ? 40 : 60}
+                      style={{ height: "100%", width: "auto", objectFit: "contain" }}
+                    />
+                  </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <style>{`
         /* Landing page: professional font stack */
         .main-page-container,
         .main-page-container .section,
@@ -294,7 +343,6 @@ export default function WelcomePage() {
         html:has(.main-page-container) .main-page-container main,
         html:has(.main-page-container) .main-page-container section,
         html:has(.main-page-container) .main-content-wrapper,
-        html:has(.main-page-container) .hero-rectangles-wrapper,
         html:has(.main-page-container) .main-header {
           overflow-x: hidden !important;
         }
@@ -305,9 +353,6 @@ export default function WelcomePage() {
         .main-page-container main { overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; }
         .main-page-container main > div { overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; box-sizing: border-box !important; }
         .main-content-wrapper { overflow-x: hidden !important; max-width: 100% !important; width: 100% !important; box-sizing: border-box !important; }
-        .hero-rectangles-wrapper { overflow-x: clip !important; overflow-y: visible !important; }
-        .hero-top-block .hero-tagline,
-        .hero-top-block .hero-tagline-sub { max-width: 100% !important; overflow-wrap: break-word !important; word-wrap: break-word !important; }
         
         /* Override global footer styles from globals.css - ensure footer is NOT sticky */
         footer.main-page-footer,
@@ -327,8 +372,9 @@ export default function WelcomePage() {
           margin-top: 0 !important;
         }
 
-        /* Top bar: keep Crear cuenta button in view on all screen sizes, prevent overflow */
-        .main-header {
+        /* Top bar: keep header in view, prevent overflow */
+        .main-header,
+        .landing-header {
           max-width: 100% !important;
           width: 100% !important;
           box-sizing: border-box !important;
@@ -337,19 +383,100 @@ export default function WelcomePage() {
         .main-header .crear-cuenta-button {
           flex-shrink: 0 !important;
         }
-        .main-header .header-bar-nav {
+        .main-header .header-bar-nav,
+        .landing-header-nav {
           min-width: 0 !important;
-          max-width: 100% !important;
-          overflow-x: clip !important;
+          flex-shrink: 1 !important;
         }
 
-        /* Nav links: not bold, hover color change */
+        /* Nav links: hover */
         .header-nav-link:hover {
-          color: #1e3a8a !important;
+          color: #1e5bb8 !important;
           transition: color 0.2s ease;
         }
         .header-nav-link {
           transition: color 0.2s ease;
+        }
+
+        /* Landing header: mobile menu – show hamburger, hide nav/actions */
+        @media (max-width: 900px) {
+          .landing-header-mobile-menu-btn {
+            display: flex !important;
+          }
+          .landing-header-nav,
+          .landing-header-actions {
+            display: none !important;
+          }
+        }
+        @media (min-width: 901px) {
+          .landing-header-mobile-menu-btn {
+            display: none !important;
+          }
+        }
+
+        /* Hero: 100% responsive – prevent text overlap on small screens */
+        @media (max-width: 768px) {
+          .landing-hero-wrapper {
+            min-height: auto !important;
+            padding-top: clamp(24px, 5vw, 48px) !important;
+            padding-bottom: clamp(40px, 6vw, 64px) !important;
+          }
+          .landing-hero-wrapper h1 {
+            font-size: clamp(20px, 5.5vw, 32px) !important;
+            line-height: 1.25 !important;
+            margin-bottom: clamp(16px, 3vw, 24px) !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+          }
+          .landing-hero-wrapper .landing-hero-sub {
+            font-size: clamp(13px, 3.2vw, 16px) !important;
+            line-height: 1.55 !important;
+            max-width: 100% !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            margin-bottom: 0 !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            hyphens: auto !important;
+          }
+          .landing-hero-content {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+          }
+          .landing-hero-shapes {
+            display: none !important;
+          }
+          .landing-hero-wrapper .logos-carousel-track {
+            gap: clamp(20px, 4vw, 40px) !important;
+          }
+          .landing-hero-logos-wrap {
+            margin-top: clamp(32px, 6vw, 60px) !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .landing-hero-wrapper h1 {
+            font-size: clamp(18px, 4.8vw, 24px) !important;
+          }
+          .landing-hero-wrapper .landing-hero-sub {
+            font-size: clamp(12px, 3vw, 14px) !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+          }
+          .landing-hero-content {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+          }
+          .landing-hero-logos-wrap {
+            margin-top: clamp(24px, 5vw, 40px) !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .landing-hero-wrapper .landing-hero-sub {
+            font-size: 11px !important;
+            line-height: 1.5 !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+          }
         }
 
         /* Crear cuenta button: solid blue, no shimmer */
@@ -363,6 +490,18 @@ export default function WelcomePage() {
           color: #fff !important;
           filter: brightness(1.05);
           transition: background 0.2s ease, filter 0.2s ease;
+        }
+        /* Header "Agenda tu DEMO": match header link color (text style, not solid button) */
+        .landing-header .landing-header-demo.crear-cuenta-button,
+        .landing-header-demo.crear-cuenta-button {
+          background: transparent !important;
+          color: #2C7BEF !important;
+        }
+        .landing-header .landing-header-demo.crear-cuenta-button:hover,
+        .landing-header-demo.crear-cuenta-button:hover {
+          background: transparent !important;
+          color: #1e5bb8 !important;
+          filter: none !important;
         }
 
         /* Tablet and desktop (768px+): show decorative accent, scale header and hero */
@@ -439,29 +578,6 @@ export default function WelcomePage() {
             padding: 6px 14px !important;
             font-size: 16px !important;
           }
-          .hero-top-block {
-            top: clamp(46px, 5.5vw, 68px) !important;
-            width: min(96vw, 1240px) !important;
-            max-width: 1240px !important;
-          }
-          .hero-tagline {
-            font-size: clamp(34px, 5vw, 54px) !important;
-          }
-          .hero-tagline-sub {
-            font-size: clamp(19px, 1.2rem, 22px) !important;
-            margin-top: 20px !important;
-          }
-          .hero-rect-row {
-            gap: clamp(32px, 4.5vw, 56px) !important;
-            margin-top: clamp(38px, 5.5vw, 64px) !important;
-          }
-          .hero-rect-card {
-            width: clamp(200px, 25vw, 330px) !important;
-            height: clamp(112px, 14vw, 180px) !important;
-          }
-          .hero-circle-label {
-            font-size: clamp(16px, 1.9vw, 21px) !important;
-          }
         }
 
         @media (min-width: 1024px) {
@@ -483,32 +599,6 @@ export default function WelcomePage() {
           .main-header .crear-cuenta-button {
             padding: 6px 16px !important;
             font-size: 17px !important;
-          }
-          .hero-top-block {
-            top: clamp(48px, 6vw, 72px) !important;
-            width: min(96vw, 1280px) !important;
-            max-width: 1280px !important;
-          }
-          .hero-tagline {
-            font-size: clamp(36px, 5vw, 56px) !important;
-          }
-          .hero-tagline-sub {
-            font-size: clamp(19px, 1.25rem, 23px) !important;
-            margin-top: 20px !important;
-          }
-          .hero-rectangles-wrapper {
-            margin-top: clamp(160px, 20vw, 300px) !important;
-          }
-          .hero-rect-row {
-            gap: clamp(34px, 5vw, 60px) !important;
-            margin-top: clamp(42px, 6vw, 68px) !important;
-          }
-          .hero-rect-card {
-            width: clamp(210px, 26vw, 350px) !important;
-            height: clamp(118px, 14.5vw, 190px) !important;
-          }
-          .hero-circle-label {
-            font-size: clamp(17px, 2vw, 22px) !important;
           }
         }
 
@@ -578,32 +668,6 @@ export default function WelcomePage() {
           .main-header .crear-cuenta-button {
             padding: 8px 18px !important;
             font-size: 19px !important;
-          }
-          /* Hero section: even larger on very wide screens */
-          .hero-top-block {
-            top: clamp(56px, 7vw, 100px) !important;
-            max-width: 1320px !important;
-            width: min(96vw, 1320px) !important;
-          }
-          .hero-tagline {
-            font-size: clamp(38px, 5vw, 60px) !important;
-          }
-          .hero-tagline-sub {
-            font-size: clamp(20px, 1.3rem, 26px) !important;
-            margin-top: 24px !important;
-          }
-          .hero-rect-row {
-            gap: clamp(40px, 5vw, 80px) !important;
-          }
-          .hero-rectangles-wrapper {
-            margin-top: clamp(160px, 20vw, 300px) !important;
-          }
-          .hero-rect-card {
-            width: clamp(300px, 28vw, 440px) !important;
-            height: clamp(165px, 15vw, 240px) !important;
-          }
-          .hero-circle-label {
-            font-size: clamp(18px, 2.2vw, 24px) !important;
           }
         }
 
@@ -803,6 +867,16 @@ export default function WelcomePage() {
             transform: scale(1.05);
           }
         }
+        
+        @keyframes scroll-logos {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        
         .hero-main-text {
           font-size: clamp(32px, 5vw, 48px) !important;
           font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
@@ -1318,14 +1392,14 @@ export default function WelcomePage() {
         }
         
       `}</style>
-        </div>
 
         {/* Landing Page Content - gradient: hero through perfiles */}
         <LandingContent sectionRange="gradient" onOpenDemoModal={() => setDemoModalOpen(true)} />
       </div>
+
         {/* Rest of landing (white background) */}
         <LandingContent sectionRange="rest" onOpenDemoModal={() => setDemoModalOpen(true)} />
-      </main >
+      </main>
 
       {/* Schedule Demo Modal - compact, enhanced */}
       {demoModalOpen && (
@@ -1788,51 +1862,62 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
       <style>{landingCSS}</style>
       {(sectionRange === 'all' || sectionRange === 'gradient') && (<>
 
-      {/* Logo carousel above Planes */}
-      <section className="section logos-carousel-section reveal-element" style={{ background: "transparent", padding: "clamp(32px, 5vw, 48px) 0", overflow: "hidden" }}>
-        <p style={{
-              textAlign: "center",
-          margin: "0 0 clamp(20px, 3vw, 28px)",
-          fontSize: "clamp(18px, 2vw, 24px)",
-          fontWeight: 600,
-          color: "#1f2937",
-          fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-        }}>
-          Estas instituciones ya confían en <span style={{ color: "#111" }}>BIZEN</span>
-        </p>
-        <div className="logos-carousel">
-          <div className="logos-carousel-track">
-            {[...logoCarouselLogos, ...logoCarouselLogos].map((logo, i) => (
-              <div key={i} className="logos-carousel-item">
-                <Image src={logo.src} alt={logo.alt} width={220} height={110} style={{ objectFit: "contain", opacity: 0.9 }} />
-            </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Somos BIZEN - 4 blue cards */}
       <section id="sobre-bizen" className="section somos-bizen-section reveal-element" style={{ 
-        background: "transparent", 
-        paddingTop: "clamp(56px, 10vw, 96px)",
-        paddingBottom: "clamp(24px, 4vw, 40px)",
-        paddingLeft: "clamp(16px, 4vw, 24px)",
-        paddingRight: "clamp(16px, 4vw, 24px)",
+        background: "#f9fafb", 
+        paddingTop: "clamp(64px, 12vw, 120px)",
+        paddingBottom: "clamp(64px, 12vw, 120px)",
+        paddingLeft: "clamp(20px, 5vw, 48px)",
+        paddingRight: "clamp(20px, 5vw, 48px)",
+        position: "relative",
+        overflow: "hidden",
       }}>
-        <div className="container" style={{ maxWidth: "1320px", margin: "0 auto" }}>
-          {/* Heading */}
+        {/* Gray geometric shapes - left side */}
+        <div style={{
+          position: "absolute",
+          left: "0",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: "clamp(120px, 15vw, 240px)",
+          height: "clamp(250px, 35vh, 400px)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}>
+          <div style={{ position: "absolute", left: "0", top: "8%", width: "55%", height: "22%", background: "#D1D5DB", transform: "rotate(-18deg)", opacity: 0.7 }} />
+          <div style={{ position: "absolute", left: "15%", top: "35%", width: "65%", height: "28%", background: "#9CA3AF", transform: "rotate(22deg)", opacity: 0.65 }} />
+          <div style={{ position: "absolute", left: "8%", bottom: "12%", width: "50%", height: "20%", background: "#E5E7EB", transform: "rotate(-20deg)", opacity: 0.6 }} />
+        </div>
+
+        {/* Blue geometric shapes - right side */}
+        <div style={{
+          position: "absolute",
+          right: "0",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: "clamp(120px, 15vw, 240px)",
+          height: "clamp(250px, 35vh, 400px)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}>
+          <div style={{ position: "absolute", right: "0", top: "12%", width: "60%", height: "25%", background: "#2563EB", transform: "rotate(15deg)", opacity: 0.85 }} />
+          <div style={{ position: "absolute", right: "12%", top: "42%", width: "70%", height: "30%", background: "#1D4ED8", transform: "rotate(-20deg)", opacity: 0.8 }} />
+          <div style={{ position: "absolute", right: "5%", bottom: "18%", width: "55%", height: "22%", background: "#3B82F6", transform: "rotate(18deg)", opacity: 0.75 }} />
+        </div>
+
+        <div className="container" style={{ maxWidth: "1320px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+          {/* Heading - centered */}
           <h2 style={{
-            textAlign: "left",
-            fontSize: "clamp(32px, 4.5vw, 52px)",
-            fontWeight: 600,
-            color: "#1f2937",
+            textAlign: "center",
+            fontSize: "clamp(36px, 5vw, 56px)",
+            fontWeight: 700,
+            color: "#000",
             lineHeight: 1.2,
-            marginBottom: "clamp(40px, 6vw, 64px)",
+            marginBottom: "clamp(48px, 8vw, 80px)",
             fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+            textTransform: "uppercase",
+            letterSpacing: "0.01em",
           }}>
-            Somos BIZEN, la solución<br />
-            que transforma la<br />
-            educación<span style={{ color: "#111" }}>.</span>
+            SOMOS BIZEN
           </h2>
 
           {/* 4 Cards Grid */}
@@ -2382,11 +2467,13 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
       </section>
       </>)}
       {(sectionRange === 'all' || sectionRange === 'rest') && (
-      <div style={{
+      <div className="landing-rest-wrapper" style={{
         background: "linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8f2ff 65%, #c7e0ff 85%, #93c5fd 100%)",
         width: "100%",
         minHeight: "100%",
         paddingBottom: "clamp(12px, 2vw, 24px)",
+        overflow: "visible",
+        overflowY: "visible",
       }}>
       {/* Conoce BIZEN - Aprender dinámico y divertido + 6 habilidades */}
       <section id="conoce-bizen" className="section conoce-bizen-section reveal-element" style={{ 
@@ -2479,8 +2566,8 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
       </section>
 
       {/* Cada clase, una aventura divertida - Carousel (no scroll; single main page scroll only) */}
-      <section className="section adventure-carousel-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(12px, 1.5vw, 20px) clamp(20px, 4vw, 48px)", overflow: "visible" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", overflow: "visible" }} className="adventure-carousel-inner">
+      <section className="section adventure-carousel-section reveal-element" style={{ background: "#f8fafc", padding: "clamp(12px, 1.5vw, 20px) clamp(20px, 4vw, 48px)", overflow: "visible", overflowY: "visible", maxHeight: "none" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", overflow: "visible", overflowY: "visible", maxHeight: "none" }} className="adventure-carousel-inner">
           <h2 style={{
             textAlign: "center",
             margin: "0 0 clamp(48px, 7vw, 72px)",
@@ -2493,7 +2580,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
             Cada clase, una aventura divertida<span style={{ color: "#EF4444" }}>.</span>
           </h2>
 
-          <div style={{ position: "relative", maxWidth: "1000px", margin: "0 auto", overflow: "visible" }}>
+          <div style={{ position: "relative", maxWidth: "1000px", margin: "0 auto", overflow: "visible", overflowY: "visible" }}>
             {/* Left Arrow - hidden on mobile to avoid overflow */}
             <button
               type="button"
@@ -2569,7 +2656,7 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
             </button>
 
             {/* Carousel Content - smooth crossfade when changing cards; minHeight reserves space so card doesn't overlap dots */}
-            <div style={{ position: "relative", minHeight: "640px", overflow: "visible" }}>
+            <div className="adventure-carousel-content-wrap" style={{ position: "relative", minHeight: "640px", overflow: "visible", overflowY: "visible", maxHeight: "none" }}>
               {[
                 {
                   title: "Microlearning",
@@ -3143,14 +3230,38 @@ html {
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
-/* Cada clase section: no internal scroll - single main page scroll only */
+/* Cada clase section: NO internal scroll - only document/body scrolls */
+.main-page-container .landing-rest-wrapper {
+  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  max-height: none !important;
+}
 .main-page-container .adventure-carousel-section {
-  overflow-x: clip !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
   overflow-y: visible !important;
   padding: clamp(12px, 1.5vw, 20px) clamp(20px, 4vw, 48px) !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+}
+.main-page-container .adventure-carousel-inner,
+.main-page-container .adventure-carousel-section > div {
+  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: visible !important;
+  max-height: none !important;
+  min-height: 0 !important;
 }
 .main-page-container .adventure-carousel-inner {
   overflow: visible !important;
+}
+/* Force carousel content wrapper to not create scroll */
+.main-page-container .adventure-carousel-section .adventure-carousel-content-wrap {
+  overflow: visible !important;
+  overflow-y: visible !important;
+  max-height: none !important;
 }
 @media (min-width: 768px){
   .container{ padding:0 clamp(24px, 4vw, 40px) !important; overflow-x: hidden !important; }

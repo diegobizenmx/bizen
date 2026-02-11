@@ -416,6 +416,20 @@ body[data-lesson-interactive="true"] .app-scroll {
   overflow: hidden !important;
 }
 
+/* Lesson interactive: no sidebar = no left padding; content must be centered in viewport */
+body[data-lesson-interactive="true"] .app-shell,
+body[data-lesson-interactive="true"] .app-scroll,
+body[data-lesson-interactive="true"] .app-main {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+/* Restore centering for lesson content (global tablet/desktop rules override margin:0 auto otherwise) */
+body[data-lesson-interactive="true"] div[style*="margin: 0 auto"],
+body[data-lesson-interactive="true"] div[style*="margin:0 auto"] {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 /* Lesson progress bar: fixed at top for ALL lessons and slides (position set in LessonScreen + interactive page) */
 .lesson-progress-bar-fixed {
   z-index: 100 !important;
@@ -532,6 +546,17 @@ body[data-lesson-interactive="true"] .app-scroll {
   body[data-landing-page="true"] .main-header {
     padding-left: 0 !important;
   }
+
+  /* Lesson interactive: no sidebar → no left gap; content centered in viewport */
+  body[data-lesson-interactive="true"] > div,
+  body[data-lesson-interactive="true"] main,
+  body[data-lesson-interactive="true"] #__next,
+  body[data-lesson-interactive="true"] #__next > div,
+  body[data-lesson-interactive="true"] .app-shell,
+  body[data-lesson-interactive="true"] .app-scroll,
+  body[data-lesson-interactive="true"] .app-main {
+    padding-left: 0 !important;
+  }
 }
 
 /* Desktop (1161px+): Account for 280px left sidebar */
@@ -603,6 +628,17 @@ body[data-lesson-interactive="true"] .app-scroll {
   body[data-landing-page="true"] .app-main,
   body[data-landing-page="true"] .main-page-container,
   body[data-landing-page="true"] .main-header {
+    padding-left: 0 !important;
+  }
+
+  /* Lesson interactive: no sidebar → no left gap; content centered in viewport */
+  body[data-lesson-interactive="true"] > div,
+  body[data-lesson-interactive="true"] main,
+  body[data-lesson-interactive="true"] #__next,
+  body[data-lesson-interactive="true"] #__next > div,
+  body[data-lesson-interactive="true"] .app-shell,
+  body[data-lesson-interactive="true"] .app-scroll,
+  body[data-lesson-interactive="true"] .app-main {
     padding-left: 0 !important;
   }
 }
@@ -726,4 +762,18 @@ body[data-landing-page="true"] [data-landing-root] {
   margin-left: 0 !important;
   padding-left: 0 !important;
   box-sizing: border-box !important;
+}
+
+/* Cada clase, una aventura: no scroll inside section - only document/body scrolls */
+body[data-landing-page="true"] .landing-rest-wrapper,
+body[data-landing-page="true"] .adventure-carousel-section,
+body[data-landing-page="true"] .adventure-carousel-section .adventure-carousel-inner,
+body[data-landing-page="true"] .adventure-carousel-section .adventure-carousel-content-wrap,
+body[data-landing-page="true"] .adventure-carousel-section [style*="min-height"],
+body[data-landing-page="true"] .adventure-carousel-section [style*="minHeight"] {
+  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: visible !important;
+  max-height: none !important;
+  -webkit-overflow-scrolling: unset !important;
 }

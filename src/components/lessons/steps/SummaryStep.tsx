@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react"
 import { SummaryStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
+import { CONTENT_MAX_WIDTH } from "../layoutConstants"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
 interface SummaryStepProps {
@@ -88,7 +89,7 @@ export function SummaryStep({ step, onAnswered, onExit, onContinue, isContinueEn
         {/* Buttons - always visible at bottom; reserved space */}
         <div style={{ 
           width: '100%', 
-          maxWidth: '900px',
+          maxWidth: CONTENT_MAX_WIDTH,
           display: 'flex', 
           gap: '1.5rem',
           justifyContent: 'space-between',

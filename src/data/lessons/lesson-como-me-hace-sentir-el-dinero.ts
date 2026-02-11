@@ -7,15 +7,13 @@ import type { LessonStep } from "@/types/lessonTypes"
  * Estimated duration: 12–15 minutes
  * Language: Content in Spanish, instructions in English.
  *
- * Applies cursor-rules.md "Lesson images (MANDATORY)":
- * - Images MUST be left or right of content (imageAlign: "left" | "right"); never above/below centered.
- * - Match steps: no image. T/F: must have image. Closure (summary): may use centered image.
+ * Images only on flashcard (info) slides; no images on quizzes, match, order, etc.
  */
 
 const IMG = "/uploads/lesson-2"
 
 export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
-  // FLASHCARD 1 – Intro [IMAGE 1 – RIGHT]
+  // FLASHCARD 1 – Intro
   {
     id: "cms-intro",
     stepType: "info",
@@ -44,7 +42,7 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // FLASHCARD 3 – Theory [IMAGE 2 – LEFT]
+  // FLASHCARD 3 – Theory
   {
     id: "cms-teoria-1",
     stepType: "info",
@@ -56,7 +54,7 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     imageAlign: "left",
   },
 
-  // FLASHCARD 4 – True / False [IMAGE 3 – RIGHT] (T/F must have image)
+  // FLASHCARD 4 – True / False
   {
     id: "cms-tf-1",
     stepType: "true_false",
@@ -67,8 +65,6 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     recordIncorrect: true,
     continueLabel: "Continuar",
     fullScreen: true,
-    imageUrl: `${IMG}/emotions-grid.png`,
-    imageAlign: "right",
   },
 
   // FLASHCARD 5 – Match (NO image per rule)
@@ -110,7 +106,7 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // FLASHCARD 7 – Scenario [IMAGE 4 – LEFT]
+  // FLASHCARD 7 – Scenario
   {
     id: "cms-scenario",
     stepType: "mcq",
@@ -125,17 +121,13 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     recordIncorrect: false,
     continueLabel: "Continuar",
     fullScreen: true,
-    imageUrl: `${IMG}/scenario-sneaker.png`,
-    imageAlign: "left",
   },
 
-  // FLASHCARD 8 – Order by intensity [IMAGE 5 – RIGHT]
+  // FLASHCARD 8 – Order by intensity
   {
     id: "cms-order",
     stepType: "order",
     question: "Ordena las emociones de menor a mayor intensidad cuando se trata de dinero.",
-    imageUrl: `${IMG}/stacked-cards.png`,
-    imageAlign: "right",
     items: [
       { id: "item-estres", label: "Estrés", correctOrder: 3 },
       { id: "item-tranquilidad", label: "Tranquilidad", correctOrder: 1 },
@@ -180,7 +172,7 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     fullScreen: true,
   },
 
-  // FLASHCARD 11 – Reflection [IMAGE 6 – LEFT]
+  // FLASHCARD 11 – Reflection
   {
     id: "cms-reflexion",
     stepType: "mcq",
@@ -195,8 +187,6 @@ export const lessonComoMeHaceSentirElDineroSteps: LessonStep[] = [
     recordIncorrect: false,
     continueLabel: "Continuar",
     fullScreen: true,
-    imageUrl: `${IMG}/reflection.png`,
-    imageAlign: "left",
   },
 
   // FLASHCARD 12 – Closure (Progress Feedback)

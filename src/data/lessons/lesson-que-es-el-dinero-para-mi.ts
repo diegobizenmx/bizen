@@ -71,7 +71,6 @@ export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
     id: "qed-match",
     stepType: "match",
     question: "Relaciona el concepto con su significado.",
-    imageUrl: "/uploads/lesson-1/slide5.png",
     leftItems: [
       { id: "left-dinero", label: "Dinero" },
       { id: "left-relacion", label: "Relación con el dinero" },
@@ -106,7 +105,6 @@ export const lessonQueEsElDineroParaMiSteps: LessonStep[] = [
     id: "qed-order",
     stepType: "order",
     question: "Ordena lo que más influye en cómo usamos el dinero.",
-    imageUrl: "/uploads/lesson-1/slide7.png",
     items: [
       { id: "item-pensar", label: "Forma de pensar", correctOrder: 1 },
       { id: "item-emociones", label: "Emociones", correctOrder: 2 },

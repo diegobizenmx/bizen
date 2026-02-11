@@ -4,6 +4,7 @@ import React, { useReducer, useEffect, useCallback, useRef } from "react"
 import { LessonStep } from "@/types/lessonTypes"
 import { lessonReducer, LessonState } from "./lessonReducer"
 import { LessonScreen, StickyFooterButton } from "./index"
+import { CONTENT_MAX_WIDTH, CONTENT_PADDING_X, CONTENT_PADDING_Y } from "./layoutConstants"
 import {
   InfoStep,
   MCQStep,
@@ -315,7 +316,7 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
   const isLastStep = state.currentStepIndex >= state.allSteps.length - 1
   const isSummaryStep = currentStep.stepType === "summary"
 
-  // Full-screen mode: render step directly (summary always gets this so its "Completar misión" button is visible)
+  // Full-screen mode: render step inside a single centered container (same width/padding on all slides)
   if (shouldPassFullScreenProps) {
     return (
       <div
@@ -327,8 +328,37 @@ export function LessonEngine({ lessonSteps, onComplete, onExit, onProgressChange
           overflow: "hidden",
         }}
       >
-        <div key={state.currentStepIndex} className="lesson-step-transition" style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-          <div className="lesson-slide-content-center" style={{ width: "100%", height: "100%", minHeight: 0, display: isSummaryStepType ? "flex" : "block", flexDirection: isSummaryStepType ? "column" : undefined }}>
+        <div
+          key={state.currentStepIndex}
+          className="lesson-step-transition"
+          style={{
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: CONTENT_PADDING_Y,
+            paddingBottom: CONTENT_PADDING_Y,
+            boxSizing: "border-box",
+          }}
+        >
+          <div
+            className="lesson-slide-content-center"
+            style={{
+              width: "100%",
+              maxWidth: CONTENT_MAX_WIDTH,
+              marginLeft: "auto",
+              marginRight: "auto",
+              paddingLeft: CONTENT_PADDING_X,
+              paddingRight: CONTENT_PADDING_X,
+              height: "100%",
+              minHeight: 0,
+              display: isSummaryStepType ? "flex" : "flex",
+              flexDirection: "column",
+              boxSizing: "border-box",
+            }}
+          >
             {renderStep()}
           </div>
         </div>

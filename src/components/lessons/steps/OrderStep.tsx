@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { OrderStepFields } from "@/types/lessonTypes"
 import { sharedStyles } from "../sharedStyles"
+import { CONTENT_MAX_WIDTH, CONTENT_PADDING_X } from "../layoutConstants"
 import { playCorrectSound, playIncorrectSound } from "../lessonSounds"
 // LessonProgressHeader now shown in LessonScreen for all slides
 
@@ -177,7 +178,7 @@ export function OrderStep({
   const buttonsRow = useFullScreenLayout ? (
     <div style={{
       width: "100%",
-      maxWidth: "900px",
+      maxWidth: CONTENT_MAX_WIDTH,
       display: "flex",
       gap: "1rem",
       flexWrap: "wrap",
@@ -470,7 +471,7 @@ export function OrderStep({
         background: "#f1f5f9",
         boxSizing: "border-box",
       }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", maxWidth: "1400px", padding: "0 clamp(20px, 4vw, 60px)", minHeight: 0 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", maxWidth: CONTENT_MAX_WIDTH, padding: `0 ${CONTENT_PADDING_X}`, minHeight: 0 }}>
           {content}
         </div>
         {buttonsRow}

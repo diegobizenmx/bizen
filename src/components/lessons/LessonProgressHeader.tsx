@@ -19,8 +19,6 @@ export function LessonProgressHeader({
   streak,
   stars,
 }: LessonProgressHeaderProps) {
-  const percentage = totalSteps > 0 ? Math.round(((currentStepIndex + 1) / totalSteps) * 100) : 0
-
   return (
     <div
       style={{
@@ -33,20 +31,7 @@ export function LessonProgressHeader({
         flexShrink: 0,
       }}
     >
-      {/* Percentage - left (blue) */}
-      <span
-        style={{
-          flexShrink: 0,
-          fontSize: "clamp(16px, 3.5vw, 22px)",
-          fontWeight: 700,
-          color: BLUE,
-          minWidth: "44px",
-        }}
-      >
-        {percentage}%
-      </span>
-
-      {/* Progress bar - center */}
+      {/* Progress bar */}
       <div
         style={{
           flex: 1,
