@@ -1464,7 +1464,7 @@ export default function WelcomePage() {
                   name: "Gabriela Burgos",
                   title: "Directora de Programas de Emprendimiento · BLOQUE",
                   institution: "",
-                  image: "/image.png",
+                  image: "/uploads/Landing_page/image.png",
                   logo: undefined,
                 },
                 {
@@ -1472,7 +1472,7 @@ export default function WelcomePage() {
                   name: "Alejandro Rolland",
                   title: "Secretaría de Desarrollo Sustentable · Querétaro",
                   institution: "",
-                  image: "/image-copy.png",
+                  image: "/uploads/Landing_page/image%20copy.png",
                   logo: undefined,
                 },
                 {
@@ -1480,7 +1480,7 @@ export default function WelcomePage() {
                   name: "Joanna Vazquez",
                   title: "Coordinadora Universidad",
                   institution: "Mondragón México",
-                  image: "/joanna.png",
+                  image: "/uploads/Landing_page/joanna.png",
                   logo: "/bizen_sign.png",
                 },
               ].map((testimonial, idx) => (
@@ -2356,9 +2356,9 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 }}>
                   <Image
                     src={
-                      activeProfile === "docentes" ? "/perfil-docentes.png" :
-                      activeProfile === "estudiantes" ? "/perfil-estudiantes.png" :
-                      "/perfil-padres.png"
+                      activeProfile === "docentes" ? "/uploads/Landing_page/perfil-docentes.png" :
+                      activeProfile === "estudiantes" ? "/uploads/Landing_page/perfil-estudiantes.png" :
+                      "/uploads/Landing_page/perfil-padres.png"
                     }
                     alt={
                       activeProfile === "docentes" ? "Docentes en el aula" :
@@ -2574,19 +2574,19 @@ function LandingContent({ sectionRange = 'all', onOpenDemoModal }: { sectionRang
                 {
                   title: "Microlearning",
                   description: "Utilizamos contenidos digitales y videos cortos interactivos en todas nuestras lecciones, creados por especialistas académicos y de animación infantil (Netflix) para facilitar el aprendizaje de tus estudiantes.",
-                  imageSrc: "/landing-1.png",
+                  imageSrc: "/uploads/Landing_page/landing-1.png",
                   imageAlt: "Image 1",
                 },
                 {
                   title: "Gamificación",
                   description: "Cada lección incluye retos y recompensas que mantienen a los estudiantes motivados y comprometidos con su aprendizaje.",
-                  imageSrc: "/landing-2.png",
+                  imageSrc: "/uploads/Landing_page/landing-2.png",
                   imageAlt: "Image 2",
                 },
                 {
                   title: "Contenido Interactivo",
                   description: "Material multimedia diseñado para captar la atención y facilitar la comprensión de conceptos complejos.",
-                  imageSrc: "/landing-3.png",
+                  imageSrc: "/uploads/Landing_page/landing-3.png",
                   imageAlt: "Image 3",
                 },
               ].map((slide, idx) => (
